@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: gyfor - API for data entry objects
+Bundle-SymbolicName: org.gyfor.object
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kevin Holloway
+Export-Package: org.apache.regexp,
+ org.gyfor.object,
+ org.gyfor.object.context,
+ org.gyfor.object.model,
+ org.gyfor.object.plan,
+ org.gyfor.object.plan.impl,
+ org.gyfor.object.type,
+ org.gyfor.object.type.builtin,
+ org.gyfor.object.value
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Eclipse-BuddyPolicy: global
+Import-Package: org.gyfor.math,
+ org.gyfor.time,
+ org.gyfor.util,
+ org.gyfor.value,
+ org.osgi.service.component.annotations
+Service-Component: OSGI-INF/org.gyfor.object.context.PlanFactory.xml
+Bundle-ActivationPolicy: lazy
