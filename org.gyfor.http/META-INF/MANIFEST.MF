@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: gyfor - HTTP server using Undertow
+Bundle-SymbolicName: org.gyfor.http
+Bundle-Version: 1.0.0
+Bundle-ClassPath: lib/jboss-logging-3.2.1.Final.jar,
+ lib/xnio-api-3.3.6.Final.jar,
+ lib/xnio-nio-3.3.6.Final.jar,
+ lib/undertow-core-1.4.0.Final.jar,
+ lib/undertow-servlet-1.4.0.Final.jar,
+ lib/undertow-websockets-jsr-1.4.0.Final.jar,
+ .
+Bundle-Activator: org.gyfor.http.UndertowService
+Bundle-Vendor: Kevin Holloway
+Export-Package: io.undertow.io,
+ io.undertow.server,
+ io.undertow.server.protocol.framed,
+ io.undertow.util,
+ io.undertow.websockets,
+ io.undertow.websockets.core,
+ io.undertow.websockets.spi,
+ org.gyfor.http.api,
+ org.xnio
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Service-Component: OSGI-INF/org.gyfor.http.TripleCWebPage.xml,
+ OSGI-INF/org.gyfor.http.TripleDReource.xml,
+ OSGI-INF/org.gyfor.http.TripleEResource.xml
+Bundle-ActivationPolicy: lazy
+Import-Package: org.osgi.framework;version="1.8.0",
+ org.osgi.util.tracker;version="1.5.1",
+ org.slf4j
