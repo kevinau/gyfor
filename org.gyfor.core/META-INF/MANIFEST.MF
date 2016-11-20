@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: gyfor - core code
+Bundle-SymbolicName: org.gyfor.core
+Bundle-Version: 1.0.0
+Export-Package: org.gyfor.math,
+ org.gyfor.nio,
+ org.gyfor.text,
+ org.gyfor.time,
+ org.gyfor.util,
+ org.gyfor.value
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Kevin Holloway
