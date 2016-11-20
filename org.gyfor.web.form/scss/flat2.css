@@ -1,0 +1,110 @@
+.ui.form input[type="text"], .ui.form input[type="email"], .ui.form input[type="date"],
+  .ui.form input[type="password"], .ui.form input[type="number"], .ui.form input[type="url"],
+  .ui.form input[type="tel"] {
+  border-bottom: 1px solid #DDDDDD;
+}
+
+.ui.form input:not ([type] ), .ui.form input[type="date"], .ui.form input[type="datetime-local"],
+  .ui.form input[type="email"], .ui.form input[type="number"], .ui.form input[type="password"],
+  .ui.form input[type="search"], .ui.form input[type="tel"], .ui.form input[type="time"],
+  .ui.form input[type="text"], .ui.form input[type="file"], .ui.form input[type="url"]
+  {
+  font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  margin: 0em;
+  outline: none;
+  -webkit-appearance: none;
+  tap-highlight-color: rgba(255, 255, 255, 0);
+  line-height: 1.2142em;
+  padding: 0.67861429em 0.5em;
+  font-size: 1em;
+  background: transparent;
+  border: none;
+  color: rgba(0, 0, 0, 0.87);
+  border-radius: 0em;
+  box-shadow: none;
+  transition: color 0.1s ease, border-color 0.1s ease;
+}
+
+.ui.form textarea, .ui.form input:not ([type] ), .ui.form input[type="date"],
+  .ui.form input[type="datetime-local"], .ui.form input[type="email"],
+  .ui.form input[type="number"], .ui.form input[type="password"], .ui.form input[type="search"],
+  .ui.form input[type="tel"], .ui.form input[type="time"], .ui.form input[type="text"],
+  .ui.form input[type="file"], .ui.form input[type="url"] {
+  width: 100%;
+  vertical-align: top;
+}
+
+.ui.form input:not ([type] ), .ui.form input[type="text"], .ui.form input[type="email"],
+  .ui.form input[type="search"], .ui.form input[type="password"], .ui.form input[type="date"],
+  .ui.form input[type="datetime-local"], .ui.form input[type="tel"], .ui.form input[type="time"],
+  .ui.form input[type="file"], .ui.form input[type="url"], .ui.form input[type="number"]
+  {
+  font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  margin: 0;
+  outline: 0;
+  -webkit-appearance: none;
+  tap-highlight-color: rgba(255, 255, 255, 0);
+  line-height: 1.2142em;
+  padding: .67861429em 1em;
+  font-size: 1em;
+  background: #FFF;
+  border: 1px solid rgba(34, 36, 38, .15);
+  color: rgba(0, 0, 0, .87);
+  border-radius: .28571429rem;
+  box-shadow: 0 0 0 0 transparent inset;
+  -webkit-transition: color .1s ease, border-color .1s ease;
+  transition: color .1s ease, border-color .1s ease;
+}
+
+.ui.form input:not ([type] ), .ui.form input[type="text"], .ui.form input[type="email"],
+  .ui.form input[type="search"], .ui.form input[type="password"], .ui.form input[type="date"],
+  .ui.form input[type="datetime-local"], .ui.form input[type="tel"], .ui.form input[type="time"],
+  .ui.form input[type="file"], .ui.form input[type="url"], .ui.form input[type="number"],
+  .ui.form textarea {
+  width: 100%;
+  vertical-align: top;
+}
+
+input[type="text"], input[type="email"], input[type="search"], input[type="password"]
+  {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+input {
+  line-height: normal;
+}
+
+button, input, optgroup, select, textarea {
+  color: inherit;
+  font: inherit;
+  margin: 0;
+}
+
+*, *::after, *::before {
+  box-sizing: inherit;
+}
+
+.ui.form {
+  font-size: 1rem;
+}
+
+.ui.form {
+  font-size: 1rem;
+}
+
+body {
+  font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.4285em;
+  color: rgba(0, 0, 0, .87);
+}
+
+html {
+  font-size: 14px;
+}
+
+html {
+  font-family: sans-serif;
+  -webkit-text-size-adjust: 100%;
+}

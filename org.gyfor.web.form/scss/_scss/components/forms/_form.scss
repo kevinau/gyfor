@@ -1,0 +1,266 @@
+// Base font and size for all input fields
+form {
+    input,
+    select,
+    textarea,
+    fieldset {
+        font-family: "Roboto Mono", Consolas, Monaco, "Courier New", monospace;
+	    font-size: 20;
+    }
+
+}
+
+select,
+textarea {
+	display: block;
+	width: 100%;
+	line-height: 1.75;
+	padding: $input-padding;
+	border-radius: 2px;
+	background: $input-background-color;
+	border: $input-border-size solid $input-border-color;
+}
+
+select:not([multiple]) {
+	cursor: pointer;
+	height: $ui-height;
+	vertical-align: middle;
+}
+
+label {
+	vertical-align: middle;
+}
+
+textarea:focus,
+select:focus {
+	outline: none;
+	background: $input-focus-background-color;
+	border-color: $input-focus-border-color;
+}
+
+textarea:disabled,
+select:disabled,
+textarea.disabled,
+select.disabled {
+	resize: none;
+	opacity: $input-disabled-opacity;
+	cursor: default;
+	font-style: italic;
+	color: $input-disabled-color;
+}
+
+// Fieldset
+fieldset {
+	padding: 39px 32px;
+	margin-bottom: $base-line;
+	border: $fieldset-border-size solid $fieldset-border-color;
+	border-radius: 4px;
+}
+legend {
+	font-weight: bold;
+	font-size: $ui-font-size-small;
+	text-transform: uppercase;
+	padding: 0 1em;
+	margin-left: -1em;
+	top: 2px;
+	position: relative;
+	line-height: 0;
+}
+
+// Collection
+.form {
+
+    margin-bottom: 0;
+
+    & .form-item {
+        margin-bottom: $base-line;
+    }
+
+	& input[type="email"],
+	& input[type="number"],
+	& input[type="search"],
+	& input[type="text"],
+	& input[type="date"],
+	& input[type="tel"],
+	& input[type="url"],
+	& input[type="password"],
+	& select,
+	& textarea {
+		display: block;
+		width: 100%;
+	}
+
+	& input,
+	& textarea,
+	& select {
+		&.width-50 { width: 50%; }
+	}
+
+	& label {
+		font-size: $label-font-size;
+		color: $label-color;
+		font-weight: $label-font-weight;
+		display: block;
+	}
+
+	& .checkboxes label,
+	& label.checkbox {
+		text-transform: none;
+		font-weight: normal;
+		cursor: pointer;
+		color: inherit;
+		font-size: $ui-font-size + 1px;
+	}
+
+	& .checkboxes label {
+		margin-bottom: 8px;
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	& .checkboxes-inline {
+		display: block;
+		& label {
+			font-size: inherit;
+			color: inherit;
+			display: inline-block;
+			margin-right: 16px;
+			text-transform: none;
+			font-weight: normal;
+		}
+	}
+
+	& span.error,
+    & div.error,
+	& span.success,
+    & div.success {
+		text-transform: none;
+		font-weight: normal;
+		font-size: 12px;
+    }
+
+	& span.error,
+	& span.success {
+		margin-left: .4rem;
+	}
+}
+
+// Inline
+.form-inline {
+
+	& textarea,
+	& select,
+	& input[type="email"],
+	& input[type="number"],
+	& input[type="search"],
+	& input[type="text"],
+	& input[type="date"],
+	& input[type="tel"],
+	& input[type="url"],
+	& input[type="password"] {
+		width: auto;
+		display: inline-block;
+	}
+}
+
+// Sizes
+input.big,
+select.big {
+	font-size: $ui-font-size-big;
+	height: $ui-height-big;
+}
+input.big {
+	padding: $input-padding-big;
+}
+select.big {
+	padding: 6px 10px;
+}
+
+// Item notes
+form .item {
+    label {
+	    font-size: 16;
+	    color: #000;
+	    font-weight: 300;
+	    display: block;
+    }
+    .note {
+        font-family: Roboto, Helvetica, Arial, sans-serif;
+        font-weight: 400;
+	    text-transform: none;
+    	margin-top: 4px;
+	    color: rgba(0, 0, 0, .5);
+	    font-size: 12px;
+	    line-height: $base-line-small;
+	    font-weight: normal;
+    }
+    span.note {
+	    margin-left: 4px;
+	    line-height: $base-line-small;
+    }
+}
+
+ul.note {
+	margin-bottom: 8px;
+}
+
+// States
+input.error,
+textarea.error,
+select.error {
+	margin-top: -1px;
+	background: none;
+	background-color: rgba($color-error, .1);
+	border: $input-border-size solid $color-error;
+}
+input.success,
+textarea.success,
+select.success  {
+	margin-top: -1px;
+	background: none;
+	background-color: rgba($color-success, .1);
+	border: $input-border-size solid $color-success;
+}
+
+// Append & Prepend
+.controls {
+	@include flex;
+
+	& input {
+		@include flex-item-one;
+		margin-bottom: 0 !important;
+	}
+
+	& .button,
+	& span {
+		@include flex-item-shrink;
+
+    }
+
+	& span {
+		font-weight: normal;
+		background-color: $input-append-background-color;
+		padding: 0 12px;
+		color: $input-append-text-color;
+		font-size: $font-size-smaller;
+		line-height: $ui-height;
+		white-space: nowrap;
+	}
+
+	& .button {
+		border-radius: 0 4px 4px 0;
+	}
+}
+
+// Responsive changes for small devices
+@media (max-width: $breakpoint-small) {
+	input,
+	textarea,
+	select {
+		// disable autozoom
+		font-size: 16px;
+
+		&.width-50 { width: 100%; }
+	}
+}

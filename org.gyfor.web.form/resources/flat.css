@@ -1,0 +1,58 @@
+body {
+  font-family: "Arial", sans-serf;
+  line-height: 1.2em; }
+
+*:focus {
+  outline: none; }
+
+* {
+  box-sizing: content-box; }
+
+input[type=text]::-ms-clear {
+  width: 0;
+  height: 0; }
+
+form.j2form .item > label {
+  font-family: "Roboto", Arial, sans-serif;
+  font-weight: 400;
+  display: block;
+  padding: 1rem 0em 0.25rem 0em;
+  font-size: 0.875rem; }
+form.j2form input[type="text"],
+form.j2form input[type="email"],
+form.j2form input[type="date"],
+form.j2form input[type="password"],
+form.j2form input[type="number"],
+form.j2form input[type="url"],
+form.j2form input[type="tel"] {
+  font-family: "Roboto Mono", monospaced;
+  font-size: 1rem;
+  padding: 0;
+  border: none;
+  border-bottom: 1px solid #808080;
+  margin-bottom: 2px; }
+form.j2form input[type="text"]:focus,
+form.j2form input[type="email"]:focus,
+form.j2form input[type="date"]:focus,
+form.j2form input[type="password"]:focus,
+form.j2form input[type="number"]:focus,
+form.j2form input[type="url"]:focus,
+form.j2form input[type="tel"]:focus {
+  border-bottom: 3px solid #9FBFDF;
+  margin-bottom: 0px; }
+form.j2form button {
+  font-family: "Roboto", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 0;
+  padding: 2px 0.5em;
+  border: 1px solid #000000;
+  border-radius: 0;
+  box-sizing: content-box;
+  cursor: pointer;
+  overflow: visible; }
+  form.j2form button::-moz-focus-inner {
+    border: none;
+    padding: 0; }
+
+/*# sourceMappingURL=flat.css.map */

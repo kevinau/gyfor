@@ -1,0 +1,28 @@
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="date"],
+input[type="tel"],
+input[type="url"],
+input[type="password"] {
+	vertical-align: middle;
+	-webkit-appearance: none;
+	padding: 0;
+	border: none;
+    border-bottom: 1px solid $color-input-normal;
+	box-shadow: none;
+	border-radius: 0;
+    &:focus {
+      border-bottom-color: $color-input-focus;
+      box-shadow: 0 2px $color-input-focus;
+    }
+
+    // Remove Microsoft's X clear button
+    &::-ms-clear {
+      width : 0;
+      height: 0;
+    }
+    // Remove Firefox's focus border
+    outline: none;
+}

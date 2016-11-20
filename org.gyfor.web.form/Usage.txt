@@ -1,0 +1,40 @@
+The following Pebble extensions are supported:
+
+Entity tag
+----------
+
+There are two forms of the entity tag:
+
+Include an external file:
+
+{% entity <expression> %}
+
+where <expression> evaluates to the fully qualified name of an @Entity annotated class.
+
+The template engine will look first for a template with the name equal to the class name, suffixed with ".html".  If this file is not found, the
+default entity template will be used.
+
+If the included template is enclosed in 'outer' and 'endouter' tags, the included template will be wrapped in the default outer HTML.  Otherwise, 
+the included template is assumed to include all "outer" HTML.  The outer/endouter tags will add the outer HTML appropriate to the enclosing form tag
+('entity', 'embedded', 'repeating', 'reference' or 'field').
+
+If the default entity template is used, the fields included are all the user-enterable fields of the class.  This is, all the non-final, non-static fields
+of the class.  The id and version fields are also excluded.  The default entity template includes all "outer" HTML.
+
+An inline template:
+
+{% entity <expression> inline %}
+<inline content>
+{% endentity %}
+
+In this case, the <inline content> is a Pebble template.  
+The included or inline content is parsed as a Pebble template that resolves to HTML content.  It can include can include "field", "embedded", 
+"reference" and "repeating" tags, described below.
+
+When parsing the included or inline content, the following variables are made available:
+
+entityName: The fully qualified name of the entity class.
+tagClass: One of 'entity', 'embedded', 'repeating', 'reference' or 'field' (or any other supported object model).
+plan: The EntityPlan that is constructed from the entity class.
+label: The entity labels (title, shortTitle and description) taken from the @EntityLabel annotation of the entity class.  If there is
+no @EntityLabel, the title and shortTitle are derived from the class name.

@@ -1,0 +1,11 @@
+<div class="form-item" id="node-{{id}}">
+<label for="entry-{{id}}">{{label}}
+{% if hint is not empty %}
+<span class="desc">{{hint}}</span>
+{% endif %}
+</label>
+{% block itemContent %}<p>No item content specified</p>{% endblock %}
+{% if description is not empty %}
+<div class="desc">{{description}}</div>
+{% endif %}
+</div>
