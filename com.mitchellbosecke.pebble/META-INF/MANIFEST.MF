@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Pebble template engine
+Bundle-SymbolicName: com.mitchellbosecke.pebble
+Bundle-Version: 2.2.2
+Bundle-Vendor: Mitchell Bösecke
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: com.mitchellbosecke.pebble,
+ com.mitchellbosecke.pebble.error,
+ com.mitchellbosecke.pebble.extension,
+ com.mitchellbosecke.pebble.lexer,
+ com.mitchellbosecke.pebble.loader,
+ com.mitchellbosecke.pebble.node,
+ com.mitchellbosecke.pebble.node.expression,
+ com.mitchellbosecke.pebble.parser,
+ com.mitchellbosecke.pebble.template,
+ com.mitchellbosecke.pebble.tokenParser
