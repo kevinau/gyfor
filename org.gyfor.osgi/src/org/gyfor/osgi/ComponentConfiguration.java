@@ -11,6 +11,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 
 

@@ -3,13 +3,13 @@ package org.gyfor.object.model;
 import org.gyfor.object.plan.IItemPlan;
 
 
-public class ItemModel extends NodeModel {
+public class Item2Model extends NodeModel {
 
   private final IItemPlan<?> itemPlan;
   private Object value;
   
   
-  public ItemModel (RootModel rootModel, NodeModel parent, int id, IItemPlan<?> itemPlan) {
+  public Item2Model (RootModel rootModel, NodeModel parent, int id, IItemPlan<?> itemPlan) {
     super (rootModel, parent, id);
     this.itemPlan = itemPlan;
   }

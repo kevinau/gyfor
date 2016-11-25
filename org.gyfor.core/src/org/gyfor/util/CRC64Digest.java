@@ -3,14 +3,14 @@ package org.gyfor.util;
 import java.io.Serializable;
 
 
-public class CRC64Hash implements Comparable<Hash>, Serializable, Hash {
+public class CRC64Digest implements Comparable<Digest>, Serializable, Digest {
 
   private static final long serialVersionUID = 1L;
 
   private long value;
   
   
-  public CRC64Hash (long value) {
+  public CRC64Digest (long value) {
     this.value = value;
   }
 
@@ -32,7 +32,7 @@ public class CRC64Hash implements Comparable<Hash>, Serializable, Hash {
   }
   
   
-  public CRC64Hash (String s) {
+  public CRC64Digest (String s) {
     if (s.length() != 17) {
       throw new IllegalArgumentException(s);
     }
@@ -67,7 +67,7 @@ public class CRC64Hash implements Comparable<Hash>, Serializable, Hash {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    CRC64Hash other = (CRC64Hash)obj;
+    CRC64Digest other = (CRC64Digest)obj;
     return value == other.value;
   }
 
@@ -92,8 +92,8 @@ public class CRC64Hash implements Comparable<Hash>, Serializable, Hash {
 
 
   @Override
-  public int compareTo(Hash other) {
-    long value2 = ((CRC64Hash)other).value;
+  public int compareTo(Digest other) {
+    long value2 = ((CRC64Digest)other).value;
     if (value == value2) {
       return 0;
     } else if (value < value2) {

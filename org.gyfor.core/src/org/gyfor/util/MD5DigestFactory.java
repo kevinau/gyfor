@@ -1,8 +1,8 @@
 package org.gyfor.util;
 
-public class MD5HashFactory extends ByteArrayHashFactory {
+public class MD5DigestFactory extends ByteArrayDigestFactory {
 
-  public MD5HashFactory () {
+  public MD5DigestFactory () {
     super ("MD5");
   }
   

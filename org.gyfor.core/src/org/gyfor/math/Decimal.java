@@ -52,7 +52,6 @@ import java.math.RoundingMode;
  * <code>BigDecimal</code>. Due credit is given to both IBM and Sun
  * Microsystems.
  * 
- * @see DecimalContext
  */
 public class Decimal extends Number implements Comparable<Decimal> {
 
@@ -158,7 +157,7 @@ public class Decimal extends Number implements Comparable<Decimal> {
    *           <tt>in</tt>.
    */
   public Decimal(char[] in, int offset, int len) {
-    this(in, offset, len, null);
+    this(in, offset, len, 0, RoundingMode.UNNECESSARY);
   }
 
   /**
@@ -194,7 +193,7 @@ public class Decimal extends Number implements Comparable<Decimal> {
    *           <tt>Decimal</tt> or the defined subarray is not wholly within
    *           <tt>in</tt>.
    */
-  public Decimal(char in[], int offset, int len, DecimalContext dc) {
+  public Decimal(char in[], int offset, int len, int decimalDigits, RoundingMode roundingMode) {
     if (len <= 0) {
       throw new NumberFormatException(new String(in));
     }
@@ -243,12 +242,12 @@ public class Decimal extends Number implements Comparable<Decimal> {
     } else {
       s = 0;
     }
-    if (dc != null) {
-      value = dc.adjustValue(v, s);
-      scale = dc.decimalDigits;
-    } else {
+    if (roundingMode == RoundingMode.UNNECESSARY) {
       value = v;
       scale = s;
+    } else {
+      value = DecimalContext.adjustValue(v, s, decimalDigits, roundingMode);
+      scale = (short)decimalDigits;
     }
   }
 
@@ -270,7 +269,7 @@ public class Decimal extends Number implements Comparable<Decimal> {
    *           <tt>Decimal</tt>.
    */
   public Decimal(char in[]) {
-    this(in, 0, in.length, null);
+    this(in, 0, in.length, 0, RoundingMode.UNNECESSARY);
   }
 
   /**
@@ -300,9 +299,15 @@ public class Decimal extends Number implements Comparable<Decimal> {
    *           if <tt>in</tt> is not a valid representation of a
    *           <tt>Decimal</tt>.
    */
-  public Decimal(char[] in, DecimalContext dc) {
-    this(in, 0, in.length, dc);
+  public Decimal(char[] in, int decimalDigits) {
+    this(in, 0, in.length, decimalDigits, RoundingMode.HALF_EVEN);
   }
+  
+  
+  public Decimal(char[] in, int decimalDigits, RoundingMode roundingMode) {
+    this(in, 0, in.length, decimalDigits, roundingMode);
+  }
+  
 
 /**
    * Constructs a <tt>Decimal</tt> from a string that contains a
@@ -393,7 +398,7 @@ public class Decimal extends Number implements Comparable<Decimal> {
    *         representation of a decimal number.
    */
   public Decimal(String val) {
-    this(val.toCharArray(), 0, val.length(), null);
+    this(val.toCharArray(), 0, val.length());
   }
 
   /**
@@ -428,7 +433,7 @@ public class Decimal extends Number implements Comparable<Decimal> {
    *           <tt>Decimal</tt> or the defined subarray is not wholly within
    *           <tt>in</tt>.
    */
-  public Decimal(byte in[], int offset, int len, DecimalContext dc) {
+  public Decimal(byte in[], int offset, int len, int decimalDigits, RoundingMode roundingMode) {
     if (len <= 0) {
       throw new NumberFormatException(new String(in));
     }
@@ -476,12 +481,12 @@ public class Decimal extends Number implements Comparable<Decimal> {
     } else {
       s = 0;
     }
-    if (dc != null) {
-      value = dc.adjustValue(v, s);
-      scale = dc.decimalDigits;
-    } else {
+    if (roundingMode == RoundingMode.UNNECESSARY) {
       value = v;
       scale = s;
+    } else {
+      value = DecimalContext.adjustValue(v, s, decimalDigits, roundingMode);
+      scale = (short)decimalDigits;
     }
   }
   
@@ -545,10 +550,10 @@ public class Decimal extends Number implements Comparable<Decimal> {
    * @throws NumberFormatException
    *           if <tt>val</tt> is infinite or NaN.
    */
-  public Decimal(double val, DecimalContext dc) {
+  public Decimal(double val, int decimalDigits, RoundingMode roundingMode) {
     if (val == 0) {
       value = 0;
-      scale = dc.decimalDigits;
+      scale = (short)decimalDigits;
       return;
     }
     boolean negative = false;
@@ -561,12 +566,12 @@ public class Decimal extends Number implements Comparable<Decimal> {
     long vx = (bits & 0x000fffffffffffffL) | 0x0010000000000000L;
     int exp = ((int)(bits >>> (13 * 4)) & 0x7ff) - 1023 - (13 * 4);
     long divisor = (long)Math.pow(2, -exp);
-    if (dc.decimalDigits >= 0) {
-      v = DecimalContext.divideValue(vx * scalex[dc.decimalDigits], divisor, dc.roundingMode);
+    if (decimalDigits >= 0) {
+      v = DecimalContext.divideValue(vx * scalex[decimalDigits], divisor, roundingMode);
     } else {
-      v = DecimalContext.divideValue(vx, divisor * scalex[-dc.decimalDigits], dc.roundingMode);
+      v = DecimalContext.divideValue(vx, divisor * scalex[-decimalDigits], roundingMode);
     }
-    scale = dc.decimalDigits;
+    scale = (short)decimalDigits;
     if (negative) {
       value = -v;
     } else {
@@ -603,6 +608,7 @@ public class Decimal extends Number implements Comparable<Decimal> {
     this.scale = (short)scale;
   }
 
+  
   /**
    * Returns a <tt>Decimal</tt> whose value is <tt>(this +
    * augend)</tt>, and whose scale is <tt>max(this.scale(),
@@ -613,7 +619,7 @@ public class Decimal extends Number implements Comparable<Decimal> {
    * @return <tt>this + augend</tt>
    */
   public Decimal add(Decimal augend) {
-    // Optimisation when adding 0
+    // Optimization when adding 0
     if (this.value == 0) {
       return augend;
     }
@@ -650,7 +656,7 @@ public class Decimal extends Number implements Comparable<Decimal> {
    * @return <tt>this - subtrahend</tt>
    */
   public Decimal subtract(Decimal subtrahend) {
-    /* Optimisation when subtracting 0 */
+    /* Optimization when subtracting 0 */
     if (subtrahend.value == 0) {
       return this;
     }
@@ -716,10 +722,10 @@ public class Decimal extends Number implements Comparable<Decimal> {
    *           if the result is inexact but the rounding mode is
    *           <tt>UNNECESSARY</tt>.
    */
-  public Decimal multiply(Decimal multiplicand, DecimalContext dc) {
+  public Decimal multiply(Decimal multiplicand, int decimalDigits, RoundingMode roundingMode) {
     long v = this.value * multiplicand.value;
     int s = this.scale + multiplicand.scale;
-    return new Decimal(dc.adjustValue(v, s), dc.decimalDigits);
+    return new Decimal(DecimalContext.adjustValue(v, s, decimalDigits, roundingMode), decimalDigits);
   }
 
   public Decimal multiply(Decimal multiplicand, int decimalDigits) {
@@ -769,8 +775,7 @@ public class Decimal extends Number implements Comparable<Decimal> {
    *           scale is insufficient to represent the result of the division
    *           exactly.
    */
-  public Decimal divide(Decimal divisor, int decimalDigits,
-      RoundingMode roundingMode) {
+  public Decimal divide(Decimal divisor, int decimalDigits, RoundingMode roundingMode) {
     long leftValue = this.value;
     long rightValue = divisor.value;
     if (divisor.scale > 0) {
@@ -782,50 +787,10 @@ public class Decimal extends Number implements Comparable<Decimal> {
         roundingMode);
   }
 
-  /**
-   * Returns a <tt>Decimal</tt> whose value is <tt>(this /
-   * divisor)</tt>, with rounding according to the context settings.
-   * 
-   * The BigDecimal class does not support this method.
-   * 
-   * @param divisor
-   *          value by which this <tt>Decimal</tt> is to be divided.
-   * @param dc
-   *          the context to use.
-   * @return <tt>this / divisor</tt>
-   * @throws ArithmeticException
-   *           if <tt>divisor</tt> is zero, or if the <tt>roundingMode</tt>
-   *           is <tt>RoundingMode.UNNECESSARY</tt> and the specified
-   *           scale is insufficient to represent the result of the division
-   *           exactly.
-   */
-  public Decimal divide(Decimal divisor, DecimalContext dc) {
-    return divide(divisor, dc.decimalDigits, dc.roundingMode);
-  }
-
   public Decimal divide(Decimal divisor, int decimalDigits) {
     return divide(divisor, decimalDigits, RoundingMode.HALF_EVEN);
   }
 
-
-  /**
-   * Returns a <code>Decimal</code> whose value is <code>this / divisor</code>,
-   * with rounding according to the context settings.
-   * 
-   * @param divisor
-   *          The integer value that is the right hand side of the division.
-   * @param dc
-   *          the context to use.
-   * @return <tt>this / divisor</tt>
-   * @throws ArithmeticException
-   *           if <tt>divisor</tt> is zero, or if the <tt>roundingMode</tt>
-   *           is <tt>RoundingMode.UNNECESSARY</tt> and the specified
-   *           scale is insufficient to represent the result of the division
-   *           exactly.
-   */
-  public Decimal divide(long divisor, DecimalContext dc) {
-    return divide(value, scale, divisor, dc.decimalDigits, dc.roundingMode);
-  }
 
   public Decimal divide(long divisor, RoundingMode rm) {
     return divide(value, scale, divisor, scale, rm);
@@ -853,8 +818,7 @@ public class Decimal extends Number implements Comparable<Decimal> {
    *           scale is insufficient to represent the result of the division
    *           exactly.
    */
-  public Decimal divide(long divisor, int decimalDigits,
-      RoundingMode roundingMode) {
+  public Decimal divide(long divisor, int decimalDigits, RoundingMode roundingMode) {
     return divide(value, scale, divisor, decimalDigits, roundingMode);
   }
   
@@ -1095,6 +1059,16 @@ public class Decimal extends Number implements Comparable<Decimal> {
   }
 
   /**
+   * Tests if this Decimal is positive or not.
+   * 
+   * @return <code>true</code> if this Decimal is positive, or <code>false</code>
+   *         otherwise.
+   */
+  public boolean isPositive() {
+    return value > 0;
+  }
+
+  /**
    * Tests if this Decimal is negative or not.
    * 
    * @return <code>true</code> if this Decimal is negative, or <code>false</code>
@@ -1167,15 +1141,21 @@ public class Decimal extends Number implements Comparable<Decimal> {
    *          The <code>DecimalContext</code> settings.
    * @return <code>this</code>, scaled and rounded as necessary.
    */
-  public Decimal round(DecimalContext dc) {
-    if (scale <= dc.decimalDigits) {
+  public Decimal round(int decimalDigits, RoundingMode roundingMode) {
+    if (scale <= decimalDigits) {
       // No rounding necessary, so return the same object
       return this;
     } else {
-      return new Decimal(dc.adjustValue(value, scale), dc.decimalDigits);
+      return new Decimal(DecimalContext.adjustValue(value, scale, decimalDigits, roundingMode), decimalDigits);
     }
   }
+  
+  
+  public Decimal round(int decimalDigits) {
+    return round(decimalDigits, RoundingMode.HALF_EVEN);
+  }
 
+  
   /**
    * Converts this <code>Decimal</code> to a <code>double</code>. If the
    * <code>Decimal</code> is out of the possible range for a <code>double</code>
@@ -1419,10 +1399,10 @@ public class Decimal extends Number implements Comparable<Decimal> {
     return new Decimal(value, scale - n);
   }
 
+  
   public Decimal movePointRight(int n, DecimalContext context) {
     if (n < 0) {
-      return new Decimal(context.adjustValue(value, scale - n),
-          context.decimalDigits);
+      return new Decimal(context.adjustValue(value, scale - n), context.decimalDigits);
     } else {
       return new Decimal(value, scale - n);
     }
@@ -1524,13 +1504,18 @@ public class Decimal extends Number implements Comparable<Decimal> {
   }
   
   
-  public Decimal uplift (Decimal factor, DecimalContext dc) {
-    return this.divide(factor.add(Decimal.ONE), dc).subtract(this);
+  public Decimal uplift (Decimal factor, int decimalDigits, RoundingMode roundingMode) {
+    return this.divide(factor.add(Decimal.ONE), decimalDigits, roundingMode).subtract(this);
   }
   
   
-  public Decimal upliftedBase (Decimal factor, DecimalContext dc) {
-    return this.divide(factor.add(Decimal.ONE), dc);
+  public Decimal uplift (Decimal factor, int decimalDigits) {
+    return this.divide(factor.add(Decimal.ONE), decimalDigits).subtract(this);
+  }
+  
+  
+  public Decimal upliftedBase (Decimal factor, int decimalDigits, RoundingMode roundingMode) {
+    return this.divide(factor.add(Decimal.ONE), decimalDigits, roundingMode);
   }
   
   

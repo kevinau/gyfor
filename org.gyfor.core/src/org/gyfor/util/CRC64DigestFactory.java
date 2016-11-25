@@ -1,13 +1,15 @@
 package org.gyfor.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.net.URL;
 import java.nio.file.Path;
 
-public class CRC64HashFactory implements HashFactory {
+public class CRC64DigestFactory implements DigestFactory {
 
   /*
    * ECMA: 0x42F0E1EBA9EA3693 / 0xC96C5795D7870F42 / 0xA17870F5D4F51B49
@@ -68,8 +70,8 @@ public class CRC64HashFactory implements HashFactory {
   
   
   @Override
-  public Hash getFileDigest (Path path) {
-    try (FileInputStream fis = new FileInputStream(path.toFile())) {
+  public Digest getFileDigest (File file) {
+    try (FileInputStream fis = new FileInputStream(file)) {
       return getInputStreamDigest(fis);
     } catch (FileNotFoundException ex) {
       throw new RuntimeException(ex);
@@ -80,7 +82,23 @@ public class CRC64HashFactory implements HashFactory {
 
 
   @Override
-  public Hash getInputStreamDigest (InputStream fis) {
+  public Digest getFileDigest (Path path) {
+    return getFileDigest(path.toFile());
+  }
+
+
+  @Override
+  public Digest getFileDigest (URL url) {
+    try {
+      return getInputStreamDigest(url.openStream());
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
+
+
+  @Override
+  public Digest getInputStreamDigest (InputStream fis) {
     try {
       long checksum = 0L;
       byte[] dataBytes = new byte[4096];
@@ -93,17 +111,16 @@ public class CRC64HashFactory implements HashFactory {
         }
         n = fis.read(dataBytes);
       }
-      fis.reset();
-      return new CRC64Hash(checksum);
+      return new CRC64Digest(checksum);
     } catch (IOException ex) {
       throw new UncheckedIOException(ex);
     }
   }
 
 
-@Override
-public Hash getObjectDigest(Object obj) {
-  throw new RuntimeException("Method not implemented");
-}
+  @Override
+  public Digest getObjectDigest(Object obj) {
+    throw new RuntimeException("Method not implemented");
+  }
 
 }

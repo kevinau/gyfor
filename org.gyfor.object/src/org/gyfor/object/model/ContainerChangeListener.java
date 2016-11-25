@@ -8,7 +8,7 @@ import org.gyfor.object.model.NodeModel;
  * @author Kevin Holloway
  * 
  */
-public interface ModelChangeListener extends EventListener {
+public interface ContainerChangeListener extends EventListener {
 
   /**
    * A node has been added to an container node.

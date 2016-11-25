@@ -2,6 +2,7 @@ package org.gyfor.object.model;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.gyfor.object.UserEntryException;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
@@ -14,31 +15,101 @@ public class RootModel {
 
   private AtomicInteger idSource = new AtomicInteger(1);
   
-  private FastAccessList<ModelChangeListener> modelChangeListenerList = new FastAccessList<>(ModelChangeListener.class);
+  private final FastAccessList<ContainerChangeListener> containerChangeListenerList = new FastAccessList<>(ContainerChangeListener.class);
+  private final FastAccessList<EffectiveModeListener> effectiveModeListenerList = new FastAccessList<>(EffectiveModeListener.class);
+  private final FastAccessList<ItemEventListener> itemEventListenerList = new FastAccessList<>(ItemEventListener.class);
 
   
   public RootModel () {
   }
   
   
-  public void addStructureChangeListener(ModelChangeListener x) {
-    modelChangeListenerList.add(x);
+  public void addContainerChangeListener(ContainerChangeListener x) {
+    containerChangeListenerList.add(x);
   }
   
-  protected void fireChildAdded(NodeModel parent, NodeModel node) {
-    for (ModelChangeListener listener : modelChangeListenerList) {
+  
+  public void removeContainerChangeListener(ContainerChangeListener x) {
+    containerChangeListenerList.remove(x);
+  }
+  
+  
+  public void addEffectiveModeListener(EffectiveModeListener x) {
+    effectiveModeListenerList.add(x);
+  }
+  
+  
+  public void removeEffectiveModeListener(EffectiveModeListener x) {
+    effectiveModeListenerList.remove(x);
+  }
+  
+  
+  public void addItemEventListener(ItemEventListener x) {
+    itemEventListenerList.add(x);
+  }
+  
+  
+  public void removeItemEventListener(ItemEventListener x) {
+    itemEventListenerList.remove(x);
+  }
+  
+  
+  void fireChildAdded(ContainerModel parent, NodeModel node) {
+    for (ContainerChangeListener listener : containerChangeListenerList) {
       listener.childAdded(parent, node);
     }
   }
 
 
-  protected void fireChildRemoved(NodeModel parent, NodeModel node) {
-    for (ModelChangeListener listener : modelChangeListenerList) {
+  void fireChildRemoved(ContainerModel parent, NodeModel node) {
+    for (ContainerChangeListener listener : containerChangeListenerList) {
       listener.childRemoved(parent, node);
     }
   }
 
   
+  void fireCompareEqualityChange(ItemModel model) {
+    for (ItemEventListener listener : itemEventListenerList) {
+      listener.compareEqualityChange(model);
+    }
+  }
+
+
+  void fireCompareSourceChange(ItemModel model, boolean isDataTrigger) {
+    for (ItemEventListener listener : itemEventListenerList) {
+      listener.compareSourceChange(model, isDataTrigger);
+    }
+  }
+
+
+  void fireComparisonBasisChange(ItemModel model) {
+    for (ItemEventListener listener : itemEventListenerList) {
+      listener.comparisonBasisChange(model);
+    }
+  }
+
+
+  void fireErrorNoted(ItemModel model, UserEntryException ex) {
+    for (ItemEventListener listener : itemEventListenerList) {
+      listener.errorNoted(model, ex);
+    }
+  }
+
+
+  void fireErrorCleared(ItemModel model) {
+    for (ItemEventListener listener : itemEventListenerList) {
+      listener.errorCleared(model);
+    }
+  }
+
+
+  void fireErrorCleared(NodeModel model) {
+    for (EffectiveModeListener listener : effectiveModeListenerList) {
+      listener.modeChange(model);
+    }
+  }
+
+
   public int nextId() {
     return idSource.getAndIncrement();
   }
@@ -175,5 +246,6 @@ public class RootModel {
   public String toString () {
     return "RootModel()";
   }
+
 
 }

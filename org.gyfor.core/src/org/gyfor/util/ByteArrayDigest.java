@@ -3,7 +3,7 @@ package org.gyfor.util;
 import java.io.Serializable;
 
 
-public class ByteArrayHash implements Comparable<Hash>, Serializable, Hash {
+public class ByteArrayDigest implements Comparable<Digest>, Serializable, Digest {
 
   private static final long serialVersionUID = 1L;
 
@@ -16,7 +16,7 @@ public class ByteArrayHash implements Comparable<Hash>, Serializable, Hash {
   private final byte[] value;
   
   
-  public ByteArrayHash (byte[] value) {
+  public ByteArrayDigest (byte[] value) {
     this.value = value;
   }
 
@@ -38,7 +38,7 @@ public class ByteArrayHash implements Comparable<Hash>, Serializable, Hash {
   }
   
   
-  public ByteArrayHash (String s) {
+  public ByteArrayDigest (String s) {
     value = new byte[16];
     int j = 0;
     int i = 0;
@@ -68,7 +68,7 @@ public class ByteArrayHash implements Comparable<Hash>, Serializable, Hash {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    ByteArrayHash other = (ByteArrayHash)obj;
+    ByteArrayDigest other = (ByteArrayDigest)obj;
     for (int i = 0; i < value.length; i++) {
       if (value[i] != other.value[i]) {
         return false;
@@ -105,8 +105,8 @@ public class ByteArrayHash implements Comparable<Hash>, Serializable, Hash {
 
 
   @Override
-  public int compareTo(Hash other) {
-    byte[] value2 = ((ByteArrayHash)other).value;
+  public int compareTo(Digest other) {
+    byte[] value2 = ((ByteArrayDigest)other).value;
     int n = 0;
     for (int i = 0; i < value.length; i++) {
       n = (int)(value[i] & 0xff) - (int)(value2[i] & 0xff);

@@ -8,7 +8,7 @@ import org.gyfor.object.Optional;
 import org.gyfor.object.context.PlanFactory;
 import org.gyfor.object.model.EntityModel;
 import org.gyfor.object.model.ItemModel;
-import org.gyfor.object.model.ModelChangeListener;
+import org.gyfor.object.model.ContainerChangeListener;
 import org.gyfor.object.model.NodeModel;
 import org.gyfor.object.model.RootModel;
 import org.gyfor.object.plan.IEntityPlan;
@@ -98,7 +98,7 @@ public class SimpleEntityTest {
   @Test
   public void testEntityModel () {
     RootModel root = new RootModel();
-    root.addStructureChangeListener(new ModelChangeListener() {
+    root.addStructureChangeListener(new ContainerChangeListener() {
 
       @Override
       public void childAdded(NodeModel parent, NodeModel node) {

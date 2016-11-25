@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" configuration-policy="optional" name="org.gyfor.docstore.impl.DocumentStore">
+   <service>
+      <provide interface="org.gyfor.docstore.IDocumentStore"/>
+   </service>
+   <reference bind="setDataStore" cardinality="1..1" interface="org.gyfor.berkeleydb.DataStore" name="DataStore" policy="static" unbind="unsetDataStore"/>
+   <implementation class="org.gyfor.docstore.impl.DocumentStore"/>
+</scr:component>

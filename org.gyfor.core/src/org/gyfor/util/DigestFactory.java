@@ -1,14 +1,20 @@
 package org.gyfor.util;
 
+import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Path;
 
-public interface HashFactory {
+public interface DigestFactory {
   
-  public Hash getFileDigest (Path path);
+  public Digest getFileDigest (File file);
   
-  public Hash getInputStreamDigest (InputStream fis);
+  public Digest getFileDigest (Path path);
   
-  public Hash getObjectDigest (Object obj);
+  public Digest getFileDigest (URL url);
+  
+  public Digest getInputStreamDigest (InputStream fis);
+  
+  public Digest getObjectDigest (Object obj);
 
 }

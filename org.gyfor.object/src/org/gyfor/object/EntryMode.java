@@ -35,7 +35,12 @@ public enum EntryMode {
   /**
    * Normal data entry. The user may view and enter a field value.
    */
-  ENTRY,
+  ENABLED,
+
+  /**
+   * Normal data entry, but disabled. 
+   */
+  DISABLED,
 
   /**
    * Normal field display. The user may view the field value but cannot change

@@ -1,9 +1,9 @@
 package org.gyfor.object.model;
 
-import org.gyfor.object.model.ModelChangeListener;
+import org.gyfor.object.model.ContainerChangeListener;
 import org.gyfor.object.model.NodeModel;
 
-public class ModelChangeAdapter implements ModelChangeListener {
+public class ContainerChangeAdapter implements ContainerChangeListener {
 
   @Override
   public void childAdded(NodeModel parent, NodeModel node) {

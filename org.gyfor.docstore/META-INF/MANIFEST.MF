@@ -1,0 +1,30 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: gyfor - document store
+Bundle-SymbolicName: org.gyfor.docstore
+Bundle-Version: 1.0.0
+Bundle-Vendor: Kevin Holloway
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.sleepycat.persist,
+ com.sleepycat.persist.model,
+ org.gyfor.berkeleydb,
+ org.gyfor.math,
+ org.gyfor.nio,
+ org.gyfor.osgi,
+ org.gyfor.util,
+ org.osgi.framework;version="1.8.0",
+ org.osgi.service.component;version="1.2.0",
+ org.slf4j;version="1.7.21"
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: lib/com.objectplanet.image.PngEncoder.jar,
+ lib/pdfbox-2.0.0-RC2.jar,
+ lib/stax2-api-4.0.0.jar,
+ lib/commons-logging-1.2.jar,
+ lib/fontbox-2.0.0-RC2.jar,
+ lib/woodstox-core-5.0.2.jar,
+ .
+Service-Component: OSGI-INF/org.gyfor.docstore.parser.impl.PDFBoxPDFParser.xml,
+ OSGI-INF/org.gyfor.docstore.impl.DocumentStore.xml,
+ OSGI-INF/org.gyfor.docstore.parser.impl.TesseractImageOCR.xml
+Export-Package: org.gyfor.docstore,
+ org.gyfor.docstore.impl

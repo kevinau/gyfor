@@ -1,16 +1,18 @@
 package org.gyfor.util;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class ByteArrayHashFactory implements HashFactory {
+public class ByteArrayDigestFactory implements DigestFactory {
 
   private final String algorithm;
   
@@ -59,13 +61,29 @@ public class ByteArrayHashFactory implements HashFactory {
   }
   
   
-  protected ByteArrayHashFactory (String algorithm) {
+  protected ByteArrayDigestFactory (String algorithm) {
     this.algorithm = algorithm;
   }
   
   
   @Override
-  public Hash getFileDigest (Path path) {
+  public Digest getFileDigest (File file) {
+    return getFileDigest(file.toPath());
+  }
+  
+  
+  @Override
+  public Digest getFileDigest (URL url) {
+    try {
+      return getInputStreamDigest(url.openStream());
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
+  
+  
+  @Override
+  public Digest getFileDigest (Path path) {
     try {
       MessageDigest md = MessageDigest.getInstance(algorithm);
       InputStream fis = Files.newInputStream(path);
@@ -76,7 +94,7 @@ public class ByteArrayHashFactory implements HashFactory {
         n = fis.read(dataBytes);
       }
       fis.close();
-      return new ByteArrayHash(md.digest());
+      return new ByteArrayDigest(md.digest());
     } catch (NoSuchAlgorithmException ex) {
       throw new RuntimeException(ex);
     } catch (FileNotFoundException ex) {
@@ -88,7 +106,7 @@ public class ByteArrayHashFactory implements HashFactory {
   
 
   @Override
-  public Hash getInputStreamDigest (InputStream fis) {
+  public Digest getInputStreamDigest (InputStream fis) {
     try {
       MessageDigest md = MessageDigest.getInstance(algorithm);
       byte[] dataBytes = new byte[1024];
@@ -98,7 +116,7 @@ public class ByteArrayHashFactory implements HashFactory {
         n = fis.read(dataBytes);
       }
       fis.reset();
-      return new ByteArrayHash(md.digest());
+      return new ByteArrayDigest(md.digest());
     } catch (NoSuchAlgorithmException ex) {
       throw new RuntimeException(ex);
     } catch (FileNotFoundException ex) {
@@ -110,7 +128,7 @@ public class ByteArrayHashFactory implements HashFactory {
   
 
   @Override
-  public Hash getObjectDigest (Object obj) {
+  public Digest getObjectDigest (Object obj) {
     DigestOutputStream dos = new DigestOutputStream(algorithm);
     dos.reset();
     try (
@@ -120,7 +138,7 @@ public class ByteArrayHashFactory implements HashFactory {
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
-    return new ByteArrayHash(dos.getDigest());
+    return new ByteArrayDigest(dos.getDigest());
   }
 
 
