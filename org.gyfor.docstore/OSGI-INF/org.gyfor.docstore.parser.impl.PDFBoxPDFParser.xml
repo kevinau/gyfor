@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" configuration-policy="ignore" name="org.gyfor.docstore.parser.impl.PDFBoxPDFParser">
-   <service>
-      <provide interface="org.gyfor.docstore.parser.IPDFParser"/>
-   </service>
-   <reference bind="setImageParser" cardinality="1..1" interface="org.gyfor.docstore.parser.IImageParser" name="ImageParser" policy="static" unbind="unsetImageParser"/>
-   <implementation class="org.gyfor.docstore.parser.impl.PDFBoxPDFParser"/>
-</scr:component>

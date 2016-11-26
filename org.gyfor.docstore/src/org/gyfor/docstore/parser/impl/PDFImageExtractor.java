@@ -33,9 +33,9 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.state.PDGraphicsState;
 import org.apache.pdfbox.util.Matrix;
+import org.gyfor.docstore.DocumentContents;
 import org.gyfor.docstore.IDocumentContents;
 import org.gyfor.docstore.parser.IImageParser;
-import org.gyfor.util.Digest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,15 +107,15 @@ final class PDFImageExtractor {
   
   private class ImageGraphicsEngine extends PDFGraphicsStreamEngine {
     private final int pageIndex;
-    private final Digest digest;
+    private final String id;
     private IDocumentContents pageContents;
     private int imageIndex = 0;
     
-    protected ImageGraphicsEngine(PDPage page, int pageIndex, Digest digest) throws IOException {
+    protected ImageGraphicsEngine(PDPage page, int pageIndex, String id) throws IOException {
       super(page);
       this.pageContents = new DocumentContents();
       this.pageIndex = pageIndex;
-      this.digest = digest;
+      this.id = id;
     }
 
     public void run() throws IOException {
@@ -133,7 +133,7 @@ final class PDFImageExtractor {
         seen.add(xobject.getCOSStream());
       }
 
-      logger.info("Extracting image {} from page {} of: {}", imageIndex, pageIndex, digest);
+      logger.info("Extracting image {} from page {} of: {}", imageIndex, pageIndex, id);
       int imageWidth = pdImage.getWidth();
       int imageHeight = pdImage.getHeight();
       if (imageWidth > 1 && imageHeight > 1) {
@@ -142,9 +142,9 @@ final class PDFImageExtractor {
         Matrix gm = gs.getCurrentTransformationMatrix();
      
         BufferedImage image = pdImage.getImage();
-        Path ocrImagePath = OCRPaths.getOCRImagePath(digest, pageIndex, imageIndex);
+        Path ocrImagePath = OCRPaths.getOCRImagePath(id, pageIndex, imageIndex);
         ImageIO.writeImage(image, ocrImagePath);
-        IDocumentContents imageContents = imageParser.parse(digest, ocrImagePath);
+        IDocumentContents imageContents = imageParser.parse(id, ocrImagePath);
         float pageWidth = gm.getScaleX() + gm.getTranslateX();
         
         // Scale the image down to page width (at 72dpi), and then scale to the dpi we want.

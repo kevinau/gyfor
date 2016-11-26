@@ -8,7 +8,6 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.gyfor.docstore.IDocumentStore;
-import org.gyfor.util.Digest;
 
 public class PDFToImage {
 
@@ -16,7 +15,7 @@ public class PDFToImage {
   }
 
   
-  public static void buildImageFile (Digest digest, Path pdfPath, int dpi, String password, IDocumentStore docStore) {
+  public static void buildImageFile (String id, Path pdfPath, int dpi, String password, IDocumentStore docStore) {
     
     try (PDDocument document = PDDocument.load(pdfPath.toFile(), password)) {
       ImageType imageType = ImageType.RGB;
@@ -39,7 +38,7 @@ public class PDFToImage {
 //      }
       
       // Save the image
-      Path imagePath = docStore.getViewImagePath(digest, ".pdf");
+      Path imagePath = docStore.getViewImagePath(id, ".pdf");
       ImageIO.writeImage(singleImage, imagePath);
       document.close();
     } catch (IOException ex) {
@@ -48,13 +47,13 @@ public class PDFToImage {
   }
 
   
-  public static void buildImageFile (Digest digest, Path pdfFile, int dpi, IDocumentStore docStore) {
-    buildImageFile (digest, pdfFile, dpi, "", docStore);
+  public static void buildImageFile (String id, Path pdfFile, int dpi, IDocumentStore docStore) {
+    buildImageFile (id, pdfFile, dpi, "", docStore);
   }
   
 
-  public static void buildImageFile (Digest digest, Path pdfFile, IDocumentStore docStore) {
-    buildImageFile (digest, pdfFile, 150, "", docStore);
+  public static void buildImageFile (String id, Path pdfFile, IDocumentStore docStore) {
+    buildImageFile (id, pdfFile, 150, "", docStore);
   }
   
 

@@ -11,7 +11,8 @@ import org.gyfor.http.api.Resource;
 import org.gyfor.object.plan.EntityLabelGroup;
 import org.gyfor.object.plan.ILabelGroup;
 import org.gyfor.pebble.ITemplate;
-import org.gyfor.pebble.TemplateEngine;
+import org.gyfor.pebble.ITemplateEngine;
+import org.gyfor.pebble.impl.TemplateEngine;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -28,7 +29,7 @@ import io.undertow.util.Headers;
 @Component(immediate = true, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class EntityEditPage implements HttpHandler {
 
-  private TemplateEngine templateEngine;
+  private ITemplateEngine templateEngine;
   
   
   @Activate
@@ -50,7 +51,7 @@ public class EntityEditPage implements HttpHandler {
     }
     String entityName = exchange.getRelativePath();
     if (entityName == null || entityName.length() == 0) {
-      HttpUtility.endWithStatus(exchange, 500, "Entity name not specified as part of request");
+      HttpUtility.endWithStatus(exchange, 400, "Entity name not specified as part of request");
       return;
     }
     entityName = entityName.substring(1);

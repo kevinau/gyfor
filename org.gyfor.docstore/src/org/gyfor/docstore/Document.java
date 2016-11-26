@@ -3,8 +3,6 @@ package org.gyfor.docstore;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.gyfor.docstore.impl.DocumentContents;
-
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.Relationship;
@@ -16,7 +14,7 @@ public class Document implements Serializable {
   private static final long serialVersionUID = 2L;
 
   @PrimaryKey
-  private long crc64;
+  private String id;
   
   private Date originTime;
   
@@ -35,18 +33,18 @@ public class Document implements Serializable {
   }
 
 
-  public Document(long crc64, Date originTime, String originName, String originExtension) {
-    this.crc64 = crc64;
+  public Document(String id, Date originTime, String originName, String originExtension, IDocumentContents contents) {
+    this.id = id;
     this.originTime = originTime;
     this.originName = originName;
     this.originExtension = originExtension;
     this.importTime = new Date();
-    this.contents = new DocumentContents();
+    this.contents = contents;
   }
 
   
-  public long getDigest () {
-    return crc64;
+  public String getId () {
+    return id;
   }
   
   
@@ -54,10 +52,15 @@ public class Document implements Serializable {
     return originExtension;
   }
   
+  
+  public IDocumentContents getContents () {
+    return contents;
+  }
+  
 
   @Override
   public String toString() {
-    return "Document[" + getDigest() + ", " + originName + ", " + originExtension + ", " + originTime + "]";
+    return "Document[" + id + ", " + originName + ", " + originExtension + ", " + originTime + "]";
   }
   
 }

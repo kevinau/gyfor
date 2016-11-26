@@ -23,8 +23,6 @@ Bundle-ClassPath: lib/com.objectplanet.image.PngEncoder.jar,
  lib/fontbox-2.0.0-RC2.jar,
  lib/woodstox-core-5.0.2.jar,
  .
-Service-Component: OSGI-INF/org.gyfor.docstore.parser.impl.PDFBoxPDFParser.xml,
- OSGI-INF/org.gyfor.docstore.impl.DocumentStore.xml,
- OSGI-INF/org.gyfor.docstore.parser.impl.TesseractImageOCR.xml
-Export-Package: org.gyfor.docstore,
- org.gyfor.docstore.impl
+Service-Component: OSGI-INF/org.gyfor.docstore.parser.impl.TesseractImageOCR.xml,
+ OSGI-INF/org.gyfor.docstore.DocumentStore.xml
+Export-Package: org.gyfor.docstore

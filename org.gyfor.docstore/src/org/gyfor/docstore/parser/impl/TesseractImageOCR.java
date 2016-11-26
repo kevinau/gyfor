@@ -16,9 +16,9 @@ import org.codehaus.stax2.XMLInputFactory2;
 import org.gyfor.docstore.parser.IImageParser;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.gyfor.docstore.DocumentContents;
 import org.gyfor.docstore.IDocumentContents;
-import org.gyfor.docstore.impl.DocumentContents;
-import org.gyfor.docstore.impl.PartialSegment;
+import org.gyfor.docstore.PartialSegment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,9 +112,9 @@ public class TesseractImageOCR implements IImageParser {
 
     Path ocrBase = OCRPaths.getBasePath(id);
 
-    String tesseractHome = System.getProperty("tesseract.home");
+    String tesseractHome = System.getenv("TESSDATA_PREFIX");
     if (tesseractHome == null) {
-      throw new RuntimeException("System property 'tesseract.home' not set");
+      throw new RuntimeException("Environment variable 'TESSDATA_PREFIX' not set");
     }
     String[] cmd = { tesseractHome + "/tesseract", imagePath.toString(), ocrBase.toString(), "hocr" };
     //logger.info("Starting Tesseract OCR: " + cmd[0] + "|" + cmd[1] + "|" + cmd[2] + "|" + cmd[3]);
@@ -137,7 +137,7 @@ public class TesseractImageOCR implements IImageParser {
     }
 
     // Now do something with the lines extracted by Tesseract
-    Path hocrFile = OCRPaths.getHTMLPath(id);
+    Path hocrFile = OCRPaths.getHocrPath(id);
     logger.info("Starting parse of html file from OCR: " + hocrFile);
     IDocumentContents docInstance = readOCRResults(hocrFile);
     

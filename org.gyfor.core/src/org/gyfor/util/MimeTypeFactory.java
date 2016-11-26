@@ -1,8 +1,5 @@
 package org.gyfor.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MimeTypeFactory {
 
   private static MimeType pdf = new MimeType("application/pdf", ".pdf");

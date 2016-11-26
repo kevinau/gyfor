@@ -16,5 +16,7 @@ Import-Package: com.mitchellbosecke.pebble,
  com.mitchellbosecke.pebble.parser,
  com.mitchellbosecke.pebble.template,
  com.mitchellbosecke.pebble.tokenParser,
+ org.gyfor.gobal,
  org.osgi.framework;version="1.8.0",
  org.slf4j;version="1.7.21"
+Service-Component: OSGI-INF/org.gyfor.pebble.impl.TemplateEngineFactory.xml

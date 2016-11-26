@@ -11,6 +11,7 @@ import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.gyfor.docstore.parser.IImageParser;
 import org.gyfor.docstore.parser.IPDFParser;
+import org.gyfor.util.Digest;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -19,28 +20,22 @@ import org.gyfor.docstore.IDocumentStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
+
 public class PDFBoxPDFParser implements IPDFParser {
 
   private static Logger logger = LoggerFactory.getLogger(PDFBoxPDFParser.class);
 
   private IImageParser imageParser;
 
+  
   public PDFBoxPDFParser() {
   }
 
+  
   public PDFBoxPDFParser(IImageParser imageParser) {
     this.imageParser = imageParser;
   }
 
-  @Reference
-  public void setImageParser(IImageParser imageParser) {
-    this.imageParser = imageParser;
-  }
-
-  public void unsetImageParser(IImageParser imageParser) {
-    this.imageParser = null;
-  }
 
   private IDocumentContents extractImages(PDDocument document, int dpi, String id, Path pdfPath, boolean keepOCRImageFile, IDocumentContents docContents)
       throws IOException {
@@ -51,9 +46,9 @@ public class PDFBoxPDFParser implements IPDFParser {
     return docContents;
   }
 
+  
   @Override
   public IDocumentContents parse(String id, Path pdfPath, int dpi, IDocumentStore docStore) {
-    System.out.println("--------------------------------------- " + pdfPath);
     PDDocument pdDocument = null;
     try {
       InputStream input = Files.newInputStream(pdfPath);
@@ -84,7 +79,7 @@ public class PDFBoxPDFParser implements IPDFParser {
         BufferedImage image = renderer.renderImageWithDPI(i, dpi, ImageType.RGB);
         combinedImage = ImageIO.appendImage(combinedImage, image);
       }
-      Path imageFile = docStore.getViewImagePath(id);
+      Path imageFile = docStore.getViewImagePath(id, ".png");
       ImageIO.writeImage(combinedImage, imageFile);
 
       return docContents;

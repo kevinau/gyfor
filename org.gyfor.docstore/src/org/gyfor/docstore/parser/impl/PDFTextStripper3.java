@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
-import org.gyfor.docstore.impl.DocumentContents;
-import org.gyfor.docstore.impl.PartialSegment;
+import org.gyfor.docstore.DocumentContents;
+import org.gyfor.docstore.PartialSegment;
 
 
 class PDFTextStripper3 extends PDFTextStripper {
