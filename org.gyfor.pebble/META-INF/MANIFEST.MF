@@ -4,7 +4,6 @@ Bundle-Name: gyfor - Pebble template support
 Bundle-SymbolicName: org.gyfor.pebble
 Bundle-Version: 1.0.0
 Export-Package: org.gyfor.pebble
-Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.mitchellbosecke.pebble,
  com.mitchellbosecke.pebble.error,
@@ -19,4 +18,6 @@ Import-Package: com.mitchellbosecke.pebble,
  org.gyfor.gobal,
  org.osgi.framework;version="1.8.0",
  org.slf4j;version="1.7.21"
-Service-Component: OSGI-INF/org.gyfor.pebble.impl.TemplateEngineFactory.xml
+Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/org.gyfor.pebble.impl.GlobalContext.xml,
+ OSGI-INF/org.gyfor.pebble.impl.TemplateEngineFactory.xml

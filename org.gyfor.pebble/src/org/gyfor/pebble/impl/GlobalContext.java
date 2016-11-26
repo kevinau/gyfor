@@ -1,6 +1,6 @@
-package org.gyfor.gobal.impl;
+package org.gyfor.pebble.impl;
 
-import org.gyfor.gobal.IGlobalContext;
+import org.gyfor.pebble.IGlobalContext;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;

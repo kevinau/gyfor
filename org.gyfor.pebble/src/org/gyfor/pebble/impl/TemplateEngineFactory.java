@@ -1,6 +1,6 @@
 package org.gyfor.pebble.impl;
 
-import org.gyfor.gobal.IGlobalContext;
+import org.gyfor.pebble.IGlobalContext;
 import org.gyfor.pebble.ITemplateEngine;
 import org.gyfor.pebble.ITemplateEngineFactory;
 import org.osgi.framework.BundleContext;
