@@ -1,14 +1,8 @@
-<!doctype html>
-
-<html>
-  <head>
-    <title>About PennyLedger</title>
-    <link href="{{context}}/resources/about.css" rel="stylesheet">
-  </head>
-  <body>
+{% extends "page" %}
+{% block title %}About PennyLedger{% endblock %}
+{% block body %}
     <h1>About PennyLedger</h1>
     <p>PennyLedger was written by Kevin Holloway (kholloway@geckosoftware.com.au)</p>
     <p>Hello there!</p>
     <p>Document base: {{context}}</p>
-  </body>
-</html>
+{% endblock %}

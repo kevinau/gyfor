@@ -25,7 +25,7 @@ import io.undertow.util.Headers;
 
 
 @Context("/entity")
-@Resource(path = "/resources", base = "resources")
+@Resource(path = "/resources", location = "resources")
 @Component(immediate = true, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class EntityEditPage implements HttpHandler {
 

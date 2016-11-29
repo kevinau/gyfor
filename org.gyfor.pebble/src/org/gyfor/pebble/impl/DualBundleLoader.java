@@ -6,8 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,26 +23,26 @@ import com.mitchellbosecke.pebble.error.LoaderException;
 import com.mitchellbosecke.pebble.loader.Loader;
 
 
-public class DualBundleContextLoader implements Loader<String> {
+public class DualBundleLoader implements Loader<String> {
 
-  private Logger logger = LoggerFactory.getLogger(DualBundleContextLoader.class);
+  private Logger logger = LoggerFactory.getLogger(DualBundleLoader.class);
 
-  private final BundleContext globalBundleContext;
   private final BundleContext primaryBundleContext;
-
+  private final Path globalTemplatePath;
+  
   private final String prefixDir = "/templates";
   private final String suffix = ".html";
 
   private String charset = StandardCharsets.UTF_8.name();
 
 
-  public DualBundleContextLoader(BundleContext primaryBundleContext, BundleContext globalBundleContext) {
+  public DualBundleLoader(BundleContext primaryBundleContext, Path globalTemplatePath) {
     this.primaryBundleContext = primaryBundleContext;
-    this.globalBundleContext = globalBundleContext;
+    this.globalTemplatePath = globalTemplatePath;
   }
 
 
-  public DualBundleContextLoader(BundleContext primaryBundleContext) {
+  public DualBundleLoader(BundleContext primaryBundleContext) {
     this(primaryBundleContext, null);
   }
 
@@ -60,10 +63,9 @@ public class DualBundleContextLoader implements Loader<String> {
     bundle = primaryBundleContext.getBundle();
     templateURL = findTemplate(bundle, templateName, tried);
     
-    if (templateURL == null && globalBundleContext != null) {
-      // Look for templates in the global bundle
-      bundle = globalBundleContext.getBundle();
-      templateURL = findTemplate(bundle, templateName, tried);
+    if (templateURL == null && globalTemplatePath != null) {
+      // Look for templates in the global path
+      templateURL = findTemplate(globalTemplatePath, templateName, tried);
     }
     
     if (templateURL == null) {
@@ -95,6 +97,25 @@ public class DualBundleContextLoader implements Loader<String> {
       logger.info("Found template '" + templateName + "' in bundle: " + bundle.getSymbolicName());
     } else {
       tried.add(bundle.getSymbolicName() + "::" + templateName);
+    }
+    return url;
+  }
+
+
+  private URL findTemplate(Path globalTemplatePath, String baseName, List<String> tried) {
+    String templateName = prefixDir + "/" + baseName + suffix;
+    Path path = globalTemplatePath.resolve(templateName);
+    
+    URL url = null;
+    if (Files.exists(path)) {
+      try {
+        url = path.toUri().toURL();
+      } catch (MalformedURLException ex) {
+        throw new RuntimeException(ex);
+      }
+      logger.info("Found template '" + templateName + "' in: " + globalTemplatePath);
+    } else {
+      tried.add(globalTemplatePath + "::" + templateName);
     }
     return url;
   }

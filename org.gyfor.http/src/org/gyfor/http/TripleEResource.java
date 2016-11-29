@@ -8,10 +8,10 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 
-@Context("/eee")
-@Resource(path="/static", base="static")
-@Resource(extensions={".css"}, base="static")
-@Component(immediate=true)
+//Context("/eee")
+//@Resource(path="/static", location="static")
+//@Resource(extensions={".css"}, location="static")
+//@Component(immediate=true)
 public class TripleEResource implements HttpHandler {
 
   @Override

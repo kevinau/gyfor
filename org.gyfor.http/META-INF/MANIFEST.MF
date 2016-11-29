@@ -22,10 +22,8 @@ Export-Package: io.undertow.io,
  org.gyfor.http.api,
  org.xnio
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Service-Component: OSGI-INF/org.gyfor.http.TripleCWebPage.xml,
- OSGI-INF/org.gyfor.http.TripleDReource.xml,
- OSGI-INF/org.gyfor.http.TripleEResource.xml
-Bundle-ActivationPolicy: lazy
-Import-Package: org.osgi.framework;version="1.8.0",
+Import-Package: org.gyfor.util,
+ org.osgi.framework;version="1.8.0",
  org.osgi.util.tracker;version="1.5.1",
  org.slf4j
+Bundle-ActivationPolicy: lazy

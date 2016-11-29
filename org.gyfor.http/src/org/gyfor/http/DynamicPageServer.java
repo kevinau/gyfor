@@ -37,6 +37,7 @@ public class DynamicPageServer {
       }
     });
     
+    @SuppressWarnings("unused")
     PathHandler ph = pathHandler.addPrefixPath("/bbb", new HttpHandler() {
       @Override
       public void handleRequest(final HttpServerExchange exchange) throws Exception {

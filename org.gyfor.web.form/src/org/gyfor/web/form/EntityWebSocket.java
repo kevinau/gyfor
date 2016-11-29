@@ -19,7 +19,7 @@ import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
 
 
 @Context("/ws")
-@Resource(path="/resources", base="resources")
+@Resource(path="/resources", location="resources")
 @Component(service=HttpHandler.class)
 public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
 

@@ -8,9 +8,9 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 
-@Context("/ddd")
-@Resource(extensions={".js"}, base="static")
-@Component(immediate=true)
+//@Context("/ddd")
+//@Resource(extensions={".js"}, location="static")
+//@Component(immediate=true)
 public class TripleDReource implements HttpHandler {
 
   @Override

@@ -24,7 +24,7 @@ import io.undertow.util.Headers;
 
 
 @Context("/about")
-@Resource(path = "/resources", base = "resources")
+@Resource(path = "/resources", location = "resources")
 @Component(immediate = true, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class AboutServlet implements HttpHandler {
 

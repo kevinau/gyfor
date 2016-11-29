@@ -1,8 +1,6 @@
 package org.gyfor.docstore;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -16,7 +14,6 @@ import org.gyfor.berkeleydb.DataStore;
 import org.gyfor.docstore.parser.IImageParser;
 import org.gyfor.docstore.parser.IPDFParser;
 import org.gyfor.docstore.parser.impl.PDFBoxPDFParser;
-import org.gyfor.docstore.parser.impl.PDFToImage;
 import org.gyfor.docstore.parser.impl.TesseractImageOCR;
 import org.gyfor.nio.SafeOutputStream;
 import org.gyfor.osgi.ComponentConfiguration;
@@ -33,7 +30,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.objectplanet.image.PngEncoder;
 import com.sleepycat.persist.PrimaryIndex;
 import com.sleepycat.persist.SecondaryIndex;
 
@@ -288,6 +284,11 @@ public class DocumentStore implements IDocumentStore {
 //      throw new RuntimeException("Cannot build view image for " + file + ": not supported");
 //    }
 //  }
+  
+  @Override
+  public Path getBasePath () {
+    return sourceDir;
+  }
   
   
   @Override 

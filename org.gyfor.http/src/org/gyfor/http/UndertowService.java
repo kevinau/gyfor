@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.gyfor.http.api.Context;
+import org.gyfor.http.api.IDynamicResourceLocation;
 import org.gyfor.http.api.Resource;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -71,7 +72,7 @@ public class UndertowService implements BundleActivator {
   private void register(BundleContext bundleContext, ServiceReference<?> sr) {
     Object service = bundleContext.getService(sr);
     if (service == null) {
-      throw new IllegalArgumentException("Handler for dynamic web page, or static resource, is null");
+      throw new IllegalArgumentException("Handler for dynamic web page, or static resource, is null (sr = " + sr + ")");
     }
     if (!(service instanceof HttpHandler)) {
       return;
@@ -95,19 +96,31 @@ public class UndertowService implements BundleActivator {
     for (Resource resourceAnn : resourcesAnn) {
       String[] extensions = resourceAnn.extensions();
       if (extensions.length == 0) {
+        ResourceManager resourceManager;
+        
         String subPath = resourceAnn.path();
-        if (subPath.length() > 0 && !subPath.startsWith("/")) {
-          throw new IllegalArgumentException("@Resource 'path' must start with a slash (/)");
+        if (resourceAnn.dynamic()) {
+          if (IDynamicResourceLocation.class.isInstance(handler)) {
+            resourceManager = new DeferredPathResourceManager((IDynamicResourceLocation)handler);
+            log.info("Adding resource: sub-path {}, extensions {}, at {}", subPath, extensions, handler.getClass().getCanonicalName());
+          } else {
+            throw new IllegalArgumentException("A handler with @Resource(dynamic=true) must implement IDynamicResourcePath");
+          }
+        } else {
+          if (!subPath.startsWith("/")) {
+            throw new IllegalArgumentException("@Resource 'path' must start with a slash (/)");
+          }
+          String resourceLocation = resourceAnn.location();
+          log.info("Adding resource: sub-path {}, extensions {}, at {}", subPath, extensions, resourceLocation);
+          resourceManager = new BundleResourceManager(sr.getBundle(), resourceLocation);
         }
-        String locationBase = resourceAnn.base();
-        String resourceContext = context + subPath;
-        log.info("Adding resource: sub-path {}, extensions {}, based at {}", subPath, extensions, locationBase);
 
+        
+        String resourceContext = context + subPath;
         HttpHandler nextHandler = handlerSet.get(resourceContext);
         if (nextHandler == null) {
           nextHandler = PageNotFoundHandler.instance;
         }
-        ResourceManager resourceManager = new BundleResourceManager(sr.getBundle(), locationBase);
         HttpHandler resourceHandler = new ResourceHandler(resourceManager, nextHandler);
         handlerSet.put(resourceContext, resourceHandler);
       }
@@ -116,7 +129,7 @@ public class UndertowService implements BundleActivator {
       String[] extensions = resourceAnn.extensions();
       if (extensions.length > 0) {
         String subPath = resourceAnn.path();
-        String locationBase = resourceAnn.base();
+        String locationBase = resourceAnn.location();
         String resourceContext = context + subPath;
         log.info("Adding resource: sub-path {}, extensions {}, based at {}", subPath, extensions, locationBase);
 

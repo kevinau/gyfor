@@ -25,6 +25,11 @@ public @interface Resource {
   /**
    * Location of resources within the Bundle.
    */
-  String base() default "";
+  String location() default "";
+
+  /**
+   * Is the location dynamically calculated using IDynamicResourceLocation
+   */
+  boolean dynamic() default false;
 
 }

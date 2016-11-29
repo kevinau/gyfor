@@ -11,7 +11,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 
 
@@ -60,6 +59,11 @@ public class ComponentConfiguration {
                 field.setAccessible(true);
                 field.set(target, fieldValue);
               } else if (configAnn.required()) {
+                for (Enumeration<String> e = dict.keys(); e.hasMoreElements(); ) {
+                  String key = e.nextElement();
+                  Object value = dict.get(key);
+                  System.out.println(key + " = " + value);
+                }
                 throw new IllegalConfigurationException(
                     "Configuration value '" + propertyName + "' required for " + klass.getSimpleName());
               }

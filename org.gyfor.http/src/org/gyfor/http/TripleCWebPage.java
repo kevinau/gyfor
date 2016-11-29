@@ -8,8 +8,8 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 
 
-@Context("/ccc")
-@Component(immediate=true)
+//@Context("/ccc")
+//@Component(immediate=true)
 public class TripleCWebPage implements HttpHandler {
 
   @Override

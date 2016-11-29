@@ -43,4 +43,6 @@ public interface IDocumentStore {
   
   public SecondaryIndex<Date, String, Document> getImportDateIndex();
 
+  public Path getBasePath();
+
 }
