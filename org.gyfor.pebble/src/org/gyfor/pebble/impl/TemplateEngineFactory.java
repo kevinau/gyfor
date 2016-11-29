@@ -1,11 +1,13 @@
 package org.gyfor.pebble.impl;
 
-import java.nio.file.Path;
+import java.util.Enumeration;
+import java.util.Properties;
 
 import org.gyfor.osgi.ComponentConfiguration;
 import org.gyfor.osgi.Configurable;
 import org.gyfor.pebble.ITemplateEngine;
 import org.gyfor.pebble.ITemplateEngineFactory;
+import org.gyfor.value.ExistingDirectory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -18,13 +20,20 @@ import org.osgi.service.component.annotations.Deactivate;
 public class TemplateEngineFactory implements ITemplateEngineFactory {
 
   @Configurable(required = true)
-  private Path webProjectPath;
+  private ExistingDirectory webProjectPath;
   
   
   @Activate
   public void activate (ComponentContext componentContext) {
     ComponentConfiguration.load(this, componentContext);
-    System.out.println("====================== " + webProjectPath);
+    
+    Properties sysp = System.getProperties();
+    for (Enumeration<?> e = sysp.propertyNames(); e.hasMoreElements(); ) {
+      Object key = e.nextElement();
+      Object value = sysp.get(key);
+      //System.out.println("............" + key + " = " + value);
+    }
+    //System.out.println("....................................");
   }
   
   

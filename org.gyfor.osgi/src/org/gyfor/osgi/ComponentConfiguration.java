@@ -11,6 +11,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.gyfor.value.ExistingDirectory;
 import org.osgi.service.component.ComponentContext;
 
 
@@ -84,6 +85,8 @@ public class ComponentConfiguration {
     
     if (type.isEnum()) {
       value = getPropertyAsEnum(propertyValue, type);
+    } else if (ExistingDirectory.class.isAssignableFrom(type)) {
+      value = new ExistingDirectory(Paths.get(propertyValue));
     } else if (Path.class.isAssignableFrom(type)) {
       value = Paths.get(propertyValue);
     } else if (Pattern.class.isAssignableFrom(type)) {
