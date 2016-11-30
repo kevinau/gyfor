@@ -1,4 +1,4 @@
-package org.gyfor.pebble;
+package org.gyfor.template;
 
 import org.osgi.framework.BundleContext;
 

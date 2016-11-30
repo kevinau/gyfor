@@ -1,10 +1,10 @@
-package org.gyfor.pebble.impl;
+package org.gyfor.template.impl;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
-import org.gyfor.pebble.ITemplate;
+import org.gyfor.template.ITemplate;
 
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;

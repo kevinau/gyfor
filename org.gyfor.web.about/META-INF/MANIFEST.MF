@@ -14,7 +14,7 @@ Bundle-Category: pennyledger
 Import-Package: io.undertow.server,
  io.undertow.util,
  org.gyfor.http.api,
- org.gyfor.pebble,
+ org.gyfor.template,
  org.osgi.framework;version="1.8.0"
 Service-Component: OSGI-INF/org.gyfor.web.about.AboutServlet.xml
 Bundle-ActivationPolicy: lazy

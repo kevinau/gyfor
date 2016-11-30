@@ -1,4 +1,4 @@
-package org.gyfor.pebble;
+package org.gyfor.template;
 
 public interface ITemplateEngine {
 

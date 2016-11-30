@@ -1,9 +1,9 @@
-package org.gyfor.pebble.impl;
+package org.gyfor.template.impl;
 
 import java.nio.file.Path;
 
-import org.gyfor.pebble.ITemplate;
-import org.gyfor.pebble.ITemplateEngine;
+import org.gyfor.template.ITemplate;
+import org.gyfor.template.ITemplateEngine;
 import org.osgi.framework.BundleContext;
 
 import com.mitchellbosecke.pebble.PebbleEngine;
@@ -15,15 +15,15 @@ import com.mitchellbosecke.pebble.template.PebbleTemplate;
 
 public class TemplateEngine implements ITemplateEngine {
 
-  private final BundleContext primaryBundleContext;
-  private final Path globalTemplatePath;
+  private final Path templateDir;
+  private final BundleContext defaultBundleContext;
   
   private PebbleEngine engine;
   
 
-  public TemplateEngine (BundleContext primaryBundleContext, Path globalTemplatePath) {
-    this.primaryBundleContext = primaryBundleContext;
-    this.globalTemplatePath = globalTemplatePath;
+  public TemplateEngine (Path templateDir, BundleContext defaultBundleContext) {
+    this.templateDir = templateDir;
+    this.defaultBundleContext = defaultBundleContext;
   }
   
   
@@ -40,7 +40,7 @@ public class TemplateEngine implements ITemplateEngine {
           Builder builder = new PebbleEngine.Builder();
 
           // Add bundle specific loader
-          Loader<?> loader = new DualBundleLoader(primaryBundleContext, globalTemplatePath);
+          Loader<?> loader = new MultiLoader(templateDir, defaultBundleContext);
           builder.loader(loader);
 
           // Build the Pebble engine

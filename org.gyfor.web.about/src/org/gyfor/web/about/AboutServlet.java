@@ -7,9 +7,9 @@ import java.util.Map;
 
 import org.gyfor.http.api.Context;
 import org.gyfor.http.api.Resource;
-import org.gyfor.pebble.ITemplate;
-import org.gyfor.pebble.ITemplateEngine;
-import org.gyfor.pebble.ITemplateEngineFactory;
+import org.gyfor.template.ITemplate;
+import org.gyfor.template.ITemplateEngine;
+import org.gyfor.template.ITemplateEngineFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
