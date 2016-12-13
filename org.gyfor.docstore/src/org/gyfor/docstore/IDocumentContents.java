@@ -13,7 +13,7 @@ public interface IDocumentContents {
 
   public List<? extends ISegment> getSegments();
 
-
+  
   public int size();
 
 
@@ -54,5 +54,11 @@ public interface IDocumentContents {
 
 
   public void dump();
+
+
+  public int getPageCount();
+
+
+  public void setPageCount(int pageCount);
 
 }

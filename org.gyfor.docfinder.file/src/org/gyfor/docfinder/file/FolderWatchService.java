@@ -4,7 +4,6 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent.Kind;
 import java.util.regex.Pattern;
 
-import org.gyfor.docstore.IDocumentStore;
 import org.gyfor.nio.DirectoryWatcher;
 import org.gyfor.osgi.ComponentConfiguration;
 import org.gyfor.osgi.Configurable;
@@ -15,17 +14,18 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.gyfor.docstore.IDocumentStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-@Component(service=FolderWatchService.class, configurationPolicy=ConfigurationPolicy.OPTIONAL, immediate=true)
+@Component(service=FolderWatchService.class, configurationPolicy=ConfigurationPolicy.REQUIRE, immediate=true)
 public class FolderWatchService {
 
   private final Logger logger = LoggerFactory.getLogger(FolderWatchService.class);
   
   @Configurable
-  private ExistingDirectory watchDir = new ExistingDirectory(System.getProperty("user.home"), "Scanned Stuff");
+  private ExistingDirectory watchDir;
 
   @Configurable
   private Pattern pattern = Pattern.compile(".");

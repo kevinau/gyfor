@@ -17,12 +17,15 @@ Import-Package: com.sleepycat.persist,
  org.slf4j;version="1.7.21"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/com.objectplanet.image.PngEncoder.jar,
- lib/pdfbox-2.0.0-RC2.jar,
  lib/stax2-api-4.0.0.jar,
  lib/commons-logging-1.2.jar,
- lib/fontbox-2.0.0-RC2.jar,
  lib/woodstox-core-5.0.2.jar,
+ lib/imgscalr-lib-4.2.jar,
+ lib/fontbox-2.0.3.jar,
+ lib/pdfbox-2.0.3.jar,
+ lib/preflight-2.0.3.jar,
+ lib/xmpbox-2.0.3.jar,
  .
+Export-Package: org.gyfor.docstore
 Service-Component: OSGI-INF/org.gyfor.docstore.parser.impl.TesseractImageOCR.xml,
  OSGI-INF/org.gyfor.docstore.DocumentStore.xml
-Export-Package: org.gyfor.docstore

@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Enumeration;
 
 import org.gyfor.berkeleydb.DataStore;
+import org.gyfor.docstore.Document;
 import org.gyfor.util.CRC64DigestFactory;
 import org.gyfor.util.Digest;
 import org.gyfor.util.DigestFactory;
@@ -15,7 +16,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.pennyledger.doc.UnclassifiedDocument;
 
 import com.sleepycat.persist.EntityCursor;
 import com.sleepycat.persist.PrimaryIndex;
@@ -43,7 +43,7 @@ public class DirectoryScanTest {
   public void activate (BundleContext bundleContext) {
     Bundle bundle = bundleContext.getBundle();
     
-    PrimaryIndex<String, UnclassifiedDocument> index = entityStore.getPrimaryIndex(String.class, UnclassifiedDocument.class);
+    PrimaryIndex<String, Document> index = entityStore.getPrimaryIndex(String.class, Document.class);
     
     Enumeration<URL> urls = bundle.findEntries("/docs/ASX", "*", false);
     while (urls.hasMoreElements()) {
@@ -66,15 +66,15 @@ public class DirectoryScanTest {
         originMimeType = originName.substring(n);
       }
       
-      UnclassifiedDocument undoc = new UnclassifiedDocument(hash.toString(), originDate, originName, originMimeType);
+      Document undoc = new Document(hash.toString(), originDate, originName, originMimeType, null);
       index.put(undoc);
       
       System.out.println(hash + ": " + originName + " " + originDate + " " + originMimeType);
     }
     
-    EntityCursor<UnclassifiedDocument> indexCursor = index.entities();
+    EntityCursor<Document> indexCursor = index.entities();
     try {
-      for (UnclassifiedDocument doc : indexCursor) {
+      for (Document doc : indexCursor) {
         System.out.println("=============== " + doc);
       }
     } finally {

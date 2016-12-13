@@ -13,7 +13,7 @@ import java.util.Map;
  * A map of words and associated index.
  * 
  * This class does not used ConcurrentHashMap because it is necessary to
- * synchronise the save method. ConcurrentHashMap does not allow external
+ * synchronize the save method. ConcurrentHashMap does not allow external
  * locking. In addition, the overhead of ConcurrentHashMap is not justified in
  * this case.
  * 

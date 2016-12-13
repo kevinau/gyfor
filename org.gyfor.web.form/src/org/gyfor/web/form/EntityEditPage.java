@@ -5,9 +5,9 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.gyfor.http.api.Context;
-import org.gyfor.http.api.HttpUtility;
-import org.gyfor.http.api.Resource;
+import org.gyfor.http.Context;
+import org.gyfor.http.HttpUtility;
+import org.gyfor.http.Resource;
 import org.gyfor.object.plan.EntityLabelGroup;
 import org.gyfor.object.plan.ILabelGroup;
 import org.gyfor.template.ITemplate;

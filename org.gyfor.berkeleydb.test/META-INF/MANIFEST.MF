@@ -9,6 +9,6 @@ Import-Package: com.sleepycat.persist,
  org.gyfor.berkeleydb,
  org.gyfor.util,
  org.osgi.framework;version="1.8.0",
- org.pennyledger.doc
+ org.gyfor.docstore
 Service-Component: OSGI-INF/org.gyfor.berkeleydb.test.DirectoryScanTest.xml
 Bundle-ActivationPolicy: lazy

@@ -26,6 +26,8 @@ public class PDFToImage {
       for (int i = 0; i < endPage; i++) {
         BufferedImage image = renderer.renderImageWithDPI(i, dpi, imageType);
         singleImage = ImageIO.appendImage(singleImage, image);
+        Path imagePath = docStore.newViewImagePath(id, i);
+        ImageIO.writeImage(singleImage, imagePath);
       }
       
       // Resize the image to the required dpi
@@ -37,9 +39,6 @@ public class PDFToImage {
 //            Scalr.Mode.AUTOMATIC, width, height);
 //      }
       
-      // Save the image
-      Path imagePath = docStore.getViewImagePath(id, ".pdf");
-      ImageIO.writeImage(singleImage, imagePath);
       document.close();
     } catch (IOException ex) {
       throw new RuntimeException(ex);

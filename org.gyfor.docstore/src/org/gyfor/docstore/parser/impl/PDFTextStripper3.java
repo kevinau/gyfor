@@ -33,7 +33,7 @@ class PDFTextStripper3 extends PDFTextStripper {
     float height = Float.max(posn0.getHeight(), posn1.getHeight());
     float heightAdj = (float)(height * 0.3);
     
-    PartialSegment partialSegment = new PartialSegment(x0, y0 - heightAdj, x1, y1 + heightAdj, text);
+    PartialSegment partialSegment = new PartialSegment(getCurrentPageNo() - 1, x0, y0 - heightAdj, x1, y1 + heightAdj, text);
     for (TextPosition p : textPositions) {
       partialSegment.add(new PartialSegment.Nibble(p.getX() - x0, p.getWidth(), p.getUnicode()));
     }

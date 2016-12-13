@@ -40,6 +40,7 @@ public class PartialSegment {
   
   private static Pattern titlePattern = Pattern.compile("[ ;]");
 
+  private int page;
   private float x0;
   private float y0;
   private float x1;
@@ -48,6 +49,7 @@ public class PartialSegment {
   private transient List<Nibble> nibbles;
 
   public PartialSegment(PartialSegment old, String word) {
+    this.page = old.page;
     this.x0 = old.x0;
     this.y0 = old.y0;
     this.x1 = old.x1;
@@ -58,7 +60,8 @@ public class PartialSegment {
   }
   
   
-  public PartialSegment(float x0, float y0, float x1, float y1, String word) {
+  public PartialSegment(int page, float x0, float y0, float x1, float y1, String word) {
+    this.page = page;
     this.x0 = x0;
     this.y0 = y0;
     this.x1 = x1;
@@ -68,7 +71,7 @@ public class PartialSegment {
   }
 
 
-  public PartialSegment(String title) {
+  public PartialSegment(int page, String title) {
     String[] x = titlePattern.split(title);
     x0 = Float.parseFloat(x[1]);
     y0 = Float.parseFloat(x[2]);
@@ -77,6 +80,7 @@ public class PartialSegment {
     this.word = null;
   }
 
+  
   // Next segment will have null text
   double aveCharWidth(PartialSegment nextSegment, String nextText) {
     double bboxWidths = (x1 - x0) + (nextSegment.x1 - nextSegment.x0);
@@ -108,7 +112,8 @@ public class PartialSegment {
 
   public boolean almostAdjacent(PartialSegment arg, String word) {
     double aveCharWidth = aveCharWidth(arg, word);
-    return x1 + aveCharWidth * 0.3 >= arg.x0;
+    //return x1 + aveCharWidth * 0.3 >= arg.x0;
+    return x1 + aveCharWidth * 0.5 >= arg.x0;
   }
 
   void resolveWordIndex(Dictionary dictionary) {
@@ -143,6 +148,11 @@ public class PartialSegment {
       n += nibble.chars;
     }
     return (float)(x0 + lastNibble.offset + lastNibble.width);
+  }
+  
+  
+  int getPage() {
+    return page;
   }
   
   

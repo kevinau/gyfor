@@ -14,6 +14,8 @@ public interface ISegment extends Comparable<ISegment> {
   @Override
   public String toString();
 
+  public int getPageIndex();
+  
   public float getX0();
 
   public float getY0();

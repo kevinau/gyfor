@@ -6,6 +6,6 @@ import org.gyfor.docstore.IDocumentContents;
 
 public interface IImageParser {
 
-  public IDocumentContents parse (String id, Path path);
+  public IDocumentContents parse (String id, int pageIndex, Path path);
   
 }

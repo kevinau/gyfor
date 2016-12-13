@@ -27,7 +27,7 @@ public class TesseractImageOCR implements IImageParser {
 
   private Logger logger = LoggerFactory.getLogger(TesseractImageOCR.class);
   
-  private IDocumentContents readOCRResults(Path resultsFile) {
+  private IDocumentContents readOCRResults(int pageIndex, Path resultsFile) {
     XMLInputFactory2 factory = null ;
     try {
       factory = (XMLInputFactory2)XMLInputFactory2.newInstance();
@@ -49,7 +49,6 @@ public class TesseractImageOCR implements IImageParser {
         int event = reader.next();
         switch (event) {
         case XMLStreamConstants.START_DOCUMENT :
-          
           break;
         case XMLStreamConstants.START_ELEMENT :
           level++;
@@ -63,7 +62,7 @@ public class TesseractImageOCR implements IImageParser {
             case "ocrx_word" :
               // Create an empty segment with the word's bounding box.  Attribute "title" contains the 
               // bound box dimensions.
-              wordSegment = new PartialSegment(reader.getAttributeValue(null, "title"));
+              wordSegment = new PartialSegment(pageIndex, reader.getAttributeValue(null, "title"));
               break;
             }
           }
@@ -83,6 +82,7 @@ public class TesseractImageOCR implements IImageParser {
               // Add the existing, completed, line segment to the document before starting a new one.
               if (lineSegment != null) {
                 docContents.add(lineSegment);
+                logger.info("Adding line segment:{}", lineSegment);
               }
               lineSegment = new PartialSegment(wordSegment, word);
             }
@@ -90,6 +90,7 @@ public class TesseractImageOCR implements IImageParser {
           break;
         case XMLStreamConstants.END_ELEMENT :
           if (lineLevel == level && lineSegment != null) {
+            logger.info("Adding line segmnt: {}", lineSegment);
             docContents.add(lineSegment);
           }
           level--;
@@ -107,8 +108,8 @@ public class TesseractImageOCR implements IImageParser {
 
   
   @Override
-  public IDocumentContents parse(String id, Path imagePath) {
-    logger.info("Starting Tesseract OCR of: " + imagePath);
+  public IDocumentContents parse(String id, int pageIndex, Path imagePath) {
+    logger.info("Starting Tesseract OCR of: {}, page {}", imagePath, pageIndex);
 
     Path ocrBase = OCRPaths.getBasePath(id);
 
@@ -139,14 +140,15 @@ public class TesseractImageOCR implements IImageParser {
     // Now do something with the lines extracted by Tesseract
     Path hocrFile = OCRPaths.getHocrPath(id);
     logger.info("Starting parse of html file from OCR: " + hocrFile);
-    IDocumentContents docInstance = readOCRResults(hocrFile);
+    IDocumentContents docInstance = readOCRResults(pageIndex, hocrFile);
     
     // The readOCRResults method is done with the hocrFile, so we can get rid of it.
-    try {
-      Files.delete(hocrFile);
-    } catch (IOException ex) {
-      throw new RuntimeException(ex);
-    }
+///    try {
+      System.out.println("#### " + hocrFile.toAbsolutePath().toString());
+      /////////////// TODO Files.delete(hocrFile);
+///    } catch (IOException ex) {
+///      throw new RuntimeException(ex);
+///    }
     
     return docInstance;
     

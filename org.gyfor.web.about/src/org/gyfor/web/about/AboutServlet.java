@@ -5,8 +5,8 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.gyfor.http.api.Context;
-import org.gyfor.http.api.Resource;
+import org.gyfor.http.Context;
+import org.gyfor.http.Resource;
 import org.gyfor.template.ITemplate;
 import org.gyfor.template.ITemplateEngine;
 import org.gyfor.template.ITemplateEngineFactory;

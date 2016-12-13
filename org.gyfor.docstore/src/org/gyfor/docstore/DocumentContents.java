@@ -19,6 +19,8 @@ public class DocumentContents implements IDocumentContents, Serializable {
   
   private final List<ISegment> segments;
   
+  private int pageCount;
+  
   
   public DocumentContents () {
     segments = new ArrayList<>();
@@ -30,17 +32,29 @@ public class DocumentContents implements IDocumentContents, Serializable {
   }
   
   
+  @Override
+  public void setPageCount (int pageCount) {
+    this.pageCount = pageCount;
+  }
+  
+  
+  @Override
+  public int getPageCount () {
+    return pageCount;
+  }
+  
+  
   public void add(PartialSegment partialSegment) {
     if (partialSegment == null) {
       throw new IllegalArgumentException("Segment argument cannot be null");
     }
     // Iterate through the list of matchers, looking for the first match
     String word = partialSegment.getWord();
-    findMatch (partialSegment, word, 0, word.length());
+    findMatchAndAdd (partialSegment, word, 0, word.length());
   }
 
  
-  private void findMatch (PartialSegment partialSegment, String text, int n0, int nz) {
+  private void findMatchAndAdd (PartialSegment partialSegment, String text, int n0, int nz) {
     ISegment s = null;
     
     ISegmentMatcher[] matchers = SegmentMatcherList.matchers;
@@ -51,19 +65,20 @@ public class DocumentContents implements IDocumentContents, Serializable {
         int n2 = result.end();
         if (n0 < n1) {
           // look for matches between the start of the text and this result
-          findMatch(partialSegment, text, n0, n1);
+          findMatchAndAdd(partialSegment, text, n0, n1);
         }
         
+        int page = partialSegment.getPage();
         float x0 = partialSegment.adjustedX1(n1);
         float y0 = partialSegment.getY0();
         float x1 = partialSegment.adjustedX1(n2);
         float y1 = partialSegment.getY1();
-        s = new Segment(x0, y0, x1, y1, text.substring(n1, n2), result.type(), result.value());
+        s = new Segment(page, x0, y0, x1, y1, text.substring(n1, n2), result.type(), result.value());
         segments.add(s);
         
         if (n2 < nz) {
           // look for matches between this result and the end of the text
-          findMatch(partialSegment, text, n2, nz);
+          findMatchAndAdd(partialSegment, text, n2, nz);
         }
         return;
       }
@@ -71,11 +86,12 @@ public class DocumentContents implements IDocumentContents, Serializable {
     
     String t = text.substring(n0, nz);
     if (!ISegment.isDiscardable(t)) {
+      int pageIndex = partialSegment.getPage();
       float x0 = partialSegment.adjustedX1(n0);
       float y0 = partialSegment.getY0();
       float x1 = partialSegment.adjustedX1(nz);
       float y1 = partialSegment.getY1();
-      s = new Segment(x0, y0, x1, y1, t, SegmentType.TEXT, null);
+      s = new Segment(pageIndex, x0, y0, x1, y1, t, SegmentType.TEXT, null);
       segments.add(s);
     }
   }

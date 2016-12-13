@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
-import org.gyfor.docstore.parser.SourcePath;
 import org.gyfor.nio.SafeOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class FileIO {
 
@@ -52,24 +51,24 @@ public class FileIO {
   }
   
   
-  public static int conditionallyCopyFiles (List<Path> files, List<Path> targetNamedFiles) {
-    int copied = 0;
-    for (Path path : files) {
-      Path hashNamedPath = SourcePath.createDigestNamed(path);
-      boolean copyPerformed = conditionallyCopyFile (path, hashNamedPath);
-      if (copyPerformed) {
-        copied++;
-      }
-      if (targetNamedFiles != null) {
-        targetNamedFiles.add(hashNamedPath);
-      }
-    }
-    return copied;
-  }
-
-  
-  public static int conditionallyCopyFiles (List<Path> files) {
-    return  conditionallyCopyFiles (files, null);
-  }
+//  public static int conditionallyCopyFiles (List<Path> files, List<Path> targetNamedFiles) {
+//    int copied = 0;
+//    for (Path path : files) {
+//      Path hashNamedPath = SourcePath.createDigestNamed(path);
+//      boolean copyPerformed = conditionallyCopyFile (path, hashNamedPath);
+//      if (copyPerformed) {
+//        copied++;
+//      }
+//      if (targetNamedFiles != null) {
+//        targetNamedFiles.add(hashNamedPath);
+//      }
+//    }
+//    return copied;
+//  }
+//
+//  
+//  public static int conditionallyCopyFiles (List<Path> files) {
+//    return  conditionallyCopyFiles (files, null);
+//  }
 
 }

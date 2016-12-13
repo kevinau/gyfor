@@ -21,7 +21,7 @@ import com.sleepycat.persist.EntityStore;
 import com.sleepycat.persist.StoreConfig;
 
 
-@Component(service = DataEnvironment.class)
+@Component(service = DataEnvironment.class, immediate = true)
 public class DataEnvironment {
 
   private Logger logger = LoggerFactory.getLogger(DataEnvironment.class);
@@ -48,6 +48,7 @@ public class DataEnvironment {
     // Set up the environment
     EnvironmentConfig envConfig = new EnvironmentConfig();
     envConfig.setAllowCreate(true);
+    envConfig.setTransactional(true);
 
     // Open the environment
     File envHomeFile = new File(envHome);

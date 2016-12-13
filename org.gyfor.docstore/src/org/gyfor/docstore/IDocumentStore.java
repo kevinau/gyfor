@@ -27,7 +27,11 @@ public interface IDocumentStore {
 
   public Path getViewImagePath(Document document);
 
-  public Path getViewImagePath(String id, String extn);
+  public Path newViewImagePath(String id, int page);
+  
+  public Path getThumbsImagePath(String id);
+
+//  public Path getViewImagePath(String id, String extn);
 
 //  public void saveViewImage(String id, BufferedImage image);
 
@@ -44,5 +48,11 @@ public interface IDocumentStore {
   public SecondaryIndex<Date, String, Document> getImportDateIndex();
 
   public Path getBasePath();
+
+  public String webViewImagePath(String id, String extn, int page);
+  
+  public String webThumbsImagePath(String id);
+
+  public String webSourcePath(Document doc);
 
 }

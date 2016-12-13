@@ -16,11 +16,14 @@ public class Document implements Serializable {
   @PrimaryKey
   private String id;
   
+  private String type;
+  
   private Date originTime;
   
   private String originName;
 
   private String originExtension;
+  
   
   @SecondaryKey(relate = Relationship.MANY_TO_ONE)
   private final Date importTime;
@@ -35,6 +38,7 @@ public class Document implements Serializable {
 
   public Document(String id, Date originTime, String originName, String originExtension, IDocumentContents contents) {
     this.id = id;
+    this.type = "Unclassified";
     this.originTime = originTime;
     this.originName = originName;
     this.originExtension = originExtension;
@@ -48,6 +52,21 @@ public class Document implements Serializable {
   }
   
   
+  public String getType () {
+    return type;
+  }
+  
+  
+  public Date getOriginTime () {
+    return originTime;
+  }
+  
+  
+  public String getOriginName () {
+    return originName;
+  }
+  
+  
   public String getOriginExtension() {
     return originExtension;
   }
@@ -55,6 +74,11 @@ public class Document implements Serializable {
   
   public IDocumentContents getContents () {
     return contents;
+  }
+  
+  
+  public int getPageCount () {
+    return contents.getPageCount();
   }
   
 

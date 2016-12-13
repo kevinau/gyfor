@@ -2,8 +2,8 @@ package org.gyfor.web.form;
 
 import java.lang.reflect.Field;
 
-import org.gyfor.http.api.Context;
-import org.gyfor.http.api.Resource;
+import org.gyfor.http.Context;
+import org.gyfor.http.Resource;
 import org.gyfor.object.context.PlanFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;

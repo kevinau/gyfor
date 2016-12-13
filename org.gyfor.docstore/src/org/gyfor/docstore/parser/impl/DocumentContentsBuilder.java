@@ -23,7 +23,7 @@ public class DocumentContentsBuilder {
 
     if (docStore.isImageFile(extn)) {
       IImageParser imageParser = new TesseractImageOCR();
-      docContents = imageParser.parse(id, path);
+      docContents = imageParser.parse(id, 0, path);
     } else {
       switch (extn) {
       case ".pdf" :

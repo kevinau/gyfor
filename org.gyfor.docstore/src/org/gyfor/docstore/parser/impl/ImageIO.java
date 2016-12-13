@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
 
+import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +21,8 @@ public class ImageIO {
   
   private final static int GAP = 16;
   private final static Color GAP_COLOR = new Color(183, 183, 183);
+  private final static int THUMBNAIL_SIZE = 200;
+  
   
   public static BufferedImage appendImage (BufferedImage singleImage, BufferedImage addition) {
     if (singleImage == null) {
@@ -84,7 +87,24 @@ public class ImageIO {
     return newImage;
   }
   
+
+  public static BufferedImage getImage (Path path) {
+    try {
+      return javax.imageio.ImageIO.read(path.toFile());
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
   
+  
+  public static void writeThumbnail (BufferedImage image, Path thumbsFile) {
+    if (image.getHeight() > THUMBNAIL_SIZE && image.getWidth() > THUMBNAIL_SIZE) {
+      image = Scalr.resize(image, Scalr.Method.QUALITY, Scalr.Mode.AUTOMATIC, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+    }
+    writeImage (image, thumbsFile);
+  }
+  
+
   public static void writeImage (BufferedImage image, Path imageFile) {
     PngEncoder pngEncoder = new PngEncoder(PngEncoder.COLOR_TRUECOLOR);
     try (FileOutputStream imageOut = new FileOutputStream(imageFile.toFile())) {

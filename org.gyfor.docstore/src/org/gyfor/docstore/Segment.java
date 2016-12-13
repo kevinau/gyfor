@@ -12,6 +12,9 @@ public class Segment implements Serializable, ISegment {
 
 //  private static Pattern titlePattern = Pattern.compile(" ");
 
+  // Zero based page number
+  private int pageIndex;
+  
   private float x0;
   private float y0;
   private float x1;
@@ -33,7 +36,7 @@ public class Segment implements Serializable, ISegment {
   }
   
   
-  Segment(float x0, float y0, float x1, float y1, String word, SegmentType type, Object value) {
+  Segment(int pageIndex, float x0, float y0, float x1, float y1, String word, SegmentType type, Object value) {
     switch (type) {
     case DATE :
     case CURRENCY :
@@ -46,6 +49,7 @@ public class Segment implements Serializable, ISegment {
     case RUBBISH :
       break;
     }
+    this.pageIndex = pageIndex;
     this.x0 = x0;
     this.y0 = y0;
     this.x1 = x1;
@@ -104,11 +108,18 @@ public class Segment implements Serializable, ISegment {
   
   @Override
   public String toString() {
-    StringBuilder s = new StringBuilder("[" + x0 + "," + y0 + "," + x1 + "," + y1 + ": " + word + "@" + type);
+    StringBuilder s = new StringBuilder("[" + pageIndex + ": " + x0 + "," + y0 + "," + x1 + "," + y1 + ": " + word + "@" + type);
     s.append("]");
     return s.toString();
   }
 
+  
+  @Override
+  public int getPageIndex() {
+    return pageIndex;
+  }
+  
+  
   @Override
   public float getX0() {
     return x0;

@@ -16,7 +16,7 @@ import com.sleepycat.persist.model.AnnotationModel;
 import com.sleepycat.persist.model.EntityModel;
 
 
-@Component(service=DataStore.class)
+@Component(service=DataStore.class, immediate = true)
 public class DataStore {
 
   private DataEnvironment envionment;
@@ -50,6 +50,7 @@ public class DataStore {
     StoreConfig storeConfig = new StoreConfig();
     storeConfig.setAllowCreate(true);
     storeConfig.setModel(model);
+    storeConfig.setTransactional(true);
     
     // Open the entity store
     store = envionment.newEntityStore(storeName, storeConfig);

@@ -6,17 +6,18 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageTree;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.graphics.PDXObject;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
-import org.gyfor.docstore.parser.IImageParser;
-import org.gyfor.docstore.parser.IPDFParser;
-import org.gyfor.util.Digest;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Reference;
 import org.gyfor.docstore.IDocumentContents;
 import org.gyfor.docstore.IDocumentStore;
+import org.gyfor.docstore.parser.IImageParser;
+import org.gyfor.docstore.parser.IPDFParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,14 +75,18 @@ public class PDFBoxPDFParser implements IPDFParser {
       // Render PDF as an image for viewing
       int endPage = pdDocument.getNumberOfPages();
       PDFRenderer renderer = new PDFRenderer(pdDocument);
-      BufferedImage combinedImage = null;
       for (int i = 0; i < endPage; i++) {
         BufferedImage image = renderer.renderImageWithDPI(i, dpi, ImageType.RGB);
-        combinedImage = ImageIO.appendImage(combinedImage, image);
+        if (i == 0) {
+          // Create a thumbnail of first page
+          Path thumbsFile = docStore.getThumbsImagePath(id);
+          ImageIO.writeThumbnail(image, thumbsFile);
+        }
+        Path imageFile = docStore.newViewImagePath(id, i);
+        ImageIO.writeImage(image, imageFile);
       }
-      Path imageFile = docStore.getViewImagePath(id, ".png");
-      ImageIO.writeImage(combinedImage, imageFile);
 
+      docContents.setPageCount(endPage);
       return docContents;
     } catch (IOException ex) {
       throw new RuntimeException(ex);

@@ -5,24 +5,16 @@
 
 package org.gyfor.docstore.parser.impl;
 
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.gyfor.docstore.Dictionary;
+import org.gyfor.docstore.ISegment;
+import org.gyfor.docstore.ITrainingData;
+import org.gyfor.docstore.SegmentType;
 import org.gyfor.docstore.parser.IImageParser;
 import org.gyfor.docstore.parser.IPDFParser;
-import org.gyfor.docstore.parser.SourcePath;
-import org.gyfor.docstore.Dictionary;
-import org.gyfor.docstore.IDocumentContents;
-import org.gyfor.docstore.ISegment;
-import org.gyfor.docstore.SegmentType;
 
 public class SpecialWordClassifier {
   

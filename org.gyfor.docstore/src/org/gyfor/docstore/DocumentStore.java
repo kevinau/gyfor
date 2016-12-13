@@ -1,5 +1,6 @@
 package org.gyfor.docstore;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +14,7 @@ import java.util.Date;
 import org.gyfor.berkeleydb.DataStore;
 import org.gyfor.docstore.parser.IImageParser;
 import org.gyfor.docstore.parser.IPDFParser;
+import org.gyfor.docstore.parser.impl.ImageIO;
 import org.gyfor.docstore.parser.impl.PDFBoxPDFParser;
 import org.gyfor.docstore.parser.impl.TesseractImageOCR;
 import org.gyfor.nio.SafeOutputStream;
@@ -34,7 +36,7 @@ import com.sleepycat.persist.PrimaryIndex;
 import com.sleepycat.persist.SecondaryIndex;
 
 
-@Component(configurationPolicy = ConfigurationPolicy.OPTIONAL)
+@Component(configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 public class DocumentStore implements IDocumentStore {
 
   private Logger logger = LoggerFactory.getLogger(DocumentStore.class);
@@ -45,6 +47,10 @@ public class DocumentStore implements IDocumentStore {
   @Configurable
   private Path baseDir = Paths.get(System.getProperty("user.home"), "/data");
 
+  private static final String IMAGES = "images";
+  private static final String SOURCE = "source";
+  private static final String THUMBS = "thumbs";
+  
   private DataStore dataStore;
   
   private PrimaryIndex<String, Document> primaryIndex;
@@ -52,6 +58,7 @@ public class DocumentStore implements IDocumentStore {
   
   private Path sourceDir;
   private Path imagesDir;
+  private Path thumbsDir;
   
   @Reference
   public void setDataStore (DataStore dataStore) {
@@ -72,10 +79,12 @@ public class DocumentStore implements IDocumentStore {
     importDateIndex = dataStore.getSecondaryIndex(primaryIndex, Date.class, "importTime");
     
     try {
-      sourceDir = baseDir.resolve("source");
+      sourceDir = baseDir.resolve(SOURCE);
       Files.createDirectories(sourceDir);
-      imagesDir = baseDir.resolve("images");
+      imagesDir = baseDir.resolve(IMAGES);
       Files.createDirectories(imagesDir);
+      thumbsDir = baseDir.resolve(THUMBS);
+      Files.createDirectories(thumbsDir);
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
@@ -130,7 +139,6 @@ public class DocumentStore implements IDocumentStore {
   
   @Override
   public String importDocument(Path path) {
-    logger.info("Importing document from file/path {}", path);
     Digest digest = digestFactory.getFileDigest(path);
     String id = digest.toString();
     
@@ -141,6 +149,7 @@ public class DocumentStore implements IDocumentStore {
       return id;
     }
     
+    logger.info("Importing document from file/path {}", path);
     String pathName = path.toString();
     int n = pathName.lastIndexOf('.');
     if (n == -1) {
@@ -169,7 +178,6 @@ public class DocumentStore implements IDocumentStore {
 
   @Override
   public String importDocument(InputStream is, MimeType mimeType) {
-    logger.info("Importing document from input stream {}", mimeType);
     Digest digest = digestFactory.getInputStreamDigest(is);
     String id = digest.toString();
     
@@ -217,11 +225,15 @@ public class DocumentStore implements IDocumentStore {
     Path path = getSourcePath(id, extn);
 
     logger.info("Parsing {} to extact textual contents", path.getFileName());
-
     IDocumentContents docContents;
     if (isImageFile(extn)) {
       IImageParser imageParser = new TesseractImageOCR();
-      docContents = imageParser.parse(id, path);
+      docContents = imageParser.parse(id, 0, path);
+      
+      // Write a thumbnail version of the image
+      BufferedImage image = ImageIO.getImage(path);
+      Path thumbsFile = getThumbsImagePath(id);
+      ImageIO.writeThumbnail(image, thumbsFile);
     } else {
       switch (extn) {
       case ".pdf" :
@@ -246,8 +258,11 @@ public class DocumentStore implements IDocumentStore {
     logger.info("Import complete: {} -> {}", originName, id);
     
     // For debugging
-    for (ISegment seg : docContents.getSegments()) {
-      System.out.println(">>> " + seg);
+    Document d = primaryIndex.get(id);
+    IDocumentContents dc = d.getContents();
+    System.out.println(">>>> " + dc);
+    for (ISegment seg : dc.getSegments()) {
+      System.out.println(">>>> " + seg);
     }
   }
 
@@ -287,7 +302,7 @@ public class DocumentStore implements IDocumentStore {
   
   @Override
   public Path getBasePath () {
-    return sourceDir;
+    return baseDir;
   }
   
   
@@ -303,14 +318,56 @@ public class DocumentStore implements IDocumentStore {
   }
   
 
-  @Override 
-  public Path getViewImagePath (String id, String extn) {
+  @Override
+  public String webViewImagePath (String id, String extn, int page) {
+    String base = "/" + IMAGES + "/" + id;
+    if (page > 0) {
+      base += ".p" + page;
+    }
     if (isImageFile(extn)) {
-      return sourceDir.resolve(id + extn);
+      return base + extn;
     } else {
-      return imagesDir.resolve(id + ".png");
+      return base + ".png";
     }
   }
+
+  
+  @Override 
+  public String webThumbsImagePath (String id) {
+    return "/" + THUMBS + "/" + id + ".png";
+  }
+  
+
+  @Override 
+  public String webSourcePath (Document doc) {
+    return "/" + SOURCE + "/" + doc.getId() + doc.getOriginExtension();
+  }
+  
+
+  @Override 
+  public Path newViewImagePath (String id, int page) {
+    if (page == 0) {
+      return imagesDir.resolve(id + ".png");
+    } else {
+      return imagesDir.resolve(id + ".p" + page + ".png");
+    }
+  }
+  
+
+  @Override 
+  public Path getThumbsImagePath (String id) {
+    return thumbsDir.resolve(id + ".png");
+  }
+  
+
+//  @Override 
+//  public Path getViewImagePath (String id, String extn) {
+//    if (isImageFile(extn)) {
+//      return sourceDir.resolve(id + extn);
+//    } else {
+//      return imagesDir.resolve(id + ".png");
+//    }
+//  }
   
 
 //  @Override

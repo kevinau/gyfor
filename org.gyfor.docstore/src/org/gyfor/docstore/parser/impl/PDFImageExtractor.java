@@ -111,6 +111,7 @@ final class PDFImageExtractor {
     private IDocumentContents pageContents;
     private int imageIndex = 0;
     
+    
     protected ImageGraphicsEngine(PDPage page, int pageIndex, String id) throws IOException {
       super(page);
       this.pageContents = new DocumentContents();
@@ -133,7 +134,16 @@ final class PDFImageExtractor {
         seen.add(xobject.getCOSStream());
       }
 
-      logger.info("Extracting image {} from page {} of: {}", imageIndex, pageIndex, id);
+      Matrix ctm = getGraphicsState().getCurrentTransformationMatrix();
+      float x = ctm.getTranslateX();
+      float y = ctm.getTranslateY();
+
+      x = 59;
+      y = 62;
+      //x *= 72 / 25.4;
+      //y *= 72 / 25.4;
+      
+      logger.info("Extracting image no. {}; at {},{}; from page {} of: {}", imageIndex, x, y, pageIndex, id);
       int imageWidth = pdImage.getWidth();
       int imageHeight = pdImage.getHeight();
       if (imageWidth > 1 && imageHeight > 1) {
@@ -144,7 +154,7 @@ final class PDFImageExtractor {
         BufferedImage image = pdImage.getImage();
         Path ocrImagePath = OCRPaths.getOCRImagePath(id, pageIndex, imageIndex);
         ImageIO.writeImage(image, ocrImagePath);
-        IDocumentContents imageContents = imageParser.parse(id, ocrImagePath);
+        IDocumentContents imageContents = imageParser.parse(id, pageIndex, ocrImagePath);
         float pageWidth = gm.getScaleX() + gm.getTranslateX();
         
         // Scale the image down to page width (at 72dpi), and then scale to the dpi we want.
@@ -164,51 +174,63 @@ final class PDFImageExtractor {
     
     @Override
     public void appendRectangle(Point2D p0, Point2D p1, Point2D p2, Point2D p3) throws IOException {
+      // logger.info("Append rectangle");
     }
 
     @Override
     public void clip(int windingRule) throws IOException {
+      // logger.info("Clip");
     }
 
     @Override
     public void moveTo(float x, float y) throws IOException {
+      // logger.info("Moving to {}, {} from page {} of: {}", x, y, pageIndex, id);
     }
 
     @Override
     public void lineTo(float x, float y) throws IOException {
+      // logger.info("Line to {}, {}", x, y);
     }
 
     @Override
     public void curveTo(float x1, float y1, float x2, float y2, float x3, float y3) throws IOException {
+      // logger.info("Curve to");
     }
 
     @Override
     public Point2D getCurrentPoint() throws IOException {
+      // logger.info("Get current point");
       return new Point2D.Float(0, 0);
     }
 
     @Override
     public void closePath() throws IOException {
+      // logger.info("close path");
     }
 
     @Override
     public void endPath() throws IOException {
+      // logger.info("end path");
     }
 
     @Override
     public void strokePath() throws IOException {
+      // logger.info("stroke path");
     }
 
     @Override
     public void fillPath(int windingRule) throws IOException {
+      // logger.info("fill path");
     }
 
     @Override
     public void fillAndStrokePath(int windingRule) throws IOException {
+      // logger.info("fill and stroke path");
     }
 
     @Override
     public void shadingFill(COSName shadingName) throws IOException {
+      // logger.info("shading fill");
     }
   }
 
