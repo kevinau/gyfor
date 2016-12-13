@@ -42,16 +42,6 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 
 
-/**
- * Java program for classifying short text messages into two classes 'miss' and
- * 'hit'.
- * <p/>
- * See also wiki article <a href=
- * "http://weka.wiki.sourceforge.net/MessageClassifier">MessageClassifier</a>.
- *
- * @author Eibe Frank (eibe@cs.waikato.ac.nz)
- * @version $Revision: 6054 $
- */
 public class J48Classifier implements Serializable {
 
   /** for serialization. */

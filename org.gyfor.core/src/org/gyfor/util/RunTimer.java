@@ -1,4 +1,4 @@
-package org.gyfor.classifier;
+package org.gyfor.util;
 
 
 public class RunTimer {
