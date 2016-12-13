@@ -101,7 +101,7 @@ public class DocumentPartyClassifier  {
     }
     System.out.println(partyNames);
     
-    J48Classifier classifier = new J48Classifier(partyNames);
+    NaiveBayesClassifier classifier = new NaiveBayesClassifier(partyNames);
 
     int[] partyCounts = new int[partyNames.size()];
     int testCount = 0;

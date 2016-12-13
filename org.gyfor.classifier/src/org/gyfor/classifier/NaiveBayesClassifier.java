@@ -42,7 +42,7 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 
 
-public class J48Classifier implements Serializable {
+public class NaiveBayesClassifier implements Serializable {
 
   /** for serialization. */
   private static final long serialVersionUID = -123455813150452885L;
@@ -73,7 +73,7 @@ public class J48Classifier implements Serializable {
   /**
    * Constructs empty training dataset.
    */
-  public J48Classifier(List<String> partyNames) {
+  public NaiveBayesClassifier(List<String> partyNames) {
     String nameOfDataset = "J48ClassificationData";
 
     // Create vector of attributes.
