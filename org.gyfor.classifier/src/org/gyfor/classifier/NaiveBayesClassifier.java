@@ -34,12 +34,9 @@ import org.gyfor.docstore.SegmentType;
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.core.Attribute;
-import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SparseInstance;
-import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.StringToWordVector;
 
 
 public class NaiveBayesClassifier implements Serializable {
@@ -52,19 +49,14 @@ public class NaiveBayesClassifier implements Serializable {
   
   private final WordDictionary dictionary = new WordDictionary();
   
+  private final List<String> classValues = new ArrayList<>();
   
   /** The training data gathered so far. */
-  private Instances mData = null;
-  
   private Instances trainingData = null;
-  private ArrayList<Attribute> attributes1;
-
-  /** The filter used to generate the word counts. */
-  private StringToWordVector mFilter = new StringToWordVector();
+  private ArrayList<Attribute> attributes;
 
   /** The actual classifier. */
-  private Classifier mClassifier = new NaiveBayes();
-  private Classifier mClassifier2 = new NaiveBayes();
+  private Classifier mClassifier;
 
   /** Whether the model is up to date. */
   private boolean mUpToDate;
@@ -73,32 +65,45 @@ public class NaiveBayesClassifier implements Serializable {
   /**
    * Constructs empty training dataset.
    */
-  public NaiveBayesClassifier(List<String> partyNames) {
-    String nameOfDataset = "J48ClassificationData";
-
-    // Create vector of attributes.
-    ArrayList<Attribute> attributes = new ArrayList<Attribute>(2);
-
-    // Add attribute for holding messages.
-    attributes.add(new Attribute("__Message", (ArrayList<String>)null));
-
-    // Add class attributes.
-    attributes.add(new Attribute("__Class", partyNames));
-
-    // Create dataset with initial capacity of 100, and set index of class.
-    mData = new Instances(nameOfDataset, attributes, 100);
+  public NaiveBayesClassifier(List<String> classValues) {
+    mClassifier = new NaiveBayes();
+    attributes = new ArrayList<>();
+    attributes.add(new Attribute("___class", new ArrayList<String>()));
+    trainingData = new Instances("DocumentParty", attributes, 100);
+    trainingData.setClassIndex(0);
+    mUpToDate = false;
     
-    System.out.println("attributes " + attributes.size());
-    System.out.println("attributes " + mData.numAttributes());
-    mData.setClassIndex(mData.numAttributes() - 1);
-
-    attributes1 = new ArrayList<>();
-    attributes1.add(new Attribute("___class", partyNames));
-    trainingData = new Instances("DocumentParty", attributes1, 100);
-    trainingData.setClassIndex(0);;
+//    this.classValues.clear();
+//    this.classValues.addAll(classValues);
   }
 
 
+  private void ensureClass (String classValue) {
+    if (classValues.contains(classValue)) {
+      return;
+    }
+    classValues.add(classValue);
+    
+    mClassifier = new NaiveBayes();
+    ArrayList<Attribute> attributes2 = new ArrayList<>();
+    attributes2.add(new Attribute("___class", classValues));
+    for (int i = 1; i < trainingData.numAttributes(); i++) {
+      Attribute a = trainingData.attribute(i);
+      attributes2.add(new Attribute(a.name()));
+    }
+    Instances trainingData2 = new Instances("DocumentParty", attributes2, trainingData.numInstances());
+    trainingData2.setClassIndex(0);
+    
+    for (int i = 0; i < trainingData.numInstances(); i++) {
+      Instance instance = trainingData.get(i);
+      trainingData2.add(instance);
+    }
+    attributes = attributes2;
+    trainingData = trainingData2;
+    mUpToDate = false;
+  }
+
+  
   /**
    * Updates model using the given training message.
    *
@@ -107,17 +112,11 @@ public class NaiveBayesClassifier implements Serializable {
    * @param classValue
    *          the class label
    */
-  public void trainClassifier(String message, Document doc, String classValue) {
-    // Make message into instance.
-    Instance instance = makeInstance(message, classValue, mData);
-
-    // Add instance to training data.
-    mData.add(instance);
-
-    mUpToDate = false;
-    
+  public void trainClassifier(Document doc, String classValue) {
+    ensureClass(classValue);
     Instance instance2 = makeInstance(doc, classValue, trainingData);
     trainingData.add(instance2);
+    mUpToDate = false;
   }
   
   
@@ -145,102 +144,56 @@ public class NaiveBayesClassifier implements Serializable {
    * @throws Exception
    *           if classification fails
    */
-  public double classifyMessage(String message, Document doc) {
-    // Check whether classifier has been built.
-    if (mData.numInstances() == 0) {
-      return 0.0;
-      //throw new RuntimeException("No classifier available.");
-    }
-    
+  public double classifyMessage(Document doc) {
     // Get index of predicted class value.
     double predicted;
-    double predicted2;
     
     try {
       // Check whether classifier and filter are up to date.
       if (!mUpToDate) {
-        // Initialize filter and tell it about the input format.
-        mFilter.setInputFormat(mData);
-
-        // Generate word counts from the training data.
-        Instances filteredData = Filter.useFilter(mData, mFilter);
-        
-//        System.out.println(">>>> >>>>" + filteredData.numAttributes() + " " + filteredData.numClasses());
-//        for (int i = 0; i < filteredData.size(); i++) {
-//          Instance fd = filteredData.get(i);
-//          for (Enumeration<Attribute> e = fd.enumerateAttributes(); e.hasMoreElements(); ) {
-//            Attribute ex = e.nextElement();
-//            System.out.println("         " + ex.name() + " " + ex.type() + "  " + Attribute.STRING);
-//          }
-//          System.out.println(">>>> >>>>" + fd);
-//        }
-        
         // Rebuild classifier.
-        mClassifier.buildClassifier(filteredData);
-        mClassifier2.buildClassifier(trainingData);
-
+        mClassifier.buildClassifier(trainingData);
         mUpToDate = true;
       }
 
       // Make separate little test set so that message
       // does not get added to string attribute in mData.
-      Instances testset = mData.stringFreeStructure();
       Instances testset2 = trainingData.stringFreeStructure();
 
       // Make message into test instance.
-      Instance instance = makeInstance(message, null, testset);
       Instance instance2 = makeInstance(doc, null, testset2);
 
-      // Filter instance.
-      mFilter.input(instance);
-      Instance filteredInstance = mFilter.output();
-
-      predicted = mClassifier.classifyInstance(filteredInstance);
-      predicted2 = mClassifier2.classifyInstance(instance2);
-      
-      // Output class value.
+      predicted = mClassifier.classifyInstance(instance2);
     } catch (Exception ex) {
       throw new RuntimeException(ex);
     }
-    return predicted2;
+    return predicted;
   }
 
 
+  public boolean isEmpty () {
+    return trainingData.numInstances() == 0;
+  }
+
+  
+  public int numClasses () {
+    return classValues.size();
+  }
+  
+  
   public String getClassValue (double prediction) {
-    return mData.classAttribute().value((int)prediction);
-  }
-  
-  
-  /**
-   * Method that converts a text message into an instance.
-   *
-   * @param text
-   *          the message content to convert
-   * @param data
-   *          the header information
-   * @return the generated Instance
-   */
-  private Instance makeInstance(String text, String classValue, Instances data) {
-    // Create instance of length two.
-    Instance instance = new DenseInstance(2);
-
-    // Set value for message attribute
-    Attribute messageAtt = data.attribute("__Message");
-    instance.setValue(messageAtt, messageAtt.addStringValue(text));
-
-    // Give instance access to attribute information from the dataset.
-    instance.setDataset(data);
-
-    if (classValue != null) {
-      instance.setClassValue(classValue);
-    }
-    return instance;
+    return trainingData.classAttribute().value((int)prediction);
   }
   
   
   private Instance makeInstance(Document doc, String classValue, Instances data) {
-    int[] indexes = new int[0];
-    double[] values = new double[0];
+    int[] indexes = new int[1];
+    double[] values = new double[1];
+    if (classValue != null) {
+      values[0] = trainingData.classAttribute().indexOfValue(classValue);
+    } else {
+      values[0] = Double.NaN;
+    }
     for (ISegment seg : doc.getContents().getSegments()) {
       if (seg.getType() == SegmentType.TEXT) {
         String text = seg.getText();
@@ -254,14 +207,16 @@ public class NaiveBayesClassifier implements Serializable {
             wordIndex = dictionary.queryWordIndex(text);
           }
           if (wordIndex >= 0) {
-            int x = Arrays.binarySearch(indexes, wordIndex);
+            // Allow for the instance class
+            int featureIndex = wordIndex + 1;
+            int x = Arrays.binarySearch(indexes, featureIndex);
             if (x >= 0) {
               values[x]++;
             } else {
               int x1 = -(x + 1);
               indexes = Arrays.copyOf(indexes, indexes.length + 1);
               System.arraycopy(indexes, x1, indexes, x1 + 1, indexes.length - (x1 + 1));
-              indexes[x1] = wordIndex;
+              indexes[x1] = featureIndex;
               values = Arrays.copyOf(values, values.length + 1);
               System.arraycopy(values, x1, values, x1 + 1, values.length - (x1 + 1));
               values[x1] = 1.0;
@@ -277,11 +232,11 @@ public class NaiveBayesClassifier implements Serializable {
 //  }
 //  System.out.println();
 
-    Instance instance = new SparseInstance(1.0, values, indexes, dictionary.size());
+    Instance instance = new SparseInstance(1.0, values, indexes, dictionary.size() + 1);
 
     int i = data.numAttributes();
-    while (i < dictionary.size()) {
-      String word = dictionary.getWord(i);
+    while (i < dictionary.size() + 1) {
+      String word = dictionary.getWord(i - 1);
       Attribute attrib = new Attribute(word);
       data.insertAttributeAt(attrib, i);
       i++;
@@ -292,7 +247,7 @@ public class NaiveBayesClassifier implements Serializable {
 
     if (classValue != null) {
       // We are training, not classifying
-      instance.setClassValue(classValue);
+/////////////////      instance.setClassValue(classValue);
     }
     return instance;
   }

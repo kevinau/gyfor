@@ -19,6 +19,7 @@ public class Segment implements Serializable, ISegment {
   private float y0;
   private float x1;
   private float y1;
+  private float fontSize;
   private String word;
   private SegmentType type;
   private Object value;
@@ -36,7 +37,7 @@ public class Segment implements Serializable, ISegment {
   }
   
   
-  Segment(int pageIndex, float x0, float y0, float x1, float y1, String word, SegmentType type, Object value) {
+  Segment(int pageIndex, float x0, float y0, float x1, float y1, float fontSize, String word, SegmentType type, Object value) {
     switch (type) {
     case DATE :
     case CURRENCY :
@@ -54,6 +55,7 @@ public class Segment implements Serializable, ISegment {
     this.y0 = y0;
     this.x1 = x1;
     this.y1 = y1;
+    this.fontSize = fontSize;
     this.word = word;
     this.type = type;
     this.value = value;
@@ -150,6 +152,11 @@ public class Segment implements Serializable, ISegment {
     return y1 - y0;
   }
 
+  @Override
+  public float getFontSize() {
+    return fontSize;
+  }
+  
   @Override
   public String getText() {
     return word;

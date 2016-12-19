@@ -51,9 +51,9 @@ public class PDFToImage {
   }
   
 
-  public static void buildImageFile (String id, Path pdfFile, IDocumentStore docStore) {
-    buildImageFile (id, pdfFile, 150, "", docStore);
-  }
+//  public static void buildImageFile (String id, Path pdfFile, IDocumentStore docStore) {
+//    buildImageFile (id, pdfFile, 150, "", docStore);
+//  }
   
 
 //  public static void main(String[] args) throws Exception {

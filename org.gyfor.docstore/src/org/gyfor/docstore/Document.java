@@ -1,7 +1,9 @@
 package org.gyfor.docstore;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
@@ -30,6 +32,8 @@ public class Document implements Serializable {
 
   private IDocumentContents contents;
   
+  private List<PageImage> pages;
+  
   
   public Document() {
     this.importTime = new Date();
@@ -44,6 +48,7 @@ public class Document implements Serializable {
     this.originExtension = originExtension;
     this.importTime = new Date();
     this.contents = contents;
+    this.pages = new ArrayList<>();
   }
 
   
@@ -78,10 +83,10 @@ public class Document implements Serializable {
   
   
   public int getPageCount () {
-    return contents.getPageCount();
+    return pages.size();
   }
   
-
+  
   @Override
   public String toString() {
     return "Document[" + id + ", " + originName + ", " + originExtension + ", " + originTime + "]";

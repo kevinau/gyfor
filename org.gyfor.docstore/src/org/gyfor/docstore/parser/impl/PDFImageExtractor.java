@@ -35,6 +35,7 @@ import org.apache.pdfbox.pdmodel.graphics.state.PDGraphicsState;
 import org.apache.pdfbox.util.Matrix;
 import org.gyfor.docstore.DocumentContents;
 import org.gyfor.docstore.IDocumentContents;
+import org.gyfor.docstore.IDocumentStore;
 import org.gyfor.docstore.parser.IImageParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,7 +160,7 @@ final class PDFImageExtractor {
         
         // Scale the image down to page width (at 72dpi), and then scale to the dpi we want.
         double scale = (pageWidth / imageWidth) * (dpi / 72.0);
-        imageContents.scaleSegments(scale);
+        imageContents.scaleSegments(scale * IDocumentStore.IMAGE_SCALE);
         pageContents = pageContents.merge(imageContents);
         //////////Files.delete(ocrImagePath);
       }

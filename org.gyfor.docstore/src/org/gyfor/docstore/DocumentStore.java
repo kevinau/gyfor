@@ -50,15 +50,16 @@ public class DocumentStore implements IDocumentStore {
   private static final String IMAGES = "images";
   private static final String SOURCE = "source";
   private static final String THUMBS = "thumbs";
-  
+
+
   private DataStore dataStore;
   
   private PrimaryIndex<String, Document> primaryIndex;
   private SecondaryIndex<Date, String, Document> importDateIndex;
   
-  private Path sourceDir;
-  private Path imagesDir;
-  private Path thumbsDir;
+  private Path sourceDir = baseDir.resolve(SOURCE);
+  private Path imagesDir = baseDir.resolve(IMAGES);
+  private Path thumbsDir = baseDir.resolve(THUMBS);
   
   @Reference
   public void setDataStore (DataStore dataStore) {
@@ -239,7 +240,7 @@ public class DocumentStore implements IDocumentStore {
       case ".pdf" :
         IImageParser imageParser = new TesseractImageOCR();
         IPDFParser pdfParser = new PDFBoxPDFParser(imageParser);
-        docContents = pdfParser.parse(id, path, 150, this);
+        docContents = pdfParser.parse(id, path, IMAGE_RESOLUTION, this);
         break;
       default :
         throw new RuntimeException("File type: " + path + " not supported");
@@ -417,4 +418,20 @@ public class DocumentStore implements IDocumentStore {
     return importDateIndex;
   }
 
+  
+  public void rebuildPDF (String id, int dpi) {
+    Path path = getSourcePath(id, ".pdf");
+    IImageParser imageParser = new TesseractImageOCR();
+    IPDFParser pdfParser = new PDFBoxPDFParser(imageParser);
+    IDocumentContents docContents = pdfParser.parse(id, path, dpi, this);
+    for (ISegment seg : docContents.getSegments()) {
+      System.out.println(seg);
+    }
+  }
+  
+  
+  public static void main (String[] args) {
+    DocumentStore docStore = new DocumentStore();
+    docStore.rebuildPDF("5dbc-9fbef7c4a0c2", IMAGE_RESOLUTION);
+  }
 }

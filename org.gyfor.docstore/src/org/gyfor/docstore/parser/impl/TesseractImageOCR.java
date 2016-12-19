@@ -84,7 +84,7 @@ public class TesseractImageOCR implements IImageParser {
                 docContents.add(lineSegment);
                 logger.info("Adding line segment:{}", lineSegment);
               }
-              lineSegment = new PartialSegment(wordSegment, word);
+              lineSegment = new PartialSegment(wordSegment, word, 0);
             }
           }
           break;

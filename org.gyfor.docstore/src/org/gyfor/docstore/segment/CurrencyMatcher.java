@@ -10,18 +10,18 @@ import org.gyfor.math.Decimal;
 
 class CurrencyMatcher implements ISegmentMatcher {
 
-  private final static String moneyPattern = "-?(\\d{1,3}(,\\d{3})+|\\d*)\\.\\d\\d";
+   private final static String moneyPattern = "-?(\\d{1,3}(,\\d{3})+|\\d*)\\.\\d\\d(?!\\d)";
 
   /** 
    * Dollar sign currency, marked as a prefix: $, $X, X$, where X is A or NZ (with optional spaces).
    */
-  private final static Pattern dollarPattern = Pattern.compile("(\\$(\\s?(A|NZ|US|CA))?\\s?|(A|NZ|US|CA)\\s?\\$\\?)" + moneyPattern);
+  private final static Pattern dollarPattern = Pattern.compile("(\\$\\s?(A|NZ|US|CA)\\s?|(A|NZ|US|CA)\\s?\\$\\s?|\\$\\s?)" + moneyPattern);
   
 
   /** 
    * UK pound sign currency, marked as a prefix: £, £UK, UK£ (with optional spaces).
    */
-  private final static Pattern poundPattern = Pattern.compile("(\\£(\\s?(UK))?\\s?|(UK)\\s?\\£\\?)" + moneyPattern);
+  private final static Pattern poundPattern = Pattern.compile("(\\£\\s?(UK)\\s?|(UK)\\s?\\£\\s?|\\£\\s?)" + moneyPattern);
   
 
   /** 
@@ -35,7 +35,6 @@ class CurrencyMatcher implements ISegmentMatcher {
    */
   private final static Pattern isoPattern = Pattern.compile("(AUD|NZD|GBP|EUR|USD|CAD)\\s?" + moneyPattern);
   
-
   /** 
    * Non-country currency.
    */

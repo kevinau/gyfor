@@ -14,7 +14,6 @@ public class DocumentContentsBuilder {
 
   private static final Logger logger = LoggerFactory.getLogger(DocumentContentsBuilder.class);
  
-  
   public IDocumentContents buildContent (String id, String extn, IDocumentStore docStore) {
     Path path = docStore.getSourcePath(id);
     IDocumentContents docContents;
@@ -29,7 +28,7 @@ public class DocumentContentsBuilder {
       case ".pdf" :
         IImageParser imageParser = new TesseractImageOCR();
         IPDFParser pdfParser = new PDFBoxPDFParser(imageParser);
-        docContents = pdfParser.parse(id, path, 150, docStore);
+        docContents = pdfParser.parse(id, path, IDocumentStore.IMAGE_RESOLUTION, docStore);
         break;
       default :
         throw new RuntimeException("File type: " + path + " not supported");

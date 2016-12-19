@@ -20,11 +20,19 @@ class PDFTextStripper3 extends PDFTextStripper {
 
   
   @Override
+  protected void writeCharacters (TextPosition tp) throws IOException {
+    System.out.println("====> " + tp.getX() + " '" + tp.getUnicode() + "' " + tp.getWidth());
+    super.writeCharacters(tp);
+  }
+  
+  
+  @Override
   protected void writeString(String text, List<TextPosition> textPositions) throws IOException {
     // Starting position
     TextPosition posn0 = textPositions.get(0);
     float x0 = posn0.getX();
     float y0 = posn0.getY() - posn0.getHeight();
+    System.out.println(">>>> " + text + ":  " + posn0.getFont() + " " + posn0.getFontSize() + " " + posn0.getFontSizeInPt());
 
     // Ending position
     TextPosition posn1 = textPositions.get(textPositions.size() - 1);
@@ -33,7 +41,7 @@ class PDFTextStripper3 extends PDFTextStripper {
     float height = Float.max(posn0.getHeight(), posn1.getHeight());
     float heightAdj = (float)(height * 0.3);
     
-    PartialSegment partialSegment = new PartialSegment(getCurrentPageNo() - 1, x0, y0 - heightAdj, x1, y1 + heightAdj, text);
+    PartialSegment partialSegment = new PartialSegment(getCurrentPageNo() - 1, x0, y0 - heightAdj, x1, y1 + heightAdj, text, posn0.getFontSize());
     for (TextPosition p : textPositions) {
       partialSegment.add(new PartialSegment.Nibble(p.getX() - x0, p.getWidth(), p.getUnicode()));
     }

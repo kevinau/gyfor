@@ -28,6 +28,8 @@ public interface ISegment extends Comparable<ISegment> {
 
   public float getHeight();
 
+  public float getFontSize();
+  
   public String getText();
 
   public SegmentType getType();

@@ -13,6 +13,9 @@ import com.sleepycat.persist.SecondaryIndex;
 
 public interface IDocumentStore {
 
+  public static final int IMAGE_RESOLUTION = 360;
+  public static final double IMAGE_SCALE = 0.3;
+  
   public String importDocument (File file);
   
   public String importDocument (Path path);

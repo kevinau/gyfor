@@ -46,27 +46,30 @@ public class PartialSegment {
   private float x1;
   private float y1;
   private String word;
+  private float fontSize;
   private transient List<Nibble> nibbles;
 
-  public PartialSegment(PartialSegment old, String word) {
+  public PartialSegment(PartialSegment old, String word, float fontSize) {
     this.page = old.page;
     this.x0 = old.x0;
     this.y0 = old.y0;
     this.x1 = old.x1;
     this.y1 = old.y1;
     this.word = word;
+    this.fontSize = fontSize;
     this.nibbles = new ArrayList<>();
     this.nibbles.add(new Nibble(0, old.x1 - old.x0, word));
   }
   
   
-  public PartialSegment(int page, float x0, float y0, float x1, float y1, String word) {
+  public PartialSegment(int page, float x0, float y0, float x1, float y1, String word, float fontSize) {
     this.page = page;
     this.x0 = x0;
     this.y0 = y0;
     this.x1 = x1;
     this.y1 = y1;
     this.word = word;
+    this.fontSize = fontSize;
     this.nibbles = new ArrayList<>();
   }
 
@@ -77,6 +80,7 @@ public class PartialSegment {
     y0 = Float.parseFloat(x[2]);
     x1 = Float.parseFloat(x[3]);
     y1 = Float.parseFloat(x[4]);
+    fontSize = 0;
     this.word = null;
   }
 
@@ -180,6 +184,10 @@ public class PartialSegment {
     return word;
   }
   
+  
+  float getFontSize() {
+    return fontSize;
+  }
   
   @Override
   public String toString() {

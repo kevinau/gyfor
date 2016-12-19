@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.gyfor.docstore.Dictionary;
+import org.gyfor.docstore.IDocumentStore;
 import org.gyfor.docstore.ISegment;
 import org.gyfor.docstore.ITrainingData;
 import org.gyfor.docstore.SegmentType;
@@ -20,8 +21,8 @@ public class SpecialWordClassifier {
   
   private static class SegmentXComparator implements Comparator<ISegment> {
 
-    /* One point at 150dpi */
-    private static final double POINT = 150.0 / 72.0;
+    /* One point at nominated dpi */
+    private static final double POINT = IDocumentStore.IMAGE_RESOLUTION / 72.0;
     
     @Override
     public int compare(ISegment arg0, ISegment arg1) {
@@ -48,8 +49,8 @@ public class SpecialWordClassifier {
   
   private static class SegmentYComparator implements Comparator<ISegment> {
 
-    /* One point at 150dpi */
-    private static final double POINT = 150.0 / 72.0;
+    /* One point at nominated dpi */
+    private static final double POINT = IDocumentStore.IMAGE_RESOLUTION / 72.0;
     
     @Override
     public int compare(ISegment arg0, ISegment arg1) {

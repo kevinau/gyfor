@@ -19,28 +19,19 @@ public class DocumentContents implements IDocumentContents, Serializable {
   
   private final List<ISegment> segments;
   
-  private int pageCount;
+  private final List<PageImage> pageImages;
   
   
   public DocumentContents () {
     segments = new ArrayList<>();
+    pageImages = new ArrayList<>();
+    
   }
   
   
   private DocumentContents (int n) {
     segments = new ArrayList<>(n);
-  }
-  
-  
-  @Override
-  public void setPageCount (int pageCount) {
-    this.pageCount = pageCount;
-  }
-  
-  
-  @Override
-  public int getPageCount () {
-    return pageCount;
+    pageImages = new ArrayList<>(n);
   }
   
   
@@ -73,7 +64,8 @@ public class DocumentContents implements IDocumentContents, Serializable {
         float y0 = partialSegment.getY0();
         float x1 = partialSegment.adjustedX1(n2);
         float y1 = partialSegment.getY1();
-        s = new Segment(page, x0, y0, x1, y1, text.substring(n1, n2), result.type(), result.value());
+        float fontSize = partialSegment.getFontSize();
+        s = new Segment(page, x0, y0, x1, y1, fontSize, text.substring(n1, n2), result.type(), result.value());
         segments.add(s);
         
         if (n2 < nz) {
@@ -91,7 +83,8 @@ public class DocumentContents implements IDocumentContents, Serializable {
       float y0 = partialSegment.getY0();
       float x1 = partialSegment.adjustedX1(nz);
       float y1 = partialSegment.getY1();
-      s = new Segment(pageIndex, x0, y0, x1, y1, t, SegmentType.TEXT, null);
+      float fontSize = partialSegment.getFontSize();
+      s = new Segment(pageIndex, x0, y0, x1, y1, fontSize, t, SegmentType.TEXT, null);
       segments.add(s);
     }
   }
@@ -249,6 +242,18 @@ public class DocumentContents implements IDocumentContents, Serializable {
       System.out.println(segment);
     }
     System.out.println();
+  }
+  
+  
+  @Override
+  public void addPageImage (PageImage pageImage) {
+    pageImages.add(pageImage);
+  }
+  
+  
+  @Override
+  public List<PageImage> getPageImages () {
+    return pageImages;
   }
 
 }
