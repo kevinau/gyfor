@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.sleepycat.persist.model.DeleteAction;
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.Relationship;
@@ -26,13 +27,15 @@ public class Document implements Serializable {
 
   private String originExtension;
   
-  
   @SecondaryKey(relate = Relationship.MANY_TO_ONE)
   private final Date importTime;
 
   private IDocumentContents contents;
   
-  private List<PageImage> pages;
+  private List<PageImage> pageImages;
+  
+  @SecondaryKey(relate = Relationship.MANY_TO_ONE, relatedEntity = Party.class, onRelatedEntityDelete = DeleteAction.NULLIFY)
+  private int partyId;
   
   
   public Document() {
@@ -48,7 +51,7 @@ public class Document implements Serializable {
     this.originExtension = originExtension;
     this.importTime = new Date();
     this.contents = contents;
-    this.pages = new ArrayList<>();
+    this.pageImages = new ArrayList<>();
   }
 
   
@@ -83,7 +86,7 @@ public class Document implements Serializable {
   
   
   public int getPageCount () {
-    return pages.size();
+    return pageImages.size();
   }
   
   

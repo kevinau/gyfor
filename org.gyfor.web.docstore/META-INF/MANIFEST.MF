@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Web page listing of docstore contents
+Bundle-SymbolicName: org.gyfor.web.docstore
+Bundle-Version: 1.0.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.sleepycat.persist,
+ io.undertow.server,
+ io.undertow.util,
+ org.gyfor.docstore,
+ org.gyfor.http,
+ org.gyfor.template,
+ org.gyfor.util,
+ org.osgi.framework;version="1.8.0"
+Service-Component: OSGI-INF/org.gyfor.web.docstore.SingleDocumentView.xml,
+ OSGI-INF/org.gyfor.web.docstore.DocstoreResources.xml,
+ OSGI-INF/org.gyfor.web.docstore.ListThumbsView.xml
+Bundle-ActivationPolicy: lazy

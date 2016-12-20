@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{title}}</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/global/resources/favicon.ico" />
+  <style>
+html, body { 
+  margin:0; padding:0; 
+}
+.TEXT,
+.DATE,
+.CURRENCY,
+.ABN,
+.PERCENT,
+.RUBBISH {
+  display: block;
+  position: absolute;
+  background: transparent;
+}
+
+.TEXT,
+.ABN {
+  white-space: pre;
+}
+.DATE {
+  border: 2px solid rgba(255, 140, 0, 1); 
+  margin: -2px -4px 0 -4px;
+  padding: 0 2px 0 2px;
+}
+.CURRENCY {
+  border: 2px solid rgba(255, 140, 0, 1); 
+  margin: -2px -4px 0 -4px;
+  padding: 0 2px 0 2px;
+}
+.PERCENT {
+  border: 2px solid rgba(255, 140, 0, 1); 
+  margin: -2px -4px 0 -4px;
+  padding: 0 2px 0 2px;
+}
+.RUBBISH {
+  border: 2px dashed #888; 
+  white-space: pre;
+}
+div span { 
+ font-family: sans-serif; font-size: 6pt; background: white; 
+}
+#main {
+  background-color: rgb(183, 183, 183);
+}
+div.origin {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 20;
+}
+.unselectable {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  unselectable: on;
+
+  /* Prevents dragging of images/divs etc */
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+.selectable {
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -o-user-select: text;
+  user-select: text;
+}
+div.docPage {
+  margin-bottom: 16px;
+  position: relative;
+  top: 0;
+  bottom: 0;
+ }
+div.docPage:first-child {
+  xxxmargin-top: 0;
+}
+div.docPage>div.TEXT,
+div.docPage>div.DATE,
+div.docPage>div.CURRENCY,
+div.docPage>div.ABN,
+div.docPage>div.PERCENT {
+  position: absolute;
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -o-user-select: text;
+  user-select: text;
+  color: transparent;
+  font-family: Arial, sans-serif;
+  white-space: nowrap;
+}
+div.docPage img {
+  z-index: -10;
+  pointer-events: none;
+  unselectable: on;
+}
+  </style>
+  <style>
+.DATE,			/* selectable segments */
+.CURRENCY,
+.PERCENT {
+    cursor: pointer;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+    xxxbackground-color: rgba(255, 140, 0, 0.5);
+    border-color: rgba(255, 140, 0, 1);
+}
+
+.dropdown {
+    position: relative;
+    color: black;
+}
+
+.dropdown-content {
+    position: absolute;
+    background-color: #ffffff;
+    overflow: auto;
+    margin-left: -4px;
+    border: 1px solid rgba(255, 140, 0, 1);
+    z-index: 100;
+}
+
+.dropdown-content a {
+    color: black;
+    text-decoration: none;
+    display: block;
+    padding: 2px 6px 2px 6px;
+}
+
+.dropdown-content a.covet {
+    background-color: rgba(255, 140, 0, 0.5);
+}
+
+.dropdown a:hover {
+    xxxbackground-color: #f1f1f1;
+}
+
+.show {display:block;}
+  </style>
+  <script>
+var docFields = [
+  {
+    name : "declaredDate",
+    title : "Declared date",
+    isDate : true,
+    isCurrency : false,
+    inputId : ""
+  },
+  {
+    name : "paymentDate",
+    title : "Payment date",
+    isDate : true,
+    isCurrency : false,
+    inputId : ""
+  },
+  {
+    name : "dividendAmount",
+    title : "Dividend amount",
+    isDate : false,
+    isCurrency : true,
+    inputId : ""
+  },
+  {
+    name : "imputationCredit",
+    title : "Imputation credit",
+    isDate : false,
+    isCurrency : true,
+    inputId : ""
+  }
+];
+  </script>
+</head>
+<body>
+  <div id="main">
+    <div class="origin"><a href="{{context}}/docstore{{sourcePath}}">{{document.originExtension | upper}}</a></div>
+    <div class="docPages">
+      {% for p in imagePaths %}
+      {% set i = loop.index %}
+      {% set pageImage = pageImages[i] %}
+      <div class="docPage" style="background-image: url({{context}}/docstore{{p}}); background-size: {{pageImage.width * imageScale}}px {{pageImage.height * imageScale}}px; width:{{pageImage.width * imageScale}}px; height:{{pageImage.height * imageScale}}px;">
+        {% for seg in segments %}
+          {% if i == seg.pageIndex %}
+          <div style="left:{{seg.x0}}px; top:{{seg.y0}}px; width:{{seg.width}}px; height:{{seg.height}}px; font-size:{{seg.fontSize}}pt"
+            {% if seg.type.isRawText %}
+             title="{{seg.text}}" class="{{seg.type}}">{{seg.text}}</div>
+            {% elseif seg.type.isSingular %}
+             title="{{seg.text}}({{seg.type}})" class="{{seg.type}}">{{seg.text}}</div>
+            {% else %}
+             onclick="myFunction(this)" 
+             title="{{seg.text}}({{seg.type}})" class="{{seg.type}} dropbtn"></div>
+            {% endif %}
+          {% endif %}
+       {% endfor %}
+        <!-- img src="{{context}}/docstore{{p}}" width="{{pageImage.width * imageScale}}" height="{{pageImage.height * imageScale}}" -->
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  
+<script>
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+function myFunction(elem) {
+    var fieldNameSelect = document.getElementById("field-name-select");
+    if (fieldNameSelect) {
+      fieldNameSelect.remove();
+    } else {
+      fieldNameSelect = document.createElement("div");
+      fieldNameSelect.classList.add("dropdown");
+      fieldNameSelect.id = "field-name-select";
+      fieldNameSelect.setAttribute("tabindex", "0");
+      var computedStyle = window.getComputedStyle(elem);
+      var marginTop = parseInt(computedStyle.marginTop);
+      fieldNameSelect.setAttribute("style", "position:relative; top:" + (elem.offsetHeight + marginTop) + "px;");
+    
+      var newDropContent = document.createElement("div");
+      newDropContent.classList.add("dropdown-content");
+      fieldNameSelect.appendChild(newDropContent);
+      for (i = 0; i < docFields.length; i++) {
+        var docField = docFields[i];
+        var newDropItem = document.createElement("a");
+        newDropItem.setAttribute("href", "javascript:void(0)");
+        var newDropTitle = document.createTextNode(docField.title);
+        newDropItem.appendChild(newDropTitle);
+        newDropItem.onmouseover = function (e) {
+          var fieldNameSelect = document.getElementById("field-name-select");
+          var newDropComponent = fieldNameSelect.firstChild;
+          var itemElems = newDropComponent.children;
+          
+          for (var i = 0; i < itemElems.length; i++) {
+            var itemElem = itemElems[i];
+            if (itemElem.classList.contains("covet")) {
+              itemElem.classList.remove("covet");
+              break;
+            }
+          }
+          e.target.classList.add("covet"); 
+        };
+        newDropContent.appendChild(newDropItem);
+      }
+      elem.appendChild(fieldNameSelect);
+      fieldNameSelect.focus();
+      fieldNameSelect.onkeydown = function (e) {
+        var code = e.keyCode ? e.keyCode : e.which;
+        if (code === 38 || code == 40) { // Up or down key
+          var fieldNameSelect = document.getElementById("field-name-select");
+          var newDropComponent = fieldNameSelect.firstChild;
+          var itemElems = newDropComponent.children;
+          var found = false;
+          
+          for (var i = 0; i < itemElems.length; i++) {
+            var itemElem = itemElems[i];
+             if (itemElem.classList.contains("covet")) {
+              itemElem.classList.remove("covet");
+              if (code == 38) {
+                // Up key         
+                if (i == 0) {
+                  i = itemElems.length - 1;
+                } else {
+                  i = i - 1;
+                }
+              } else {
+                // Up key         
+                if (i == itemElems.length - 1) {
+                  i = 0;
+                } else {
+                  i = i + 1;
+                }
+              }
+              itemElems[i].classList.add("covet");
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            if (code == 38) {
+              i = itemElems.length - 1;
+            } else {
+              i = 0;
+            }
+            itemElems[i].classList.add("covet");
+          }
+          e.stopPropagation();
+          return false;
+        }
+        //
+      };
+    }
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+      if (event.target.id == "field-name-select") {
+        // do nothing
+      } else {
+        var fieldNameSelect = document.getElementById("field-name-select");
+        if (fieldNameSelect) {
+          fieldNameSelect.remove();
+        }
+      }
+    }  
+}
+</script>
+</body>
+</html>
+ 

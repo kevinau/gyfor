@@ -25,7 +25,6 @@ import java.util.Set;
 
 import org.apache.pdfbox.contentstream.PDFGraphicsStreamEngine;
 import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
@@ -51,7 +50,7 @@ final class PDFImageExtractor {
   
   private final IImageParser imageParser;
   private final int dpi;
-  private final Set<COSStream> seen = new HashSet<COSStream>();
+  private final Set<PDImageXObject> seen = new HashSet<>();
   
   PDFImageExtractor(IImageParser imageParser, int dpi) {
     this.imageParser = imageParser;
@@ -128,11 +127,11 @@ final class PDFImageExtractor {
     public void drawImage(PDImage pdImage) throws IOException {
       if (pdImage instanceof PDImageXObject) {
         PDImageXObject xobject = (PDImageXObject) pdImage;
-        if (seen.contains(xobject.getCOSStream())) {
+        if (seen.contains(xobject)) {
           // skip duplicate image
           return;
         }
-        seen.add(xobject.getCOSStream());
+        seen.add(xobject);
       }
 
       Matrix ctm = getGraphicsState().getCurrentTransformationMatrix();
