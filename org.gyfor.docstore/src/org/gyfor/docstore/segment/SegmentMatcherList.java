@@ -15,6 +15,7 @@ public class SegmentMatcherList {
     new CurrencyMatcher(),
     new CentsPenceMatcher(),
     new PercentMatcher(),
+    new ABNMatcher(),
   };
   
   

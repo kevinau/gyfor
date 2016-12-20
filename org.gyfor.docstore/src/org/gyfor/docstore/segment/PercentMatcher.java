@@ -21,7 +21,7 @@ class PercentMatcher implements ISegmentMatcher {
     if (matcher.find()) {
       String nnn = matcher.group(1);
       double value = Double.parseDouble(nnn) / 100.0;
-      return new SegmentMatchResult(matcher, SegmentType.SPECIAL, value);
+      return new SegmentMatchResult(matcher, SegmentType.PERCENT, value);
     } else {
       return null;
     }

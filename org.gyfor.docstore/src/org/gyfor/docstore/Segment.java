@@ -38,17 +38,10 @@ public class Segment implements Serializable, ISegment {
   
   
   Segment(int pageIndex, float x0, float y0, float x1, float y1, float fontSize, String word, SegmentType type, Object value) {
-    switch (type) {
-    case DATE :
-    case CURRENCY :
-    case SPECIAL :
+    if (!type.isRawText()) {
       if (value == null) {
-        throw new IllegalArgumentException("Value cannot be null for DATE, CURRENCY and SPECIAL types");
+        throw new IllegalArgumentException("Value cannot be null for non-text types");
       }
-      break;
-    case TEXT :
-    case RUBBISH :
-      break;
     }
     this.pageIndex = pageIndex;
     this.x0 = x0;
