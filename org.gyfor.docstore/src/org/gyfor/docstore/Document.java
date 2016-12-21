@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.sleepycat.persist.model.DeleteAction;
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.Relationship;
@@ -19,8 +18,6 @@ public class Document implements Serializable {
   @PrimaryKey
   private String id;
   
-  private String type;
-  
   private Date originTime;
   
   private String originName;
@@ -32,12 +29,9 @@ public class Document implements Serializable {
 
   private IDocumentContents contents;
   
-  private List<PageImage> pageImages;
+  //private List<PageImage> pageImages;
   
-  @SecondaryKey(relate = Relationship.MANY_TO_ONE, relatedEntity = Party.class, onRelatedEntityDelete = DeleteAction.NULLIFY)
-  private int partyId;
-  
-  
+
   public Document() {
     this.importTime = new Date();
   }
@@ -45,13 +39,23 @@ public class Document implements Serializable {
 
   public Document(String id, Date originTime, String originName, String originExtension, IDocumentContents contents) {
     this.id = id;
-    this.type = "Unclassified";
     this.originTime = originTime;
     this.originName = originName;
     this.originExtension = originExtension;
     this.importTime = new Date();
     this.contents = contents;
-    this.pageImages = new ArrayList<>();
+    //this.pageImages = new ArrayList<>();
+  }
+
+  
+  public Document(Document doc, String type) {
+    this.id = doc.id;
+    this.originTime = doc.originTime;
+    this.originName = doc.originName;
+    this.originExtension = doc.originExtension;
+    this.importTime = doc.importTime;
+    this.contents = doc.contents;
+    //this.pageImages = doc.pageImages;
   }
 
   
@@ -61,7 +65,7 @@ public class Document implements Serializable {
   
   
   public String getType () {
-    return type;
+    return "Unclassified";
   }
   
   
@@ -85,14 +89,14 @@ public class Document implements Serializable {
   }
   
   
-  public int getPageCount () {
-    return pageImages.size();
-  }
+  //public int getPageCount () {
+  //  return pageImages.size();
+  //}
   
   
   @Override
   public String toString() {
     return "Document[" + id + ", " + originName + ", " + originExtension + ", " + originTime + "]";
   }
-  
+
 }

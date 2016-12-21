@@ -5,7 +5,7 @@ public enum SegmentType {
   TEXT(true, false),
   DATE(false, false),
   CURRENCY(false, false),
-  ABN(false, true),
+  COMPANY_NUMBER(true, true),
   PERCENT(false, false),
   RUBBISH(true, false);          // This is only used for analyzing OCR'd data
   

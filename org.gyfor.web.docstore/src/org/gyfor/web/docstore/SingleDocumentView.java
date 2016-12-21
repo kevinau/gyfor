@@ -9,6 +9,8 @@ import java.util.Map;
 
 import org.gyfor.docstore.Document;
 import org.gyfor.docstore.IDocumentStore;
+import org.gyfor.docstore.ISegment;
+import org.gyfor.docstore.SegmentType;
 import org.gyfor.http.Context;
 import org.gyfor.http.HttpUtility;
 import org.gyfor.template.ITemplate;
@@ -101,11 +103,23 @@ public class SingleDocumentView implements HttpHandler {
     context.put("context", exchange.getResolvedPath());
     context.put("docStore", docStore);
     
-    int pages = doc.getPageCount();
+//    List<Company> companies = new ArrayList<>();
+//    boolean cleanCompanyList = true;
+//    for (ISegment seg : doc.getContents().getSegments()) {
+//      if (seg.getType() == SegmentType.COMPANY_NUMBER) {
+//        Company company = companyService.getCompany((String)seg.getValue());
+//        if (company == null) {
+//          cleanCompanyList = false;
+//        } else {
+//          companies.add(company);
+//        }
+//      }
+//    }
+    
+    int pages = doc.getContents().getPageCount();
     List<String> imagePaths = new ArrayList<>(pages);
-    imagePaths.add(docStore.webViewImagePath(doc.getId(), doc.getOriginExtension(), 0));
-    for (int i = 1; i < pages; i++) {
-       imagePaths.add(docStore.webViewImagePath(doc.getId(), doc.getOriginExtension(), i));
+    for (int i = 0; i < pages; i++) {
+      imagePaths.add(docStore.webViewImagePath(doc.getId(), doc.getOriginExtension(), i));
     }
     context.put("imagePaths", imagePaths);
     context.put("pageImages", doc.getContents().getPageImages());

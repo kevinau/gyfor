@@ -58,5 +58,7 @@ public interface IDocumentContents {
   public void addPageImage (PageImage docImage);
   
   public List<PageImage> getPageImages ();
+
+  public int getPageCount();
   
 }

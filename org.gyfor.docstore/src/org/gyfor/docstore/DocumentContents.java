@@ -65,7 +65,7 @@ public class DocumentContents implements IDocumentContents, Serializable {
         float x1 = partialSegment.adjustedX1(n2);
         float y1 = partialSegment.getY1();
         float fontSize = partialSegment.getFontSize();
-        s = new Segment(page, x0, y0, x1, y1, fontSize, text.substring(n1, n2), result.type(), result.value());
+        s = new Segment(page, segments.size(), x0, y0, x1, y1, fontSize, text.substring(n1, n2), result.type(), result.value());
         segments.add(s);
         
         if (n2 < nz) {
@@ -84,7 +84,7 @@ public class DocumentContents implements IDocumentContents, Serializable {
       float x1 = partialSegment.adjustedX1(nz);
       float y1 = partialSegment.getY1();
       float fontSize = partialSegment.getFontSize();
-      s = new Segment(pageIndex, x0, y0, x1, y1, fontSize, t, SegmentType.TEXT, null);
+      s = new Segment(pageIndex, segments.size(), x0, y0, x1, y1, fontSize, t, SegmentType.TEXT, null);
       segments.add(s);
     }
   }
@@ -255,5 +255,32 @@ public class DocumentContents implements IDocumentContents, Serializable {
   public List<PageImage> getPageImages () {
     return pageImages;
   }
+  
+  
+  @Override
+  public int getPageCount () {
+    return pageImages.size();
+  }
 
+  
+  public ISegment getUniqueSegment (SegmentType type) {
+    Object value = null;
+    ISegment found = null;
+    for (ISegment seg : segments) {
+      if (seg.getType() == type) {
+        if (value == null) {
+          value = seg.getValue();
+          found = seg;
+        } else if (value.equals(seg.getValue())) {
+          // Identical value.  Ignore
+        } else {
+          // Duplicate value, different from the first
+          return null;
+        }
+      }
+    }
+    return found;
+  }
+  
+  
 }

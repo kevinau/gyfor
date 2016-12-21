@@ -13,7 +13,10 @@ public class Segment implements Serializable, ISegment {
 //  private static Pattern titlePattern = Pattern.compile(" ");
 
   // Zero based page number
-  private int pageIndex;
+  private final int pageIndex;
+  
+  // Zero based segment number within document.
+  private final int segmentId;
   
   private float x0;
   private float y0;
@@ -21,8 +24,9 @@ public class Segment implements Serializable, ISegment {
   private float y1;
   private float fontSize;
   private String word;
-  private SegmentType type;
-  private Object value;
+  private final SegmentType type;
+  private final Object value;
+  private String fieldName;
   
 //  @Deprecated
 //  Segment(PartialSegment old) {
@@ -34,16 +38,21 @@ public class Segment implements Serializable, ISegment {
 //  }
 
   Segment() {
+    this.pageIndex = 0;
+    this.segmentId = 0;
+    this.value = null;
+    this.type = SegmentType.RUBBISH;
   }
   
   
-  Segment(int pageIndex, float x0, float y0, float x1, float y1, float fontSize, String word, SegmentType type, Object value) {
+  Segment(int pageIndex, int segmentId, float x0, float y0, float x1, float y1, float fontSize, String word, SegmentType type, Object value) {
     if (!type.isRawText()) {
       if (value == null) {
         throw new IllegalArgumentException("Value cannot be null for non-text types");
       }
     }
     this.pageIndex = pageIndex;
+    this.segmentId = segmentId;
     this.x0 = x0;
     this.y0 = y0;
     this.x1 = x1;
@@ -64,16 +73,19 @@ public class Segment implements Serializable, ISegment {
 //    this.word = null;
 //  }
 
+  
   @Override
   public void resolveWordIndex(Dictionary dictionary) {
     dictionary.resolve(word);
   }
 
+  
   @Override
   public void updateDictionary(Dictionary dictionary) {
     dictionary.update(word);
   }
 
+  
   @Override
   public void scaleBoundingBox(double factor) {
     x0 = (float)(x0 * factor);
@@ -82,6 +94,7 @@ public class Segment implements Serializable, ISegment {
     y1 = (float)(y1 * factor);
   }
 
+  
   @Override
   public int compareTo (ISegment other) {
     float thisY = (y0 + y1) / 2;
@@ -101,9 +114,10 @@ public class Segment implements Serializable, ISegment {
     return 0;
   }
   
+  
   @Override
   public String toString() {
-    StringBuilder s = new StringBuilder("[" + pageIndex + ": " + x0 + "," + y0 + "," + x1 + "," + y1 + ": " + word + "@" + type);
+    StringBuilder s = new StringBuilder("[" + pageIndex + ":" + segmentId + " " + x0 + "," + y0 + "," + x1 + "," + y1 + ": " + word + "@" + type);
     s.append("]");
     return s.toString();
   }
@@ -112,6 +126,12 @@ public class Segment implements Serializable, ISegment {
   @Override
   public int getPageIndex() {
     return pageIndex;
+  }
+  
+  
+  @Override
+  public int getSegmentId() {
+    return segmentId;
   }
   
   
@@ -165,7 +185,19 @@ public class Segment implements Serializable, ISegment {
     return value;
   }
   
+  
+  @Override 
+  public void setFieldName(String fieldName) {
+    this.fieldName = fieldName;
+  }
 
+  
+  @Override
+  public String getFieldName() {
+    return fieldName;
+  }
+  
+  
   @Override
   public boolean overlapsHorizontally (ISegment other) {
     if (other.getY1() < y0) {

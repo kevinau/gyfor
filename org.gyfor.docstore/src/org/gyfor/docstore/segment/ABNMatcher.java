@@ -21,7 +21,7 @@ class ABNMatcher implements ISegmentMatcher {
     if (matcher.find()) {
       String nn = matcher.group(3);
       if (isValidABN(nn)) {
-        return new SegmentMatchResult(matcher, SegmentType.ABN, nn);
+        return new SegmentMatchResult(matcher, SegmentType.COMPANY_NUMBER, nn);
       } else {
         return null;
       }

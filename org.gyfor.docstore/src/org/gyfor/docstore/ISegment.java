@@ -16,6 +16,8 @@ public interface ISegment extends Comparable<ISegment> {
 
   public int getPageIndex();
   
+  public int getSegmentId();
+  
   public float getX0();
 
   public float getY0();
@@ -35,6 +37,10 @@ public interface ISegment extends Comparable<ISegment> {
   public SegmentType getType();
   
   public Object getValue();
+  
+  public void setFieldName(String name);
+  
+  public String getFieldName();
   
   public boolean overlapsHorizontally (ISegment other);
   
