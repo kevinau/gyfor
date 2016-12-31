@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0
 Bundle-ClassPath: lib/je-7.0.6.jar,
  .
 Bundle-Vendor: Kevin Holloway
-Export-Package: com.sleepycat.persist,
+Export-Package: com.sleepycat.je,
+ com.sleepycat.persist,
  com.sleepycat.persist.model,
  org.gyfor.berkeleydb
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

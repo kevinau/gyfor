@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.gyfor.osgi.ComponentConfiguration;
 import org.gyfor.osgi.Configurable;
@@ -15,8 +16,15 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sleepycat.je.Database;
+import com.sleepycat.je.DatabaseConfig;
+import com.sleepycat.je.DatabaseNotFoundException;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
+import com.sleepycat.je.SecondaryConfig;
+import com.sleepycat.je.SecondaryDatabase;
+import com.sleepycat.je.Transaction;
+import com.sleepycat.je.TransactionConfig;
 import com.sleepycat.persist.EntityStore;
 import com.sleepycat.persist.StoreConfig;
 
@@ -65,6 +73,49 @@ public class DataEnvironment {
   
   public EntityStore newEntityStore (String storeName, StoreConfig storeConfig) {
     return new EntityStore(envmnt, "EntityStore", storeConfig);
+  }
+  
+  
+  public Database openDatabase (Transaction trans, String name, DatabaseConfig dbConfig) {
+    return envmnt.openDatabase(trans, name, dbConfig);
+  }
+  
+  
+  public SecondaryDatabase openSecondaryDatabase (Transaction trans, String name, Database primaryDatabase, SecondaryConfig secondaryConfig) {
+    return envmnt.openSecondaryDatabase(trans, name, primaryDatabase, secondaryConfig);
+  }
+  
+  
+  public Transaction beginTransaction () {
+    return envmnt.beginTransaction(null, null);
+  }
+
+  
+  public Transaction beginTransaction (Transaction trans, TransactionConfig transConfig) {
+    return envmnt.beginTransaction(trans, transConfig);
+  }
+  
+  
+  public void truncateDatabase (String name) {
+    String prefix = name + "_";
+    
+    Transaction txn = beginTransaction();
+    List<String> names = envmnt.getDatabaseNames();
+    for (String n : names) {
+      if (n.equals(name) || n.startsWith(prefix)) {
+        try {
+          envmnt.truncateDatabase(txn, n, false);
+          logger.info("Database truncated: {}", n);
+        } catch (DatabaseNotFoundException ex) {
+          // Do nothing if the database cannot be found
+        } catch (Exception ex) {
+          // But catch any other errors
+          txn.abort();
+          throw ex;
+        }
+      }
+    }
+    txn.commit();
   }
   
 }

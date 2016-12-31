@@ -49,11 +49,23 @@ div span {
 #main {
   background-color: rgb(183, 183, 183);
 }
-div.origin {
+#origin {
   position: fixed;
   top: 0;
   right: 0;
   z-index: 20;
+}
+#party {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  color: #ffffff;
+  background-color: rgba(255, 140, 0, 1);
+  font-family: Helvetica, sans-serif;
+  font-size: 14px;
+  text-decoration: none;
+  padding: .25em 0.75em .25em 0.75em;
 }
 .unselectable {
   -webkit-user-select: none;
@@ -185,7 +197,10 @@ var docFields = [
 </head>
 <body>
   <div id="main">
-    <div class="origin"><a href="{{context}}/docstore{{sourcePath}}">{{document.originExtension | upper}}</a></div>
+    <div id="origin"><a href="{{context}}/docstore{{sourcePath}}">{{document.originExtension | upper}}</a></div>
+    {% if party is not empty %}
+    <a id="party" href="http://{{party.webPage}}" target="_blank" rel="noopener noreferrer">{{party.formalName}}</a>
+    {% endif %}
     <div class="docPages">
       {% for p in imagePaths %}
       {% set i = loop.index %}

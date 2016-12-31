@@ -60,5 +60,7 @@ public interface IDocumentContents {
   public List<PageImage> getPageImages ();
 
   public int getPageCount();
+
+  public ISegment getUniqueSegment(SegmentType type);
   
 }

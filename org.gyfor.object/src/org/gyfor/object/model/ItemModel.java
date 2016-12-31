@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.gyfor.object.UserEntryException;
+import org.gyfor.object.model.ref.IValueReference;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.plan.IValidationMethod;
 import org.gyfor.object.type.IType;
 
 
@@ -26,7 +28,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
 
   private final Map<Object, ErrorInstance> validationErrors = new HashMap<Object, ErrorInstance>();
 
-  private final IContainerObject container;
+  private final IValueReference valueRef;
   private final IItemPlan<?> itemPlan;
   private final IType<Object> type;
 
@@ -43,17 +45,17 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   
   //private Object parentInstance;
   
-  private Object fieldValue = null;
-  private String fieldValueSource = "";
-  private boolean fieldValueInError = true;
+  private Object itemValue = null;
+  private String itemSource = "";
+  private boolean itemValueInError = true;
   
   
   @SuppressWarnings("unchecked")
-  public ItemModel (RootModel rootModel, NodeModel parent, int id, IItemPlan<?> itemPlan) {
+  public ItemModel (RootModel rootModel, ContainerModel parent, int id, IValueReference valueRef, IItemPlan<?> itemPlan) {
 //  public ItemModel (IContainerModel parentModel, IContainerObject container, IItemPlan<?> itemPlan) {
     super (rootModel, parent, id);
     this.itemPlan = itemPlan;
-    this.container = container;
+    this.valueRef = valueRef;
     this.type = (IType<Object>)itemPlan.getType();
     
     // Add event listener so this field can react to effective mode changes
@@ -62,8 +64,8 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   }
 
   
-  public ItemModel (IContainerModel parentModel, IContainerObject container, IItemPlan<?> itemPlan, Object value) {
-    this (parentModel, container, itemPlan);
+  public ItemModel (RootModel rootModel, ContainerModel parent, int id, IValueReference valueRef, IItemPlan<?> itemPlan, Object value) {
+    this (rootModel, parent, id, valueRef, itemPlan);
     setValue(value);
   }
 
@@ -215,7 +217,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   @SuppressWarnings("unchecked")
   @Override
   public <T> T getValue () {
-    return (T)fieldValue;
+    return (T)itemValue;
   }
   
   
@@ -235,7 +237,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   
   
   void setInitialDefaultValue () {
-    defaultValue = container.getValue();
+    defaultValue = valueRef.getValue();
     defaultSource = type.toEntryString(defaultValue, null);
   }
   
@@ -243,7 +245,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   public void setDefaultValue (Object value) {
     boolean defaultWasShowing = false;
     if (comparisonBasis == ComparisonBasis.DEFAULT) {
-      defaultWasShowing = (defaultValue == null ? fieldValue == null : defaultValue.equals(fieldValue));
+      defaultWasShowing = (defaultValue == null ? itemValue == null : defaultValue.equals(itemValue));
     }
     defaultValue = value;
     defaultSource = type.toEntryString(value, null);
@@ -263,7 +265,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   public void setReferenceValue (Object value) {
     boolean referenceWasShowing = false;
     if (comparisonBasis == ComparisonBasis.REFERENCE) {
-      referenceWasShowing = (referenceValue == null ? fieldValue == null : referenceValue.equals(fieldValue));
+      referenceWasShowing = (referenceValue == null ? itemValue == null : referenceValue.equals(itemValue));
     }
     referenceValue = value;
     referenceSource = type.toEntryString(value, null);
@@ -293,13 +295,13 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   
   
   public String getValueAsSource () {
-    return fieldValueSource;
+    return itemSource;
   }
   
   
   public void setSourceFromValue (Object value) {
-    if (!fieldValueInError) {
-      fieldValueSource = type.toEntryString(value, null);
+    if (!itemValueInError) {
+      itemSource = type.toEntryString(value, null);
       setRawValue(value, null, false);
     }
   }
@@ -308,8 +310,8 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   @Override
   public void setValue(Object value) {
     String source = type.toEntryString(value, null);
-    fieldValueSource = source;
-    if (value == null ? fieldValue != null : !value.equals(fieldValue)) {
+    itemSource = source;
+    if (value == null ? itemValue != null : !value.equals(itemValue)) {
       getRoot().fireValueChange(this, null);
     }
     
@@ -319,7 +321,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
       Object newValue = type.createFromString(null, itemPlan.isOptional(), creating, source);
       setRawValue(newValue, null, true);
     } catch (UserEntryException ex) {
-      fieldValueInError = true;
+      itemValueInError = true;
       testAndFireValueEqualityChange();
       noteValidationError (ex);
     }
@@ -335,8 +337,8 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   public void setValueFromPrime () {
     Object primalValue = itemPlan.getType().primalValue();
     String source = type.toEntryString(primalValue, null);
-    fieldValueSource = source;
-    if (primalValue == null ? fieldValue != null : !primalValue.equals(fieldValue)) {
+    itemSource = source;
+    if (primalValue == null ? itemValue != null : !primalValue.equals(itemValue)) {
       fireSourceChange(this, null);
     }
     
@@ -346,7 +348,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
       Object newValue = type.createFromString(null, itemPlan.isOptional(), creating, source);
       setRawValue(newValue, null, true);
     } catch (UserEntryException ex) {
-      fieldValueInError = true;
+      itemValueInError = true;
       testAndFireValueEqualityChange();
       noteValidationError (ex);
     }
@@ -355,8 +357,8 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   
   public void setValueFromDefault () {
     String source = type.toEntryString(defaultValue, null);
-    fieldValueSource = source;
-    if (defaultValue == null ? fieldValue != null : !defaultValue.equals(fieldValue)) {
+    itemSource = source;
+    if (defaultValue == null ? itemValue != null : !defaultValue.equals(itemValue)) {
       fireSourceChange(this, null);
     }
     
@@ -366,7 +368,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
       Object newValue = type.createFromString(null, itemPlan.isOptional(), creating, source);
       setRawValue(newValue, null, true);
     } catch (UserEntryException ex) {
-      fieldValueInError = true;
+      itemValueInError = true;
       testAndFireValueEqualityChange();
       noteValidationError (ex);
     }
@@ -375,8 +377,8 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   
   public void setValueFromReference () {
     String source = type.toEntryString(referenceValue, null);
-    fieldValueSource = source;
-    if (referenceValue == null ? fieldValue != null : !referenceValue.equals(fieldValue)) {
+    itemSource = source;
+    if (referenceValue == null ? itemValue != null : !referenceValue.equals(itemValue)) {
       fireSourceChange(this, null);
     }
     
@@ -386,7 +388,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
       Object newValue = type.createFromString(null, itemPlan.isOptional(), creating, source);
       setRawValue(newValue, null, true);
     } catch (UserEntryException ex) {
-      fieldValueInError = true;
+      itemValueInError = true;
       testAndFireValueEqualityChange();
       noteValidationError (ex);
     }
@@ -394,8 +396,8 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   
   
   public void setReferenceFromValue () {
-    if (!fieldValueInError) {
-      setReferenceValue (fieldValue);
+    if (!itemValueInError) {
+      setReferenceValue (itemValue);
     }
   }
   
@@ -416,11 +418,11 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
 
   
   public void setValueFromSource(String source, ItemEventListener self, boolean creating) {
-    if (!fieldValueSource.equals(source)) {
-      fieldValueSource = source;
+    if (!itemSource.equals(source)) {
+      itemSource = source;
       fireSourceChange(this, self);
     } else {
-      fieldValueSource = source;
+      itemSource = source;
     }
     
     testAndFireSourceEqualityChange(true);
@@ -428,7 +430,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
       Object newValue = type.createFromString(null, itemPlan.isOptional(), creating, source);
       setRawValue (newValue, self, true);
     } catch (UserEntryException ex) {
-      fieldValueInError = true;
+      itemValueInError = true;
       testAndFireValueEqualityChange();
       // noteConversionError includes the processing of noteValidationError
       noteConversionError (this, ex);
@@ -453,20 +455,20 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
     clearError(this);
 
     // Change the value in the instance
-    if (fieldValueInError) {
+    if (itemValueInError) {
       // The value is being set when previously it was in error, so let others know
-      fieldValue = value;
-      fieldValueInError = false;
-      container.setValue(fieldValue);
+      itemValue = value;
+      itemValueInError = false;
+      valueRef.setValue(value);
       if (fireValueChangeEvents) {
         fireValueChange(this, self);
       }
     } else {
-      if (value == null ? fieldValue != null : !value.equals(fieldValue)) {
+      if (value == null ? itemValue != null : !value.equals(itemValue)) {
         // Set the new value.
-        fieldValue = value;
-        fieldValueInError = false;
-        container.setValue(fieldValue);
+        itemValue = value;
+        itemValueInError = false;
+        valueRef.setValue(value);
         // Firing a value change will trigger validation
         if (fireValueChangeEvents) {
           fireValueChange(this, self);
@@ -487,15 +489,15 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
     if (allowEntryEvents) { 
       boolean ce;
       if (validationErrors.isEmpty()) {
-        if (fieldValueInError) {
+        if (itemValueInError) {
           ce = true;
         } else {
           switch (comparisonBasis) {
           case DEFAULT :
-            ce = defaultValue == null ? fieldValue == null : defaultValue.equals(fieldValue);
+            ce = defaultValue == null ? itemValue == null : defaultValue.equals(itemValue);
             break;
           case REFERENCE :
-            ce = referenceValue == null ? fieldValue == null : referenceValue.equals(fieldValue);
+            ce = referenceValue == null ? itemValue == null : referenceValue.equals(itemValue);
             break;
           default :
             ce = true;
@@ -518,10 +520,10 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
       boolean cs;
       switch (comparisonBasis) {
       case DEFAULT :
-        cs = defaultSource.equals(fieldValueSource);
+        cs = defaultSource.equals(itemSource);
         break;
       case REFERENCE :
-        cs = referenceSource.equals(fieldValueSource);
+        cs = referenceSource.equals(itemSource);
         break;
       default :
         cs = true;
@@ -892,13 +894,6 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
       }
 
     }
-  }
-
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public void setType(IType<?> type) {
-    this.type = (IType<Object>)type;
   }
   
 }

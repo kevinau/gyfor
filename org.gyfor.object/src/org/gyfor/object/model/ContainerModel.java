@@ -4,7 +4,7 @@ import java.util.List;
 
 public abstract class ContainerModel extends NodeModel {
 
-  protected ContainerModel(RootModel rootModel, NodeModel parent, int id) {
+  protected ContainerModel(RootModel rootModel, ContainerModel parent, int id) {
     super(rootModel, parent, id);
   }
 

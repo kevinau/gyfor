@@ -263,6 +263,7 @@ public class DocumentContents implements IDocumentContents, Serializable {
   }
 
   
+  @Override
   public ISegment getUniqueSegment (SegmentType type) {
     Object value = null;
     ISegment found = null;

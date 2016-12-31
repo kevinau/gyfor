@@ -10,6 +10,7 @@ import java.util.Map;
 import org.gyfor.docstore.Document;
 import org.gyfor.docstore.IDocumentStore;
 import org.gyfor.docstore.ISegment;
+import org.gyfor.docstore.Party;
 import org.gyfor.docstore.SegmentType;
 import org.gyfor.http.Context;
 import org.gyfor.http.HttpUtility;
@@ -103,6 +104,15 @@ public class SingleDocumentView implements HttpHandler {
     context.put("context", exchange.getResolvedPath());
     context.put("docStore", docStore);
     
+    ISegment companySegment = doc.getContents().getUniqueSegment(SegmentType.COMPANY_NUMBER);
+    if (companySegment != null) {
+      int partyId = 1;
+      String shortName = "Qantas";
+      String formalName = "Qantas Airways";
+      String webPage = "www.qantas.com";
+      Party party = new Party(partyId, (String)companySegment.getValue(), shortName, formalName, webPage);
+      context.put("party", party);
+    }
 //    List<Company> companies = new ArrayList<>();
 //    boolean cleanCompanyList = true;
 //    for (ISegment seg : doc.getContents().getSegments()) {

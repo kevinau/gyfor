@@ -20,7 +20,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.sleepycat.persist.EntityCursor;
 import com.sleepycat.persist.PrimaryIndex;
 
-@Component
+//@Component
 public class DirectoryScanTest {
 
   private DigestFactory hashFactory = new CRC64DigestFactory();

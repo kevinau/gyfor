@@ -3,6 +3,7 @@ package org.gyfor.object.model;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.gyfor.object.UserEntryException;
+import org.gyfor.object.model.ref.IValueReference;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
@@ -115,16 +116,16 @@ public class RootModel {
   }
   
   
-  protected NodeModel buildNodeModel (NodeModel parent, INodePlan plan) {
+  protected NodeModel buildNodeModel (ContainerModel parent, INodePlan plan) {
     return buildNodeModel (parent, nextId(), plan);
   }
   
   
-  protected NodeModel buildNodeModel (NodeModel parent, int id, INodePlan plan) {
+  protected NodeModel buildNodeModel (ContainerModel parent, int id, IValueReference valueRef, INodePlan plan) {
     if (plan instanceof IItemPlan) {
-      return new ItemModel(this, parent, id, (IItemPlan<?>)plan);
+      return new ItemModel(this, parent, id, valueRef, (IItemPlan<?>)plan);
     } else if (plan instanceof IEntityPlan) {
-      return new EntityModel(this, null, id, (IEntityPlan<?>)plan);
+      return new EntityModel(this, null, id, valueRefm (IEntityPlan<?>)plan);
     } else {
       throw new RuntimeException("Unsupported plan: " + plan.getClass());
     }

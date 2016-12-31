@@ -221,8 +221,8 @@ public class AugmentedClass<T> {
         Mode modeAnn = field.getAnnotation(Mode.class);
         if (modeAnn != null) {
           entryMode = modeAnn.value();
-          if ((m & Modifier.FINAL) != 0 && entryMode == EntryMode.ENTRY) {
-            throw new RuntimeException("Cannot set an entry mode of 'ENTRY' on final fields");
+          if ((m & Modifier.FINAL) != 0 && entryMode == EntryMode.ENABLED) {
+            throw new RuntimeException("Cannot set an entry mode of 'ENABLED' on final fields");
           }
         }
         

@@ -12,7 +12,7 @@ public class Party {
   private int id;
   
   @SecondaryKey(relate=Relationship.ONE_TO_ONE)
-  private String abn;
+  private String partyCode;
   
   @SecondaryKey(relate=Relationship.ONE_TO_ONE)
   private String shortName;
@@ -21,4 +21,42 @@ public class Party {
   
   private String webPage;
   
+  public Party () {
+  }
+  
+  
+  public Party (int id, String partyCode, String shortName, String formalName, String webPage) {
+    this.id = id;
+    this.partyCode = partyCode;
+    this.shortName = shortName;
+    this.formalName = formalName;
+    this.webPage = webPage;
+  }
+  
+  
+  @Override
+  public String toString() {
+    return "Party[" + id + ", " + partyCode + ", " + shortName + ", " + formalName + ", " + webPage + "]";
+  }
+
+
+  public String getPartyCode () {
+    return partyCode;
+  }
+  
+  
+  public String getShortName () {
+    return shortName;
+  }
+  
+  
+  public String getFormalName () {
+    return formalName;
+  }
+  
+  
+  public String getWebPage () {
+    return webPage;
+  }
+
 }

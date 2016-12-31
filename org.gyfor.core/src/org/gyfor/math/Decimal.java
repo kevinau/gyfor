@@ -113,8 +113,10 @@ public class Decimal extends Number implements Comparable<Decimal> {
     100000000000000L,
     10000000000000000L, 
     100000000000000000L, 
-    1000000000000000000L,
+    1_000_000_000_000_000_000L,
   };
+  
+  private static final long MAX_VALUE = 999_999_999_999_999_999L; 
 
   /**
    * The value of the fixed decimal number, scaled by the number of decimal
@@ -603,11 +605,37 @@ public class Decimal extends Number implements Comparable<Decimal> {
     this.scale = 0;
   }
 
-  private Decimal(long unscaledValue, int scale) {
+  
+  public Decimal(long unscaledValue, int scale) {
     this.value = unscaledValue;
     this.scale = (short)scale;
   }
 
+  
+  /**
+   * Scale up the value until it reaches the maximum value. Normalized values
+   * can be compared without further adjustment.
+   */
+  public Decimal normalize () {
+    long v = this.value;
+    if (v == 0) {
+      return Decimal.ZERO;
+    }
+    if (v < 0) {
+      v = -v;
+    }
+    int s = this.scale;
+    while (v < (MAX_VALUE / 10)) {
+      v *= 10;
+      s++;
+    }
+    if (this.value < 0) {
+      v = -v;
+    }
+    Decimal nv = new Decimal(v, s);
+    return nv;
+  }
+  
   
   /**
    * Returns a <tt>Decimal</tt> whose value is <tt>(this +
@@ -1221,23 +1249,23 @@ public class Decimal extends Number implements Comparable<Decimal> {
     Decimal lhs = this;
     Decimal rhs = (Decimal) obj;
 
-    /* Check for zero cases. This simplifies normalisation later. */
+    /* Check for zero cases. This simplifies normalization later. */
     if (lhs.value == 0) {
       return rhs.value == 0;
     } else if (rhs.value == 0) {
       return false;
     }
-    /* Normalise left and right sides. */
+    /* Normalize left and right sides. */
     long leftValue = lhs.value;
     int leftScale = lhs.scale;
-    /* Normalise the value to remove any trailing zero digits. */
+    /* Normalize the value to remove any trailing zero digits. */
     while ((leftValue % 10) == 0) {
       leftValue = leftValue / 10;
       leftScale--;
     }
     long rightValue = rhs.value;
     int rightScale = rhs.scale;
-    /* Normalise the value to remove any trailing zero digits. */
+    /* Normalize the value to remove any trailing zero digits. */
     while ((rightValue % 10) == 0) {
       rightValue = rightValue / 10;
       rightScale--;
@@ -1363,7 +1391,7 @@ public class Decimal extends Number implements Comparable<Decimal> {
    */
 
   public Decimal movePointLeft(int n) {
-    // Very little point in optimising for shift of 0.
+    // Very little point in optimizing for shift of 0.
     return new Decimal(value, scale + n);
   }
 
@@ -1448,7 +1476,7 @@ public class Decimal extends Number implements Comparable<Decimal> {
   }
   
   
-  public long toRawLong () {
+  public long getRawLong () {
     return value;
   }
   
@@ -1475,34 +1503,24 @@ public class Decimal extends Number implements Comparable<Decimal> {
 
   
   /** 
-   * Trims trailing 0's from the decimal number by adjusting the scale.
+   * Trims trailing 0's from the decimal number by adjusting the value and scale.  The 
+   * returned Decimal is still 'equal' to this Decimal, but if converted to a string
+   * it contains no trailing decimal digits.
    */
   public Decimal trim () {
-    return trim(0);
-  }
-  
-  
-  /** 
-   * Trims trailing 0's from the decimal number by adjusting the scale.
-   */
-  public Decimal trim (int s1) {
-    if (this.scale == s1) {
-      return this;
-    }
     long v = this.value;
-    int s = this.scale;
-    while (s < s1) {
-      v = v * 10;
-      s++;
+    if (v == 0) {
+      return Decimal.ZERO;
     }
-    /* Normalise the value to remove any trailing zero digits. */
-    while (s > s1 && (v % 10) == 0) {
-      v = v / 10;
+    int s = this.scale;
+    while ((v % 10) == 0) {
+      v /= 10;
       s--;
     }
-    return new Decimal(v, s);
+    Decimal nv = new Decimal(v, s);
+    return nv;
   }
-  
+
   
   public Decimal uplift (Decimal factor, int decimalDigits, RoundingMode roundingMode) {
     return this.divide(factor.add(Decimal.ONE), decimalDigits, roundingMode).subtract(this);
@@ -1531,7 +1549,7 @@ public class Decimal extends Number implements Comparable<Decimal> {
     }
     long v = this.value;
     int s = this.scale;
-    /* Normalise the value to remove any trailing zero digits. */
+    /* Normalize the value to remove any trailing zero digits. */
     while (s > 0 && (v % 10) == 0) {
       v = v / 10;
       s--;

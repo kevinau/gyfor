@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.gyfor.company.abn.ABNLookup">
+   <service>
+      <provide interface="org.gyfor.company.ICompanyLookup"/>
+   </service>
+   <implementation class="org.gyfor.company.abn.ABNLookup"/>
+</scr:component>

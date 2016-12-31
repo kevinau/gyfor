@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: gyfor - company lookup using Australian ABN
+Bundle-SymbolicName: org.gyfor.company.abn
+Bundle-Version: 1.0.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.gyfor.company,
+ org.osgi.service.component.annotations;version="1.2.0"
+Service-Component: OSGI-INF/org.gyfor.company.abn.ABNLookup.xml
+Bundle-ActivationPolicy: lazy

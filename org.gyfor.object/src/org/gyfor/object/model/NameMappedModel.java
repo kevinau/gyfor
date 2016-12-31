@@ -1,35 +1,40 @@
 package org.gyfor.object.model;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.gyfor.object.model.ref.ClassValueReference;
+import org.gyfor.object.model.ref.IValueReference;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INameMappedPlan;
 import org.gyfor.object.plan.INodePlan;
 
 public abstract class NameMappedModel extends ContainerModel {
 
+  private final IValueReference valueRef;
   private final INameMappedPlan mappedPlan;
   
   private Map<String, NodeModel> memberModels = new LinkedHashMap<>();
 
-  private Object instance;
-  
-  
-  protected NameMappedModel(RootModel rootModel, NodeModel parent, int id, INameMappedPlan mappedPlan) {
+
+  protected NameMappedModel(RootModel rootModel, ContainerModel parent, int id, IValueReference valueRef, INameMappedPlan mappedPlan) {
     super(rootModel, parent, id);
+    this.valueRef = valueRef;
     this.mappedPlan = mappedPlan;
   }
   
   
   @Override
   public void setValue (Object instance) {
-    this.instance = instance;
+    valueRef.setValue(instance);
+    
     for (INodePlan memberPlan : mappedPlan.getMemberPlans()) {
-      String memberName = memberPlan.getName();
-      setValue (memberName, memberPlan, instance);
+      Object memberValue = memberPlan.getValue(instance);
+      Field field = memberPlan.getField();
+      NodeModel memberModel = getRoot().buildNodeModel(getParent(). new ClassValueReference(instance, field), memberPlan);
     }
   }
 

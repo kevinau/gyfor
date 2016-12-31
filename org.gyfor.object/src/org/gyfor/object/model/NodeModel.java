@@ -5,11 +5,11 @@ import org.gyfor.object.plan.INodePlan;
 public abstract class NodeModel {
 
   private final RootModel rootModel;
-  private final NodeModel parent;
+  private final ContainerModel parent;
   private final int id;
   
   
-  public NodeModel (RootModel rootModel, NodeModel parent, int id) {
+  public NodeModel (RootModel rootModel, ContainerModel parent, int id) {
     this.rootModel = rootModel;
     this.parent = parent;
     this.id = id;
@@ -26,7 +26,7 @@ public abstract class NodeModel {
   }
   
   
-  protected NodeModel getParent() {
+  protected ContainerModel getParent() {
     return parent;
   }
   

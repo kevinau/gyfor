@@ -2,7 +2,7 @@ package org.gyfor.object.plan;
 
 import java.util.Iterator;
 
-public interface IRepeatingPlan {
+public interface IRepeatingPlan extends INodePlan {
 
   public int getDimension();
   
