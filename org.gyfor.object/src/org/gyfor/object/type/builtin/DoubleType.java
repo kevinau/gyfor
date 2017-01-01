@@ -16,6 +16,7 @@ import java.sql.SQLException;
 
 import org.gyfor.object.NumberSign;
 import org.gyfor.object.UserEntryException;
+import org.gyfor.object.type.Position;
 import org.gyfor.object.type.builtin.DecimalBasedType;
 
 
@@ -71,6 +72,22 @@ public class DoubleType extends DecimalBasedType<Double> {
   @Override
   protected void validate(Double value) throws UserEntryException {
     validatePrecision(value.longValue());
+  }
+
+  
+  @Override
+  public Object getFromBuffer(byte[] data, Position p) {
+    long v = data[p.position++];
+    v = (v << 8) + (data[p.position++] & 0xff);
+    v = (v << 8) + (data[p.position++] & 0xff);
+    v = (v << 8) + (data[p.position++] & 0xff);
+    v = (v << 8) + (data[p.position++] & 0xff);
+    v = (v << 8) + (data[p.position++] & 0xff);
+    v = (v << 8) + (data[p.position++] & 0xff);
+    v = (v << 8) + (data[p.position++] & 0xff);
+    // Reverse the sign bit that was stored 
+    v ^= (v >> 63) & Long.MAX_VALUE;
+    return Double.longBitsToDouble(v);
   }
 
   

@@ -16,7 +16,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.builtin.PathBasedType;
+import org.gyfor.object.type.Position;
+import org.gyfor.todo.NotYetImplementedException;
 
 
 public class PathType extends PathBasedType<File> {
@@ -56,6 +57,12 @@ public class PathType extends PathBasedType<File> {
   @Override
   public int getFieldSize() {
     return 255;
+  }
+
+  
+  @Override
+  public Object getFromBuffer(byte[] data, Position p) {
+    throw new NotYetImplementedException();
   }
 
   

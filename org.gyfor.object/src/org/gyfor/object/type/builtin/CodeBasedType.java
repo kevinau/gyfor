@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.gyfor.object.type.IType;
+import org.gyfor.object.type.Position;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.value.ICodeValue;
 
@@ -250,6 +251,17 @@ public abstract class CodeBasedType<T extends ICodeValue> implements IType<T> {
     return buffer.toString();
   }
 
+  
+  @Override
+  public Object getFromBuffer(byte[] data, Position p) {
+    String s = getStringFromBuffer(data, p);
+    try {
+      return createFromString(s);
+    } catch (UserEntryException ex) {
+      throw new RuntimeException("Illegal value: " + s);
+    }
+  }
+  
   
   @Override
   public String getSQLType() {

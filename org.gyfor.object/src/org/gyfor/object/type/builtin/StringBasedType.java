@@ -7,6 +7,7 @@ import java.text.MessageFormat;
 
 import org.gyfor.object.type.ICaseSettable;
 import org.gyfor.object.type.ILengthSettable;
+import org.gyfor.object.type.Position;
 import org.gyfor.object.TextCase;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.type.builtin.Type;
@@ -93,6 +94,10 @@ public abstract class StringBasedType<T> extends Type<T> implements ILengthSetta
 //  }
 
   
+  @Override
+  public Object getFromBuffer(byte[] data, Position p) {
+    return getStringFromBuffer(data, p);
+  }
 
   
   @Override

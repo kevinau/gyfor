@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.gyfor.object.UserEntryException;
+import org.gyfor.object.type.Position;
 import org.gyfor.object.type.builtin.IntegerBasedType;
 
 
@@ -72,6 +73,13 @@ public class BigIntegerType extends IntegerBasedType<BigInteger> {
   }
 
   
+  @Override
+  public Object getFromBuffer(byte[] data, Position p) {
+    String s = getStringFromBuffer(data, p);
+    return new BigInteger(s);
+  }
+
+
   @Override
   public String getSQLType() {
     return "DECIMAL(" + getMaxDigits() + ")";

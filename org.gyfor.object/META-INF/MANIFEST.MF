@@ -17,6 +17,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-BuddyPolicy: global
 Import-Package: org.gyfor.math,
  org.gyfor.time,
+ org.gyfor.todo,
  org.gyfor.util,
  org.gyfor.value
 Service-Component: OSGI-INF/org.gyfor.object.context.PlanFactory.xml

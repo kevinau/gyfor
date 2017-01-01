@@ -17,7 +17,8 @@ import java.sql.SQLException;
 
 import org.gyfor.object.NumberSign;
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.builtin.DecimalBasedType;
+import org.gyfor.object.type.Position;
+import org.gyfor.todo.NotYetImplementedException;
 
 
 public class BigDecimalType extends DecimalBasedType<BigDecimal> {
@@ -83,6 +84,12 @@ public class BigDecimalType extends DecimalBasedType<BigDecimal> {
   }
 
 
+  @Override
+  public Object getFromBuffer(byte[] data, Position p) {
+    throw new NotYetImplementedException();
+  }
+
+  
   @Override
   public BigDecimal newValue() {
     return BigDecimal.ZERO;

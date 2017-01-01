@@ -15,7 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.builtin.IntegerBasedType;
+import org.gyfor.object.type.Position;
 
 public class ByteType extends IntegerBasedType<Byte> {
   
@@ -51,6 +51,15 @@ public class ByteType extends IntegerBasedType<Byte> {
   @Override
   public Byte primalValue() {
     return 0;
+  }
+
+  
+  @Override
+  public Object getFromBuffer(byte[] data, Position p) {
+    byte v = data[p.position++];
+    // Reverse the sign bit that was stored
+    v ^= ~Byte.MAX_VALUE;
+    return v;
   }
 
   

@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.gyfor.object.type.builtin;
 
+import org.gyfor.object.UserEntryException;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.Position;
-import org.gyfor.object.UserEntryException;
 
 public abstract class Type<T> implements IType<T> {
 
@@ -125,6 +125,16 @@ public abstract class Type<T> implements IType<T> {
 
   
 
+  public short getShortFromBuffer (byte[] data, Position p) {
+    int v = data[p.position++];
+    v = (v << 8) + (data[p.position++] & 0xff);
+    // Reverse the sign bit that was stored
+    v ^= ~Short.MAX_VALUE;
+    return (short)v;
+  }
+
+  
+
   public long getLongFromBuffer (byte[] data, Position p) {
     long v = data[p.position++];
     v = (v << 8) + (data[p.position++] & 0xff);
@@ -139,7 +149,7 @@ public abstract class Type<T> implements IType<T> {
     return v;
   }
 
-  
+ 
   public int getUTF8FromBuffer (byte[] data, Position p) {
     int b = data[p.position++] & 0xff;
     if ((b & 0b1000_0000) == 0) {

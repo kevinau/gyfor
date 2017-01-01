@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import org.gyfor.math.Decimal;
 import org.gyfor.object.NumberSign;
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.builtin.DecimalBasedType;
+import org.gyfor.object.type.Position;
 
 
 public class DecimalType extends DecimalBasedType<Decimal> {
@@ -80,6 +80,19 @@ public class DecimalType extends DecimalBasedType<Decimal> {
   }
 
 
+  @Override
+  public Object getFromBuffer(byte[] data, Position p) {
+    int s1 = getIntFromBuffer(data, p);
+    long v1 = getLongFromBuffer(data, p);
+    if (s1 < 0) {
+      s1 = -s1;
+    }
+    s1 = 64 - s1;
+    Decimal v = new Decimal(v1, s1).trim();
+    return v;
+  }
+
+  
   @Override
   public void setSQLValue(PreparedStatement stmt, int sqlIndex, Decimal value) throws SQLException {
     stmt.setBigDecimal(sqlIndex, new BigDecimal(value.toString()));
