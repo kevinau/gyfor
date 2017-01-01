@@ -4,7 +4,8 @@ Bundle-Name: gyfor - Data access object
 Bundle-SymbolicName: org.gyfor.websocket.dao
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: com.sleepycat.persist,
+Import-Package: com.sleepycat.je,
+ com.sleepycat.persist,
  io.undertow.server,
  io.undertow.server.protocol.framed,
  io.undertow.websockets,

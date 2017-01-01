@@ -20,7 +20,7 @@ public abstract class ClassModel extends ContainerModel {
   private Map<String, NodeModel> memberModels = new LinkedHashMap<>();
 
 
-  protected ClassModel(RootModel rootModel, ContainerModel parent, int id, IValueReference valueRef, IClassPlan classPlan) {
+  protected ClassModel(RootModel rootModel, ContainerModel parent, int id, IValueReference valueRef, IClassPlan<?> classPlan) {
     super(rootModel, parent, id);
     this.valueRef = valueRef;
     this.classPlan = classPlan;
@@ -71,7 +71,7 @@ public abstract class ClassModel extends ContainerModel {
   protected NodeModel getOrCreateMember (String name, INodePlan plan) {
     NodeModel memberModel = memberModels.get(name);
     if (memberModel == null) {
-      memberModel = getRoot().buildNodeModel(this, plan);
+      memberModel = getRoot().buildNodeModel(this, new ClassValueReference(plan);
       memberModels.put(name, memberModel);
       getRoot().fireChildAdded(this, memberModel);
     }
@@ -81,7 +81,7 @@ public abstract class ClassModel extends ContainerModel {
   
   @Override
   public Object getValue () {
-    return instance;
+    return valueRef.getValue();
   }
   
   
@@ -122,7 +122,7 @@ public abstract class ClassModel extends ContainerModel {
 
 
   @Override
-  public boolean isNameMapped() {
+  public boolean isClassModel() {
     return true;
   }
   

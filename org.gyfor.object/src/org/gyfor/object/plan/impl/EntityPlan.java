@@ -14,6 +14,7 @@ import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INameMappedPlan;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.plan.PlanStructure;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.EntityLifeType;
 import org.gyfor.object.value.EntityLife;
@@ -315,6 +316,12 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
       throw new RuntimeException(ex);
     }
     return instance;
+  }
+  
+  
+  @Override
+  public PlanStructure getStructure () {
+    return PlanStructure.ENTITY;
   }
 
 }

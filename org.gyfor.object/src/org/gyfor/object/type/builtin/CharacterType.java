@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.gyfor.object.type.ICaseSettable;
+import org.gyfor.object.type.Position;
 import org.gyfor.object.TextCase;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.type.builtin.Type;
@@ -115,6 +116,12 @@ public class CharacterType extends Type<Character> implements ICaseSettable {
 
   
   @Override
+  public Object getFromBuffer(byte[] data, Position p) {
+    return (char)getUTF8FromBuffer(data, p);
+  }
+
+  
+  @Override
   public String getSQLType() {
     return "CHAR";
   }
@@ -135,5 +142,6 @@ public class CharacterType extends Type<Character> implements ICaseSettable {
       return s.charAt(0);
     }
   }
+
 
 }

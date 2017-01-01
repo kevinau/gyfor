@@ -15,7 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.builtin.IntegerBasedType;
+import org.gyfor.object.type.Position;
 
 public class IntegerType extends IntegerBasedType<Integer> {
     
@@ -61,6 +61,12 @@ public class IntegerType extends IntegerBasedType<Integer> {
   }
 
 
+  @Override
+  public Integer getFromBuffer (byte[] data, Position p) {
+    return getIntFromBuffer(data, p);
+  }
+
+  
   @Override
   public String getSQLType() {
     return "INTEGER";

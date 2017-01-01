@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.IPlanFactory;
+import org.gyfor.object.plan.PlanStructure;
 import org.gyfor.util.ArrayIterator;
 
 
@@ -32,6 +33,12 @@ public class ArrayPlan extends RepeatingPlan {
   @Override
   public <X> Iterator<X> getIterator (Object value) {
     return new ArrayIterator<X>(value);
+  }
+    
+  
+  @Override
+  public PlanStructure getStructure () {
+    return PlanStructure.ARRAY;
   }
   
 }

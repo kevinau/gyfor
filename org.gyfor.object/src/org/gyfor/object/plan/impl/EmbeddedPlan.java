@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.IPlanFactory;
+import org.gyfor.object.plan.PlanStructure;
 
 public class EmbeddedPlan<T> extends ClassPlan<T> {
 
@@ -34,4 +35,10 @@ public class EmbeddedPlan<T> extends ClassPlan<T> {
 //    embeddedPlan.accumulateTopItemPlans(fieldPlans);
 //  }
   
+  
+  @Override
+  public PlanStructure getStructure () {
+    return PlanStructure.EMBEDDED;
+  }
+
 }

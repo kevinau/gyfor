@@ -18,7 +18,6 @@ Eclipse-BuddyPolicy: global
 Import-Package: org.gyfor.math,
  org.gyfor.time,
  org.gyfor.util,
- org.gyfor.value,
- org.osgi.service.component.annotations
+ org.gyfor.value
 Service-Component: OSGI-INF/org.gyfor.object.context.PlanFactory.xml
 Bundle-ActivationPolicy: lazy

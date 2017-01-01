@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 import org.gyfor.object.UserEntryException;
+import org.gyfor.object.type.Position;
 import org.gyfor.object.type.builtin.DateBasedType;
 
 
@@ -69,6 +70,13 @@ public class LocalDateType extends DateBasedType<LocalDate> {
   }
 
 
+  @Override
+  public LocalDate getFromBuffer (byte[] data, Position p) {
+    long n = getLongFromBuffer(data, p);
+    return LocalDate.ofEpochDay(n);
+  }
+
+  
   @Override
   public void setSQLValue(PreparedStatement stmt, int sqlIndex, LocalDate value) throws SQLException {
     stmt.setDate(sqlIndex, new java.sql.Date(value.toEpochDay()), tzCal);

@@ -16,13 +16,13 @@ public class EntityModel extends NameMappedModel {
   }
     
   
-  public EntityModel (RootModel rootModel, NodeModel parent, int id, IEntityPlan<?> entityPlan) {
+  public EntityModel (RootModel rootModel, ContainerModel parent, int id, IEntityPlan<?> entityPlan) {
     super (rootModel, parent, id, entityPlan);
     this.entityPlan = entityPlan;
   }
     
   
-  public EntityModel (RootModel rootModel, NodeModel parent, int id, IEntityPlan<?> entityPlan, Object instance) {
+  public EntityModel (RootModel rootModel, ContainerModel parent, int id, IEntityPlan<?> entityPlan, Object instance) {
     this (rootModel, parent, id, entityPlan);
     setValue (instance);
   }

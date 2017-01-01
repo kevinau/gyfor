@@ -92,6 +92,10 @@ public interface IType<T> {
     }
   }
 
+  
+  public Object getFromBuffer (byte[] data, Position p);
+    
+
   /**
    * Returns the SQL type description for this type.
    */

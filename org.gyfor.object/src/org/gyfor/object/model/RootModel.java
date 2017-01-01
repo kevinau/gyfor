@@ -116,8 +116,8 @@ public class RootModel {
   }
   
   
-  protected NodeModel buildNodeModel (ContainerModel parent, INodePlan plan) {
-    return buildNodeModel (parent, nextId(), plan);
+  protected NodeModel buildNodeModel (ContainerModel parent, IValueReference valueRef, INodePlan plan) {
+    return buildNodeModel (parent, nextId(), valueRef, plan);
   }
   
   
@@ -125,7 +125,7 @@ public class RootModel {
     if (plan instanceof IItemPlan) {
       return new ItemModel(this, parent, id, valueRef, (IItemPlan<?>)plan);
     } else if (plan instanceof IEntityPlan) {
-      return new EntityModel(this, null, id, valueRefm (IEntityPlan<?>)plan);
+      return new EntityModel(this, null, id, valueRef, (IEntityPlan<?>)plan);
     } else {
       throw new RuntimeException("Unsupported plan: " + plan.getClass());
     }

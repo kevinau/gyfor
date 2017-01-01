@@ -97,18 +97,9 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
               throw new RuntimeException(ex);
             }
           } else {
-            int n = data.indexOf('|');
-            String command;
-            String[] args;
-            if (n == -1) {
-              command = data;
-              args = new String[0];
-            } else {
-              command = data.substring(0, n);
-              args = data.substring(n + 1).split("\\|");
-            }
+            Request request = new Request(data);
             Object sessionData = sessions.get(channel);
-            doRequest(command, args, sessionData);
+            doRequest(request, sessionData);
           }
           //// WebSockets.sendText(message.getData(), channel, null);
         }
@@ -122,7 +113,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
   protected abstract Object buildSessionData (String path, Map<String, String> queryMap);
   
   
-  protected abstract void doRequest (String command, String[] args, Object sessionData);
+  protected abstract void doRequest (Request request, Object sessionData);
   
   
   protected void doSendAll (String command, Function<Object, String> stringBuilder) {

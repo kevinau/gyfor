@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.Optional;
 import org.gyfor.object.plan.IItemPlan;
+import org.gyfor.object.plan.PlanStructure;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.Type;
 
@@ -138,6 +139,12 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
     } catch (IllegalArgumentException | IllegalAccessException ex) {
       throw new RuntimeException(ex);
     }
+  }
+  
+  
+  @Override
+  public PlanStructure getStructure () {
+    return PlanStructure.ITEM;
   }
 
 }

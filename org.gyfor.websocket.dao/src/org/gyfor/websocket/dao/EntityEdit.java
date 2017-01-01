@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Map;
 
 import org.gyfor.berkeleydb.DataStore;
+import org.gyfor.berkeleydb.ResultDatabaseEntry;
 import org.gyfor.http.CallbackAccessor;
 import org.gyfor.http.Context;
 import org.gyfor.http.Resource;
@@ -13,13 +14,39 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
+import com.sleepycat.je.Cursor;
+import com.sleepycat.je.LockMode;
+import com.sleepycat.je.OperationStatus;
 import com.sleepycat.persist.EntityCursor;
 import com.sleepycat.persist.PrimaryIndex;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
 
-
+/**
+ * A web socket that provides a web pages with all the information it needs for an entity 
+ * edit form.  Specifically, it provides:
+ * <p>
+ * <dl><dt>list</dt><dd>A list of all entities.  It is assumed this list is not huge.  This list is used
+ * to select an entity.  For each entity, the list provides:
+ *   <ul><li>A label.  This will be a concatenation of the entity 'description' fields</li>
+ *   <li>A value.  This will be the entity 'id' field</li>
+ *   </ul>
+ * </dd>
+ * <dt>query &lt;search&gt;</dt><dd>Return a description of the entity, given a search value.  This is used
+ * to verify foreign key fields and display an associated description.</dd>
+ * <dt>fetch &lt;id&gt;</dt><dd>Return all the fields of a single entity, identified by 'id'.</dd>
+ * <dt>update &lt;value...&gt;</dt><dd>Update a single entity, using the values provided.  The first
+ * value should be the entity 'id'.  If the entity does not exist, add it.  If the entity does exist, update it.</dd>
+ * <dt>remove &lt;id&gt;</dt><dd>Remove the single entity identified by 'id'.</dd>
+ * </dl>
+ * If the requested action cannot be completed, an error response is generated.
+ * <p>
+ * In addition, if an entity is updated or removed, a notification is sent so the edit form can update 
+ * its list of all entities.
+ * <p>
+ * All commands and responses are pipe tab delimited fields, with the first field the command or response name.
+ */
 @Context("/ws/entity")
 @Resource(path = "/static", location = "static")
 @Component(service = HttpHandler.class)
@@ -100,14 +127,19 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
     
     
     @Override
-    protected void doRequest (String command, String[] args, Object sessionData) {
+    protected void doRequest (Request request, Object sessionData) {
       Class<Object> entityClass = ((SessionData)sessionData).entityClass;
       Field[] fields = ((SessionData)sessionData).fields;
       
-      switch (command) {
+      switch (request.getName()) {
+      case "list" :
+        doListRequest ();
+        break;
       case "query" :
         break;
-      case "add" :
+      case "fetch" :
+        break;
+      case "update" :
         // The args should be field values, including any auto generated primary id
         if (args.length < fields.length) {
           throw new IllegalArgumentException("Expecting " + fields.length + " but was given only " + args.length);
@@ -145,8 +177,6 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
           throw new RuntimeException(ex);
         }
         break;
-      case "change" :
-        break;
       case "remove" :
         break;
       default :
@@ -155,7 +185,29 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
     }
   }
   
-    
+  
+  private void doListRequest () {
+    System.out.println("Primary key order:");
+    try (Cursor cursor = entityDatabase.openCursor (null, null)) {
+      ResultDatabaseEntry data = new ResultDatabaseEntry();
+      
+      OperationStatus status = cursor.getFirst(null, data, LockMode.DEFAULT);
+      while (status == OperationStatus.SUCCESS) {
+        int id = data.getInt();
+        String partyCode = data.getString();
+        String shortName = data.getString();
+        String formalName = data.getString();
+        String webSite = data.getString();
+        data.rewind();
+        System.out.println("Data : " + id + " | " + partyCode + " | " + shortName + " | " + formalName + " | " + webSite);
+        status = cursor.getNext(null, data, LockMode.DEFAULT);
+      }
+      cursor.close();
+    }
+    System.out.println();
+  }
+  
+  
   @Activate
   public void activate(ComponentContext componentContext) {
     callback = CallbackAccessor.getCallback(this);

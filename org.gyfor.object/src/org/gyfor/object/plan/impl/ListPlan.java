@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.IPlanFactory;
+import org.gyfor.object.plan.PlanStructure;
 
 public class ListPlan extends RepeatingPlan {
 
@@ -33,6 +34,12 @@ public class ListPlan extends RepeatingPlan {
   public <X> Iterator<X> getIterator (Object instance) {
     List<X> list = (List<X>)instance;
     return list.iterator();
+  }
+
+    
+  @Override
+  public PlanStructure getStructure () {
+    return PlanStructure.LIST;
   }
 
 }

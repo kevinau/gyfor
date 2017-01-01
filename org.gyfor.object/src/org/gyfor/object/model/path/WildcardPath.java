@@ -22,13 +22,13 @@ public class WildcardPath extends StepPath implements IPathExpression {
   }
 
   @Override
-  public void matches(INodePlan plan, Trail trail, INodeVisitable x) {
-    if (plan instanceof IContainerPlan) {
+  public void matches(NodeModel model, Trail trail, INodeVisitable x) {
+    if (model instanceof ContainerModel) {
       IContainerPlan container = (IContainerPlan)plan;
       for (INodePlan member : container.getMembers()) {
         super.matches(member, new Trail(trail, member), x);
       }
-    } else if (plan instanceof IRepeatingPlan) {
+    } else if (model instanceof IRepeatingPlan) {
       RepeatingModel repeating = (RepeatingModel)plan;
       for (INodePlan member : repeating.getElements()) {
         super.matches(member, new Trail(trail, member), x);

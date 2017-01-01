@@ -42,4 +42,6 @@ public interface INodePlan {
   
   public boolean isItem();
   
+  public PlanStructure getStructure();
+  
 }

@@ -7,6 +7,7 @@ import org.gyfor.object.EntryMode;
 import org.gyfor.object.IPlanFactory;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IReferencePlan;
+import org.gyfor.object.plan.PlanStructure;
 
 
 public class ReferencePlan<T> extends NodePlan implements IReferencePlan<T> {
@@ -59,5 +60,11 @@ public class ReferencePlan<T> extends NodePlan implements IReferencePlan<T> {
   // public Object newValue() {
   // return referencedPlan.getIdField().newValue();
   // }
+
+  
+  @Override
+  public PlanStructure getStructure () {
+    return PlanStructure.REFERENCE;
+  }
 
 }

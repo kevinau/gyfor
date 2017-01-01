@@ -100,19 +100,23 @@ public abstract class NodeModel {
   }
   
   
-  public boolean isContainer () {
+  public boolean isClassModel () {
     return false;
   }
   
-  public boolean isNameMapped () {
+  public boolean isMapModel () {
     return false;
   }
   
-  public boolean isRepeating () {
+  public boolean isArrayModel () {
     return false;
   }
   
-  public boolean isItem () {
+  public boolean isListModel () {
+    return false;
+  }
+  
+  public boolean isItemItem () {
     return false;
   }
   

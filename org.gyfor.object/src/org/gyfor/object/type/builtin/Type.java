@@ -11,6 +11,7 @@
 package org.gyfor.object.type.builtin;
 
 import org.gyfor.object.type.IType;
+import org.gyfor.object.type.Position;
 import org.gyfor.object.UserEntryException;
 
 public abstract class Type<T> implements IType<T> {
@@ -110,5 +111,53 @@ public abstract class Type<T> implements IType<T> {
     }
     validate(value);
   }
+
+  
+  public int getIntFromBuffer (byte[] data, Position p) {
+    int v = data[p.position++];
+    v = (v << 8) + (data[p.position++] & 0xff);
+    v = (v << 8) + (data[p.position++] & 0xff);
+    v = (v << 8) + (data[p.position++] & 0xff);
+    // Reverse the sign bit that was stored
+    v ^= ~Integer.MAX_VALUE;
+    return v;
+  }
+
+  
+
+  public long getLongFromBuffer (byte[] data, Position p) {
+    long v = data[p.position++];
+    v = (v << 8) + (data[p.position++] & 0xff);
+    v = (v << 8) + (data[p.position++] & 0xff);
+    v = (v << 8) + (data[p.position++] & 0xff);
+    v = (v << 8) + (data[p.position++] & 0xff);
+    v = (v << 8) + (data[p.position++] & 0xff);
+    v = (v << 8) + (data[p.position++] & 0xff);
+    v = (v << 8) + (data[p.position++] & 0xff);
+    // Reverse the sign bit that was stored
+    v ^= ~Long.MAX_VALUE;
+    return v;
+  }
+
+  
+  public int getUTF8FromBuffer (byte[] data, Position p) {
+    int b = data[p.position++] & 0xff;
+    if ((b & 0b1000_0000) == 0) {
+      return b;
+    } else if ((b & 0b1110_0000) == 0b1100_0000) {
+      int b2 = data[p.position++] & 0x3f;
+      return ((b & 0x1f) << 6) | b2;
+    } else if ((b & 0b1111_0000) == 0b1110_0000) {
+      int b2 = data[p.position++] & 0x3f;
+      int b3 = data[p.position++] & 0x3f;
+      return ((b & 0xf) << 12) | (b2 << 6) | b3;
+    } else {
+      int b2 = data[p.position++] & 0x3f;
+      int b3 = data[p.position++] & 0x3f;
+      int b4 = data[p.position++] & 0x3f;
+      return ((b & 0x7) << 18) | (b2 << 12) | (b3 << 6) | b4;
+    }    
+  }
+  
 
 }

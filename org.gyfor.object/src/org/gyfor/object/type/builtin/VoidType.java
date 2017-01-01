@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.gyfor.object.type.IType;
+import org.gyfor.object.type.Position;
 import org.gyfor.object.UserEntryException;
 
 public class VoidType implements IType<Void> {
@@ -65,6 +66,12 @@ public class VoidType implements IType<Void> {
 
   
   @Override
+  public Object getFromBuffer(byte[] data, Position p) {
+    throw new IllegalStateException("Void type is never retrieved from a database");
+  }
+
+  
+  @Override
   public String getSQLType() {
     throw new IllegalStateException("Void type is never stored in a database");
   }
@@ -78,4 +85,5 @@ public class VoidType implements IType<Void> {
   public Void getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
     throw new IllegalStateException("Void type value is never retrieved from the database");
   }
+
 }

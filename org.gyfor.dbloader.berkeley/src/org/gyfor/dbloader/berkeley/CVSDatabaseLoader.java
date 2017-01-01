@@ -87,7 +87,7 @@ public class CVSDatabaseLoader {
     
     // Read csv data and write database records, including a secondary index
     try {
-      CSVReader reader = new CSVReader(new FileReader("C:/Users/Kevin/code/mullet4/org.gyfor.dbloader.berkeley/party.csv"));
+      CSVReader reader = new CSVReader(new FileReader("C:/Users/Kevin/git/gyfor/org.gyfor.dbloader.berkeley/party.csv"));
       String[] fieldNames = reader.readNext(); 
 
       String[] line = reader.readNext();
