@@ -16,10 +16,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.gyfor.object.type.IType;
-import org.gyfor.object.type.Position;
 import org.gyfor.object.UserEntryException;
+import org.gyfor.object.type.IType;
 import org.gyfor.object.value.ICodeValue;
+import org.gyfor.util.SimpleBuffer;
 
 
 public abstract class CodeBasedType<T extends ICodeValue> implements IType<T> {
@@ -253,13 +253,19 @@ public abstract class CodeBasedType<T extends ICodeValue> implements IType<T> {
 
   
   @Override
-  public Object getFromBuffer(byte[] data, Position p) {
-    String s = getStringFromBuffer(data, p);
+  public T getFromBuffer (SimpleBuffer b) {
+    String s = b.nextNulTerminatedString();
     try {
       return createFromString(s);
     } catch (UserEntryException ex) {
       throw new RuntimeException("Illegal value: " + s);
     }
+  }
+  
+  
+  @Override
+  public void putToBuffer (SimpleBuffer b, T v) {
+    b.appendNulTerminatedString(v.toString());
   }
   
   

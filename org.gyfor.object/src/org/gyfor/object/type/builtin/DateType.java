@@ -19,8 +19,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.Position;
-import org.gyfor.object.type.builtin.DateBasedType;
+import org.gyfor.util.SimpleBuffer;
 
 
 public class DateType extends DateBasedType<Date> {
@@ -74,11 +73,18 @@ public class DateType extends DateBasedType<Date> {
 
 
   @Override
-  public Date getFromBuffer (byte[] data, Position p) {
-    long n = getLongFromBuffer(data, p);
+  public Date getFromBuffer (SimpleBuffer b) {
+    long n = getLongFromBuffer(b);
     return new Date(n);
   }
 
+  
+  @Override
+  public void putToBuffer (SimpleBuffer b, Date v) {
+    Date v0 = (Date)v;
+    putLongToBuffer (b, v0.getTime());
+  }
+  
   
   @Override
   public void setSQLValue(PreparedStatement stmt, int sqlIndex, Date value) throws SQLException {

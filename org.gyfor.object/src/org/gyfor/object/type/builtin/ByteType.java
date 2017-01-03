@@ -15,7 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.Position;
+import org.gyfor.util.SimpleBuffer;
 
 public class ByteType extends IntegerBasedType<Byte> {
   
@@ -55,13 +55,22 @@ public class ByteType extends IntegerBasedType<Byte> {
 
   
   @Override
-  public Object getFromBuffer(byte[] data, Position p) {
-    byte v = data[p.position++];
+  public Byte getFromBuffer (SimpleBuffer b) {
+    int v = b.next();
     // Reverse the sign bit that was stored
     v ^= ~Byte.MAX_VALUE;
-    return v;
+    return (byte)v;
   }
 
+  
+  @Override
+  public void putToBuffer (SimpleBuffer b, Byte v) {
+    byte v0 = (byte)v;
+    // Reverse the sign bit to allow byte sorting
+    v0 ^= ~Byte.MAX_VALUE;
+    b.append(v0);
+  }
+  
   
   @Override
   public String getSQLType() {

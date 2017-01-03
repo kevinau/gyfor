@@ -5,12 +5,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 
-import org.gyfor.object.type.ICaseSettable;
-import org.gyfor.object.type.ILengthSettable;
-import org.gyfor.object.type.Position;
 import org.gyfor.object.TextCase;
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.builtin.Type;
+import org.gyfor.object.type.ICaseSettable;
+import org.gyfor.object.type.ILengthSettable;
+import org.gyfor.util.SimpleBuffer;
 
 
 public abstract class StringBasedType<T> extends Type<T> implements ILengthSettable, ICaseSettable {
@@ -95,10 +94,21 @@ public abstract class StringBasedType<T> extends Type<T> implements ILengthSetta
 
   
   @Override
-  public Object getFromBuffer(byte[] data, Position p) {
-    return getStringFromBuffer(data, p);
+  public T getFromBuffer (SimpleBuffer b) {
+    String v = b.nextNulTerminatedString();
+    try {
+      return createFromString2(v);
+    } catch (UserEntryException ex) {
+      throw new RuntimeException("Illegal value: " + v);
+    }
   }
 
+  
+  @Override
+  public void putToBuffer (SimpleBuffer b, T v) {
+    b.appendNulTerminatedString(v.toString());
+  }
+  
   
   @Override
   public String getSQLType() {

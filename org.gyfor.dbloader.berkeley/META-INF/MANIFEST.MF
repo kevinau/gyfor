@@ -7,6 +7,8 @@ Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.sleepycat.je,
  org.gyfor.berkeleydb,
+ org.gyfor.object,
+ org.gyfor.object.context,
  org.gyfor.util
 Service-Component: OSGI-INF/org.gyfor.dbloader.berkeley.CVSDatabaseLoader.xml
 Bundle-ActivationPolicy: lazy

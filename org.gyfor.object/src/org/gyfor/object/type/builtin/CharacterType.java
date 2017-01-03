@@ -4,11 +4,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.gyfor.object.type.ICaseSettable;
-import org.gyfor.object.type.Position;
 import org.gyfor.object.TextCase;
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.builtin.Type;
+import org.gyfor.object.type.ICaseSettable;
+import org.gyfor.util.SimpleBuffer;
 
 
 public class CharacterType extends Type<Character> implements ICaseSettable {
@@ -116,10 +115,16 @@ public class CharacterType extends Type<Character> implements ICaseSettable {
 
   
   @Override
-  public Object getFromBuffer(byte[] data, Position p) {
-    return (char)getUTF8FromBuffer(data, p);
+  public Character getFromBuffer (SimpleBuffer b) {
+    return (char)getUTF8FromBuffer(b);
   }
 
+
+  @Override
+  public void putToBuffer (SimpleBuffer b, Character v) {
+    putUTF8ToBuffer (b, (int)v);  
+  }
+  
   
   @Override
   public String getSQLType() {

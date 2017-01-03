@@ -5,11 +5,13 @@ import java.io.IOException;
 
 import org.gyfor.berkeleydb.DataEnvironment;
 import org.gyfor.berkeleydb.DatabaseEntryFields;
-import org.gyfor.berkeleydb.FieldedRequestDatabaseEntry;
 import org.gyfor.berkeleydb.IDatabaseEntryFields;
 import org.gyfor.berkeleydb.KeyDatabaseEntry;
-import org.gyfor.berkeleydb.RequestDatabaseEntry;
-import org.gyfor.berkeleydb.ResultDatabaseEntry;
+import org.gyfor.berkeleydb.ObjectDatabaseEntry;
+import org.gyfor.berkeleydb.ObjectResultDatabaseEntry;
+import org.gyfor.berkeleydb.Party;
+import org.gyfor.object.UserEntryException;
+import org.gyfor.object.context.PlanFactory;
 import org.gyfor.util.RunTimer;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -19,7 +21,6 @@ import com.sleepycat.je.Cursor;
 import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.DatabaseException;
-import com.sleepycat.je.DatabaseNotFoundException;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 import com.sleepycat.je.SecondaryConfig;
@@ -72,19 +73,20 @@ public class CVSDatabaseLoader {
     dbConfig.setTransactional(true);
     Database entityDatabase = databaseEnvironment.openDatabase(null, className, dbConfig); 
 
+    PlanFactory planEnvmt = new PlanFactory();
+    ObjectDatabaseEntry data = new ObjectDatabaseEntry(planEnvmt, Party.class);
+
     // Secondary key using field 1, ie the partyCode (aka ABN)
     SecondaryConfig secondaryConfig = new SecondaryConfig();
     secondaryConfig.setAllowCreate(true);
     secondaryConfig.setTransactional(true);
     secondaryConfig.setAllowPopulate(true);
-
-    // Duplicates are not allowed in this case.
     secondaryConfig.setSortedDuplicates(false);
     IDatabaseEntryFields entryFields = new DatabaseEntryFields(Integer.BYTES, IDatabaseEntryFields.NUL_TERMINATED);
     SecondaryKeyCreator keyCreator1 = new FieldedKeyCreator(entryFields, 1);
     secondaryConfig.setKeyCreator(keyCreator1);
     SecondaryDatabase secondaryDatabase = databaseEnvironment.openSecondaryDatabase(null, className + "_1", entityDatabase, secondaryConfig); 
-    
+
     // Read csv data and write database records, including a secondary index
     try {
       CSVReader reader = new CSVReader(new FileReader("C:/Users/Kevin/git/gyfor/org.gyfor.dbloader.berkeley/party.csv"));
@@ -94,21 +96,21 @@ public class CVSDatabaseLoader {
       while (line != null) {
          // line[] is an array of values from the CSV file
          System.out.println(line[0] + " " + line[1] + " ...");
+         
          int id = Integer.parseInt(line[0]);
          KeyDatabaseEntry key = new KeyDatabaseEntry(id);
-         RequestDatabaseEntry data = new FieldedRequestDatabaseEntry();
-         data.putInt(id);
-         data.putString(line[1]);
-         data.putString(line[2]);
-         data.putString(line[3]);
-         data.putString(line[4]);
-    
+
          Transaction txn2 = databaseEnvironment.beginTransaction();
          try {
+           data.setValue(line);
+           
            entityDatabase.put(txn2, key, data);
            txn2.commit();
          } catch (DatabaseException ex) {
            ex.printStackTrace();
+           txn2.abort();
+         } catch (UserEntryException ex) {
+           System.out.println(ex);
            txn2.abort();
          }
          line = reader.readNext();
@@ -121,17 +123,10 @@ public class CVSDatabaseLoader {
     // Read the database: first in primary key order
     System.out.println("Primary key order:");
     try (Cursor cursor = entityDatabase.openCursor (null, null)) {
-      ResultDatabaseEntry data = new ResultDatabaseEntry();
-      
       OperationStatus status = cursor.getFirst(null, data, LockMode.DEFAULT);
       while (status == OperationStatus.SUCCESS) {
-        int id = data.getInt();
-        String partyCode = data.getString();
-        String shortName = data.getString();
-        String formalName = data.getString();
-        String webSite = data.getString();
-        data.rewind();
-        System.out.println("Data : " + id + " | " + partyCode + " | " + shortName + " | " + formalName + " | " + webSite);
+        Party party = data.getValue();
+        System.out.println(party);
         status = cursor.getNext(null, data, LockMode.DEFAULT);
       }
       cursor.close();
@@ -141,17 +136,10 @@ public class CVSDatabaseLoader {
     // Read the database: in secondary key order
     System.out.println("ABN key order:");
     try (SecondaryCursor cursor = secondaryDatabase.openCursor (null, null)) {
-      ResultDatabaseEntry data = new ResultDatabaseEntry();
-      
       OperationStatus status = cursor.getFirst(null, data, LockMode.DEFAULT);
       while (status == OperationStatus.SUCCESS) {
-        int id = data.getInt();
-        String partyCode = data.getString();
-        String shortName = data.getString();
-        String formalName = data.getString();
-        String webSite = data.getString();
-        data.rewind();
-        System.out.println("Data : " + id + " | " + partyCode + " | " + shortName + " | " + formalName + " | " + webSite);
+        Party party = data.getValue();
+        System.out.println(party);
         status = cursor.getNext(null, data, LockMode.DEFAULT);
       }
       cursor.close();

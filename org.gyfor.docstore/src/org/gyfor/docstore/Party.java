@@ -1,20 +1,19 @@
 package org.gyfor.docstore;
 
-import com.sleepycat.persist.model.Entity;
-import com.sleepycat.persist.model.PrimaryKey;
-import com.sleepycat.persist.model.Relationship;
-import com.sleepycat.persist.model.SecondaryKey;
+import org.gyfor.object.Entity;
+import org.gyfor.object.Id;
+import org.gyfor.object.UniqueConstraint;
+
 
 @Entity
+@UniqueConstraint("partyCode")
 public class Party {
 
-  @PrimaryKey(sequence="Party_Sequence")
+  @Id
   private int id;
   
-  @SecondaryKey(relate=Relationship.ONE_TO_ONE)
   private String partyCode;
   
-  @SecondaryKey(relate=Relationship.ONE_TO_ONE)
   private String shortName;
   
   private String formalName;

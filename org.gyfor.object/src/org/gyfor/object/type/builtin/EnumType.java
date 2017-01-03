@@ -15,12 +15,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.gyfor.object.type.IType;
-import org.gyfor.object.type.Position;
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.builtin.Type;
+import org.gyfor.object.type.IType;
 import org.gyfor.object.value.ICodeValue;
-import org.gyfor.todo.NotYetImplementedException;
+import org.gyfor.util.SimpleBuffer;
 
 
 public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
@@ -318,8 +316,8 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
 
 
   @Override
-  public Object getFromBuffer(byte[] data, Position p) {
-    int i = getShortFromBuffer(data, p);
+  public E getFromBuffer (SimpleBuffer b) {
+    int i = getShortFromBuffer(b);
     E[] values = enumClass.getEnumConstants();
     if (i >= 0 && i < values.length) {
       return values[i];
@@ -328,6 +326,12 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
     }   
   }
 
+  
+  @Override
+  public void putToBuffer (SimpleBuffer b, E v) {
+    putShortToBuffer (b, (short)v.ordinal());
+  }
+  
   
   @Override
   public String getSQLType() {

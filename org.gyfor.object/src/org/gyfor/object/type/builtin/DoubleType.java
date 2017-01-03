@@ -16,8 +16,7 @@ import java.sql.SQLException;
 
 import org.gyfor.object.NumberSign;
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.Position;
-import org.gyfor.object.type.builtin.DecimalBasedType;
+import org.gyfor.util.SimpleBuffer;
 
 
 public class DoubleType extends DecimalBasedType<Double> {
@@ -76,18 +75,38 @@ public class DoubleType extends DecimalBasedType<Double> {
 
   
   @Override
-  public Object getFromBuffer(byte[] data, Position p) {
-    long v = data[p.position++];
-    v = (v << 8) + (data[p.position++] & 0xff);
-    v = (v << 8) + (data[p.position++] & 0xff);
-    v = (v << 8) + (data[p.position++] & 0xff);
-    v = (v << 8) + (data[p.position++] & 0xff);
-    v = (v << 8) + (data[p.position++] & 0xff);
-    v = (v << 8) + (data[p.position++] & 0xff);
-    v = (v << 8) + (data[p.position++] & 0xff);
+  public Double getFromBuffer (SimpleBuffer b) {
+    long v = b.next() & 0xff;
+    v = (v << 8) + (b.next() & 0xff);
+    v = (v << 8) + (b.next() & 0xff);
+    v = (v << 8) + (b.next() & 0xff);
+    v = (v << 8) + (b.next() & 0xff);
+    v = (v << 8) + (b.next() & 0xff);
+    v = (v << 8) + (b.next() & 0xff);
+    v = (v << 8) + (b.next() & 0xff);
     // Reverse the sign bit that was stored 
     v ^= (v >> 63) & Long.MAX_VALUE;
     return Double.longBitsToDouble(v);
+  }
+
+  
+  @Override
+  public void putToBuffer (SimpleBuffer b, Double v) {
+    double v0 = (double)v;
+    long v1 = Double.doubleToRawLongBits(v0);
+    // Reverse the sign bit to allow byte sorting negative doubles have bits 0-30
+    // inverted (because you want the opposite order to what the original
+    // sign/magnitude representation would give you, whilst preserving the sign
+    // bit.
+    v1 ^= (v1 >> 63) & Long.MAX_VALUE;
+    b.append((byte)((v1 >>> 56) & 0xff));
+    b.append((byte)((v1 >>> 48) & 0xff));
+    b.append((byte)((v1 >>> 40) & 0xff));
+    b.append((byte)((v1 >>> 32) & 0xff));
+    b.append((byte)((v1 >>> 24) & 0xff));
+    b.append((byte)((v1 >>> 16) & 0xff));
+    b.append((byte)((v1 >>> 8) & 0xff));
+    b.append((byte)(v1 & 0xff));
   }
 
   

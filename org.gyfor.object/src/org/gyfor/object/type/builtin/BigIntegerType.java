@@ -17,8 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.Position;
-import org.gyfor.object.type.builtin.IntegerBasedType;
+import org.gyfor.util.SimpleBuffer;
 
 
 public class BigIntegerType extends IntegerBasedType<BigInteger> {
@@ -74,9 +73,16 @@ public class BigIntegerType extends IntegerBasedType<BigInteger> {
 
   
   @Override
-  public Object getFromBuffer(byte[] data, Position p) {
-    String s = getStringFromBuffer(data, p);
+  public BigInteger getFromBuffer (SimpleBuffer b) {
+    String s = b.nextNulTerminatedString();
     return new BigInteger(s);
+  }
+
+
+  @Override
+  public void putToBuffer (SimpleBuffer b, BigInteger v) {
+    BigInteger v0 = (BigInteger)v;
+    b.appendNulTerminatedString(v0.toString());
   }
 
 

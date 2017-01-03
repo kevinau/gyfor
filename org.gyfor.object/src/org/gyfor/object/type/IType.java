@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.gyfor.object.UserEntryException;
+import org.gyfor.util.SimpleBuffer;
 
 public interface IType<T> {
   
@@ -93,22 +94,11 @@ public interface IType<T> {
   }
 
   
-  public Object getFromBuffer (byte[] data, Position p);
-    
-
-  public default String getStringFromBuffer (byte[] data, Position p) {
-    int i = p.position;
-    while (i < data.length && data[i] != 0) {
-      i++;
-    }
-    if (i == data.length) {
-      throw new ArrayIndexOutOfBoundsException(i);
-    }
-    String v = new String(data, p.position, i - p.position, StandardCharsets.UTF_8);
-    p.position = i + 1;
-    return v;
-  }
+  public T getFromBuffer (SimpleBuffer b);
   
+
+  public void putToBuffer (SimpleBuffer b, T v);
+
 
   /**
    * Returns the SQL type description for this type.

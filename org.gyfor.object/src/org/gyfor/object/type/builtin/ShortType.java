@@ -15,8 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.Position;
-import org.gyfor.object.type.builtin.IntegerBasedType;
+import org.gyfor.util.SimpleBuffer;
 
 public class ShortType extends IntegerBasedType<Short> {
   
@@ -62,10 +61,16 @@ public class ShortType extends IntegerBasedType<Short> {
 
 
   @Override
-  public Object getFromBuffer(byte[] data, Position p) {
-    return getShortFromBuffer(data, p);
+  public Short getFromBuffer (SimpleBuffer b) {
+    return getShortFromBuffer(b);
   }
 
+  
+  @Override
+  public void putToBuffer (SimpleBuffer b, Short v) {
+    putShortToBuffer(b, (short)v);
+  }
+  
   
   @Override
   public String getSQLType() {

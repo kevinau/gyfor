@@ -16,7 +16,7 @@ import java.sql.SQLException;
 
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.type.IType;
-import org.gyfor.object.type.Position;
+import org.gyfor.util.SimpleBuffer;
 
 public class BooleanType extends Type<Boolean> implements IType<Boolean> {
   
@@ -134,11 +134,20 @@ public class BooleanType extends Type<Boolean> implements IType<Boolean> {
 
 
   @Override
-  public Object getFromBuffer(byte[] data, Position p) {
-    byte v = data[p.position++];
+  public Boolean getFromBuffer (SimpleBuffer b) {
+    int v = b.next();
     return (v == 1);
   }
 
+  
+  @Override
+  public void putToBuffer (SimpleBuffer b, Boolean v) {
+    b.ensureCapacity(1);
+    
+    boolean v0 = (boolean)v;
+    b.append(v0 ? (byte)1 : (byte)0);
+  }
+  
   
   @Override
   public String getSQLType() {

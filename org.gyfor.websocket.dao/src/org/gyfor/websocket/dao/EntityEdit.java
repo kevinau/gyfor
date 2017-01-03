@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Map;
 
 import org.gyfor.berkeleydb.DataStore;
-import org.gyfor.berkeleydb.ResultDatabaseEntry;
+import org.gyfor.berkeleydb.ResultDatabaseEntry2;
 import org.gyfor.http.CallbackAccessor;
 import org.gyfor.http.Context;
 import org.gyfor.http.Resource;
@@ -189,7 +189,7 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
   private void doListRequest () {
     System.out.println("Primary key order:");
     try (Cursor cursor = entityDatabase.openCursor (null, null)) {
-      ResultDatabaseEntry data = new ResultDatabaseEntry();
+      ResultDatabaseEntry2 data = new ResultDatabaseEntry2();
       
       OperationStatus status = cursor.getFirst(null, data, LockMode.DEFAULT);
       while (status == OperationStatus.SUCCESS) {
