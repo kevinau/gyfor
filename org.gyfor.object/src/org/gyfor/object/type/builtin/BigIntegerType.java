@@ -87,6 +87,12 @@ public class BigIntegerType extends IntegerBasedType<BigInteger> {
 
 
   @Override
+  public int getBufferSize () {
+    return BUFFER_NUL_TERMINATED;
+  }
+  
+  
+  @Override
   public String getSQLType() {
     return "DECIMAL(" + getMaxDigits() + ")";
   }

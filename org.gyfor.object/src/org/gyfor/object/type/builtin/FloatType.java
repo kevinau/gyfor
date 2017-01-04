@@ -85,8 +85,6 @@ public class FloatType extends DecimalBasedType<Float> {
   
   @Override
   public void putToBuffer (SimpleBuffer b, Float v) {
-    byte[] data = b.ensureCapacity(Float.BYTES);
-    
     float v0 = (float)v;
     int v1 = Float.floatToRawIntBits(v0);
     // Reverse the sign bit to allow byte sorting negative floats have bits 0-30
@@ -100,6 +98,12 @@ public class FloatType extends DecimalBasedType<Float> {
     b.append(v1 & 0xff);
   }
 
+  
+  @Override
+  public int getBufferSize () {
+    return Float.BYTES;
+  }
+  
   
   @Override
   public String getSQLType() {

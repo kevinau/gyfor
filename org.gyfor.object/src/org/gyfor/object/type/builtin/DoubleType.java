@@ -111,6 +111,12 @@ public class DoubleType extends DecimalBasedType<Double> {
 
   
   @Override
+  public int getBufferSize () {
+    return Double.BYTES;
+  }
+  
+  
+  @Override
   public String getSQLType() {
     return "DOUBLE";
   }

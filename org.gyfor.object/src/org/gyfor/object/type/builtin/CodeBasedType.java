@@ -270,6 +270,12 @@ public abstract class CodeBasedType<T extends ICodeValue> implements IType<T> {
   
   
   @Override
+  public int getBufferSize () {
+    return BUFFER_NUL_TERMINATED;
+  }
+  
+  
+  @Override
   public String getSQLType() {
     return "VARCHAR(" + getFieldSize() + ")";
   }

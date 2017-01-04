@@ -218,6 +218,12 @@ public abstract class DateBasedType<T> extends Type<T> implements IType<T> {
   
 
   @Override
+  public int getBufferSize () {
+    return Long.BYTES;
+  }
+  
+  
+  @Override
   public String getSQLType() {
     return "DATE";
   }

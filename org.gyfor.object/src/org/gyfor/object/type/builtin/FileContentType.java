@@ -82,6 +82,12 @@ public class FileContentType extends PathBasedType<FileContent> {
   
   
   @Override
+  public int getBufferSize () {
+    throw new NotYetImplementedException();
+  }
+  
+  
+  @Override
   public String getSQLType() {
     // Not used
     return null;

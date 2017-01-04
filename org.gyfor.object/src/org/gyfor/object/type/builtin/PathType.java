@@ -73,6 +73,12 @@ public class PathType extends PathBasedType<File> {
 
   
   @Override
+  public int getBufferSize () {
+    throw new NotYetImplementedException();
+  }
+  
+  
+  @Override
   public String getSQLType() {
     return "VARCHAR(" + getFieldSize() + ")";
   }

@@ -74,6 +74,12 @@ public class IntegerType extends IntegerBasedType<Integer> {
 
   
   @Override
+  public int getBufferSize () {
+    return Integer.BYTES;
+  }
+  
+  
+  @Override
   public String getSQLType() {
     return "INTEGER";
   }

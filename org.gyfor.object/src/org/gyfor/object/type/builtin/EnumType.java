@@ -334,6 +334,12 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
   
   
   @Override
+  public int getBufferSize () {
+    return Short.BYTES;
+  }
+  
+  
+  @Override
   public String getSQLType() {
     return "SMALLINT";
   }

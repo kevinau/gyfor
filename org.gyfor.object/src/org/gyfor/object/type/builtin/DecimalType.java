@@ -109,6 +109,12 @@ public class DecimalType extends DecimalBasedType<Decimal> {
   
   
   @Override
+  public int getBufferSize () {
+    return Integer.BYTES + Long.BYTES;
+  }
+  
+  
+  @Override
   public void setSQLValue(PreparedStatement stmt, int sqlIndex, Decimal value) throws SQLException {
     stmt.setBigDecimal(sqlIndex, new BigDecimal(value.toString()));
   }

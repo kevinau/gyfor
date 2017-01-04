@@ -111,6 +111,12 @@ public abstract class StringBasedType<T> extends Type<T> implements ILengthSetta
   
   
   @Override
+  public int getBufferSize () {
+    return BUFFER_NUL_TERMINATED;
+  }
+  
+  
+  @Override
   public String getSQLType() {
     return "VARCHAR(" + getFieldSize() + ")";
   }

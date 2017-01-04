@@ -76,6 +76,13 @@ public class VoidType implements IType<Void> {
     throw new IllegalStateException("Void type is never stored in a database");
   }
   
+  
+  @Override
+  public int getBufferSize () {
+    throw new IllegalStateException("Void type is never stored in a database");
+  }
+  
+  
   @Override
   public String getSQLType() {
     throw new IllegalStateException("Void type is never stored in a database");

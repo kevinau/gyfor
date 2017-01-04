@@ -73,6 +73,12 @@ public class LongType extends IntegerBasedType<Long> {
 
   
   @Override
+  public int getBufferSize () {
+    return Long.BYTES;
+  }
+  
+  
+  @Override
   public String getSQLType() {
     return "BIGINT";
   }

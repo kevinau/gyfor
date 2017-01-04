@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.gyfor.object.type;
 
-import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,6 +25,13 @@ public interface IType<T> {
     NUMBER,
     BOOLEAN;
   }
+  
+  public static final int BUFFER_NUL_TERMINATED = -1;
+  public static final int BUFFER_UTF8 = -2;
+  public static final int BUFFER_UTF8_LENGTH = -3;
+  public static final int BUFFER_SHORT_LENGTH = -4;
+  public static final int BUFFER_INT_LENGTH = -5;
+  
   
   public T createFromString (String source) throws UserEntryException;
 
@@ -100,6 +106,9 @@ public interface IType<T> {
   public void putToBuffer (SimpleBuffer b, T v);
 
 
+  public int getBufferSize ();
+  
+  
   /**
    * Returns the SQL type description for this type.
    */

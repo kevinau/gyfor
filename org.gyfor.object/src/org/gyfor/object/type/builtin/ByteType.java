@@ -73,6 +73,12 @@ public class ByteType extends IntegerBasedType<Byte> {
   
   
   @Override
+  public int getBufferSize () {
+    return Byte.BYTES;
+  }
+  
+  
+  @Override
   public String getSQLType() {
     return "SMALLINT";
   }

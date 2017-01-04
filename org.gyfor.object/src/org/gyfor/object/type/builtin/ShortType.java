@@ -73,6 +73,12 @@ public class ShortType extends IntegerBasedType<Short> {
   
   
   @Override
+  public int getBufferSize () {
+    return Short.BYTES;
+  }
+  
+  
+  @Override
   public String getSQLType() {
     return "SMALLINT";
   }

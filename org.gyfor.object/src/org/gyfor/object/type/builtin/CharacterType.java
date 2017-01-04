@@ -127,6 +127,12 @@ public class CharacterType extends Type<Character> implements ICaseSettable {
   
   
   @Override
+  public int getBufferSize () {
+    return BUFFER_UTF8;
+  }
+  
+  
+  @Override
   public String getSQLType() {
     return "CHAR";
   }

@@ -150,6 +150,12 @@ public class BooleanType extends Type<Boolean> implements IType<Boolean> {
   
   
   @Override
+  public int getBufferSize () {
+    return 1;
+  }
+  
+  
+  @Override
   public String getSQLType() {
     return "BOOLEAN";
   }

@@ -7,6 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.gyfor.object.EntityPlanFactory;
+import org.gyfor.object.context.PlanFactory;
+import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.osgi.ComponentConfiguration;
 import org.gyfor.osgi.Configurable;
 import org.osgi.service.component.ComponentContext;
@@ -78,6 +81,17 @@ public class DataEnvironment {
   
   public Database openDatabase (Transaction trans, String name, DatabaseConfig dbConfig) {
     return envmnt.openDatabase(trans, name, dbConfig);
+  }
+  
+  
+  public DataTable openTable (PlanFactory planEnvmt, Class<?> klass) {
+    return openTable(planEnvmt, klass, false);
+  }
+  
+  
+  public DataTable openTable (PlanFactory planEnvmt, Class<?> klass, boolean writeable) {
+    IEntityPlan<?> entityPlan = EntityPlanFactory.getEntityPlan(planEnvmt, klass);
+    return new DataTable(this, entityPlan, writeable);
   }
   
   

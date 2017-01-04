@@ -97,6 +97,12 @@ public class BigDecimalType extends DecimalBasedType<BigDecimal> {
 
   
   @Override
+  public int getBufferSize () {
+    throw new NotYetImplementedException();
+  }
+  
+  
+  @Override
   public BigDecimal newValue() {
     return BigDecimal.ZERO;
   }
