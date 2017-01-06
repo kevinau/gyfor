@@ -6,7 +6,7 @@ import org.gyfor.object.Entity;
 import org.gyfor.object.EntityPlanFactory;
 import org.gyfor.object.Id;
 import org.gyfor.object.Version;
-import org.gyfor.object.context.PlanFactory;
+import org.gyfor.object.context.PlanEnvironment;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
@@ -42,12 +42,12 @@ public class AnnotatedEntityTest {
   }
 
 
-  private PlanFactory context;
+  private PlanEnvironment context;
   
   
   @Before
   public void before () {
-    context = new PlanFactory();
+    context = new PlanEnvironment();
   }
   
   

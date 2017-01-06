@@ -7,13 +7,13 @@ import org.gyfor.berkeleydb.DataEnvironment;
 import org.gyfor.berkeleydb.DataTable;
 import org.gyfor.berkeleydb.KeyDatabaseEntry;
 import org.gyfor.berkeleydb.ObjectDatabaseEntry;
-import org.gyfor.docstore.Party;
+import org.gyfor.object.IPlanEnvironment;
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.context.PlanFactory;
 import org.gyfor.util.RunTimer;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.pennyledger.party.Party;
 
 import com.sleepycat.je.Cursor;
 import com.sleepycat.je.DatabaseException;
@@ -28,6 +28,7 @@ import au.com.bytecode.opencsv.CSVReader;
 public class CVSDatabaseLoader {
 
   private DataEnvironment dataEnvironment;
+  private IPlanEnvironment planEnvironment;
   
   
   @Reference
@@ -40,6 +41,17 @@ public class CVSDatabaseLoader {
   }
   
   
+  @Reference
+  public void setPlanEnvironment (IPlanEnvironment planEnvironment) {
+    this.planEnvironment = planEnvironment;  
+  }
+  
+  
+  public void unsetPlanEnvironment (IPlanEnvironment planEnvironment) {
+    this.planEnvironment = null;  
+  }
+  
+  
   @Activate
   public void activate () {
     RunTimer timer = new RunTimer();
@@ -49,8 +61,7 @@ public class CVSDatabaseLoader {
     // Truncate the database (both primary and secondary)
     dataEnvironment.truncateDatabase(className);
 
-    PlanFactory planEnvmt = new PlanFactory();
-    DataTable entityTable = dataEnvironment.openTable(planEnvmt, Party.class, false);
+    DataTable entityTable = dataEnvironment.openTable(planEnvironment, Party.class, false);
 
     ObjectDatabaseEntry data = entityTable.getDatabaseEntry();
 

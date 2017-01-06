@@ -2,7 +2,7 @@ package org.gyfor.object.model.path;
 
 import org.gyfor.object.Entity;
 import org.gyfor.object.EntityPlanFactory;
-import org.gyfor.object.context.PlanFactory;
+import org.gyfor.object.context.PlanEnvironment;
 import org.gyfor.object.model.EntityModel;
 import org.gyfor.object.model.NodeModel;
 import org.gyfor.object.model.RootModel;
@@ -20,7 +20,7 @@ public class PathTests {
   
   public static void main (String[] args) throws Exception {
     RootModel rootModel = new RootModel();
-    PlanFactory context = new PlanFactory();
+    PlanEnvironment context = new PlanEnvironment();
     
     Test1 entity1 = new Test1();
     

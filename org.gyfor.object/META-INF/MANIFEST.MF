@@ -20,5 +20,5 @@ Import-Package: org.gyfor.math,
  org.gyfor.todo,
  org.gyfor.util,
  org.gyfor.value
-Service-Component: OSGI-INF/org.gyfor.object.context.PlanFactory.xml
+Service-Component: OSGI-INF/org.gyfor.object.context.PlanEnvironment.xml
 Bundle-ActivationPolicy: lazy

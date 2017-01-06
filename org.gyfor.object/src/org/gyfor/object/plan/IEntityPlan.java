@@ -18,6 +18,8 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
 
   public List<IItemPlan<?>[]> getUniqueConstraints();
 
+  public String getDescription (Object instance);
+  
   public IItemPlan<?> getEntityLifePlan();
   
   public EntityLife getLife(Object instance);

@@ -53,10 +53,10 @@ import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
  * <p>
  * All commands and responses are tab delimited fields, with the first field the command or response name.
  */
-@Context("/ws/entity")
-@Resource(path = "/static", location = "static")
-@Component(service = HttpHandler.class)
-public class EntityEdit extends WebSocketProtocolHandshakeHandler {
+//@Context("/ws/entity")
+//@Resource(path = "/static", location = "static")
+//@Component(service = HttpHandler.class)
+public class EntityEdit2 extends WebSocketProtocolHandshakeHandler {
 
   private final EntityWebSocketConnectionCallback callback;
   private final String context;
@@ -68,7 +68,7 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
   private DataTable entityTable;
   
 
-  public EntityEdit() {
+  public EntityEdit2() {
     super(new EntityWebSocketConnectionCallback());
     
     callback = CallbackAccessor.getCallback(this);
@@ -103,11 +103,11 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
   @Activate
   public void activate(ComponentContext componentContext) {
     callback.setContext(context);
-    
+  
     callback.setPlanEnvironment(planEnvironment);
     callback.setDataEnvironment(dataEnvironment);
     callback.setEntityClass(entityClass);
-  
+    
   }
 
 
@@ -119,7 +119,7 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
   
   protected static class EntityWebSocketConnectionCallback extends AbstractWebSocketConnectionCallback {
 
-    private final Logger logger = LoggerFactory.getLogger(EntityEdit.class);
+    private final Logger logger = LoggerFactory.getLogger(EntityEdit2.class);
     
     private IPlanEnvironment planEnvironment;
     private DataEnvironment dataEnvironment;
@@ -127,7 +127,7 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
     private IEntityPlan<?> entityPlan;
     private DataTable entityTable;
     private Class<?> entityClass;
-     
+    
     
     private void setPlanEnvironment (IPlanEnvironment planEnvironment) {
       this.planEnvironment = planEnvironment;
@@ -148,8 +148,8 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
     protected Object buildSessionData (String path, Map<String, String> queryMap) throws IllegalArgumentException {
       return null;
     }
-    
-    
+
+ 
     @Override
     protected void openResources () {
       logger.info("Opening resources for {}", entityClass);
@@ -157,8 +157,8 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
       entityPlan = planEnvironment.getEntityPlan(entityClass);
       entityTable = dataEnvironment.openTable(entityPlan, false); 
     }
-
- 
+    
+    
     @Override
     protected void doRequest (Request request, Object sessionData) {
       logger.info("Performing request {}", request.getName());
@@ -248,6 +248,7 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
       
     }
 
+    
     private void doDescribeAllRequest () {
       List<EntityDescription> descriptions = new ArrayList<>();
       try (Cursor cursor = entityTable.openCursor()) {

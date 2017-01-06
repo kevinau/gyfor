@@ -3,7 +3,7 @@ package org.gyfor.object.test;
 import org.gyfor.object.Entity;
 import org.gyfor.object.EntityLabel;
 import org.gyfor.object.EntityPlanFactory;
-import org.gyfor.object.context.PlanFactory;
+import org.gyfor.object.context.PlanEnvironment;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.ILabelGroup;
 import org.junit.Assert;
@@ -36,12 +36,12 @@ public class EntityLabelTest {
   }
 
 
-  private PlanFactory context;
+  private PlanEnvironment context;
   
   
   @Before
   public void before () {
-    context = new PlanFactory();
+    context = new PlanEnvironment();
   }
   
   

@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 
 import org.gyfor.http.Context;
 import org.gyfor.http.Resource;
-import org.gyfor.object.context.PlanFactory;
+import org.gyfor.object.context.PlanEnvironment;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -28,7 +28,7 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
   private BundleContext defaultContext;
   private BundleContext globalContext;
   
-  private PlanFactory objectContext;
+  private PlanEnvironment objectContext;
   
   
   public EntityWebSocket() {
@@ -51,7 +51,7 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
   public void activate (BundleContext bundleContext) {
     this.defaultContext = bundleContext;
     
-    objectContext = new PlanFactory();
+    objectContext = new PlanEnvironment();
     
     // The following nastiness is required because the WebSocketConnectionCallback 
     // can only be initialized in the constructor, but we need to provide configuration

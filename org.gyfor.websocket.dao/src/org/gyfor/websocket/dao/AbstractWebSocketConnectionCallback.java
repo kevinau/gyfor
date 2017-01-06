@@ -23,7 +23,7 @@ import io.undertow.websockets.spi.WebSocketHttpExchange;
 
 public abstract class AbstractWebSocketConnectionCallback implements WebSocketConnectionCallback {
 
-  private final Logger logger = LoggerFactory.getLogger(PartyEdit.class);
+  private final Logger logger = LoggerFactory.getLogger(AbstractWebSocketConnectionCallback.class);
   
   private final Map<WebSocketChannel, Object> sessions = new HashMap<>();
 
@@ -70,6 +70,9 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
     Object sessionData = buildSessionData(requestPath, queryMap);
     
     synchronized (sessions) {
+      if (sessions.isEmpty()) {
+        openResources();
+      }
       sessions.put(channel, sessionData);
       channel.getCloseSetter().set(new ChannelListener<Channel>() {
         @Override
@@ -77,6 +80,9 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
           logger.info("Websocket channel closed: {}", channel);
           synchronized (sessions) {
             sessions.remove(channel);
+            if (sessions.isEmpty()) {
+              closeResources();
+            }
           }
         }
       });
@@ -89,7 +95,6 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
           String data = message.getData();
           logger.info("Websocket receive msg: {}, {}", channel.getSourceAddress(), data);
           if (data.equals("close")) {
-            sessions.remove(channel);
             try {
               logger.info("Websocket channel close request {}", channel.getSourceAddress());
               channel.close();
@@ -110,10 +115,18 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
   }
   
   
-  protected abstract Object buildSessionData (String path, Map<String, String> queryMap);
+  protected Object buildSessionData (String path, Map<String, String> queryMap) {
+    return null;
+  }
   
   
   protected abstract void doRequest (Request request, Object sessionData);
+  
+  
+  protected abstract void openResources ();
+  
+  
+  protected abstract void closeResources ();
   
   
   protected void doSendAll (String command, Function<Object, String> stringBuilder) {

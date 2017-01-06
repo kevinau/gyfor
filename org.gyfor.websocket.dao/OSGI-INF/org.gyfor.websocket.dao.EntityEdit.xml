@@ -3,6 +3,7 @@
    <service>
       <provide interface="io.undertow.server.HttpHandler"/>
    </service>
-   <reference bind="setDataStore" cardinality="1..1" interface="org.gyfor.berkeleydb.DataStore" name="DataStore" policy="static" unbind="unsetDataStore"/>
+   <reference bind="setDataEnvironment" cardinality="1..1" interface="org.gyfor.berkeleydb.DataEnvironment" name="DataEnvironment" policy="static" unbind="unsetDataEnvironment"/>
+   <reference bind="setPlanEnvironment" cardinality="1..1" interface="org.gyfor.object.IPlanEnvironment" name="PlanEnvironment" policy="static" unbind="unsetPlanEnvironment"/>
    <implementation class="org.gyfor.websocket.dao.EntityEdit"/>
 </scr:component>

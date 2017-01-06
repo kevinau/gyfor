@@ -6,7 +6,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.gyfor.object.context.PlanFactory;
+import org.gyfor.object.context.PlanEnvironment;
 import org.gyfor.object.model.EntityModel;
 import org.gyfor.object.model.ItemModel;
 import org.gyfor.object.model.NodeModel;
@@ -50,7 +50,7 @@ public class ModelHtmlBuilder {
   public void activate (BundleContext bundleContext) {
     RootModel rootModel = new RootModel();
     
-    PlanFactory objectContext = new PlanFactory();
+    PlanEnvironment objectContext = new PlanEnvironment();
     IEntityPlan<Person> entityPlan = objectContext.getEntityPlan(Person.class);
     
     Person instance = new Person("Kevin Holloway", "Kevin", "0447 252 976", null, "kholloway@geckosoftware.com.au");

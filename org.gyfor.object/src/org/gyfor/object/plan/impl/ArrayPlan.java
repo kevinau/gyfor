@@ -4,14 +4,14 @@ import java.lang.reflect.Field;
 import java.util.Iterator;
 
 import org.gyfor.object.EntryMode;
-import org.gyfor.object.IPlanFactory;
+import org.gyfor.object.IPlanEnvironment;
 import org.gyfor.object.plan.PlanStructure;
 import org.gyfor.util.ArrayIterator;
 
 
 public class ArrayPlan extends RepeatingPlan {
 
-  public ArrayPlan (IPlanFactory context, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
+  public ArrayPlan (IPlanEnvironment context, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
     super (context, field, elemClass, name, entryMode, dimension);
   }
   

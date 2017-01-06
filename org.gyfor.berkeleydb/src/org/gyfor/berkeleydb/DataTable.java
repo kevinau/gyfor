@@ -47,7 +47,7 @@ public class DataTable implements AutoCloseable {
     if (!readOnly) {
       buildFieldFlags();
       for (int i = 0; i < indexes.length; i++) {
-        indexes[i] = new TableIndex(this, bufferFieldSizes, i + 1, readOnly);      
+        indexes[i] = new TableIndex(this, bufferFieldSizes, i + 1, readOnly);
       }
     }
   }

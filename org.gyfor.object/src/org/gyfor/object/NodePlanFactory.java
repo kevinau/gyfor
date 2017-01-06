@@ -22,7 +22,7 @@ public class NodePlanFactory {
 //    this (klass, entityName(klass), entityLabel(klass), entityEntryMode(klass), 0);
 //  }
   
-  public static INodePlan getNodePlan (IPlanFactory context, Type fieldType, Field field, String name, EntryMode entryMode, int dimension, boolean optional) {
+  public static INodePlan getNodePlan (IPlanEnvironment context, Type fieldType, Field field, String name, EntryMode entryMode, int dimension, boolean optional) {
     INodePlan nodePlan;
     
     if (fieldType instanceof GenericArrayType) {
@@ -76,7 +76,7 @@ public class NodePlanFactory {
   
   
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  static INodePlan getNodePlanPart2 (IPlanFactory context, Field field, Type fieldType, String name, EntryMode entryMode, int dimension) {
+  static INodePlan getNodePlanPart2 (IPlanEnvironment context, Field field, Type fieldType, String name, EntryMode entryMode, int dimension) {
     INodePlan nodePlan;
   
     // Is there a type declaration within the class

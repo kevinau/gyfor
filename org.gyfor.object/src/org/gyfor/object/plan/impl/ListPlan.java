@@ -5,12 +5,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.gyfor.object.EntryMode;
-import org.gyfor.object.IPlanFactory;
+import org.gyfor.object.IPlanEnvironment;
 import org.gyfor.object.plan.PlanStructure;
 
 public class ListPlan extends RepeatingPlan {
 
-  public ListPlan (IPlanFactory context, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
+  public ListPlan (IPlanEnvironment context, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
     super (context, field, elemClass, name, entryMode, dimension);
   }
   

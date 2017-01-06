@@ -3,6 +3,7 @@ package org.gyfor.object.plan.impl;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
+import org.gyfor.object.Describing;
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.Optional;
 import org.gyfor.object.plan.IItemPlan;
@@ -16,6 +17,7 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
   private final IType<T> type;
   private final boolean nullable;
   private final ItemLabelGroup labels;
+  private final boolean describing;
   //private final Field lastEntryField;
   //private final Object staticDefaultValue;
   
@@ -38,6 +40,9 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
 
     this.labels = new ItemLabelGroup(field, name);
     
+    Describing describingAnn = field.getAnnotation(Describing.class);
+    this.describing = (describingAnn != null);
+
     //this.lastEntryField = lastEntryField;
     //this.staticDefaultValue = staticDefaultValue;
   }
@@ -58,6 +63,12 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
   @Override
   public ItemLabelGroup getLabels () {
     return labels;
+  }
+  
+  
+  @Override
+  public boolean isDescribing () {
+    return describing;
   }
   
 //  public Field getLastEntryField () {

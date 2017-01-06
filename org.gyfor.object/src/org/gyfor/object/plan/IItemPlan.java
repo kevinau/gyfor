@@ -36,4 +36,6 @@ public interface IItemPlan<T> extends INodePlan {
   @Override
   public void setValue(Object instance, Object value);
 
+  public boolean isDescribing();
+  
 }

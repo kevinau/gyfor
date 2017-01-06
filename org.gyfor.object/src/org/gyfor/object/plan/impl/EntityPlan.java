@@ -4,8 +4,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gyfor.object.IPlanFactory;
+import org.gyfor.object.IPlanEnvironment;
 import org.gyfor.object.Id;
+import org.gyfor.object.SelfDescribing;
 import org.gyfor.object.UniqueConstraint;
 import org.gyfor.object.Version;
 import org.gyfor.object.plan.EntityLabelGroup;
@@ -17,6 +18,7 @@ import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.PlanStructure;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.EntityLifeType;
+import org.gyfor.object.type.builtin.StringBasedType;
 import org.gyfor.object.value.EntityLife;
 
 
@@ -32,7 +34,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   private List<IItemPlan<?>[]> uniqueConstraints;
 
   
-  public EntityPlan (IPlanFactory context, Class<T> entityClass) {
+  public EntityPlan (IPlanEnvironment context, Class<T> entityClass) {
     super (context, null, entityClass, entityClass.getSimpleName(), entityEntryMode(entityClass));
     this.entityClass = entityClass;
     this.entityName = entityClass.getSimpleName();
@@ -281,6 +283,47 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   }
 
 
+  @Override
+  public String getDescription (Object instance) {
+    // Use the entity's self describing method if present
+    if (instance instanceof SelfDescribing) {
+      SelfDescribing describing = (SelfDescribing)instance;
+      return describing.getDescription();
+    }
+    
+    // Otherwise, concatenate all top level nodes that are marked as describing.
+    String description = null;
+    int i = 0;
+    for (INodePlan nodePlan : getMemberPlans()) {
+      if  (nodePlan.getStructure() == PlanStructure.ITEM) {
+        if (((IItemPlan<?>)nodePlan).isDescribing()) {
+          String part = nodePlan.getValue(instance).toString();
+          if (i == 0) {
+            description = part;
+          } else {
+            description += " " + part;
+          }
+          i++;
+        }
+      }
+    }
+    if (description != null) {
+      return description;
+    }
+    
+    // Otherwise, use the first top level String node
+    for (INodePlan nodePlan : getMemberPlans()) {
+      if  (nodePlan.getStructure() == PlanStructure.ITEM) {
+        IType<?> type = ((IItemPlan<?>)nodePlan).getType();
+        if (type instanceof StringBasedType) {
+          return nodePlan.getValue(instance).toString();
+        }
+      }
+    }
+    return "";
+  }
+
+  
   @Override
   public void indent (int level) {
     for (int i = 0; i < level; i++) {

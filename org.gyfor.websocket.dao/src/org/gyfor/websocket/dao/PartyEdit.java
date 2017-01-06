@@ -20,7 +20,7 @@ import io.undertow.server.HttpHandler;
 import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
 
 
-//@Context("/ws/entity")
+//@Context("/ws/entity/Party")
 //@Resource(path = "/static", location = "static")
 //@Component(service = HttpHandler.class)
 public class PartyEdit extends WebSocketProtocolHandshakeHandler {
@@ -98,6 +98,11 @@ public class PartyEdit extends WebSocketProtocolHandshakeHandler {
       return sessionData;
     }
     
+    @Override
+    protected void doRequest(Request request, Object sessionData) {
+      // TODO Auto-generated method stub
+      
+    }
     
     @Override
     protected void doRequest (String command, String[] args, Object sessionData) {
@@ -153,6 +158,8 @@ public class PartyEdit extends WebSocketProtocolHandshakeHandler {
         throw new RuntimeException("Unrecognised command '" + command + "'");
       }
     }
+
+
   }
   
     

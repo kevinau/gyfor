@@ -5,7 +5,7 @@ import java.util.List;
 import org.gyfor.object.Entity;
 import org.gyfor.object.EntityPlanFactory;
 import org.gyfor.object.Optional;
-import org.gyfor.object.context.PlanFactory;
+import org.gyfor.object.context.PlanEnvironment;
 import org.gyfor.object.model.EntityModel;
 import org.gyfor.object.model.ItemModel;
 import org.gyfor.object.model.ContainerChangeListener;
@@ -52,13 +52,13 @@ public class SimpleEntityTest {
   }
 
 
-  private PlanFactory context;
+  private PlanEnvironment context;
   private IEntityPlan<SimpleEntity> plan;
   
   
   @Before
   public void before () {
-    context = new PlanFactory();
+    context = new PlanEnvironment();
     plan = EntityPlanFactory.getEntityPlan(context, SimpleEntity.class);
   }
   

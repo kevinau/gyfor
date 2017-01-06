@@ -28,7 +28,7 @@ import org.gyfor.object.Optional;
 import org.gyfor.object.TypeFor;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.Validation;
-import org.gyfor.object.context.PlanFactory;
+import org.gyfor.object.context.PlanEnvironment;
 import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.IRuntimeDefaultProvider;
 import org.gyfor.object.plan.IRuntimeFactoryProvider;
@@ -82,7 +82,7 @@ public class AugmentedClass<T> {
   }
   
 
-  public AugmentedClass (PlanFactory context, Class<T> klass) {
+  public AugmentedClass (PlanEnvironment context, Class<T> klass) {
     this.klass = klass;
     
 //    Mode modeAnn = klass.getAnnotation(Mode.class);
@@ -124,13 +124,13 @@ public class AugmentedClass<T> {
 //  }
    
   
-  public void addClassFields (PlanFactory context, Class<?> klass, boolean include) {
+  public void addClassFields (PlanEnvironment context, Class<?> klass, boolean include) {
     Field[] declaredFields = klass.getDeclaredFields();
     addClassFields2 (context, klass, declaredFields, include);
   }
   
   
-  private void addClassFields2 (PlanFactory context, Class<?> klass, Field[] fields, boolean include) {
+  private void addClassFields2 (PlanEnvironment context, Class<?> klass, Field[] fields, boolean include) {
     // Parse the class hierarchy recursively
     Class<?> superKlass = klass.getSuperclass();
     if (superKlass != null && !superKlass.equals(Object.class)) {

@@ -3,7 +3,7 @@ package org.gyfor.object.context;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.gyfor.object.IPlanFactory;
+import org.gyfor.object.IPlanEnvironment;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.impl.AugmentedClass;
 import org.gyfor.object.plan.impl.EntityPlan;
@@ -11,7 +11,7 @@ import org.osgi.service.component.annotations.Component;
 
 
 @Component
-public class PlanFactory implements IPlanFactory {
+public class PlanEnvironment implements IPlanEnvironment {
 
   private Map<Class<?>, IEntityPlan<?>> entityPlans = new ConcurrentHashMap<>();
   private Map<Class<?>, AugmentedClass<?>> classPlans = new ConcurrentHashMap<>(20);
