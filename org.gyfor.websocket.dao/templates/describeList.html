@@ -1,0 +1,6 @@
+{# html replacement|id of item being replaced|HtML content #}
+html|partyDescriptions|<datalist id="partyDescriptions">
+  {% for d in descriptions %}
+    <option value="{{d.id}}" label="{{d.description}}">
+  {% endfor %}
+</datalist>

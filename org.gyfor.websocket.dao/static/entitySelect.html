@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test entitySelect</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="reset.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+  /* for testing */
+body { 
+  margin:20px; 
+}
+#party {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  color: #ffffff;
+  background-color: rgba(255, 140, 0, 1);
+  font-family: Helvetica, sans-serif;
+  font-size: 14px;
+  text-decoration: none;
+  padding: .25em 0.75em .25em 0.75em;
+}
+.unselectable {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  unselectable: on;
+
+  /* Prevents dragging of images/divs etc */
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+.selectable {
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -o-user-select: text;
+  user-select: text;
+}
+div.docPage {
+  margin-bottom: 16px;
+  position: relative;
+  top: 0;
+  bottom: 0;
+ }
+div.docPage:first-child {
+  xxxmargin-top: 0;
+}
+div.docPage>div.TEXT,
+div.docPage>div.DATE,
+div.docPage>div.CURRENCY,
+div.docPage>div.COMPANY_NUMBER,
+div.docPage>div.PERCENT {
+  position: absolute;
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -o-user-select: text;
+  user-select: text;
+  font-family: Arial, sans-serif;
+  white-space: nowrap;
+}
+div.docPage img {
+  z-index: -10;
+  pointer-events: none;
+  unselectable: on;
+}
+  </style>
+  <style>
+.DATE,			/* selectable segments */
+.CURRENCY,
+.PERCENT {
+    cursor: pointer;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+    xxxbackground-color: rgba(255, 140, 0, 0.5);
+    border-color: rgba(255, 140, 0, 1);
+}
+
+.dropList {
+    position: relative;
+    color: black;
+}
+.dropList-content {
+    position: absolute;
+    xxxbackground-color: #ffffff;
+    overflow: auto;
+    margin-left: -4px;
+    border: 1px solid rgba(255, 140, 0, 1);
+    z-index: 100;
+}
+.dropList-content a {
+    color: black;
+    text-decoration: none;
+    display: block;
+    padding: 2px 6px 2px 6px;
+}
+.dropList-content a.target {
+    background-color: rgba(255, 140, 0, 0.5);
+}
+.dropList a:hover {
+    xxxbackground-color: #f1f1f1;
+}
+
+.show {display:block;}
+
+*:focus {
+    outline: none;
+}
+
+.search-input {
+  position: relative;
+  top: 0;
+  left: 0;
+  font-family: Hevetica, Arial, sans-serif;
+  z-index: = 10;
+}
+.search-input input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 284px;
+  height: 20px;
+  font-size: 14px;
+  background: transparent;
+  border: 1px solid #888888;
+  padding: 4px 10px;
+  margin: 0;
+  z-index: 2;
+}
+
+.search-input button {
+  position: absolute;
+  top: 0;
+  left: 500px; 
+}
+.search-input div.input-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 284px;
+  height: 20px;
+  font-size: 14px;
+  border: 1px solid transparent;
+  padding: 4px 10px;
+  margin: 0;
+  z-index: 1;
+}
+.search-input div.input-background span {
+  font-size: 14px;
+  color: #AAAAAA;
+  line-height: 20px;
+  z-index: 1;
+}
+.search-input div.dropList {
+  display: none;
+  position: absolute;
+  top: 30px;
+  left: 0;
+  padding: 6px 0;
+  border: 1px solid rgba(255, 140, 0, 1);
+  z-index: 100;
+}
+.search-input div.dropList.someShowing {
+  display: block;
+}
+.search-input div.dropList>div {
+  font-size: 14px;
+  padding: 2px 10px;
+}
+.search-input div.dropList>div.target {
+  background-color: rgba(255, 140, 0, 0.5);
+}
+
+.search-input .upDownButton input {
+  position: absolute;
+  margin-left: -9999px;
+  visibility: hidden;
+}
+.search-input .upDownButton label {
+  xxxxdisplay: block;
+  xxxxposition: relative;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  position: absolute;
+  top: 0;
+  left: 500px; 
+}
+.search-input .upDownButton input+label b {
+  display: none;
+}
+.search-input .upDownButton input+label i {
+  display: block;
+}
+.search-input .upDownButton input:checked+label b {
+  display: block;
+}
+.search-input .upDownButton input:checked+label i {
+  display: none;
+}
+
+.exclude {
+  display: none;
+}
+
+  </style>
+  <script>
+var docFields = [
+  {
+    name : "declaredDate",
+    title : "Declared date",
+    isDate : true,
+    isCurrency : false,
+    inputId : ""
+  },
+  {
+    name : "paymentDate",
+    title : "Payment date",
+    isDate : true,
+    isCurrency : false,
+    inputId : ""
+  },
+  {
+    name : "dividendAmount",
+    title : "Dividend amount",
+    isDate : false,
+    isCurrency : true,
+    inputId : ""
+  },
+  {
+    name : "imputationCredit",
+    title : "Imputation credit",
+    isDate : false,
+    isCurrency : true,
+    inputId : ""
+  }
+];
+  </script>
+  <script>
+
+function toggleItemList (e) {
+	let id = e.parentElement.id;
+	let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
+	let dropListItems = dropList.children;
+	let inputElem = document.querySelectorAll("#" + id + " input")[0];
+	let inputBackground = document.querySelectorAll("#" + id + " div.input-background")[0];
+	let toggleButton = document.querySelectorAll("#" + id + " div.upDownButton input")[0];
+	console.log("toggle item list, after click " + toggleButton.checked);
+
+	if (!toggleButton.checked) {
+		// It was checked, so all items are showing.  Clear list of items
+		filterItems(e);
+//		var elem = inputBackground;
+//		while (elem.firstChild) elem.removeChild(elem.firstChild);
+//		dropList.classList.remove("someShowing");
+//		toggleButton.checked = false;
+//		inputElem.style.paddingLeft = "10px";
+	} else {
+		// Show are showing, but not all.  Display them all
+		////var elem = inputBackground;
+		////while (elem.firstChild) elem.removeChild(elem.firstChild);
+		for (var i = 0; i < dropListItems.length; i++) {
+			dropListItems[i].classList.remove("exclude");
+		}
+		dropList.classList.add("someShowing");
+		toggleButton.checked = true;
+		////inputElem.style.paddingLeft = "10px";
+	}
+	console.log("toggle item list exit " + toggleButton.checked);
+}
+function filterItems (e) {
+	let id = e.parentElement.id;
+	let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
+	let dropListItems = dropList.children;
+	let inputElems = document.querySelectorAll("#" + id + " input");
+	let inputBackground = document.querySelectorAll("#" + id + " div.input-background")[0];
+	let toggleButton = document.querySelectorAll("#" + id + " div.upDownButton input")[0];
+
+	let inputElem = inputElems[0];
+	if (inputElem.value.length == 0) {
+		var elem = inputBackground;
+		while (elem.firstChild) elem.removeChild(elem.firstChild);
+		dropList.classList.remove("someShowing");
+		toggleButton.checked = false;
+		inputElem.style.paddingLeft = "10px";
+	    return;	
+	}
+	partial = inputElem.value.toLowerCase();
+	let singleValue;
+	let n = 0;
+	let x0 = 0;
+	let i0 = 0;
+	for (var i = 0; i < dropListItems.length; i++) {
+		let t = dropListItems[i].innerText.toLowerCase();
+		let x = t.indexOf(partial);
+		if (x != -1) {
+			singleValue = dropListItems[i].innerText;
+			x0 = x;
+			i0 = i;
+			n++;
+		}
+	}
+	switch (n) {
+	case 0 :
+		// No match found
+		var elem = inputBackground;
+		while (elem.firstChild) elem.removeChild(elem.firstChild);
+		dropList.classList.remove("someShowing");
+		inputElem.style.paddingLeft = "10px";
+	    break;
+	case 1 :
+   		// Single value found
+		var elem = inputBackground;
+		while (elem.firstChild) elem.removeChild(elem.firstChild);
+        
+		var s0 = document.createTextNode(singleValue.substring(0, x0));
+		var span0 = document.createElement("span");
+		span0.appendChild(s0);
+		
+		var s1 = document.createTextNode(inputElem.value);
+		var span1 = document.createElement("span");
+		span1.style.visibility = "hidden";
+		span1.appendChild(s1);
+
+		var s2 = document.createTextNode(singleValue.substring(x0 + inputElem.value.length));
+		var span2 = document.createElement("span");
+		span2.appendChild(s2);
+		
+		elem.appendChild(span0);
+		elem.appendChild(span1);
+		elem.appendChild(span2);
+
+		for (var i = 0; i < dropListItems.length; i++) {
+			if (i == i0) {
+				dropListItems[i].classList.remove("exclude");
+			} else {
+				dropListItems[i].classList.add("exclude");
+			}
+		}
+		dropList.classList.add("someShowing");
+		//alert (span1.offsetLeft + " " + inputElem.offsetLeft);
+		inputElem.style.paddingLeft = (span1.offsetLeft - inputElem.offsetLeft) + "px";
+		break;
+	default :
+    	// Multiple values found
+		var elem = inputBackground;
+		while (elem.firstChild) elem.removeChild(elem.firstChild);
+
+		for (var i = 0; i < dropListItems.length; i++) {
+			let t = dropListItems[i].innerText.toLowerCase();
+			let x = t.indexOf(partial);
+			if (x == -1) {
+				dropListItems[i].classList.add("exclude");
+			} else {
+				dropListItems[i].classList.remove("exclude");
+			}
+		}
+		dropList.classList.add("someShowing");
+		inputElem.style.paddingLeft = "10px";
+		break;
+	}
+	console.log("all showing? " + n + " " + dropListItems.length);
+	if (n == dropListItems.length) {
+		toggleButton.checked = true;
+	} else {
+		toggleButton.checked = false;
+	}
+}
+
+  </script>
+</head>
+<body>
+    <div id="partyDescriptions" class="search-input">
+      <input type="text" oninput="filterItems(this)">
+      <div class="input-background">&nbsp;</div>
+      <div class="upDownButton">
+        <input id="cmn-toggle-4" type="checkbox" onchange="toggleItemList(this.parentElement);">
+        <label for="cmn-toggle-4"><i class="material-icons">arrow_drop_down</i><b class="material-icons">arrow_drop_up</b></label>
+      </div>
+      
+      <!-- button onclick="toggleItemList(this);"><i class="material-icons">arrow_drop_down</i></button -->
+      <div class="dropList">
+        <div data-value="2">Australian Foundation Investment Company</div>
+        <div data-value="3">BHP Billiton</div>
+        <div data-value="4">Commonwealth Bank of Australia</div>
+        <div data-value="1">Qantas Airways</div>
+        <div data-value="5">Telstra Corporation</div>
+      </div>
+    </div>
+  
+<script>
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+function doSelectAction (elem) {
+	return false;	
+}
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+function myFunction(elem) {
+    var fieldNameSelect = document.getElementById("field-name-select");
+    if (fieldNameSelect) {
+      fieldNameSelect.remove();
+    } else {
+      fieldNameSelect = document.createElement("div");
+      fieldNameSelect.classList.add("dropList");
+      fieldNameSelect.id = "field-name-select";
+      fieldNameSelect.setAttribute("tabindex", "0");
+      var computedStyle = window.getComputedStyle(elem);
+      var marginTop = parseInt(computedStyle.marginTop);
+      fieldNameSelect.setAttribute("style", "position:relative; top:" + (elem.offsetHeight + marginTop) + "px;");
+    
+      var newDropContent = document.createElement("div");
+      newDropContent.classList.add("dropList-content");
+      fieldNameSelect.appendChild(newDropContent);
+      for (i = 0; i < docFields.length; i++) {
+        let docField = docFields[i];
+        let newDropItem = document.createElement("a");
+        newDropItem.onclick = function (e) {
+        	var fieldNameSelect = document.getElementById("field-name-select");
+        	var target = fieldNameSelect.parentElement;
+        	target.textContent = newDropItem.innerText;
+        	return false;
+        }
+        //newDropItem.setAttribute("href", "javascript:doSelectAction(" + elem.id + ")");
+        var newDropTitle = document.createTextNode(docField.title);
+        newDropItem.appendChild(newDropTitle);
+        newDropItem.onmouseover = function (e) {
+          var fieldNameSelect = document.getElementById("field-name-select");
+          var newDropComponent = fieldNameSelect.firstChild;
+          var itemElems = newDropComponent.children;
+          
+          for (var i = 0; i < itemElems.length; i++) {
+            var itemElem = itemElems[i];
+            if (itemElem.classList.contains("target")) {
+              itemElem.classList.remove("target");
+              break;
+            }
+          }
+          e.target.classList.add("target"); 
+        };
+        newDropContent.appendChild(newDropItem);
+      }
+      elem.appendChild(fieldNameSelect);
+      fieldNameSelect.focus();
+      fieldNameSelect.onkeydown = function (e) {
+        var code = e.keyCode ? e.keyCode : e.which;
+        if (code === 38 || code == 40) { // Up or down key
+          var fieldNameSelect = document.getElementById("field-name-select");
+          var newDropComponent = fieldNameSelect.firstChild;
+          var itemElems = newDropComponent.children;
+          var found = false;
+          
+          for (var i = 0; i < itemElems.length; i++) {
+            var itemElem = itemElems[i];
+             if (itemElem.classList.contains("target")) {
+              itemElem.classList.remove("target");
+              if (code == 38) {
+                // Up key         
+                if (i == 0) {
+                  i = itemElems.length - 1;
+                } else {
+                  i = i - 1;
+                }
+              } else {
+                // Up key         
+                if (i == itemElems.length - 1) {
+                  i = 0;
+                } else {
+                  i = i + 1;
+                }
+              }
+              itemElems[i].classList.add("target");
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            if (code == 38) {
+              i = itemElems.length - 1;
+            } else {
+              i = 0;
+            }
+            itemElems[i].classList.add("target");
+          }
+          e.stopPropagation();
+          return false;
+        }
+        //
+      };
+    }
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+      if (event.target.id == "field-name-select") {
+        // do nothing
+      } else {
+        var fieldNameSelect = document.getElementById("field-name-select");
+        if (fieldNameSelect) {
+          fieldNameSelect.remove();
+        }
+      }
+    }  
+}
+</script>
+</body>
+</html>
+ 

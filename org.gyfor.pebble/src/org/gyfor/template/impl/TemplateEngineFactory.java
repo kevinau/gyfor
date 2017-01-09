@@ -53,4 +53,10 @@ public class TemplateEngineFactory implements ITemplateEngineFactory {
     return new TemplateEngine(templateDir, defaultBundleContext);
   }
 
+  
+  @Override
+  public ITemplateEngine buildTemplateEngine(ComponentContext componentContext) {
+    return buildTemplateEngine(componentContext.getBundleContext());
+  }
+
 }

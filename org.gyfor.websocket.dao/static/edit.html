@@ -9,12 +9,16 @@
 
 <div id="party-select"></div>
 
-<a href="javascript:doSend('describeAll')">List all</a>
+<input list="partyDescriptions" name="party">
+<datalist id="partyDescriptions">
+</datalist>
 
+<a href="javascript:doSend('describeAll')">Describe all</a>
+<br>
 <a href="javascript:doSend('close')">Close</a>
 
 <script type="text/javascript">
-	var wsUri = "ws://localhost:8080/ws/entity/org.gyfor.docstore.Party?fields=id+partyCode+shortName+formalName+webPage";
+	var wsUri = "ws://localhost:8080/ws/entity/org.gyfor.docstore.Party";
 	var output;
 
 	function init() {
@@ -48,9 +52,23 @@
 	}
 
 	function onMessage(evt) {
-		writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data
-				+ '</span>');
-		//websocket.close();
+		writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
+		// Split on the middot character
+		let args = evt.data.split('|');
+		switch (args[0]) {
+		case "html" :
+			let id = args[1];
+			let target = document.getElementById(id);
+			if (target) {
+			    let template = document.createElement('template');
+			    template.innerHTML = args[2];
+				target.parentNode.replaceChild(template.content.firstChild, target);
+			}
+			break;
+	    default :
+	    	alert ("Un-recognised message name: " + args[0]);
+	        break;
+		}
 	}
 
 	function onError(evt) {

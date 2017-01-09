@@ -11,7 +11,8 @@ Import-Package: com.sleepycat.persist,
  org.gyfor.http,
  org.gyfor.template,
  org.gyfor.util,
- org.osgi.framework;version="1.8.0"
+ org.osgi.framework;version="1.8.0",
+ org.pennyledger.party
 Service-Component: OSGI-INF/org.gyfor.web.docstore.SingleDocumentView.xml,
  OSGI-INF/org.gyfor.web.docstore.DocstoreResources.xml,
  OSGI-INF/org.gyfor.web.docstore.ListThumbsView.xml

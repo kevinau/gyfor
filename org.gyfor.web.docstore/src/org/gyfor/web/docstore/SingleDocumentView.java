@@ -10,7 +10,6 @@ import java.util.Map;
 import org.gyfor.docstore.Document;
 import org.gyfor.docstore.IDocumentStore;
 import org.gyfor.docstore.ISegment;
-import org.gyfor.docstore.Party;
 import org.gyfor.docstore.SegmentType;
 import org.gyfor.http.Context;
 import org.gyfor.http.HttpUtility;
@@ -23,6 +22,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.pennyledger.party.Party;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;

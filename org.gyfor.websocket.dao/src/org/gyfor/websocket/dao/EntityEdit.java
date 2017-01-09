@@ -13,6 +13,9 @@ import org.gyfor.http.Context;
 import org.gyfor.http.Resource;
 import org.gyfor.object.IPlanEnvironment;
 import org.gyfor.object.plan.IEntityPlan;
+import org.gyfor.template.ITemplate;
+import org.gyfor.template.ITemplateEngine;
+import org.gyfor.template.ITemplateEngineFactory;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -28,6 +31,8 @@ import com.sleepycat.je.OperationStatus;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
+import io.undertow.websockets.core.WebSocketChannel;
+import io.undertow.websockets.core.WebSockets;
 
 /**
  * A web socket that provides a web pages with all the information it needs for an entity 
@@ -63,6 +68,7 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
   
   private IPlanEnvironment planEnvironment;
   private DataEnvironment dataEnvironment;
+  private ITemplateEngineFactory templateEngineFactory;
   private Class<?> entityClass = Party.class;
   
   private DataTable entityTable;
@@ -100,6 +106,17 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
   }
   
   
+  @Reference
+  public void setTemplateEngineFactory (ITemplateEngineFactory templateEngineFactory) {
+    this.templateEngineFactory = templateEngineFactory;
+  }
+  
+  
+  public void unsetTemplateEngineFactory (ITemplateEngineFactory templateEngineFactory) {
+    this.templateEngineFactory = null;
+  }
+  
+  
   @Activate
   public void activate(ComponentContext componentContext) {
     callback.setContext(context);
@@ -107,7 +124,9 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
     callback.setPlanEnvironment(planEnvironment);
     callback.setDataEnvironment(dataEnvironment);
     callback.setEntityClass(entityClass);
-  
+    
+    ITemplateEngine templateEngine = templateEngineFactory.buildTemplateEngine(componentContext);
+    callback.setTemplateEngine(templateEngine);
   }
 
 
@@ -123,6 +142,7 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
     
     private IPlanEnvironment planEnvironment;
     private DataEnvironment dataEnvironment;
+    private ITemplateEngine templateEngine;
     
     private IEntityPlan<?> entityPlan;
     private DataTable entityTable;
@@ -131,6 +151,11 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
     
     private void setPlanEnvironment (IPlanEnvironment planEnvironment) {
       this.planEnvironment = planEnvironment;
+    }
+    
+    
+    private void setTemplateEngine (ITemplateEngine templateEngine) {
+      this.templateEngine = templateEngine;
     }
     
     
@@ -160,12 +185,12 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
 
  
     @Override
-    protected void doRequest (Request request, Object sessionData) {
+    protected void doRequest (Request request, Object sessionData, WebSocketChannel channel) {
       logger.info("Performing request {}", request.getName());
       
       switch (request.getName()) {
       case "describeAll" :
-        doDescribeAllRequest();
+        doDescribeAllRequest(channel);
         break;
       case "query" :
         break;
@@ -246,9 +271,17 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
         return "EntityDescription [" + description + ", " + id + "]";
       }
       
+      public String getDescription () {
+        return description;
+      }
+      
+      public int getId () {
+        return id;
+      }
     }
 
-    private void doDescribeAllRequest () {
+    
+    private void doDescribeAllRequest (WebSocketChannel channel) {
       List<EntityDescription> descriptions = new ArrayList<>();
       try (Cursor cursor = entityTable.openCursor()) {
         ObjectDatabaseEntry data = new ObjectDatabaseEntry(entityPlan);
@@ -268,6 +301,12 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
         System.out.println(">>>>>>>>>>>>>>>>>>>> " + ed);
       }
       System.out.println();
+      
+      ITemplate template = templateEngine.getTemplate("describeList");
+      template.putContext("descriptions", descriptions);
+      String response = template.evaluate();
+      System.out.println(">>>>>>>" + response + "<<<<<<<");
+      WebSockets.sendText(response, channel, null);
     }
   }  
   

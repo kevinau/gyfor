@@ -104,7 +104,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
           } else {
             Request request = new Request(data);
             Object sessionData = sessions.get(channel);
-            doRequest(request, sessionData);
+            doRequest(request, sessionData, channel);
           }
           //// WebSockets.sendText(message.getData(), channel, null);
         }
@@ -120,7 +120,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
   }
   
   
-  protected abstract void doRequest (Request request, Object sessionData);
+  protected abstract void doRequest (Request request, Object sessionData, WebSocketChannel channel);
   
   
   protected abstract void openResources ();
