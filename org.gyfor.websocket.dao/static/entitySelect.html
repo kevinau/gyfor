@@ -252,31 +252,21 @@ function toggleItemList (e) {
 	let id = e.parentElement.id;
 	let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
 	let dropListItems = dropList.children;
-	let inputElem = document.querySelectorAll("#" + id + " input")[0];
-	let inputBackground = document.querySelectorAll("#" + id + " div.input-background")[0];
 	let toggleButton = document.querySelectorAll("#" + id + " div.upDownButton input")[0];
-	console.log("toggle item list, after click " + toggleButton.checked);
 
 	if (!toggleButton.checked) {
 		// It was checked, so all items are showing.  Clear list of items
-		filterItems(e);
-//		var elem = inputBackground;
-//		while (elem.firstChild) elem.removeChild(elem.firstChild);
-//		dropList.classList.remove("someShowing");
-//		toggleButton.checked = false;
-//		inputElem.style.paddingLeft = "10px";
+		for (var i = 0; i < dropListItems.length; i++) {
+			dropListItems[i].classList.add("exclude");
+		}
+		dropList.classList.remove("someShowing");
 	} else {
-		// Show are showing, but not all.  Display them all
-		////var elem = inputBackground;
-		////while (elem.firstChild) elem.removeChild(elem.firstChild);
+		// Some (or none) are showing, but not all.  Display them all
 		for (var i = 0; i < dropListItems.length; i++) {
 			dropListItems[i].classList.remove("exclude");
 		}
 		dropList.classList.add("someShowing");
-		toggleButton.checked = true;
-		////inputElem.style.paddingLeft = "10px";
 	}
-	console.log("toggle item list exit " + toggleButton.checked);
 }
 function filterItems (e) {
 	let id = e.parentElement.id;
