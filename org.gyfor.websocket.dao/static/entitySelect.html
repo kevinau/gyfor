@@ -117,14 +117,14 @@ div.docPage img {
     outline: none;
 }
 
-.search-input {
+.searchInput {
   position: relative;
   top: 0;
   left: 0;
   font-family: Hevetica, Arial, sans-serif;
   z-index: = 10;
 }
-.search-input input {
+.searchInput input {
   position: absolute;
   top: 0;
   left: 0;
@@ -138,12 +138,7 @@ div.docPage img {
   z-index: 2;
 }
 
-.search-input button {
-  position: absolute;
-  top: 0;
-  left: 500px; 
-}
-.search-input div.input-background {
+.searchInput div.input-background {
   position: absolute;
   top: 0;
   left: 0;
@@ -155,13 +150,13 @@ div.docPage img {
   margin: 0;
   z-index: 1;
 }
-.search-input div.input-background span {
+.searchInput div.input-background span {
   font-size: 14px;
   color: #AAAAAA;
   line-height: 20px;
   z-index: 1;
 }
-.search-input div.dropList {
+.searchInput div.dropList {
   display: none;
   position: absolute;
   top: 30px;
@@ -170,23 +165,24 @@ div.docPage img {
   border: 1px solid rgba(255, 140, 0, 1);
   z-index: 100;
 }
-.search-input div.dropList.someShowing {
+.searchInput div.dropList.someShowing {
   display: block;
 }
-.search-input div.dropList>div {
+.searchInput div.dropList>div {
   font-size: 14px;
   padding: 2px 10px;
 }
-.search-input div.dropList>div.target {
+.searchInput div.dropList>div.target {
   background-color: rgba(255, 140, 0, 0.5);
 }
 
-.search-input .upDownButton input {
+.searchInput button.upDownButton {
   position: absolute;
-  margin-left: -9999px;
-  visibility: hidden;
+  margin-left: 500px;
+  font-family: "Material Icons";
+  font-size: 24px;
 }
-.search-input .upDownButton label {
+.searchInput button.upDownButton {
   xxxxdisplay: block;
   xxxxposition: relative;
   cursor: pointer;
@@ -195,18 +191,6 @@ div.docPage img {
   position: absolute;
   top: 0;
   left: 500px; 
-}
-.search-input .upDownButton input+label b {
-  display: none;
-}
-.search-input .upDownButton input+label i {
-  display: block;
-}
-.search-input .upDownButton input:checked+label b {
-  display: block;
-}
-.search-input .upDownButton input:checked+label i {
-  display: none;
 }
 
 .exclude {
@@ -248,25 +232,39 @@ var docFields = [
   </script>
   <script>
 
-function toggleItemList (e) {
+var searchInputId = false;
+  
+function toggleItemList (ev, e) {
 	let id = e.parentElement.id;
 	let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
 	let dropListItems = dropList.children;
-	let toggleButton = document.querySelectorAll("#" + id + " div.upDownButton input")[0];
+	let toggleButton = document.querySelectorAll("#" + id + " button.upDownButton")[0];
 
-	if (!toggleButton.checked) {
+	console.log("toggle item list: " + toggleButton.checked);
+	
+	if (toggleButton.checked) {
+		console.log("should be clearing items");
 		// It was checked, so all items are showing.  Clear list of items
 		for (var i = 0; i < dropListItems.length; i++) {
 			dropListItems[i].classList.add("exclude");
 		}
 		dropList.classList.remove("someShowing");
+		searchInputId = false;
+		toggleButton.checked = false; 
+		toggleButton.innerText = "arrow_drop_down";
 	} else {
+		console.log("should be showing items");
 		// Some (or none) are showing, but not all.  Display them all
 		for (var i = 0; i < dropListItems.length; i++) {
 			dropListItems[i].classList.remove("exclude");
 		}
 		dropList.classList.add("someShowing");
+		searchInputId = id;
+		toggleButton.checked = true; 
+		toggleButton.innerText = "arrow_drop_up";
 	}
+	console.log("toggle item list: " + toggleButton.checked);
+	ev.stopPropagation();
 }
 function filterItems (e) {
 	let id = e.parentElement.id;
@@ -274,14 +272,16 @@ function filterItems (e) {
 	let dropListItems = dropList.children;
 	let inputElems = document.querySelectorAll("#" + id + " input");
 	let inputBackground = document.querySelectorAll("#" + id + " div.input-background")[0];
-	let toggleButton = document.querySelectorAll("#" + id + " div.upDownButton input")[0];
+	let toggleButton = document.querySelectorAll("#" + id + " button.upDownButton")[0];
 
 	let inputElem = inputElems[0];
 	if (inputElem.value.length == 0) {
 		var elem = inputBackground;
 		while (elem.firstChild) elem.removeChild(elem.firstChild);
 		dropList.classList.remove("someShowing");
+		searchInputId = false;
 		toggleButton.checked = false;
+		toggleButton.innerText = "arrow_drop_down"
 		inputElem.style.paddingLeft = "10px";
 	    return;	
 	}
@@ -306,6 +306,7 @@ function filterItems (e) {
 		var elem = inputBackground;
 		while (elem.firstChild) elem.removeChild(elem.firstChild);
 		dropList.classList.remove("someShowing");
+		searchInputId = false;
 		inputElem.style.paddingLeft = "10px";
 	    break;
 	case 1 :
@@ -338,6 +339,7 @@ function filterItems (e) {
 			}
 		}
 		dropList.classList.add("someShowing");
+		searchInputId = id;
 		//alert (span1.offsetLeft + " " + inputElem.offsetLeft);
 		inputElem.style.paddingLeft = (span1.offsetLeft - inputElem.offsetLeft) + "px";
 		break;
@@ -356,29 +358,27 @@ function filterItems (e) {
 			}
 		}
 		dropList.classList.add("someShowing");
+		searchInputId = id;
 		inputElem.style.paddingLeft = "10px";
 		break;
 	}
 	console.log("all showing? " + n + " " + dropListItems.length);
 	if (n == dropListItems.length) {
 		toggleButton.checked = true;
+		toggleButton.innerText = "arrow_drop_up";
 	} else {
 		toggleButton.checked = false;
+		toggleButton.innerText = "arrow_drop_down";
 	}
 }
 
   </script>
 </head>
 <body>
-    <div id="partyDescriptions" class="search-input">
-      <input type="text" oninput="filterItems(this)">
+    <div id="partyDescriptions" class="searchInput">
+      <input type="text" oninput="filterItems(this)" onfocus="filterItems(this)">
       <div class="input-background">&nbsp;</div>
-      <div class="upDownButton">
-        <input id="cmn-toggle-4" type="checkbox" onchange="toggleItemList(this.parentElement);">
-        <label for="cmn-toggle-4"><i class="material-icons">arrow_drop_down</i><b class="material-icons">arrow_drop_up</b></label>
-      </div>
-      
-      <!-- button onclick="toggleItemList(this);"><i class="material-icons">arrow_drop_down</i></button -->
+      <button class="upDownButton" onclick="toggleItemList(event,this)"><i class="material-icons">arrow_drop_down</i></button>
       <div class="dropList">
         <div data-value="2">Australian Foundation Investment Company</div>
         <div data-value="3">BHP Billiton</div>
@@ -492,16 +492,47 @@ function myFunction(elem) {
 
 // Close the dropdown if the user clicks outside of it
 window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn')) {
-      if (event.target.id == "field-name-select") {
-        // do nothing
-      } else {
-        var fieldNameSelect = document.getElementById("field-name-select");
-        if (fieldNameSelect) {
-          fieldNameSelect.remove();
-        }
-      }
-    }  
+  	if (searchInputId) {
+  		console.log("............" + event.target + " " + event.target.tagName);
+		if (event.target.matches(".searchInput label B")) {
+			console.log("window click matches B .searchInput");
+			// On any of the search input fields, so do nothing
+			return;
+		}
+		if (event.target.matches(".searchInput label I")) {
+			console.log("window click matches I .searchInput");
+			// On any of the search input fields, so do nothing
+			return;
+		}
+		if (event.target.matches(".searchInput input")) {
+			console.log("window click matches .searchInput input");
+			// On the search input field, so do nothing
+			return;
+		}
+	  	if (event.target.matches(".searchInput div.dropList")) {
+		  	// On the drop down list, so do nothing
+			console.log("window click matches .searchInput droplist");
+		  	return;
+	  	}
+		if (event.target.matches(".searchInput .upDownButton label")) {
+			// On the toggle label, so do nothing
+			console.log("window click matches .searchInput ... label");
+    		return;
+		}
+		let id = searchInputId;
+		let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
+		let dropListItems = dropList.children;
+		let toggleButton = document.querySelectorAll("#" + id + " button.upDownButton")[0];
+
+		// Clear list of items
+		for (var i = 0; i < dropListItems.length; i++) {
+			dropListItems[i].classList.add("exclude");
+		}
+		dropList.classList.remove("someShowing");
+		toggleButton.checked = false;
+		toggleButton.innerText = "arrow_drop_down";
+		searchInputId = false;
+	}
 }
 </script>
 </body>
