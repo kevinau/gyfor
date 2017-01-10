@@ -138,7 +138,7 @@ div.docPage img {
   z-index: 2;
 }
 
-.searchInput div.input-background {
+.searchInput div.inputBackground {
   position: absolute;
   top: 0;
   left: 0;
@@ -150,7 +150,7 @@ div.docPage img {
   margin: 0;
   z-index: 1;
 }
-.searchInput div.input-background span {
+.searchInput div.inputBackground span {
   font-size: 14px;
   color: #AAAAAA;
   line-height: 20px;
@@ -179,7 +179,7 @@ div.docPage img {
 .searchInput button.upDownButton {
   position: absolute;
   margin-left: 500px;
-  font-family: "Material Icons";
+  xxxxfont-family: "Material Icons";
   font-size: 24px;
 }
 .searchInput button.upDownButton {
@@ -271,7 +271,7 @@ function filterItems (e) {
 	let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
 	let dropListItems = dropList.children;
 	let inputElems = document.querySelectorAll("#" + id + " input");
-	let inputBackground = document.querySelectorAll("#" + id + " div.input-background")[0];
+	let inputBackground = document.querySelectorAll("#" + id + " div.inputBackground")[0];
 	let toggleButton = document.querySelectorAll("#" + id + " button.upDownButton")[0];
 
 	let inputElem = inputElems[0];
@@ -377,8 +377,8 @@ function filterItems (e) {
 <body>
     <div id="partyDescriptions" class="searchInput">
       <input type="text" oninput="filterItems(this)" onfocus="filterItems(this)">
-      <div class="input-background">&nbsp;</div>
-      <button class="upDownButton" onclick="toggleItemList(event,this)"><i class="material-icons">arrow_drop_down</i></button>
+      <div class="inputBackground">&nbsp;</div>
+      <button class="upDownButton material-icons" onclick="toggleItemList(event,this)">arrow_drop_down</button>
       <div class="dropList">
         <div data-value="2">Australian Foundation Investment Company</div>
         <div data-value="3">BHP Billiton</div>
