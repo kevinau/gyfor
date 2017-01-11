@@ -247,7 +247,6 @@ function setToggleButton (id, checked) {
 }
 function setGlobalId (id) {
 	searchInputId = id;
-	console.log("Set global id: " + searchInputId);
 }
 function toggleItemList (ev, e) {
 	let id = e.parentElement.id;
@@ -255,13 +254,9 @@ function toggleItemList (ev, e) {
 	let dropListItems = dropList.children;
 	let toggleButton = document.querySelectorAll("#" + id + " button.upDownButton")[0];
 
-	console.log("toggle item list: " + toggleButton.checked);
-	
 	if (toggleButton.checked) {
-		console.log("should be clearing items");
 		filterItems(e);
 	} else {
-		console.log("should be showing items");
 		dropList.classList.remove("someShowing");
 		dropList.classList.add("allShowing");
 		setGlobalId(id);
@@ -270,7 +265,6 @@ function toggleItemList (ev, e) {
 
 	let inputElem = document.querySelectorAll("#" + id + " input")[0];
 	inputElem.focus();
-	console.log("toggle item list: " + searchInputId + " " + toggleButton.checked);
 	ev.stopPropagation();
 }
 function filterItems (e) {
@@ -379,12 +373,7 @@ function filterItems (e) {
 		dropList.classList.remove("allShowing");
 		dropList.classList.add("someShowing");
 	}
-	console.log("all showing? " + n + " " + dropListItems.length);
-	//if (n == dropListItems.length) {
-	//	setToggleButton(id, true);
-	//} else {
 	setToggleButton(id, false);
-	//}
 }
 function countShowing (dropList) {
 	let dropListItems = dropList.children;
@@ -399,7 +388,6 @@ function countShowing (dropList) {
 }
 function menuKeyHandler (ev, e) {
 	var code = ev.keyCode ? ev.keyCode : ev.which;
-	console.log("menu key handler: " + code);
 	if (code === 38 || code == 40) { // Up or down key
     	let id = e.parentElement.id;
     	let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
@@ -429,7 +417,6 @@ function menuKeyHandler (ev, e) {
         } else {
         	// There is no highlight item
         	(code == 38) ? i = dropListItems.length - 1 : i = 0;
-        	console.log("no highlight item: " + i);
             while (i >= 0 && i < dropListItems.length) {
               	dropListItem = dropListItems[i];
                	if (allShowing || dropListItem.classList.contains("show")) {
@@ -455,8 +442,6 @@ function menuMouseOverHandler (e) {
         	break;
         }
     }
-    console.log("mouse over: " + e);
-    console.log("mouse over: " + e.target);
     e.classList.add("highlight"); 
 }
   </script>
@@ -579,22 +564,17 @@ function myFunction(elem) {
 
 // Close the dropdown if the user clicks outside of it
 window.onclick = function(event) {
-	console.log("Window.onclick " + searchInputId);
   	if (searchInputId) {
-  		console.log("............" + event.target + " " + event.target.tagName);
 		if (event.target.matches(".searchInput button.upDownButton")) {
-			console.log("window click matches .searchInput button");
 			// On any of the search input fields, so do nothing
 			return;
 		}
 		if (event.target.matches(".searchInput input")) {
-			console.log("window click matches .searchInput input");
 			// On the search input field, so do nothing
 			return;
 		}
 	  	if (event.target.matches(".searchInput div.dropList")) {
 		  	// On the drop down list, so do nothing
-			console.log("window click matches .searchInput droplist");
 		  	return;
 	  	}
 		let id = searchInputId;
