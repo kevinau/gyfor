@@ -167,6 +167,7 @@ div.docPage img {
   xxxpadding: 6px 0;
   border: 1px solid rgba(255, 140, 0, 1);
   z-index: 100;
+  cursor: pointer;
 }
 .searchInput div.dropList.allShowing,
 .searchInput div.dropList.someShowing {
@@ -442,6 +443,22 @@ function menuKeyHandler (ev, e) {
         return false;
 	}
 }
+function menuMouseOverHandler (e) {
+	let id = e.parentElement.parentElement.id;
+	let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
+	let dropListItems = dropList.children;
+
+    for (var i = 0; i < dropListItems.length; i++) {
+    	var dropListItem = dropListItems[i];
+    	if (dropListItem.classList.contains("highlight")) {
+        	dropListItem.classList.remove("highlight");
+        	break;
+        }
+    }
+    console.log("mouse over: " + e);
+    console.log("mouse over: " + e.target);
+    e.classList.add("highlight"); 
+}
   </script>
 </head>
 <body>
@@ -450,11 +467,11 @@ function menuKeyHandler (ev, e) {
       <div class="inputBackground">&nbsp;</div>
       <button class="upDownButton material-icons" onclick="toggleItemList(event,this)">keyboard_arrow_down</button>
       <div class="dropList">
-        <div data-value="2">Australian Foundation Investment Company</div>
-        <div data-value="3">BHP Billiton</div>
-        <div data-value="4">Commonwealth Bank of Australia</div>
-        <div data-value="1">Qantas Airways</div>
-        <div data-value="5">Telstra Corporation</div>
+        <div data-value="2" onmouseover="menuMouseOverHandler(this)">Australian Foundation Investment Company</div>
+        <div data-value="3" onmouseover="menuMouseOverHandler(this)">BHP Billiton</div>
+        <div data-value="4" onmouseover="menuMouseOverHandler(this)">Commonwealth Bank of Australia</div>
+        <div data-value="1" onmouseover="menuMouseOverHandler(this)">Qantas Airways</div>
+        <div data-value="5" onmouseover="menuMouseOverHandler(this)">Telstra Corporation</div>
       </div>
     </div>
   
