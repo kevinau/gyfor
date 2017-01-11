@@ -186,7 +186,7 @@ div.docPage img {
   font-size: 14px;
   padding: 4px 10px;
 }
-.searchInput div.dropList>div.highlighted {
+.searchInput div.dropList>div.highlight {
   background-color: rgba(255, 140, 0, 0.5);
 }
 
@@ -259,19 +259,8 @@ function toggleItemList (ev, e) {
 	if (toggleButton.checked) {
 		console.log("should be clearing items");
 		filterItems(e);
-// 		// It was checked, so all items are showing.  Clear list of items
-// 		for (var i = 0; i < dropListItems.length; i++) {
-// 			dropListItems[i].classList.add("exclude");
-// 		}
-// 		setGlobalId(false);
-// 		toggleButton.checked = false; 
-// 		toggleButton.innerText = "arrow_drop_down";
 	} else {
 		console.log("should be showing items");
-		// Some (or none) are showing, but not all.  Display them all
-		////for (var i = 0; i < dropListItems.length; i++) {
-		////	dropListItems[i].classList.remove("exclude");
-		////}
 		dropList.classList.remove("someShowing");
 		dropList.classList.add("allShowing");
 		setGlobalId(id);
@@ -296,7 +285,7 @@ function filterItems (e) {
 		while (elem.firstChild) elem.removeChild(elem.firstChild);
 		inputElem.style.paddingLeft = "10px";
 		for (var i = 0; i < dropListItems.length; i++) {
-			dropListItems[i].classList.remove("show");
+			dropListItems[i].classList.remove("show", "highlight");
 		}
 		dropList.classList.remove("allShowing", "someShowing");
 		setGlobalId(false);
@@ -325,7 +314,7 @@ function filterItems (e) {
 		while (elem.firstChild) elem.removeChild(elem.firstChild);
 		inputElem.style.paddingLeft = "10px";
 		for (var i = 0; i < dropListItems.length; i++) {
-			dropListItems[i].classList.remove("show");
+			dropListItems[i].classList.remove("show", "highlight");
 		}
 		setGlobalId(false);
 	    break;
@@ -355,7 +344,7 @@ function filterItems (e) {
 			if (i == i0) {
 				dropListItems[i].classList.add("show");
 			} else {
-				dropListItems[i].classList.remove("show");
+				dropListItems[i].classList.remove("show", "highlight");
 			}
 		}
 		setGlobalId(id);
@@ -372,7 +361,7 @@ function filterItems (e) {
 			let t = dropListItems[i].innerText.toLowerCase();
 			let x = t.indexOf(partial);
 			if (x == -1) {
-				dropListItems[i].classList.remove("show");
+				dropListItems[i].classList.remove("show", "highlight");
 			} else {
 				dropListItems[i].classList.add("show");
 			}
@@ -409,6 +398,7 @@ function countShowing (dropList) {
 }
 function menuKeyHandler (ev, e) {
 	var code = ev.keyCode ? ev.keyCode : ev.which;
+	console.log("menu key handler: " + code);
 	if (code === 38 || code == 40) { // Up or down key
     	let id = e.parentElement.id;
     	let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
@@ -417,30 +407,32 @@ function menuKeyHandler (ev, e) {
         let i = 0;
         while (i < dropListItems.length) {
         	let dropListItem = dropListItems[i];
-            if (dropListItem.classList.contains("highlighted")) {
-            	dropListItem.classList.remove("highlighted");
+            if (dropListItem.classList.contains("highlight")) {
+            	dropListItem.classList.remove("highlight");
             	break;
             }
             i++;
         }
+        let allShowing = dropList.classList.contains("allShowing");
         if (i < dropListItems.length) {
-        	// We've found a highlighted item
+        	// We've found a highlight item
         	(code == 38) ? i-- : i++;
             while (i >= 0 && i < dropListItems.length) {
                	dropListItem = dropListItems[i];
-               	if (dropListItem.classList.contains("show")) {
-                   	dropListItem.classList.add("highlighted");
+               	if (allShowing || dropListItem.classList.contains("show")) {
+                   	dropListItem.classList.add("highlight");
                    	break;
                	}
             	(code == 38) ? i-- : i++;
             }
         } else {
-        	// There is no highlighted item
+        	// There is no highlight item
         	(code == 38) ? i = dropListItems.length - 1 : i = 0;
+        	console.log("no highlight item: " + i);
             while (i >= 0 && i < dropListItems.length) {
               	dropListItem = dropListItems[i];
-               	if (dropListItem.classList.contains("show")) {
-                   	dropListItem.classList.add("highlighted");
+               	if (allShowing || dropListItem.classList.contains("show")) {
+                   	dropListItem.classList.add("highlight");
                    	break;
                	}
             	(code == 38) ? i-- : i++;
@@ -594,7 +586,7 @@ window.onclick = function(event) {
 
 		// Clear list of items
 		for (var i = 0; i < dropListItems.length; i++) {
-			dropListItems[i].classList.remove("show");
+			dropListItems[i].classList.remove("show", "highlight");
 		}
 		dropList.classList.remove("allShowing", "someShowing");
 		setToggleButton(id, false);
