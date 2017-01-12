@@ -5,7 +5,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="reset.css" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
   /* for testing */
 body { 
@@ -128,7 +127,6 @@ div.docPage img {
   position: absolute;
   top: 0;
   left: 0;
-  width: 284px;
   height: 20px;
   font-size: 14px;
   background: transparent;
@@ -138,14 +136,13 @@ div.docPage img {
   z-index: 2;
 }
 .searchInput input:focus {
-  box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.5);
+  xxxbox-shadow: 0px 0px 1px 1px rgba(0,0,0,0.5);
 }
 
 .searchInput div.inputBackground {
   position: absolute;
   top: 0;
   left: 0;
-  width: 284px;
   height: 20px;
   font-size: 14px;
   border: 1px solid transparent;
@@ -177,6 +174,14 @@ div.docPage img {
 .searchInput div.dropList.allShowing div {
   display: block;
 }
+.searchInput > div.dropList.calcSize {
+  display: block !IMPORTANT;
+  position: absolute;
+  left: -9999px;
+}
+.searchInput div.dropList.calcSize div {
+  display: block !IMPORTANT;
+}
 .searchInput div.dropList.someShowing div {
   display: none;
 }
@@ -196,21 +201,39 @@ div.docPage img {
 
 .searchInput button.upDownButton {
   position: absolute;
-  margin-left: 500px;
-  xxxxfont-family: "Material Icons";
-  font-size: 24px;
-}
-.searchInput button.upDownButton {
-  xxxxdisplay: block;
-  xxxxposition: relative;
+  top: 0;
+  left: 0; 
+  width: 24px;
+  height: 24px;
   cursor: pointer;
   outline: none;
   user-select: none;
-  position: absolute;
-  top: 0;
-  left: 500px; 
+  padding: 0;
+  margin: 0;
+  border: none;
 }
-
+.searchInput button.upDownButton:before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  width: 24px;
+  height: 24px;
+  content: url(downArrow.svg);
+}
+.searchInput button.upDownButton:disabled {
+  cursor: default;
+}
+.searchInput button.upDownButton:disabled:before {
+  opacity: 0.4;
+}
+.searchInput button.upDownButton.up:before {
+  content: url(upArrow.svg);
+}
+.searchInput button.upDownButton.upAndFilter:before {
+  content: url(upAndFilter.svg);
+}
   </style>
   <script>
 
@@ -225,24 +248,26 @@ function setToggleButton (id, checked) {
 	if (checked) {
 		if (n == 0) {
     		toggleButton.checked = true; 
-			toggleButton.innerText = "keyboard_arrow_up";
+			toggleButton.classList.remove("upAndFilter")
+			toggleButton.classList.add("up");
 			toggleButton.disabled = false;
 			toggleButton.setAttribute("title", "Hide all");
 		} else {
     		toggleButton.checked = true; 
-			toggleButton.innerText = "keyboard_capslock";
+			toggleButton.classList.remove("up");
+			toggleButton.classList.add("upAndFilter")
 			toggleButton.disabled = false;
 			toggleButton.setAttribute("title", "Filter");
 		}			
 	} else {
 		if (n == dropListItems.length) {
     		toggleButton.checked = true; 
-			toggleButton.innerText = "keyboard_arrow_down";
+			toggleButton.classList.remove("up", "upAndFilter");
 			toggleButton.disabled = true;
 			toggleButton.removeAttribute("title");
 		} else {
 			toggleButton.checked = false; 
-			toggleButton.innerText = "keyboard_arrow_down";
+			toggleButton.classList.remove("up", "upAndFilter");
 			toggleButton.disabled = false;
 			toggleButton.setAttribute("title", "Show all");
 		}
@@ -432,6 +457,28 @@ function menuKeyHandler (ev, e) {
         return false;
 	}
 }
+function setSizeOfSearchInput () {
+	let dropList = document.querySelector("div.dropList");
+	dropList.classList.add("calcSize");
+	let inputElem = dropList.parentElement.querySelector("input");
+	let inputBackground = dropList.parentElement.querySelector("div.inputBackground");
+	elemWidth = dropList.clientWidth;   // width with padding
+
+	// Remove padding width
+	let computedStyle = getComputedStyle(inputElem);
+	elemWidth -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
+	
+	inputElem.style.width = elemWidth + "px";
+	inputBackground.style.width = elemWidth + "px";
+	
+	let upDownButton = dropList.parentElement.querySelector("button.upDownButton");
+	upDownButton.style.left = dropList.offsetWidth + "px";
+	let inputHeight = inputElem.offsetHeight;
+	//inputHeight -= parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom);
+	upDownButton.style.width = inputHeight + "px";
+	upDownButton.style.height = inputHeight + "px";
+	dropList.classList.remove("calcSize");
+}
 //function menuMouseWheelHandler (ev) {
 //	var delta = Math.max(-1, Math.min(1, (ev.wheelDelta || -ev.detail)));
 //	console.log("mouse wheel handler: delta " + delta);
@@ -439,11 +486,11 @@ function menuKeyHandler (ev, e) {
 //}
   </script>
 </head>
-<body>
+<body onload="setSizeOfSearchInput()">
     <div id="partyDescriptions" class="searchInput">
       <input type="text" oninput="filterItems(this)" onkeydown="menuKeyHandler(event,this)">
       <div class="inputBackground">&nbsp;</div>
-      <button class="upDownButton material-icons" onclick="toggleItemList(event,this)">keyboard_arrow_down</button>
+      <button class="upDownButton" onclick="toggleItemList(event,this)" title="Show all"></button>
       <div class="dropList">
         <div data-value="2">Australian Foundation Investment Company</div>
         <div data-value="3">BHP Billiton</div>
