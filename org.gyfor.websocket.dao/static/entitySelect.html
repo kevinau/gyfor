@@ -10,107 +10,6 @@
 body { 
   margin:20px; 
 }
-#party {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 20;
-  color: #ffffff;
-  background-color: rgba(255, 140, 0, 1);
-  font-family: Helvetica, sans-serif;
-  font-size: 14px;
-  text-decoration: none;
-  padding: .25em 0.75em .25em 0.75em;
-}
-.unselectable {
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -o-user-select: none;
-  user-select: none;
-  unselectable: on;
-
-  /* Prevents dragging of images/divs etc */
-  -webkit-user-drag: none;
-  -khtml-user-drag: none;
-  -moz-user-drag: none;
-  -o-user-drag: none;
-  user-drag: none;
-}
-.selectable {
-  -webkit-user-select: text;
-  -khtml-user-select: text;
-  -moz-user-select: text;
-  -o-user-select: text;
-  user-select: text;
-}
-div.docPage {
-  margin-bottom: 16px;
-  position: relative;
-  top: 0;
-  bottom: 0;
- }
-div.docPage:first-child {
-  xxxmargin-top: 0;
-}
-div.docPage>div.TEXT,
-div.docPage>div.DATE,
-div.docPage>div.CURRENCY,
-div.docPage>div.COMPANY_NUMBER,
-div.docPage>div.PERCENT {
-  position: absolute;
-  -webkit-user-select: text;
-  -khtml-user-select: text;
-  -moz-user-select: text;
-  -o-user-select: text;
-  user-select: text;
-  font-family: Arial, sans-serif;
-  white-space: nowrap;
-}
-div.docPage img {
-  z-index: -10;
-  pointer-events: none;
-  unselectable: on;
-}
-  </style>
-  <style>
-.DATE,			/* selectable segments */
-.CURRENCY,
-.PERCENT {
-    cursor: pointer;
-}
-
-.dxxxropbtn:hover, .dropbtn:focus {
-    xxxbackground-color: rgba(255, 140, 0, 0.5);
-    border-color: rgba(255, 140, 0, 1);
-}
-
-.xxxdropList {
-    position: relative;
-    color: black;
-}
-.xxxdropList-content {
-    position: absolute;
-    xxxbackground-color: #ffffff;
-    overflow: auto;
-    margin-left: -4px;
-    border: 1px solid rgba(255, 140, 0, 1);
-    z-index: 100;
-}
-.xxxdropList-content a {
-    color: black;
-    text-decoration: none;
-    display: block;
-    padding: 2px 6px 2px 6px;
-}
-.xxxdropList-content a.target {
-    background-color: rgba(255, 140, 0, 0.5);
-}
-.xxxdropList a:hover {
-    xxxbackground-color: #f1f1f1;
-}
-
-.show {display:block;}
 
 *:focus {
     outline: none;
@@ -149,6 +48,9 @@ div.docPage img {
   padding: 4px 10px;
   margin: 0;
   z-index: 1;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .searchInput div.inputBackground span {
   font-size: 14px;
@@ -161,45 +63,48 @@ div.docPage img {
   position: absolute;
   top: 30px;
   left: 0;
-  xxxpadding: 6px 0;
   border: 1px solid rgba(255, 140, 0, 1);
   z-index: 100;
   cursor: pointer;
 }
-.searchInput div.dropList.allShowing,
-.searchInput div.dropList.someShowing {
-  display: block;
-}
-
-.searchInput div.dropList.allShowing div {
-  display: block;
+.searchInput div.dropList.calcSize div {
+  display: block !IMPORTANT;
 }
 .searchInput > div.dropList.calcSize {
   display: block !IMPORTANT;
   position: absolute;
   left: -9999px;
 }
-.searchInput div.dropList.calcSize div {
-  display: block !IMPORTANT;
-}
-.searchInput div.dropList.someShowing div {
-  display: none;
-}
-.searchInput div.dropList.someShowing div.show {
+.searchInput.active div.dropList.allShowing,
+.searchInput.active div.dropList.someShowing {
   display: block;
 }
-.searchInput div.dropList>div {
+
+.searchInput.active div.dropList.allShowing div {
+  display: block;
+}
+.searchInput.active div.dropList.someShowing div {
+  display: none;
+}
+.searchInput.active div.dropList.someShowing div.show {
+  display: block;
+}
+.searchInput.active div.dropList>div {
   font-size: 14px;
   padding: 4px 10px;
 }
-.searchInput div.dropList>div:hover {
+.searchInput.active div.dropList>div:hover {
   background-color: rgba(255, 140, 0, 0.25);
 }
-.searchInput div.dropList>div.highlight {
+.searchInput.active div.dropList>div.highlight {
   background-color: rgba(255, 140, 0, 0.5);
 }
 
 .searchInput button.upDownButton {
+  display: none;
+}
+.searchInput.active button.upDownButton {
+  display: block;
   position: absolute;
   top: 0;
   left: 0; 
@@ -212,7 +117,7 @@ div.docPage img {
   margin: 0;
   border: none;
 }
-.searchInput button.upDownButton:before {
+.searchInput.active button.upDownButton:before {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -222,16 +127,16 @@ div.docPage img {
   height: 24px;
   content: url(downArrow.svg);
 }
-.searchInput button.upDownButton:disabled {
+.searchInput.active button.upDownButton:disabled {
   cursor: default;
 }
-.searchInput button.upDownButton:disabled:before {
+.searchInput.active button.upDownButton:disabled:before {
   opacity: 0.4;
 }
-.searchInput button.upDownButton.up:before {
+.searchInput.active button.upDownButton.up:before {
   content: url(upArrow.svg);
 }
-.searchInput button.upDownButton.upAndFilter:before {
+.searchInput.active button.upDownButton.upAndFilter:before {
   content: url(upAndFilter.svg);
 }
   </style>
@@ -276,6 +181,10 @@ function setToggleButton (id, checked) {
 function setGlobalId (id) {
 	searchInputId = id;
 }
+function activateSearchInput(e) {
+	let searchInput = e.parentElement;
+	searchInput.classList.add("active");
+}
 function toggleItemList (ev, e) {
 	let id = e.parentElement.id;
 	let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
@@ -307,6 +216,8 @@ function filterItems (e) {
 		var elem = inputBackground;
 		while (elem.firstChild) elem.removeChild(elem.firstChild);
 		inputElem.style.paddingLeft = "10px";
+		inputElem.style.width = inputElem.elemWidth + "px";
+
 		for (var i = 0; i < dropListItems.length; i++) {
 			dropListItems[i].classList.remove("show", "highlight");
 		}
@@ -336,6 +247,8 @@ function filterItems (e) {
 		var elem = inputBackground;
 		while (elem.firstChild) elem.removeChild(elem.firstChild);
 		inputElem.style.paddingLeft = "10px";
+		inputElem.style.width = inputElem.elemWidth + "px";
+
 		for (var i = 0; i < dropListItems.length; i++) {
 			dropListItems[i].classList.remove("show", "highlight");
 		}
@@ -371,13 +284,16 @@ function filterItems (e) {
 			}
 		}
 		setGlobalId(id);
-		inputElem.style.paddingLeft = (span1.offsetLeft - inputElem.offsetLeft) + "px";
+		let offsetLeft = span1.offsetLeft - inputElem.offsetLeft;
+		inputElem.style.paddingLeft = offsetLeft + "px";
+		inputElem.style.width = (inputElem.elemWidth - offsetLeft + 10) + "px";
 		break;
 	default :
     	// Multiple values found
 		var elem = inputBackground;
 		while (elem.firstChild) elem.removeChild(elem.firstChild);
 		inputElem.style.paddingLeft = "10px";
+		inputElem.style.width = inputElem.elemWidth + "px";
 
 		for (var i = 0; i < dropListItems.length; i++) {
 			let t = dropListItems[i].innerText.toLowerCase();
@@ -470,6 +386,7 @@ function setSizeOfSearchInput () {
 	
 	inputElem.style.width = elemWidth + "px";
 	inputBackground.style.width = elemWidth + "px";
+	inputElem.elemWidth = elemWidth;
 	
 	let upDownButton = dropList.parentElement.querySelector("button.upDownButton");
 	upDownButton.style.left = dropList.offsetWidth + "px";
@@ -488,7 +405,7 @@ function setSizeOfSearchInput () {
 </head>
 <body onload="setSizeOfSearchInput()">
     <div id="partyDescriptions" class="searchInput">
-      <input type="text" oninput="filterItems(this)" onkeydown="menuKeyHandler(event,this)">
+      <input type="text" oninput="filterItems(this)" onfocus="activateSearchInput(this)" onkeydown="menuKeyHandler(event,this)">
       <div class="inputBackground">&nbsp;</div>
       <button class="upDownButton" onclick="toggleItemList(event,this)" title="Show all"></button>
       <div class="dropList">
@@ -517,16 +434,19 @@ window.onclick = function(event) {
 		  	return;
 	  	}
 		let id = searchInputId;
-		let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
-		let dropListItems = dropList.children;
+		let searchInput = document.getElementById(id);
+		searchInput.classList.remove("active");
+		
+// 		let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
+// 		let dropListItems = dropList.children;
 
-		// Clear list of items
-		for (var i = 0; i < dropListItems.length; i++) {
-			dropListItems[i].classList.remove("show", "highlight");
-		}
-		dropList.classList.remove("allShowing", "someShowing");
-		setToggleButton(id, false);
-		setGlobalId(false);
+// 		// Clear list of items
+// 		for (var i = 0; i < dropListItems.length; i++) {
+// 			dropListItems[i].classList.remove("show", "highlight");
+// 		}
+// 		dropList.classList.remove("allShowing", "someShowing");
+// 		setToggleButton(id, false);
+// 		setGlobalId(false);
 	}
 }
 </script>
