@@ -187,6 +187,9 @@ div.docPage img {
   font-size: 14px;
   padding: 4px 10px;
 }
+.searchInput div.dropList>div:hover {
+  background-color: rgba(255, 140, 0, 0.25);
+}
 .searchInput div.dropList>div.highlight {
   background-color: rgba(255, 140, 0, 0.5);
 }
@@ -343,7 +346,6 @@ function filterItems (e) {
 			}
 		}
 		setGlobalId(id);
-		//alert (span1.offsetLeft + " " + inputElem.offsetLeft);
 		inputElem.style.paddingLeft = (span1.offsetLeft - inputElem.offsetLeft) + "px";
 		break;
 	default :
@@ -430,20 +432,11 @@ function menuKeyHandler (ev, e) {
         return false;
 	}
 }
-function menuMouseOverHandler (e) {
-	let id = e.parentElement.parentElement.id;
-	let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
-	let dropListItems = dropList.children;
-
-    for (var i = 0; i < dropListItems.length; i++) {
-    	var dropListItem = dropListItems[i];
-    	if (dropListItem.classList.contains("highlight")) {
-        	dropListItem.classList.remove("highlight");
-        	break;
-        }
-    }
-    e.classList.add("highlight"); 
-}
+//function menuMouseWheelHandler (ev) {
+//	var delta = Math.max(-1, Math.min(1, (ev.wheelDelta || -ev.detail)));
+//	console.log("mouse wheel handler: delta " + delta);
+//	return false;
+//}
   </script>
 </head>
 <body>
@@ -452,116 +445,15 @@ function menuMouseOverHandler (e) {
       <div class="inputBackground">&nbsp;</div>
       <button class="upDownButton material-icons" onclick="toggleItemList(event,this)">keyboard_arrow_down</button>
       <div class="dropList">
-        <div data-value="2" onmouseover="menuMouseOverHandler(this)">Australian Foundation Investment Company</div>
-        <div data-value="3" onmouseover="menuMouseOverHandler(this)">BHP Billiton</div>
-        <div data-value="4" onmouseover="menuMouseOverHandler(this)">Commonwealth Bank of Australia</div>
-        <div data-value="1" onmouseover="menuMouseOverHandler(this)">Qantas Airways</div>
-        <div data-value="5" onmouseover="menuMouseOverHandler(this)">Telstra Corporation</div>
+        <div data-value="2">Australian Foundation Investment Company</div>
+        <div data-value="3">BHP Billiton</div>
+        <div data-value="4">Commonwealth Bank of Australia</div>
+        <div data-value="1">Qantas Airways</div>
+        <div data-value="5">Telstra Corporation</div>
       </div>
     </div>
   
 <script>
-/* When the user clicks on the button, 
-toggle between hiding and showing the dropdown content */
-function doSelectAction (elem) {
-	return false;	
-}
-/* When the user clicks on the button, 
-toggle between hiding and showing the dropdown content */
-function myFunction(elem) {
-    var fieldNameSelect = document.getElementById("field-name-select");
-    if (fieldNameSelect) {
-      fieldNameSelect.remove();
-    } else {
-      fieldNameSelect = document.createElement("div");
-      fieldNameSelect.classList.add("dropList");
-      fieldNameSelect.id = "field-name-select";
-      fieldNameSelect.setAttribute("tabindex", "0");
-      var computedStyle = window.getComputedStyle(elem);
-      var marginTop = parseInt(computedStyle.marginTop);
-      fieldNameSelect.setAttribute("style", "position:relative; top:" + (elem.offsetHeight + marginTop) + "px;");
-    
-      var newDropContent = document.createElement("div");
-      newDropContent.classList.add("dropList-content");
-      fieldNameSelect.appendChild(newDropContent);
-      for (i = 0; i < docFields.length; i++) {
-        let docField = docFields[i];
-        let newDropItem = document.createElement("a");
-        newDropItem.onclick = function (e) {
-        	var fieldNameSelect = document.getElementById("field-name-select");
-        	var target = fieldNameSelect.parentElement;
-        	target.textContent = newDropItem.innerText;
-        	return false;
-        }
-        //newDropItem.setAttribute("href", "javascript:doSelectAction(" + elem.id + ")");
-        var newDropTitle = document.createTextNode(docField.title);
-        newDropItem.appendChild(newDropTitle);
-        newDropItem.onmouseover = function (e) {
-          var fieldNameSelect = document.getElementById("field-name-select");
-          var newDropComponent = fieldNameSelect.firstChild;
-          var itemElems = newDropComponent.children;
-          
-          for (var i = 0; i < itemElems.length; i++) {
-            var itemElem = itemElems[i];
-            if (itemElem.classList.contains("target")) {
-              itemElem.classList.remove("target");
-              break;
-            }
-          }
-          e.target.classList.add("target"); 
-        };
-        newDropContent.appendChild(newDropItem);
-      }
-      elem.appendChild(fieldNameSelect);
-      fieldNameSelect.focus();
-      fieldNameSelect.onkeydown = function (e) {
-        var code = e.keyCode ? e.keyCode : e.which;
-        if (code === 38 || code == 40) { // Up or down key
-          var fieldNameSelect = document.getElementById("field-name-select");
-          var newDropComponent = fieldNameSelect.firstChild;
-          var itemElems = newDropComponent.children;
-          var found = false;
-          
-          for (var i = 0; i < itemElems.length; i++) {
-            var itemElem = itemElems[i];
-             if (itemElem.classList.contains("target")) {
-              itemElem.classList.remove("target");
-              if (code == 38) {
-                // Up key         
-                if (i == 0) {
-                  i = itemElems.length - 1;
-                } else {
-                  i = i - 1;
-                }
-              } else {
-                // Up key         
-                if (i == itemElems.length - 1) {
-                  i = 0;
-                } else {
-                  i = i + 1;
-                }
-              }
-              itemElems[i].classList.add("target");
-              found = true;
-              break;
-            }
-          }
-          if (!found) {
-            if (code == 38) {
-              i = itemElems.length - 1;
-            } else {
-              i = 0;
-            }
-            itemElems[i].classList.add("target");
-          }
-          e.stopPropagation();
-          return false;
-        }
-        //
-      };
-    }
-}
-
 // Close the dropdown if the user clicks outside of it
 window.onclick = function(event) {
   	if (searchInputId) {
