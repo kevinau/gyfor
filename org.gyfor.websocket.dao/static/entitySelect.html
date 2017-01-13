@@ -141,12 +141,9 @@ body {
 }
   </style>
   <script>
-
-var searchInputId = false;
-
-function setToggleButton (id, checked) {
-	let toggleButton = document.querySelectorAll("#" + id + " button.upDownButton")[0];
-	let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
+function setToggleButton (e, checked) {
+	let toggleButton = e.parentElement.querySelector("button.upDownButton");
+	let dropList = e.parentElement.querySelector("div.dropList");
 	let dropListItems = dropList.children;
 
 	let n = countShowing(dropList);
@@ -178,40 +175,33 @@ function setToggleButton (id, checked) {
 		}
 	}
 }
-function setGlobalId (id) {
-	searchInputId = id;
-}
 function activateSearchInput(e) {
 	let searchInput = e.parentElement;
 	searchInput.classList.add("active");
 }
 function toggleItemList (ev, e) {
-	let id = e.parentElement.id;
-	let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
+	let dropList = e.parentElement.querySelector("div.dropList");
 	let dropListItems = dropList.children;
-	let toggleButton = document.querySelectorAll("#" + id + " button.upDownButton")[0];
+	let toggleButton = e.parentElement.querySelector("button.upDownButton");
 
 	if (toggleButton.checked) {
 		filterItems(e);
 	} else {
 		dropList.classList.remove("someShowing");
 		dropList.classList.add("allShowing");
-		setGlobalId(id);
-		setToggleButton(id, true);
+		setToggleButton(e, true);
 	}
 
-	let inputElem = document.querySelectorAll("#" + id + " input")[0];
+	let inputElem = e.parentElement.querySelector("input");
 	inputElem.focus();
 	ev.stopPropagation();
 }
 function filterItems (e) {
-	let id = e.parentElement.id;
-	let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
+	let dropList = e.parentElement.querySelector("div.dropList");
 	let dropListItems = dropList.children;
-	let inputElems = document.querySelectorAll("#" + id + " input");
-	let inputBackground = document.querySelectorAll("#" + id + " div.inputBackground")[0];
+	let inputElem = e.parentElement.querySelector("input");
+	let inputBackground = e.parentElement.querySelector("div.inputBackground");
 
-	let inputElem = inputElems[0];
 	if (inputElem.value.length == 0) {
 		var elem = inputBackground;
 		while (elem.firstChild) elem.removeChild(elem.firstChild);
@@ -222,8 +212,7 @@ function filterItems (e) {
 			dropListItems[i].classList.remove("show", "highlight");
 		}
 		dropList.classList.remove("allShowing", "someShowing");
-		setGlobalId(false);
-		setToggleButton(id, false);
+		setToggleButton(e, false);
 		return;
 	}
 	partial = inputElem.value.toLowerCase();
@@ -252,7 +241,6 @@ function filterItems (e) {
 		for (var i = 0; i < dropListItems.length; i++) {
 			dropListItems[i].classList.remove("show", "highlight");
 		}
-		setGlobalId(false);
 	    break;
 	case 1 :
    		// Single value found
@@ -283,7 +271,6 @@ function filterItems (e) {
 				dropListItems[i].classList.remove("show", "highlight");
 			}
 		}
-		setGlobalId(id);
 		let offsetLeft = span1.offsetLeft - inputElem.offsetLeft;
 		inputElem.style.paddingLeft = offsetLeft + "px";
 		inputElem.style.width = (inputElem.elemWidth - offsetLeft + 10) + "px";
@@ -304,7 +291,6 @@ function filterItems (e) {
 				dropListItems[i].classList.add("show");
 			}
 		}
-		setGlobalId(id);
 		break;
 	}
 	if (n == 0) {
@@ -316,7 +302,7 @@ function filterItems (e) {
 		dropList.classList.remove("allShowing");
 		dropList.classList.add("someShowing");
 	}
-	setToggleButton(id, false);
+	setToggleButton(e, false);
 }
 function countShowing (dropList) {
 	let dropListItems = dropList.children;
@@ -332,8 +318,7 @@ function countShowing (dropList) {
 function menuKeyHandler (ev, e) {
 	var code = ev.keyCode ? ev.keyCode : ev.which;
 	if (code === 38 || code == 40) { // Up or down key
-    	let id = e.parentElement.id;
-    	let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
+    	let dropList = e.parentElement.querySelector("div.dropList");
     	let dropListItems = dropList.children;
         
         let i = 0;
@@ -391,7 +376,6 @@ function setSizeOfSearchInput () {
 	let upDownButton = dropList.parentElement.querySelector("button.upDownButton");
 	upDownButton.style.left = dropList.offsetWidth + "px";
 	let inputHeight = inputElem.offsetHeight;
-	//inputHeight -= parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom);
 	upDownButton.style.width = inputHeight + "px";
 	upDownButton.style.height = inputHeight + "px";
 	dropList.classList.remove("calcSize");
@@ -404,7 +388,7 @@ function setSizeOfSearchInput () {
   </script>
 </head>
 <body onload="setSizeOfSearchInput()">
-    <div id="partyDescriptions" class="searchInput">
+    <div class="searchInput">
       <input type="text" oninput="filterItems(this)" onfocus="activateSearchInput(this)" onkeydown="menuKeyHandler(event,this)">
       <div class="inputBackground">&nbsp;</div>
       <button class="upDownButton" onclick="toggleItemList(event,this)" title="Show all"></button>
@@ -420,34 +404,34 @@ function setSizeOfSearchInput () {
 <script>
 // Close the dropdown if the user clicks outside of it
 window.onclick = function(event) {
-  	if (searchInputId) {
-		if (event.target.matches(".searchInput button.upDownButton")) {
-			// On any of the search input fields, so do nothing
-			return;
-		}
-		if (event.target.matches(".searchInput input")) {
+	let searchInput = document.querySelector(".searchInput.active");
+	if (searchInput) {
+		if (event.target.matches(".searchInput.active input")) {
 			// On the search input field, so do nothing
 			return;
 		}
-	  	if (event.target.matches(".searchInput div.dropList")) {
+	  	if (event.target.matches(".searchInput.active div.dropList")) {
 		  	// On the drop down list, so do nothing
 		  	return;
 	  	}
-		let id = searchInputId;
-		let searchInput = document.getElementById(id);
 		searchInput.classList.remove("active");
-		
-// 		let dropList = document.querySelectorAll("#" + id + " div.dropList")[0];
-// 		let dropListItems = dropList.children;
-
-// 		// Clear list of items
-// 		for (var i = 0; i < dropListItems.length; i++) {
-// 			dropListItems[i].classList.remove("show", "highlight");
-// 		}
-// 		dropList.classList.remove("allShowing", "someShowing");
-// 		setToggleButton(id, false);
-// 		setGlobalId(false);
 	}
+//   	if (searchInputId) {
+// 		if (event.target.matches(".searchInput button.upDownButton")) {
+// 			// On any of the search input fields, so do nothing
+// 			return;
+// 		}
+// 		if (event.target.matches(".searchInput input")) {
+// 			// On the search input field, so do nothing
+// 			return;
+// 		}
+// 	  	if (event.target.matches(".searchInput div.dropList")) {
+// 		  	// On the drop down list, so do nothing
+// 		  	return;
+// 	  	}
+// 		let searchInput = document.getElementById(id);
+// 		searchInput.classList.remove("active");
+// 	}
 }
 </script>
 </body>
