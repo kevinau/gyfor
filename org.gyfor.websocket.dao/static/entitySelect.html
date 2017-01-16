@@ -29,14 +29,24 @@ body {
   height: 20px;
   font-size: 14px;
   background: transparent;
-  border: 1px solid #888888;
   padding: 4px 10px;
   margin: 0;
   z-index: 2;
 }
-.searchInput input.visible:focus {
-  xxxbox-shadow: 0px 0px 1px 1px rgba(0,0,0,0.5);
+input {
+  border: 1px solid #888888;
+}
+input.error {
+  border: 1px solid red;
+}
+input.required,
+input.incomplete {
   border: 1px solid rgba(255, 140, 0, 1);
+}
+input:focus {
+  xxxbox-shadow: 0px 0px 1px 1px rgba(0,0,0,0.5);
+  xxxborder: 1px dotted rgba(255, 140, 0, 1);
+  border-style: dotted;
 }
 
 .searchInput input.hidden {
@@ -70,6 +80,7 @@ body {
   top: 30px;
   left: 0;
   border: 1px solid rgba(255, 140, 0, 1);
+  background: #FFFFFF;
   z-index: 100;
   cursor: pointer;
 }
@@ -153,7 +164,6 @@ function setToggleButton (e, checked) {
 	let dropListItems = dropList.children;
 
 	let n = countShowing(dropList);
-	console.log("setToggle button: " + checked + " " + n);
 	if (checked) {
 		if (n == 0) {
     		toggleButton.checked = true; 
@@ -182,17 +192,30 @@ function setToggleButton (e, checked) {
 		}
 	}
 }
-function activateSearchInput(e) {
-	let searchInput = e.parentElement;
+function activateSearchInput(ev) {
+	let searchInput = ev.target.parentElement;
+	let oldActive = document.querySelector(".searchInput.active");
+	if (oldActive) {
+		searchInput.classList.remove("active");
+	}
 	searchInput.classList.add("active");
+}
+function deactivateSearchInput(ev) {
+	let searchInput = ev.target.parentElement;
+
+	if (ev.relatedTarget == null) {
+		// Not transfering to an input control
+	} else if (ev.relatedTarget.parentElement === searchInput) {
+		// Focus going to a related element
+	} else {
+		searchInput.classList.remove("active");
+	}
 }
 function toggleItemList (ev, e) {
 	let dropList = e.parentElement.querySelector("div.dropList");
 	let dropListItems = dropList.children;
 	let toggleButton = e.parentElement.querySelector("button.upDownButton");
 
-	console.log("toggle item list: " + toggleButton.checked);
-	
 	if (toggleButton.checked) {
 		filterItems(e);
 	} else {
@@ -202,7 +225,7 @@ function toggleItemList (ev, e) {
 	}
 
 	let inputElem = e.parentElement.querySelector("input.visible");
-	inputElem.focus();
+//////////////////	inputElem.focus();
     ev.stopPropagation();
 }
 function exactMatch (target, list) {
@@ -216,9 +239,9 @@ function exactMatch (target, list) {
 function clearDropList (inputElem, inputBackground, dropList) {
 	var elem = inputBackground;
 	while (elem.firstChild) elem.removeChild(elem.firstChild);
-	inputElem.style.paddingLeft = "10px";
+	inputElem.style.paddingLeft = inputElem.paddingLeft;
 	inputElem.style.width = inputElem.elemWidth + "px";
-
+    
 	let dropListItems = dropList.children;
 	for (var i = 0; i < dropListItems.length; i++) {
 		dropListItems[i].classList.remove("show", "highlight");
@@ -231,8 +254,16 @@ function filterItems (e) {
 	let inputElem = e.parentElement.querySelector("input.visible");
 	let inputBackground = e.parentElement.querySelector("div.inputBackground");
 
-	if (inputElem.value.length == 0 || exactMatch(inputElem.value, dropListItems)) {
+	if (inputElem.value.length == 0) {
 		clearDropList(inputElem, inputBackground, dropList);
+		inputElem.classList.remove("error", "incomplete");
+		inputElem.classList.add("required");
+		setToggleButton(e, false);
+		return;
+	}
+	if (exactMatch(inputElem.value, dropListItems)) {
+		clearDropList(inputElem, inputBackground, dropList);
+		inputElem.classList.remove("error", "incomplete", "required");
 		setToggleButton(e, false);
 		return;
 	}
@@ -255,6 +286,8 @@ function filterItems (e) {
 	case 0 :
 		// No match found
 		clearDropList(inputElem, inputBackground, dropList);
+		inputElem.classList.remove("incomplete", "required");
+		inputElem.classList.add("error");
 	    break;
 	case 1 :
    		// Single value found
@@ -288,13 +321,16 @@ function filterItems (e) {
 		let offsetLeft = span1.offsetLeft - inputElem.offsetLeft;
 		inputElem.style.paddingLeft = offsetLeft + "px";
 		inputElem.style.width = (inputElem.elemWidth - offsetLeft + 10) + "px";
+	    inputElem.classList.remove("error", "incomplete", "required");
 		break;
 	default :
     	// Multiple values found
 		var elem = inputBackground;
 		while (elem.firstChild) elem.removeChild(elem.firstChild);
-		inputElem.style.paddingLeft = "10px";
+		inputElem.style.paddingLeft = inputElem.paddingLeft;
 		inputElem.style.width = inputElem.elemWidth + "px";
+		inputElem.classList.remove("error", "required");
+		inputElem.classList.add("incomplete");
 
 		for (var i = 0; i < dropListItems.length; i++) {
 			let t = dropListItems[i].innerText.toLowerCase();
@@ -331,7 +367,6 @@ function countShowing (dropList) {
 }
 function menuKeyHandler (ev, e) {
 	var code = ev.keyCode ? ev.keyCode : ev.which;
-	console.log("menu key handler: " + code);
 	switch (code) {
 	case 27 :			// ESC
 	case 37 :			// Left arrow
@@ -345,7 +380,6 @@ function menuKeyHandler (ev, e) {
 		break;
 	case 39 :			// Right arrow
 		var toggleButton = e.parentElement.querySelector("button.upDownButton");
-		console.log("right arrow " + toggleButton.checked);
 		if (!toggleButton.checked) {
 			// If drop list is not showing, show it
 			toggleItemList(ev, e);
@@ -412,8 +446,8 @@ function menuKeyHandler (ev, e) {
         	}
 			if (i < dropListItems.length) {
 				// Use the highlighted value as the input value
-        		console.log("highlighted: " + dropListItems[i].innerText);
 		    	inputElem.value = dropListItems[i].innerText;
+		    	inputElem.classList.remove("error", "incomplete", "required");
 			} else {
 				// Look for a partial match with only one result
 	    		let partial = inputElem.value.toLowerCase();
@@ -432,58 +466,95 @@ function menuKeyHandler (ev, e) {
     		
         		if (n == 1) {
         			// We found a matching item (i.e. the partial matches a value)
-  		      		console.log("highlighted: " + dropListItems[i0].innerText);
 			    	inputElem.value = dropListItems[i0].innerText;
+			    	inputElem.classList.remove("error", "incomplete", "required");
         		}
 			}
     		clearDropList(inputElem, inputBackground, dropList);
     		setToggleButton(e, false);
     		let searchInput = document.querySelector(".searchInput.active");
-   			searchInput.classList.remove("active");
+    		if (searchInput) {
+       			searchInput.classList.remove("active");
+    		}
 		}
 		break;
 	}
 }
 function setSizeOfSearchInput () {
-	let dropList = document.querySelector("div.dropList");
-	dropList.classList.add("calcSize");
-	let inputElem = dropList.parentElement.querySelector("input.visible");
-	let inputBackground = dropList.parentElement.querySelector("div.inputBackground");
-	elemWidth = dropList.clientWidth;   // width with padding
-
-	// Remove padding width
-	let computedStyle = getComputedStyle(inputElem);
-	elemWidth -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
-	
-	inputElem.style.width = elemWidth + "px";
-	inputBackground.style.width = elemWidth + "px";
-	inputElem.elemWidth = elemWidth;
-	
-	let upDownButton = dropList.parentElement.querySelector("button.upDownButton");
-	upDownButton.style.left = dropList.offsetWidth + "px";
-	let inputHeight = inputElem.offsetHeight;
-	upDownButton.style.width = inputHeight + "px";
-	upDownButton.style.height = inputHeight + "px";
-	dropList.classList.remove("calcSize");
+	let searchInputs = document.querySelectorAll(".searchInput");
+	for (var i = 0; i < searchInputs.length; i++) {
+		let searchInput = searchInputs[i];
+		let dropList = searchInput.querySelector("div.dropList");
+		dropList.classList.add("calcSize");
+		let inputElem = searchInput.querySelector("input.visible");
+		let inputBackground = searchInput.querySelector("div.inputBackground");
+		elemWidth = dropList.clientWidth;   // width with padding
+		
+		// Remove padding width
+		let computedStyle = getComputedStyle(inputElem);
+		elemWidth -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
+		
+		inputElem.style.width = elemWidth + "px";
+		inputBackground.style.width = elemWidth + "px";
+		inputElem.elemWidth = elemWidth;
+		// The padding left includes the "px" suffix.
+		inputElem.paddingLeft = computedStyle.paddingLeft;
+		
+		let upDownButton = searchInput.querySelector("button.upDownButton");
+		upDownButton.style.left = dropList.offsetWidth + "px";
+		let inputHeight = inputElem.offsetHeight;
+		upDownButton.style.width = inputHeight + "px";
+		upDownButton.style.height = inputHeight + "px";
+		dropList.classList.remove("calcSize");
+		
+		searchInput.style.height = inputHeight + "px";
+	}
 }
 function selectItem (e) {
-	let topDiv = e.parentElement.parentElement;
-	let inputElem = topDiv.querySelector("input.visible");
-	let inputBackground = topDiv.querySelector("div.inputBackground");
+	let searchInput = e.parentElement.parentElement;
+	let inputElem = searchInput.querySelector("input.visible");
+	let inputBackground = searchInput.querySelector("div.inputBackground");
 	let dropList = e.parentElement;
 	let dropListItems = dropList.children;
 	
 	// Remove any highlight
-	console.log("clicked on: " + e.innerText);
 	let highlighted = dropList.querySelector("div.highlight");
 	if (highlighted) {
-		console.log("removed hightlight on: " + e.innerText);
 		highlighted.classList.remove("highlight");
 	}
 	inputElem.value = e.innerText;
+	inputElem.classList.remove("error", "incomplete", "required");
 	clearDropList(inputElem, inputBackground, dropList);
 	setToggleButton(e.parentElement, false);
+	
+	let activeElement = document.activeElement;
+	if (inputElem === activeElement) {
+		// Don't deactive the search input
+	} else {
+		upDownButton = searchInput.querySelector("button.upDownButton");
+		if (upDownButton === activeElement) {
+			// Ditto
+		} else {
+			searchInput.classList.remove("active");
+// 			let nextInput = findNextTabStop(inputElem);
+// 			console.log(nextInput);
+// 			console.log(nextInput.getAttribute("name"));
+// 			nextInput.focus();
+		}
+	}
 }
+// function findNextTabStop(e) {
+// 	// This method does not account for tabindex order, or element visibility
+//     var universe = document.querySelectorAll('input, button, select, textarea, a[href]');
+//     var list = Array.prototype.filter.call(universe, function(item) {return item.tabIndex >= 0});
+//     for (var i = 0; i < list.length; i++) {
+//     	console.log(i + ":")
+//     	console.log(list[i]);
+//     }
+//     var index = list.indexOf(e);
+//     return list[index + 1] || list[0];
+// }
+  
 //function menuMouseWheelHandler (ev) {
 //	var delta = Math.max(-1, Math.min(1, (ev.wheelDelta || -ev.detail)));
 //	console.log("mouse wheel handler: delta " + delta);
@@ -492,19 +563,41 @@ function selectItem (e) {
   </script>
 </head>
 <body onload="setSizeOfSearchInput()">
-    <div class="searchInput">
-      <input class="visible" type="text" oninput="filterItems(this)" onfocus="activateSearchInput(this)" onkeydown="menuKeyHandler(event,this)">
-      <input class="hidden" name="partyName" type="text">
-      <div class="inputBackground">&nbsp;</div>
-      <button class="upDownButton" onclick="toggleItemList(event,this)" tabindex="-1" title="Show all"></button>
-      <div class="dropList">
-        <div data-value="2" onclick="selectItem(this)">Australian Foundation Investment Company</div>
-        <div data-value="3" onclick="selectItem(this)">BHP Billiton</div>
-        <div data-value="4" onclick="selectItem(this)">Commonwealth Bank of Australia</div>
-        <div data-value="1" onclick="selectItem(this)">Qantas Airways</div>
-        <div data-value="5" onclick="selectItem(this)">Telstra Corporation</div>
-      </div>
-    </div>
+    <form>
+    	<input name="pre1" type="text">
+    	<p>
+	    <div class="searchInput">
+    	  	<input class="visible" type="text" oninput="filterItems(this)" onfocus="activateSearchInput(event)" onblur="deactivateSearchInput(event)" onkeydown="menuKeyHandler(event,this)">
+      		<input class="hidden" name="partyName" type="text">
+      		<div class="inputBackground">&nbsp;</div>
+      		<button class="upDownButton" onclick="toggleItemList(event,this)" tabindex="-1" type="button" title="Show all" onblur="deactivateSearchInput(event)"></button>
+      		<div class="dropList">
+        		<div data-value="2" onclick="selectItem(this)">Australian Foundation Investment Company</div>
+        		<div data-value="3" onclick="selectItem(this)">BHP Billiton</div>
+        		<div data-value="4" onclick="selectItem(this)">Commonwealth Bank of Australia</div>
+        		<div data-value="1" onclick="selectItem(this)">Qantas Airways</div>
+        		<div data-value="5" onclick="selectItem(this)">Telstra Corporation</div>
+      		</div>
+    	</div>
+    	<p>
+    	<input name="mid1" type="text">
+    	<p>
+	    <div class="searchInput">
+    	  	<input class="visible" type="text" oninput="filterItems(this)" onfocus="activateSearchInput(event)" onblur="deactivateSearchInput(event)" onkeydown="menuKeyHandler(event,this)">
+      		<input class="hidden" name="partyDescription" type="text">
+      		<div class="inputBackground">&nbsp;</div>
+      		<button class="upDownButton" onclick="toggleItemList(event,this)" tabindex="-1" type="button" title="Show all" onblur="deactivateSearchInput(event)"></button>
+      		<div class="dropList">
+        		<div data-value="2" onclick="selectItem(this)">Australian Foundation Investment Company</div>
+        		<div data-value="3" onclick="selectItem(this)">BHP Billiton</div>
+        		<div data-value="4" onclick="selectItem(this)">Commonwealth Bank of Australia</div>
+        		<div data-value="1" onclick="selectItem(this)">Qantas Airways</div>
+        		<div data-value="5" onclick="selectItem(this)">Telstra Corporation</div>
+      		</div>
+    	</div>
+    	<p>
+    	<input name="end1" type="text">
+    </form>
   
 <script>
 // Close the dropdown if the user clicks outside of it
@@ -513,6 +606,10 @@ window.onclick = function(event) {
 	if (searchInput) {
 		if (event.target.matches(".searchInput.active input.visible")) {
 			// On the search input field, so do nothing
+			return;
+		}
+		if (event.target.matches(".searchInput.active button.upDownButton")) {
+			// On the up/down button, so do nothing
 			return;
 		}
 	  	if (event.target.matches(".searchInput.active div.dropList")) {
