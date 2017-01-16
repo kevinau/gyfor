@@ -49,7 +49,7 @@ input:focus {
   border-style: dotted;
 }
 
-.searchInput input.hidden {
+.searchInput input.shadow {
   position: absolute;
   left -9999px;
   display: none;
@@ -224,19 +224,19 @@ function toggleItemList (ev, e) {
 		setToggleButton(e, true);
 	}
 
-	let inputElem = e.parentElement.querySelector("input.visible");
+//////////////////	let inputElem = e.parentElement.querySelector("input.visible");
 //////////////////	inputElem.focus();
     ev.stopPropagation();
 }
 function exactMatch (target, list) {
 	for (var i = 0; i < list.length; i++) {
 		if (target == list[i].innerText) {
-			return true;
+			return list[i].getAttribute("data-value");
 		}
 	}
-	return false;
+	return null;
 }
-function clearDropList (inputElem, inputBackground, dropList) {
+function clearDropList (inputElem, inputShadow, inputBackground, dropList) {
 	var elem = inputBackground;
 	while (elem.firstChild) elem.removeChild(elem.firstChild);
 	inputElem.style.paddingLeft = inputElem.paddingLeft;
@@ -252,18 +252,22 @@ function filterItems (e) {
 	let dropList = e.parentElement.querySelector("div.dropList");
 	let dropListItems = dropList.children;
 	let inputElem = e.parentElement.querySelector("input.visible");
+	let inputShadow = e.parentElement.querySelector("input.shadow");
 	let inputBackground = e.parentElement.querySelector("div.inputBackground");
 
 	if (inputElem.value.length == 0) {
-		clearDropList(inputElem, inputBackground, dropList);
+		clearDropList(inputElem, inputShadow, inputBackground, dropList);
 		inputElem.classList.remove("error", "incomplete");
 		inputElem.classList.add("required");
+		inputShadow.value = "";
 		setToggleButton(e, false);
 		return;
 	}
-	if (exactMatch(inputElem.value, dropListItems)) {
-		clearDropList(inputElem, inputBackground, dropList);
+	let dataValue = exactMatch(inputElem.value, dropListItems);
+	if (dataValue) {
+		clearDropList(inputElem, inputShadow, inputBackground, dropList);
 		inputElem.classList.remove("error", "incomplete", "required");
+		inputShaddow.value = dataValue;
 		setToggleButton(e, false);
 		return;
 	}
@@ -277,6 +281,7 @@ function filterItems (e) {
 		let x = t.indexOf(partial);
 		if (x != -1) {
 			singleValue = dropListItems[i].innerText;
+			dataValue = dropListItems[i].getAttribute("data-value");
 			x0 = x;
 			i0 = i;
 			n++;
@@ -285,9 +290,10 @@ function filterItems (e) {
 	switch (n) {
 	case 0 :
 		// No match found
-		clearDropList(inputElem, inputBackground, dropList);
+		clearDropList(inputElem, inputShadow, inputBackground, dropList);
 		inputElem.classList.remove("incomplete", "required");
 		inputElem.classList.add("error");
+		inputShadow.value = "";
 	    break;
 	case 1 :
    		// Single value found
@@ -322,6 +328,7 @@ function filterItems (e) {
 		inputElem.style.paddingLeft = offsetLeft + "px";
 		inputElem.style.width = (inputElem.elemWidth - offsetLeft + 10) + "px";
 	    inputElem.classList.remove("error", "incomplete", "required");
+	    inputShadow.value = dataValue;
 		break;
 	default :
     	// Multiple values found
@@ -331,6 +338,7 @@ function filterItems (e) {
 		inputElem.style.width = inputElem.elemWidth + "px";
 		inputElem.classList.remove("error", "required");
 		inputElem.classList.add("incomplete");
+		inputShadow.value = "";
 
 		for (var i = 0; i < dropListItems.length; i++) {
 			let t = dropListItems[i].innerText.toLowerCase();
@@ -431,6 +439,7 @@ function menuKeyHandler (ev, e) {
 	case 9 :			// Tab
 		if (!ev.shiftKey) {
 			var inputElem = e.parentElement.querySelector("input.visible");
+			var inputShadow = e.parentElement.querySelector("input.shadow");
 			var inputBackground = e.parentElement.querySelector("div.inputBackground");
     		var dropList = e.parentElement.querySelector("div.dropList");
     		var dropListItems = dropList.children;
@@ -447,6 +456,7 @@ function menuKeyHandler (ev, e) {
 			if (i < dropListItems.length) {
 				// Use the highlighted value as the input value
 		    	inputElem.value = dropListItems[i].innerText;
+				inputShadow.value = dropListItems[i].getAttribute("data-value");
 		    	inputElem.classList.remove("error", "incomplete", "required");
 			} else {
 				// Look for a partial match with only one result
@@ -459,7 +469,7 @@ function menuKeyHandler (ev, e) {
     				let x = t.indexOf(partial);
     				if (x != -1) {
     					singleValue = dropListItems[i].innerText;
-     					i0 = i;
+      					i0 = i;
     					n++;
     				}
     			}
@@ -467,10 +477,13 @@ function menuKeyHandler (ev, e) {
         		if (n == 1) {
         			// We found a matching item (i.e. the partial matches a value)
 			    	inputElem.value = dropListItems[i0].innerText;
+                   	inputShadow.value = dropListItems[i0].getAttribute("data-value");
 			    	inputElem.classList.remove("error", "incomplete", "required");
-        		}
+        		} else {
+        			inputShadow.value = "";
+     		}
 			}
-    		clearDropList(inputElem, inputBackground, dropList);
+    		clearDropList(inputElem, inputShadow, inputBackground, dropList);
     		setToggleButton(e, false);
     		let searchInput = document.querySelector(".searchInput.active");
     		if (searchInput) {
@@ -513,6 +526,7 @@ function setSizeOfSearchInput () {
 function selectItem (e) {
 	let searchInput = e.parentElement.parentElement;
 	let inputElem = searchInput.querySelector("input.visible");
+	let inputShadow = searchInput.querySelector("input.shadow");
 	let inputBackground = searchInput.querySelector("div.inputBackground");
 	let dropList = e.parentElement;
 	let dropListItems = dropList.children;
@@ -524,7 +538,8 @@ function selectItem (e) {
 	}
 	inputElem.value = e.innerText;
 	inputElem.classList.remove("error", "incomplete", "required");
-	clearDropList(inputElem, inputBackground, dropList);
+	inputShadow.value = e.getAttribute("data-value");
+	clearDropList(inputElem, inputShadow, inputBackground, dropList);
 	setToggleButton(e.parentElement, false);
 	
 	let activeElement = document.activeElement;
@@ -568,7 +583,7 @@ function selectItem (e) {
     	<p>
 	    <div class="searchInput">
     	  	<input class="visible" type="text" oninput="filterItems(this)" onfocus="activateSearchInput(event)" onblur="deactivateSearchInput(event)" onkeydown="menuKeyHandler(event,this)">
-      		<input class="hidden" name="partyName" type="text">
+      		<input class="shadow" name="partyName" type="text">
       		<div class="inputBackground">&nbsp;</div>
       		<button class="upDownButton" onclick="toggleItemList(event,this)" tabindex="-1" type="button" title="Show all" onblur="deactivateSearchInput(event)"></button>
       		<div class="dropList">
@@ -584,7 +599,7 @@ function selectItem (e) {
     	<p>
 	    <div class="searchInput">
     	  	<input class="visible" type="text" oninput="filterItems(this)" onfocus="activateSearchInput(event)" onblur="deactivateSearchInput(event)" onkeydown="menuKeyHandler(event,this)">
-      		<input class="hidden" name="partyDescription" type="text">
+      		<input class="shadow" name="partyDescription" type="text">
       		<div class="inputBackground">&nbsp;</div>
       		<button class="upDownButton" onclick="toggleItemList(event,this)" tabindex="-1" type="button" title="Show all" onblur="deactivateSearchInput(event)"></button>
       		<div class="dropList">
