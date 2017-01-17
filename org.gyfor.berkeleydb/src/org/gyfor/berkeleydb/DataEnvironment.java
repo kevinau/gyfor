@@ -7,8 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.gyfor.object.IPlanEnvironment;
 import org.gyfor.object.plan.IEntityPlan;
+import org.gyfor.object.plan.IPlanContext;
 import org.gyfor.osgi.ComponentConfiguration;
 import org.gyfor.osgi.Configurable;
 import org.osgi.service.component.ComponentContext;
@@ -83,12 +83,12 @@ public class DataEnvironment {
   }
   
   
-  public DataTable openTable (IPlanEnvironment planEnvmt, Class<?> klass) {
+  public DataTable openTable (IPlanContext planEnvmt, Class<?> klass) {
     return openTable(planEnvmt, klass, false);
   }
   
   
-  public DataTable openTable (IPlanEnvironment planEnvmt, Class<?> klass, boolean writeable) {
+  public DataTable openTable (IPlanContext planEnvmt, Class<?> klass, boolean writeable) {
     IEntityPlan<?> entityPlan = planEnvmt.getEntityPlan(klass);
     return openTable(entityPlan, writeable);
   }

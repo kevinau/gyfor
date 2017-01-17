@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gyfor.object.IPlanEnvironment;
 import org.gyfor.object.Id;
 import org.gyfor.object.SelfDescribing;
 import org.gyfor.object.UniqueConstraint;
@@ -15,6 +14,7 @@ import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INameMappedPlan;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.plan.IPlanContext;
 import org.gyfor.object.plan.PlanStructure;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.EntityLifeType;
@@ -34,7 +34,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   private List<IItemPlan<?>[]> uniqueConstraints;
 
   
-  public EntityPlan (IPlanEnvironment context, Class<T> entityClass) {
+  public EntityPlan (IPlanContext context, Class<T> entityClass) {
     super (context, null, entityClass, entityClass.getSimpleName(), entityEntryMode(entityClass));
     this.entityClass = entityClass;
     this.entityName = entityClass.getSimpleName();

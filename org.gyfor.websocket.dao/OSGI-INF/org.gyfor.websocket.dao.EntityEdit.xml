@@ -4,7 +4,7 @@
       <provide interface="io.undertow.server.HttpHandler"/>
    </service>
    <reference bind="setDataEnvironment" cardinality="1..1" interface="org.gyfor.berkeleydb.DataEnvironment" name="DataEnvironment" policy="static" unbind="unsetDataEnvironment"/>
-   <reference bind="setPlanEnvironment" cardinality="1..1" interface="org.gyfor.object.IPlanEnvironment" name="PlanEnvironment" policy="static" unbind="unsetPlanEnvironment"/>
+   <reference bind="setPlanContext" cardinality="1..1" interface="org.gyfor.object.plan.IPlanContext" name="PlanContext" policy="static" unbind="unsetPlanContext"/>
    <reference bind="setTemplateEngineFactory" cardinality="1..1" interface="org.gyfor.template.ITemplateEngineFactory" name="TemplateEngineFactory" policy="static" unbind="unsetTemplateEngineFactory"/>
    <implementation class="org.gyfor.websocket.dao.EntityEdit"/>
 </scr:component>

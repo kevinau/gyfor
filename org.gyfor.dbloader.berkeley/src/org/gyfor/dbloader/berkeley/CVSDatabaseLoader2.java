@@ -9,7 +9,7 @@ import org.gyfor.berkeleydb.IDatabaseEntryFields;
 import org.gyfor.berkeleydb.KeyDatabaseEntry;
 import org.gyfor.berkeleydb.ObjectDatabaseEntry;
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.context.PlanEnvironment;
+import org.gyfor.object.plan.impl.PlanContext;
 import org.gyfor.util.RunTimer;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -72,7 +72,7 @@ public class CVSDatabaseLoader2 {
     dbConfig.setTransactional(true);
     Database entityDatabase = databaseEnvironment.openDatabase(null, className, dbConfig); 
 
-    PlanEnvironment planEnvmt = new PlanEnvironment();
+    PlanContext planEnvmt = new PlanContext();
     ObjectDatabaseEntry data = new ObjectDatabaseEntry(planEnvmt, Party.class);
 
     // Secondary key using field 1, ie the partyCode (aka ABN)

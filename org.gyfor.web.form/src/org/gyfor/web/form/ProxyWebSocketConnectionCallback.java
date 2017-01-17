@@ -5,10 +5,10 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gyfor.object.context.PlanEnvironment;
 import org.gyfor.object.model.EntityModel;
 import org.gyfor.object.model.RootModel;
 import org.gyfor.object.plan.IEntityPlan;
+import org.gyfor.object.plan.impl.PlanContext;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,14 +37,14 @@ public class ProxyWebSocketConnectionCallback implements WebSocketConnectionCall
   private BundleContext defaultContext;
   private BundleContext globalContext;
 
-  private PlanEnvironment objectContext;
+  private PlanContext objectContext;
 
   private PebbleEngine templateEngine;
 
   private RootModel rootModel;
   
 
-  public void setup(BundleContext defaultContext, BundleContext globalContext, PlanEnvironment objectContext) {
+  public void setup(BundleContext defaultContext, BundleContext globalContext, PlanContext objectContext) {
     // defaultContext, templateEngine and objectContext are shared amongst all
     // ProxyWebSocketConnectionCallback
     this.defaultContext = defaultContext;

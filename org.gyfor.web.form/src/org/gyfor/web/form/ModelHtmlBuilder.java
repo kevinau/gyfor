@@ -6,7 +6,6 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.gyfor.object.context.PlanEnvironment;
 import org.gyfor.object.model.EntityModel;
 import org.gyfor.object.model.ItemModel;
 import org.gyfor.object.model.NodeModel;
@@ -14,6 +13,7 @@ import org.gyfor.object.model.RootModel;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.plan.impl.PlanContext;
 import org.gyfor.object.type.IType;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -50,7 +50,7 @@ public class ModelHtmlBuilder {
   public void activate (BundleContext bundleContext) {
     RootModel rootModel = new RootModel();
     
-    PlanEnvironment objectContext = new PlanEnvironment();
+    PlanContext objectContext = new PlanContext();
     IEntityPlan<Person> entityPlan = objectContext.getEntityPlan(Person.class);
     
     Person instance = new Person("Kevin Holloway", "Kevin", "0447 252 976", null, "kholloway@geckosoftware.com.au");

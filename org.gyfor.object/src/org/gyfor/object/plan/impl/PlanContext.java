@@ -1,22 +1,21 @@
-package org.gyfor.object.context;
+package org.gyfor.object.plan.impl;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.gyfor.object.IPlanEnvironment;
 import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.impl.AugmentedClass;
-import org.gyfor.object.plan.impl.EntityPlan;
+import org.gyfor.object.plan.IPlanContext;
 import org.osgi.service.component.annotations.Component;
 
 
 @Component
-public class PlanEnvironment implements IPlanEnvironment {
+public class PlanContext implements IPlanContext {
 
   private Map<Class<?>, IEntityPlan<?>> entityPlans = new ConcurrentHashMap<>();
   private Map<Class<?>, AugmentedClass<?>> classPlans = new ConcurrentHashMap<>(20);
 
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T> IEntityPlan<T> getEntityPlan(String klassName) {
     Class<T> klass;

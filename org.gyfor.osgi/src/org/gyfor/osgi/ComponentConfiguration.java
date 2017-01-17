@@ -72,7 +72,7 @@ public class ComponentConfiguration {
           }
         }
       } catch (InstantiationException | IllegalAccessException | SecurityException | IllegalArgumentException
-          | InvocationTargetException ex) {
+          | InvocationTargetException | ClassNotFoundException ex) {
         throw new RuntimeException(ex);
       }
     }
@@ -80,7 +80,7 @@ public class ComponentConfiguration {
 
 
   private static Object getFieldValue(Class<?> type, String propertyValue) throws InstantiationException,
-      IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+      IllegalAccessException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
     Object value;
     
     if (type.isEnum()) {
@@ -102,6 +102,8 @@ public class ComponentConfiguration {
       default :
         throw new RuntimeException ("Expecting true or false for type: " + type.getCanonicalName());
       }
+    } else if (Class.class.isAssignableFrom(type)) {
+      value = Class.forName(propertyValue);
     } else {
       try {
         Constructor<?> constructor = type.getDeclaredConstructor(String.class);

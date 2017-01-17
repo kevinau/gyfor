@@ -2,11 +2,11 @@ package org.gyfor.berkeleydb;
 
 import org.gyfor.object.EntityPlanFactory;
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.context.PlanEnvironment;
 import org.gyfor.object.plan.IClassPlan;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.plan.impl.PlanContext;
 import org.gyfor.object.type.IType;
 import org.gyfor.todo.NotYetImplementedException;
 import org.gyfor.util.SimpleBuffer;
@@ -23,7 +23,7 @@ public class ObjectDatabaseEntry extends DatabaseEntry {
   private int[] fieldFlags;
 
 
-  public ObjectDatabaseEntry(PlanEnvironment envmt, Class<?> klass) {
+  public ObjectDatabaseEntry(IPlanContext envmt, Class<?> klass) {
     entityPlan = EntityPlanFactory.getEntityPlan(envmt, klass);
   }
 

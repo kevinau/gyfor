@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.gyfor.object.EntryMode;
-import org.gyfor.object.IPlanEnvironment;
 import org.gyfor.object.plan.IClassPlan;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.plan.IPlanContext;
 import org.gyfor.object.plan.IRuntimeDefaultProvider;
 import org.gyfor.object.plan.IRuntimeFactoryProvider;
 import org.gyfor.object.plan.IRuntimeImplementationProvider;
@@ -22,7 +22,7 @@ public abstract class ClassPlan<T> extends NodePlan implements IClassPlan<T> {
   private final AugmentedClass<T> augmented;
   
   
-  public ClassPlan(IPlanEnvironment context, Field field, Class<T> nodeClass, String name, EntryMode entryMode) {
+  public ClassPlan(IPlanContext context, Field field, Class<T> nodeClass, String name, EntryMode entryMode) {
     super(field, name, entryMode);
     augmented = context.getClassPlan(nodeClass);
   }

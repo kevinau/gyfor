@@ -11,8 +11,8 @@ import org.gyfor.berkeleydb.ObjectDatabaseEntry;
 import org.gyfor.http.CallbackAccessor;
 import org.gyfor.http.Context;
 import org.gyfor.http.Resource;
-import org.gyfor.object.IPlanEnvironment;
 import org.gyfor.object.plan.IEntityPlan;
+import org.gyfor.object.plan.IPlanContext;
 import org.gyfor.template.ITemplate;
 import org.gyfor.template.ITemplateEngine;
 import org.gyfor.template.ITemplateEngineFactory;
@@ -66,7 +66,7 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
   private final EntityWebSocketConnectionCallback callback;
   private final String context;
   
-  private IPlanEnvironment planEnvironment;
+  private IPlanContext planContext;
   private DataEnvironment dataEnvironment;
   private ITemplateEngineFactory templateEngineFactory;
   private Class<?> entityClass = Party.class;
@@ -85,13 +85,13 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
 
   
   @Reference
-  public void setPlanEnvironment (IPlanEnvironment planEnvironment) {
-    this.planEnvironment = planEnvironment;
+  public void setPlanContext (IPlanContext planContext) {
+    this.planContext = planContext;
   }
   
   
-  public void unsetPlanEnvironment (IPlanEnvironment planEnvironment) {
-    this.planEnvironment = null;
+  public void unsetPlanContext (IPlanContext planContext) {
+    this.planContext = null;
   }
   
   
@@ -121,7 +121,7 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
   public void activate(ComponentContext componentContext) {
     callback.setContext(context);
     
-    callback.setPlanEnvironment(planEnvironment);
+    callback.setPlanEnvironment(planContext);
     callback.setDataEnvironment(dataEnvironment);
     callback.setEntityClass(entityClass);
     
@@ -140,7 +140,7 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
 
     private final Logger logger = LoggerFactory.getLogger(EntityEdit.class);
     
-    private IPlanEnvironment planEnvironment;
+    private IPlanContext planContext;
     private DataEnvironment dataEnvironment;
     private ITemplateEngine templateEngine;
     
@@ -149,8 +149,8 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
     private Class<?> entityClass;
      
     
-    private void setPlanEnvironment (IPlanEnvironment planEnvironment) {
-      this.planEnvironment = planEnvironment;
+    private void setPlanEnvironment (IPlanContext planContext) {
+      this.planContext = planContext;
     }
     
     
@@ -179,7 +179,7 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
     protected void openResources () {
       logger.info("Opening resources for {}", entityClass);
       
-      entityPlan = planEnvironment.getEntityPlan(entityClass);
+      entityPlan = planContext.getEntityPlan(entityClass);
       entityTable = dataEnvironment.openTable(entityPlan, false); 
     }
 

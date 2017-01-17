@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.gyfor.object.plan.IClassPlan;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.plan.IPlanContext;
 import org.gyfor.object.plan.impl.ArrayPlan;
 import org.gyfor.object.plan.impl.EmbeddedPlan;
 import org.gyfor.object.plan.impl.ItemPlan;
@@ -22,7 +23,7 @@ public class NodePlanFactory {
 //    this (klass, entityName(klass), entityLabel(klass), entityEntryMode(klass), 0);
 //  }
   
-  public static INodePlan getNodePlan (IPlanEnvironment context, Type fieldType, Field field, String name, EntryMode entryMode, int dimension, boolean optional) {
+  public static INodePlan getNodePlan (IPlanContext context, Type fieldType, Field field, String name, EntryMode entryMode, int dimension, boolean optional) {
     INodePlan nodePlan;
     
     if (fieldType instanceof GenericArrayType) {
@@ -76,7 +77,7 @@ public class NodePlanFactory {
   
   
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  static INodePlan getNodePlanPart2 (IPlanEnvironment context, Field field, Type fieldType, String name, EntryMode entryMode, int dimension) {
+  static INodePlan getNodePlanPart2 (IPlanContext context, Field field, Type fieldType, String name, EntryMode entryMode, int dimension) {
     INodePlan nodePlan;
   
     // Is there a type declaration within the class

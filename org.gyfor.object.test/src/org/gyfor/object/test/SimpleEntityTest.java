@@ -5,7 +5,6 @@ import java.util.List;
 import org.gyfor.object.Entity;
 import org.gyfor.object.EntityPlanFactory;
 import org.gyfor.object.Optional;
-import org.gyfor.object.context.PlanEnvironment;
 import org.gyfor.object.model.EntityModel;
 import org.gyfor.object.model.ItemModel;
 import org.gyfor.object.model.ContainerChangeListener;
@@ -15,6 +14,7 @@ import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.ILabelGroup;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.plan.impl.PlanContext;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.StringType;
 import org.junit.Assert;
@@ -52,13 +52,13 @@ public class SimpleEntityTest {
   }
 
 
-  private PlanEnvironment context;
+  private PlanContext context;
   private IEntityPlan<SimpleEntity> plan;
   
   
   @Before
   public void before () {
-    context = new PlanEnvironment();
+    context = new PlanContext();
     plan = EntityPlanFactory.getEntityPlan(context, SimpleEntity.class);
   }
   

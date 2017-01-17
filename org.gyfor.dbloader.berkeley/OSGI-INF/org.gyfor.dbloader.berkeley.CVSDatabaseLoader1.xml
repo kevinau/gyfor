@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" enabled="true" immediate="true" name="org.gyfor.dbloader.berkeley.CVSDatabaseLoader1">
+   <service>
+      <provide interface="org.gyfor.dbloader.berkeley.CVSDatabaseLoader1"/>
+   </service>
+   <reference bind="setDataEnvironment" cardinality="1..1" interface="org.gyfor.berkeleydb.DataEnvironment" name="DataEnvironment" policy="static" unbind="unsetDataEnvironment"/>
+   <reference bind="setPlanEnvironment" cardinality="1..1" interface="org.gyfor.object.plan.IPlanContext" name="PlanEnvironment" policy="static" unbind="unsetPlanEnvironment"/>
+   <implementation class="org.gyfor.dbloader.berkeley.CVSDatabaseLoader1"/>
+</scr:component>

@@ -7,12 +7,15 @@ Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.sleepycat.je,
  org.gyfor.berkeleydb,
+ org.gyfor.dao,
  org.gyfor.docstore,
  org.gyfor.object,
  org.gyfor.object.context,
+ org.gyfor.object.plan,
  org.gyfor.util,
  org.pennyledger.party
-Service-Component: OSGI-INF/org.gyfor.dbloader.berkeley.CVSDatabaseLoader.xml
+Service-Component: OSGI-INF/org.gyfor.dbloader.berkeley.CVSDatabaseLoader1.xml,
+ OSGI-INF/org.gyfor.dbloader.berkeley.CVSDatabaseLoader.xml
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/opencsv-2.3-osgi.jar,
  .

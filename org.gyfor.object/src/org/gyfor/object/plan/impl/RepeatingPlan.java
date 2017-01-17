@@ -3,10 +3,10 @@ package org.gyfor.object.plan.impl;
 import java.lang.reflect.Field;
 
 import org.gyfor.object.EntryMode;
-import org.gyfor.object.IPlanEnvironment;
 import org.gyfor.object.NodePlanFactory;
 import org.gyfor.object.Occurs;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.plan.IPlanContext;
 import org.gyfor.object.plan.IRepeatingPlan;
 
 
@@ -21,7 +21,7 @@ public abstract class RepeatingPlan extends NodePlan implements IRepeatingPlan {
   private final int minOccurs;
   private final int maxOccurs;  
   
-  public RepeatingPlan (IPlanEnvironment context, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
+  public RepeatingPlan (IPlanContext context, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
     super (field, name, entryMode);
     elemPlan = NodePlanFactory.getNodePlan(context, elemClass, field, name + "[]", entryMode, dimension + 1, false);
     this.dimension = dimension;

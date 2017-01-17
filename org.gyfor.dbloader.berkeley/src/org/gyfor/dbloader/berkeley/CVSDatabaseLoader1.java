@@ -7,7 +7,6 @@ import org.gyfor.berkeleydb.DataEnvironment;
 import org.gyfor.berkeleydb.DataTable;
 import org.gyfor.berkeleydb.KeyDatabaseEntry;
 import org.gyfor.berkeleydb.ObjectDatabaseEntry;
-import org.gyfor.dao.IDataFetchService;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.plan.IPlanContext;
 import org.gyfor.util.RunTimer;
@@ -25,23 +24,34 @@ import com.sleepycat.je.Transaction;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-@Component (service = CVSDatabaseLoader.class, immediate = true)
-public class CVSDatabaseLoader {
+@Component (service = CVSDatabaseLoader1.class, immediate = true)
+public class CVSDatabaseLoader1 {
 
-  private IDataFetchService dataFetchService;
+  private DataEnvironment dataEnvironment;
+  private IPlanContext planEnvironment;
   
   
-  @Reference (target = "class=org.pennyledger.party.Party")
-  public void setDataFetchService (IDataFetchService dataFetchService) {
-    this.dataFetchService = dataFetchService;
+  @Reference
+  public void setDataEnvironment (DataEnvironment dataEnvironment) {
+    this.dataEnvironment = dataEnvironment;
+  }
+  
+  public void unsetDataEnvironment (DataEnvironment dataEnvironment) {
+    this.dataEnvironment = null;
   }
   
   
-  public void unsetDataFetchService (IDataFetchService dataFetchService) {
-    this.dataFetchService = null;
+  @Reference
+  public void setPlanEnvironment (IPlanContext planEnvironment) {
+    this.planEnvironment = planEnvironment;  
   }
   
-    
+  
+  public void unsetPlanEnvironment (IPlanContext planEnvironment) {
+    this.planEnvironment = null;  
+  }
+  
+  
   @Activate
   public void activate () {
     RunTimer timer = new RunTimer();
