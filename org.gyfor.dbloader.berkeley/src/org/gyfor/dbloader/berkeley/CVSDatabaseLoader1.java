@@ -24,7 +24,7 @@ import com.sleepycat.je.Transaction;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-@Component (service = CVSDatabaseLoader1.class, immediate = true)
+//@Component (service = CVSDatabaseLoader1.class, immediate = true)
 public class CVSDatabaseLoader1 {
 
   private DataEnvironment dataEnvironment;

@@ -16,7 +16,7 @@ import com.sleepycat.persist.model.AnnotationModel;
 import com.sleepycat.persist.model.EntityModel;
 
 
-@Component(service=DataStore.class, immediate = true)
+//@Component(service=DataStore.class, immediate = true)
 public class DataStore {
 
   private DataEnvironment envionment;

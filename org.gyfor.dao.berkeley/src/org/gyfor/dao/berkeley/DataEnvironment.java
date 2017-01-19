@@ -1,4 +1,4 @@
-package org.gyfor.berkeleydb;
+package org.gyfor.dao.berkeley;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.IPlanContext;
 import org.gyfor.osgi.ComponentConfiguration;
 import org.gyfor.osgi.Configurable;
 import org.osgi.service.component.ComponentContext;
@@ -83,19 +82,8 @@ public class DataEnvironment {
   }
   
   
-  public DataTable openTable (IPlanContext planEnvmt, Class<?> klass) {
-    return openTable(planEnvmt, klass, false);
-  }
-  
-  
-  public DataTable openTable (IPlanContext planEnvmt, Class<?> klass, boolean writeable) {
-    IEntityPlan<?> entityPlan = planEnvmt.getEntityPlan(klass);
-    return openTable(entityPlan, writeable);
-  }
-  
-  
-  public DataTable openTable (IEntityPlan<?> entityPlan, boolean writeable) {
-    return new DataTable(this, entityPlan, writeable);
+  public DataTable openTable (IEntityPlan<?> entityPlan, boolean readOnly) {
+    return new DataTable(this, entityPlan, readOnly);
   }
   
   

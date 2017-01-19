@@ -23,7 +23,6 @@ Import-Package: org.gyfor.math,
  org.osgi.framework,
  org.osgi.service.component;version="1.2.0",
  org.slf4j;version="1.7.21"
-Service-Component: OSGI-INF/org.gyfor.berkeleydb.DataEnvironment.xml,
- OSGI-INF/org.gyfor.berkeleydb.DataStore.xml
+Service-Component: OSGI-INF/org.gyfor.berkeleydb.DataEnvironment.xml
 Bundle-ActivationPolicy: lazy
 Eclipse-BuddyPolicy: global

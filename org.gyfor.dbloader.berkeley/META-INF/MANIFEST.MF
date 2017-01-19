@@ -14,8 +14,7 @@ Import-Package: com.sleepycat.je,
  org.gyfor.object.plan,
  org.gyfor.util,
  org.pennyledger.party
-Service-Component: OSGI-INF/org.gyfor.dbloader.berkeley.CVSDatabaseLoader1.xml,
- OSGI-INF/org.gyfor.dbloader.berkeley.CVSDatabaseLoader.xml
+Service-Component: OSGI-INF/org.gyfor.dbloader.berkeley.CVSDatabaseLoader.xml
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/opencsv-2.3-osgi.jar,
  .

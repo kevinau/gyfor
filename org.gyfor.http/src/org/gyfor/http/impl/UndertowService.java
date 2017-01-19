@@ -92,9 +92,6 @@ public class UndertowService implements BundleActivator {
       handlerSet.put(context, handler);
     }
 
-    String httpContext = bundleContext.getProperty("context");
-    log.info(">>>>>>>>>>>>>>> " + httpContext + " <<<<<<<<<<<<<<<<<");
-    
     Resource[] resourcesAnn = klass.getAnnotationsByType(Resource.class);
     for (Resource resourceAnn : resourcesAnn) {
       String[] extensions = resourceAnn.extensions();

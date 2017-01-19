@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" configuration-policy="require" deactivate="deactivate" immediate="true" name="org.gyfor.dao.berkeley.DataUpdateService">
+   <service>
+      <provide interface="org.gyfor.dao.IDataUpdateService"/>
+   </service>
+   <reference bind="setDataAccessRegistry" cardinality="1..1" interface="IDataUpdateRegistry" name="DataAccessRegistry" policy="static"/>
+   <reference bind="setDataEnvironment" cardinality="1..1" interface="org.gyfor.dao.berkeley.DataEnvironment" name="DataEnvironment" policy="static" unbind="unsetDataEnvironment"/>
+   <reference bind="setPlanContext" cardinality="1..1" interface="org.gyfor.object.plan.IPlanContext" name="PlanContext" policy="static" unbind="unsetPlanContext"/>
+   <implementation class="org.gyfor.dao.berkeley.DataUpdateService"/>
+</scr:component>
