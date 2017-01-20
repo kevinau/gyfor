@@ -26,26 +26,15 @@ import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
 
-@Component (configurationPolicy=ConfigurationPolicy.REQUIRE, immediate=true)
-public class DataUpdateService extends DataFetchService implements IDataUpdateService {
+public class DataUpdateService extends DataAccessService implements IDataUpdateService {
 
   private final Logger logger = LoggerFactory.getLogger(DataUpdateService.class);
   
   
-  private IPlanContext planContext;
-  
   private DataEnvironment dataEnvironment;
   
-  private IDataUpdateRegistry dataUpdateRegistry;
-  
-  
-  @Configurable(name="class", required=true)
   private String className;
   
-  
-  @Configurable
-  private boolean readOnly = true;
-
   private IEntityPlan<?> entityPlan;
   
   private DataTable dataTable;

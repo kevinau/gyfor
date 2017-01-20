@@ -33,7 +33,7 @@ public class CVSDatabaseLoader {
     
     referenceRegistry.getService(className, e -> {
       // Read the database: first in primary key order
-      try (IDataAccessService das = e.newDataAccessService()) {
+      try (IDataAccessService das = e.newDataAccessService(true)) {
         System.out.println("Primary key order:");
         List<Party> results = das.getAll();
         for (Party party : results) {

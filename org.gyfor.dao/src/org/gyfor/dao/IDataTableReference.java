@@ -3,6 +3,6 @@ package org.gyfor.dao;
 
 public interface IDataTableReference {
 
-  public IDataAccessService newDataAccessService();
+  public IDataAccessService newDataAccessService (boolean readOnly);
 
 }

@@ -30,12 +30,14 @@ public class DataAccessService implements IDataAccessService {
   
   private DataTable dataTable;
   
+  private boolean readOnly;
   
 
-  public DataAccessService (DataEnvironment dataEnvironment, IPlanContext planContext, String className) {
+  public DataAccessService (DataEnvironment dataEnvironment, IPlanContext planContext, String className, boolean readOnly) {
     logger.info ("Creating data access service {} with {}", this.getClass(), className);
     
     this.dataEnvironment = dataEnvironment;
+    this.readOnly = readOnly;
         
     entityPlan = planContext.getEntityPlan(className);
     dataTable = null;
@@ -53,12 +55,7 @@ public class DataAccessService implements IDataAccessService {
   }
   
   
-  protected void open () {
-    open (true);
-  }
-  
-  
-  protected synchronized void open (boolean readOnly) {
+  protected synchronized void open () {
     if (dataTable == null) {
       dataTable = dataEnvironment.openTable(entityPlan, readOnly);
     }

@@ -86,8 +86,8 @@ public class DataTableReference implements IDataTableReference {
   
   
   @Override
-  public IDataAccessService newDataAccessService() {
-    return new DataAccessService(dataEnvironment, planContext, className);
+  public IDataAccessService newDataAccessService(boolean readOnly) {
+    return new DataAccessService(dataEnvironment, planContext, className, readOnly);
   }
 
 }

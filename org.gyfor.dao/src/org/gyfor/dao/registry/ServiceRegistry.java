@@ -7,12 +7,10 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.gyfor.dao.IServiceRegistry;
-import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-@Component
 public class ServiceRegistry<S> implements IServiceRegistry<S> {
 
   private final Logger logger = LoggerFactory.getLogger(ServiceRegistry.class);
