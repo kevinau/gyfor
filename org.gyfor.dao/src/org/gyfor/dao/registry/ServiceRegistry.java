@@ -44,7 +44,7 @@ public class ServiceRegistry<S> implements IServiceRegistry<S> {
       services.put(className, service);
     }
     
-    // Copy matching consumers (so we can accept them when not synchronized
+    // Copy matching consumers (so we can accept them when not synchronized)
     List<Consumer<S>> consumers;
     synchronized (onRegisterCallbacks) {
       consumers = new ArrayList<>(onRegisterCallbacks.size());

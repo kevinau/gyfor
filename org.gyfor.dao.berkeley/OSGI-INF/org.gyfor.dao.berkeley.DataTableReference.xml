@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" configuration-policy="require" deactivate="deactivate" immediate="true" name="org.gyfor.dao.berkeley.DataTableReference">
+   <service>
+      <provide interface="org.gyfor.dao.IDataTableReference"/>
+   </service>
+   <reference bind="setDataEnvironment" cardinality="1..1" interface="org.gyfor.dao.berkeley.DataEnvironment" name="DataEnvironment" policy="static" unbind="unsetDataEnvironment"/>
+   <reference bind="setDataTableRegistry" cardinality="1..1" interface="org.gyfor.dao.IDataTableReferenceRegistry" name="DataTableRegistry" policy="static" unbind="unsetDataTableRegistry"/>
+   <reference bind="setPlanContext" cardinality="1..1" interface="org.gyfor.object.plan.IPlanContext" name="PlanContext" policy="static" unbind="unsetPlanContext"/>
+   <implementation class="org.gyfor.dao.berkeley.DataTableReference"/>
+</scr:component>

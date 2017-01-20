@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/org.gyfor.dao.berkeley.DataEnvironment.xml,
  OSGI-INF/org.gyfor.dao.berkeley.DataFetchService.xml,
- OSGI-INF/org.gyfor.dao.berkeley.DataUpdateService.xml
+ OSGI-INF/org.gyfor.dao.berkeley.DataUpdateService.xml,
+ OSGI-INF/org.gyfor.dao.berkeley.DataTableReference.xml
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/je-7.0.6.jar,
  .
