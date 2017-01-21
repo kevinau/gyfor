@@ -3,7 +3,6 @@ package org.gyfor.dao.berkeley;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gyfor.dao.DataChangeListener;
 import org.gyfor.dao.IDataAccessService;
 import org.gyfor.dao.IdValuePair;
 import org.gyfor.object.plan.IEntityPlan;
@@ -19,7 +18,7 @@ import com.sleepycat.je.OperationStatus;
 
 public class DataAccessService implements IDataAccessService {
 
-  private final Logger logger = LoggerFactory.getLogger(DataFetchService.class);
+  private final Logger logger = LoggerFactory.getLogger(DataAccessService.class);
   
   
   private DataEnvironment dataEnvironment;
@@ -143,42 +142,28 @@ public class DataAccessService implements IDataAccessService {
 
 
   @Override
-  public void add(Object entity) {
+  public void add (Object entity) {
     // TODO Auto-generated method stub
     
   }
 
 
   @Override
-  public void update(int id, Object entity) {
+  public void update (Object entity) {
     // TODO Auto-generated method stub
     
   }
 
 
   @Override
-  public void put(Object entity) {
+  public void addOrUpdate (Object entity) {
     // TODO Auto-generated method stub
     
   }
 
 
   @Override
-  public void remove(int id) {
-    // TODO Auto-generated method stub
-    
-  }
-
-
-  @Override
-  public void addDataChangeListener(DataChangeListener x) {
-    // TODO Auto-generated method stub
-    
-  }
-
-
-  @Override
-  public void removeDataChangeListener(DataChangeListener x) {
+  public void remove (Object entity) {
     // TODO Auto-generated method stub
     
   }

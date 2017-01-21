@@ -15,6 +15,8 @@ import com.sleepycat.je.DatabaseEntry;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 import com.sleepycat.je.SecondaryCursor;
+import com.sleepycat.je.Sequence;
+import com.sleepycat.je.SequenceConfig;
 import com.sleepycat.je.Transaction;
 
 public class DataTable implements AutoCloseable {
@@ -25,6 +27,7 @@ public class DataTable implements AutoCloseable {
   
   private final Database database;
   private final TableIndex[] indexes;
+  private final Sequence idSequence;
   
   private String[] bufferFieldNames;
   private int[] bufferFieldSizes;
@@ -50,6 +53,12 @@ public class DataTable implements AutoCloseable {
       for (int i = 0; i < indexes.length; i++) {
         indexes[i] = new TableIndex(this, bufferFieldSizes, i + 1, readOnly);
       }
+
+      SequenceConfig seqConfig = new SequenceConfig().setAllowCreate(true).setInitialValue(1);
+      NameDatabaseEntry seqEntry = new NameDatabaseEntry(entityPlan.getClassName() + "_seq");
+      idSequence = database.openSequence(null, seqEntry, seqConfig);
+    } else {
+      idSequence = null;
     }
   }
   

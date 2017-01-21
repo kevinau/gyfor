@@ -16,15 +16,11 @@ public interface IDataAccessService extends AutoCloseable {
   
   public void add (Object entity);
   
-  public void update (int id, Object entity);
+  public void update (Object entity);
   
-  public void put (Object entity);
+  public void addOrUpdate (Object entity);
   
-  public void remove (int id);
-  
-  public void addDataChangeListener (DataChangeListener x);
-  
-  public void removeDataChangeListener (DataChangeListener x);
+  public void remove (Object entity);
   
   @Override
   public void close ();

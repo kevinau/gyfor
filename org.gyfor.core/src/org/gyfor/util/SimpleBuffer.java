@@ -19,6 +19,11 @@ public class SimpleBuffer {
   }
   
   
+  public SimpleBuffer (int n) {
+    this.data = new byte[n];
+  }
+  
+  
   public SimpleBuffer (byte[] data) {
     this.data = data;
   }
@@ -27,7 +32,8 @@ public class SimpleBuffer {
   public byte[] ensureCapacity (int n) {
     int nx = position + n;
     if (nx > data.length) {
-      data = Arrays.copyOf(data, data.length * 2);
+      nx = Math.max(position + n, data.length * 2);
+      data = Arrays.copyOf(data, nx);
     }
     return data;
   }

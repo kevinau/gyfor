@@ -9,6 +9,4 @@ Export-Package: org.gyfor.dao
 Import-Package: org.osgi.service.component.annotations,
  org.slf4j;version="1.7.21"
 Bundle-ActivationPolicy: lazy
-Service-Component: OSGI-INF/org.gyfor.dao.registry.DataFetchRegistry.xml,
- OSGI-INF/org.gyfor.dao.registry.BiServiceRegistry.xml,
- OSGI-INF/org.gyfor.dao.registry.DataTableReferenceRegistry.xml
+Service-Component: OSGI-INF/org.gyfor.dao.registry.DataTableReferenceRegistry.xml
