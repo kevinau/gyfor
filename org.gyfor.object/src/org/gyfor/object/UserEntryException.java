@@ -102,6 +102,11 @@ public class UserEntryException extends Exception {
 	}
   
   
+	public UserEntryException (String prefix, UserEntryException ex) {
+	  this (prefix + ": " + ex.getMessage(), ex.type, ex.completion);
+	}
+	
+	
 	public Type getType () {
 	  return type;
 	}

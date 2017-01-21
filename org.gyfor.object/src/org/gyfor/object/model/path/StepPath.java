@@ -1,6 +1,9 @@
 package org.gyfor.object.model.path;
 
+import java.util.function.Consumer;
+
 import org.gyfor.object.model.NodeModel;
+import org.gyfor.object.plan.INodePlan;
 
 public class StepPath implements IPathExpression {
 
@@ -26,7 +29,17 @@ public class StepPath implements IPathExpression {
   }
   
   @Override
-  public void matches(NodeModel model, Trail trail, INodeVisitable x) {
+  public void matches(INodePlan plan, Trail<INodePlan> trail, Consumer<INodePlan> x) {
+    if (next != null) {
+      next.matches(plan, trail, x);
+    } else {
+      // We've reached the end of the path
+      trail.visitAll(x);
+    }
+  }
+
+  @Override
+  public void matches(NodeModel model, Trail<NodeModel> trail, INodeVisitable x) {
     if (next != null) {
       next.matches(model, trail, x);
     } else {

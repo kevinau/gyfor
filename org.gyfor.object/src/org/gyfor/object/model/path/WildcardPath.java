@@ -1,8 +1,12 @@
 package org.gyfor.object.model.path;
 
+import java.util.function.Consumer;
+
+import org.gyfor.object.model.ContainerModel;
 import org.gyfor.object.model.NodeModel;
 import org.gyfor.object.model.RepeatingModel;
 import org.gyfor.object.plan.IItemPlan;
+import org.gyfor.object.plan.INameMappedPlan;
 import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.IReferencePlan;
 import org.gyfor.object.plan.IRepeatingPlan;
@@ -17,10 +21,29 @@ public class WildcardPath extends StepPath implements IPathExpression {
   @Override
   public void dump(int level) {
     indent(level);
-    System.out.println("*");
+    System.out.println("*  (wildcard path)");
     super.dump(level + 1);
   }
 
+  @Override
+  public void matches(INodePlan plan, Trail<INodePlan> trail, Consumer<INodePlan> x) {
+    if (plan instanceof INameMappedPlan) {
+      INameMappedPlan mapped = (INameMappedPlan)plan;
+      for (INodePlan member : mapped.getMemberPlans()) {
+        super.matches(member, new Trail<>(trail, member), x);
+      }
+    } else if (plan instanceof IRepeatingPlan) {
+      IRepeatingPlan repeating = (IRepeatingPlan)plan;
+      INodePlan element = repeating.getElementPlan();
+      super.matches(element, new Trail<>(trail, element), x);
+    } else if (plan instanceof IItemPlan || plan instanceof IReferencePlan) {
+      super.matches(plan, new Trail<>(trail, plan), x);
+    } else {
+      throw new RuntimeException("Plan " + plan.getClass().getSimpleName() + " not supported");
+    }
+  }
+
+  
   @Override
   public void matches(NodeModel model, Trail trail, INodeVisitable x) {
     if (model instanceof ContainerModel) {

@@ -1,6 +1,9 @@
 package org.gyfor.object.model.path;
 
+import java.util.function.Consumer;
+
 import org.gyfor.object.model.NodeModel;
+import org.gyfor.object.plan.INodePlan;
 
 public class DescendentPath extends StepPath implements IPathExpression {
 
@@ -14,6 +17,23 @@ public class DescendentPath extends StepPath implements IPathExpression {
     System.out.println("..");
     super.dump(level + 1);
   }
+
+  @Override
+  public void matches(INodePlan plan, Trail<INodePlan> trail, Consumer<INodePlan> x) {
+    matchDeep(plan, trail, x);
+  }
+  
+  
+  private boolean matchDeep(INodePlan plan, Trail<INodePlan> trail, Consumer<INodePlan> x) {
+    Trail<INodePlan> trail2 = new Trail<>(trail, plan);
+    super.matches(plan, trail2, x);
+    
+    for (INodePlan child : plan.getChildren()) {
+      matchDeep(child, trail, x);
+    }
+    return true;
+  }
+
 
   @Override
   public void matches(NodeModel model, Trail trail, INodeVisitable x) {

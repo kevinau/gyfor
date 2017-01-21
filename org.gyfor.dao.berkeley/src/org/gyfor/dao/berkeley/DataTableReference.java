@@ -1,6 +1,6 @@
 package org.gyfor.dao.berkeley;
 
-import org.gyfor.dao.IDataAccessService;
+import org.gyfor.dao.IDataAccessObject;
 import org.gyfor.dao.IDataTableReference;
 import org.gyfor.dao.IDataTableReferenceRegistry;
 import org.gyfor.object.plan.IPlanContext;
@@ -86,8 +86,8 @@ public class DataTableReference implements IDataTableReference {
   
   
   @Override
-  public IDataAccessService newDataAccessService(boolean readOnly) {
-    return new DataAccessService(dataEnvironment, planContext, className, readOnly);
+  public <T> IDataAccessObject<T> newDataAccessService(boolean readOnly) {
+    return new DataAccessObject<T>(dataEnvironment, planContext, className, readOnly);
   }
 
 }

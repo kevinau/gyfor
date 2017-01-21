@@ -1,6 +1,9 @@
 package org.gyfor.object.model.path;
 
+import java.util.function.Consumer;
+
 import org.gyfor.object.model.NodeModel;
+import org.gyfor.object.plan.INodePlan;
 
 
 public interface IPathExpression {
@@ -17,8 +20,10 @@ public interface IPathExpression {
     }
   }
 
-  public void matches(NodeModel model, Trail trail, INodeVisitable x);
-    
+  public void matches(INodePlan plan, Trail<INodePlan> trail, Consumer<INodePlan> x);
+  
+  public void matches(NodeModel model, Trail<NodeModel> trail, INodeVisitable x);
+
 
   //public boolean matches(NodeModel model, IItemVisitable x);
 

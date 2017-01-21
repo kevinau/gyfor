@@ -3,7 +3,7 @@ package org.gyfor.dao.berkeley;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gyfor.dao.IDataAccessService;
+import org.gyfor.dao.IDataAccessObject;
 import org.gyfor.dao.IdValuePair;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IPlanContext;
@@ -16,23 +16,23 @@ import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
 
-public class DataAccessService implements IDataAccessService {
+public class DataAccessObject<T> implements IDataAccessObject<T> {
 
-  private final Logger logger = LoggerFactory.getLogger(DataAccessService.class);
+  private final Logger logger = LoggerFactory.getLogger(DataAccessObject.class);
   
   
   private DataEnvironment dataEnvironment;
   
   private String className;
   
-  private IEntityPlan<?> entityPlan;
+  private IEntityPlan<T> entityPlan;
   
   private DataTable dataTable;
   
   private boolean readOnly;
   
 
-  public DataAccessService (DataEnvironment dataEnvironment, IPlanContext planContext, String className, boolean readOnly) {
+  public DataAccessObject (DataEnvironment dataEnvironment, IPlanContext planContext, String className, boolean readOnly) {
     logger.info ("Creating data access service {} with {}", this.getClass(), className);
     
     this.dataEnvironment = dataEnvironment;
@@ -62,7 +62,7 @@ public class DataAccessService implements IDataAccessService {
 
   
   @Override
-  public <T> T getById(int id) {
+  public T getById(int id) {
     if (dataTable == null) {
       open();
     }
@@ -82,7 +82,7 @@ public class DataAccessService implements IDataAccessService {
 
 
   @Override
-  public <T> T getByKey(Object... keyValues) {
+  public T getByKey(Object... keyValues) {
     throw new NotYetImplementedException();
   }
 
@@ -94,7 +94,7 @@ public class DataAccessService implements IDataAccessService {
 
 
   @Override
-  public <T> List<T> getAll() {
+  public List<T> getAll() {
     if (dataTable == null) {
       open();
     }
@@ -142,30 +142,36 @@ public class DataAccessService implements IDataAccessService {
 
 
   @Override
-  public void add (Object entity) {
+  public void add (T entity) {
     // TODO Auto-generated method stub
     
   }
 
 
   @Override
-  public void update (Object entity) {
+  public void update (T entity) {
     // TODO Auto-generated method stub
     
   }
 
 
   @Override
-  public void addOrUpdate (Object entity) {
+  public void addOrUpdate (T entity) {
     // TODO Auto-generated method stub
     
   }
 
 
   @Override
-  public void remove (Object entity) {
+  public void remove (T entity) {
     // TODO Auto-generated method stub
     
+  }
+
+
+  @Override
+  public IEntityPlan<T> getEntityPlan() {
+    return entityPlan;
   }
 
 }

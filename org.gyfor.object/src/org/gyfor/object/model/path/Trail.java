@@ -1,31 +1,31 @@
 package org.gyfor.object.model.path;
 
-import org.gyfor.object.model.NodeModel;
+import java.util.function.Consumer;
 
-public class Trail {
+public class Trail<X> {
 
-  private final Trail parent;
-  private final NodeModel nodeModel;
+  private final Trail<X> parent;
+  private final X node;
   
   private boolean visited = false;
   
 
-  public Trail (NodeModel nodeModel) {
+  public Trail (X node) {
     this.parent = null;
-    this.nodeModel = nodeModel;
+    this.node = node;
   }
   
-  Trail (Trail parent, NodeModel nodeModel) {
+  Trail (Trail<X> parent, X node) {
     this.parent = parent;
-    this.nodeModel = nodeModel;
+    this.node = node;
   }
   
-  void visitAll (INodeVisitable x) {
+  void visitAll (Consumer<X> x) {
     if (parent != null && !parent.visited) {
       parent.visitAll(x);
     }
     visited = true;
-    x.visit(nodeModel);
+    x.accept(node);
   }
 }
 

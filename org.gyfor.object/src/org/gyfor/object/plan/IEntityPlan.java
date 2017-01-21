@@ -42,4 +42,6 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
   
   public T newInstance();
   
+  public IItemPlan<?> selectItemPlan (String path);
+  
 }
