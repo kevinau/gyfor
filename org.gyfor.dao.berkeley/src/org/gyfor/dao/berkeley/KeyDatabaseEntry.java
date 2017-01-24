@@ -13,11 +13,11 @@ public class KeyDatabaseEntry extends DatabaseEntry {
   
   public KeyDatabaseEntry (int id) {
     super (new byte[4], 0, 4);
-    putInt (id);
+    setInt (id);
   }
 
   
-  public void putInt (int v) {
+  public void setInt (int v) {
     // Reverse the sign bit to allow byte sorting
     v ^= ~Integer.MAX_VALUE;
     byte[] data = super.getData();

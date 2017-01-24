@@ -1,12 +1,15 @@
 package org.gyfor.dao.berkeley;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.gyfor.dao.IDataAccessObject;
 import org.gyfor.dao.IdValuePair;
 import org.gyfor.object.plan.IEntityPlan;
+import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.IPlanContext;
+import org.gyfor.object.value.EntityLife;
 import org.gyfor.todo.NotYetImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import com.sleepycat.je.Cursor;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
+import com.sleepycat.je.SecondaryCursor;
+import com.sleepycat.je.Transaction;
 
 
 public class DataAccessObject<T> implements IDataAccessObject<T> {
@@ -21,21 +26,24 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
   private final Logger logger = LoggerFactory.getLogger(DataAccessObject.class);
   
   
-  private DataEnvironment dataEnvironment;
+  private final DataEnvironment dataEnvironment;
   
-  private String className;
+  private final String className;
   
-  private IEntityPlan<T> entityPlan;
+  private final IEntityPlan<T> entityPlan;
+  
+  private final boolean readOnly;
   
   private DataTable dataTable;
-  
-  private boolean readOnly;
+  private KeyDatabaseEntry keyEntry;
+  private ObjectDatabaseEntry dataEntry;
   
 
   public DataAccessObject (DataEnvironment dataEnvironment, IPlanContext planContext, String className, boolean readOnly) {
     logger.info ("Creating data access service {} with {}", this.getClass(), className);
     
     this.dataEnvironment = dataEnvironment;
+    this.className = className;
     this.readOnly = readOnly;
         
     entityPlan = planContext.getEntityPlan(className);
@@ -57,6 +65,8 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
   protected synchronized void open () {
     if (dataTable == null) {
       dataTable = dataEnvironment.openTable(entityPlan, readOnly);
+      keyEntry = new KeyDatabaseEntry();
+      dataEntry = dataTable.getDatabaseEntry();
     }
   }
 
@@ -82,7 +92,18 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
 
 
   @Override
-  public T getByKey(Object... keyValues) {
+  public T getByKey(int keyNo, Object... keyValues) {
+    List<IItemPlan<?>[]> uniqueConstraints = entityPlan.getUniqueConstraints();
+    if (keyNo > uniqueConstraints.size()) {
+      throw new IllegalArgumentException("Key number number must be less than " + uniqueConstraints.size());
+    }
+    IItemPlan<?>[] itemPlans = uniqueConstraints.get(keyNo - 1);
+    if (keyValues.length != itemPlans.length) {
+      throw new IllegalArgumentException(keyValues.length + " key values when expecting " + itemPlans.length);
+    }
+    TableIndex index = dataTable.getIndex(keyNo);
+    SecondaryCursor cursor = index.openCursor();
+    cursor.get(key, data, getType, options)
     throw new NotYetImplementedException();
   }
 
@@ -142,9 +163,34 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
 
 
   @Override
-  public void add (T entity) {
-    // TODO Auto-generated method stub
+  public void add (T instance) {
+    if (entityPlan.hasId() == false) {
+      throw new NotYetImplementedException("Entity without an integer id");
+    }
+
+    if (dataTable == null) {
+      open();
+    }
     
+    Transaction txn = dataEnvironment.beginTransaction();
+    int id = entityPlan.getId(instance);
+    if (id == 0) {
+      id = dataTable.getNextSequence(txn);
+      entityPlan.setId(instance, id);
+    }
+    keyEntry.setInt(id);
+    
+    if (entityPlan.hasVersion()) {
+      Timestamp now = new Timestamp(System.currentTimeMillis());
+      entityPlan.setVersion(instance, now);
+    }
+    
+    if (entityPlan.hasEntityLife()) {
+      entityPlan.setEntityLife(instance, EntityLife.ACTIVE);
+    }
+    dataEntry.setValue(instance);
+    dataTable.put(txn, keyEntry, dataEntry);
+    txn.commit();
   }
 
 
@@ -156,7 +202,20 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
 
 
   @Override
-  public void addOrUpdate (T entity) {
+  public void addOrUpdate (T instance) {
+    if (entityPlan.hasId() == false) {
+      throw new NotYetImplementedException("Entity without an integer id");
+    }
+
+    if (dataTable == null) {
+      open();
+    }
+    
+    int id = entityPlan.getId(instance);
+    if (id == 0) {
+      // Entity has not been stored, so add it
+      add (instance);
+    }
     // TODO Auto-generated method stub
     
   }

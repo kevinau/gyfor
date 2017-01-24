@@ -63,6 +63,12 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   }
   
   @Override
+  public boolean hasId() {
+    return idPlan != null;
+  }
+  
+  
+  @Override
   public int getId (Object instance) {
     return idPlan.getValue(instance);
   }
@@ -75,6 +81,11 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   @Override
   public IItemPlan<?> getVersionPlan () {
     return versionPlan;
+  }
+  
+  @Override
+  public boolean hasVersion () {
+    return versionPlan != null;
   }
   
   @Override
@@ -97,7 +108,13 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   
   
   @Override
-  public EntityLife getLife (Object instance) {
+  public boolean hasEntityLife () {
+    return entityLifePlan != null;
+  }
+  
+  
+  @Override
+  public EntityLife getEntityLife (Object instance) {
     if (entityLifePlan == null) {
       return null;
     } else {
@@ -106,7 +123,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   }
   
   @Override
-  public void setLife (Object instance, EntityLife life) {
+  public void setEntityLife (Object instance, EntityLife life) {
     if (entityLifePlan != null) {
       entityLifePlan.setValue(instance, life);
     }

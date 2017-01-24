@@ -12,6 +12,8 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
 
   public IItemPlan<?> getIdPlan();
   
+  public boolean hasId();
+  
   public int getId(Object instance);
  
   public void setId(Object instance, int id);
@@ -22,15 +24,19 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
   
   public IItemPlan<?> getEntityLifePlan();
   
-  public EntityLife getLife(Object instance);
+  public boolean hasEntityLife();
+  
+  public EntityLife getEntityLife(Object instance);
     
-  public void setLife(Object instance, EntityLife life);
+  public void setEntityLife(Object instance, EntityLife life);
 
   /** 
    * Returns the version field for this entity.  If the entity does not have
    * a version field, <code>null</code> is returned.
    */
   public IItemPlan<?> getVersionPlan();
+  
+  public boolean hasVersion ();
   
   public Timestamp getVersion(Object instance);
   
@@ -41,7 +47,5 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
   public List<INodePlan> getDataNodes(int index);
   
   public T newInstance();
-  
-  public IItemPlan<?> selectItemPlan (String path);
   
 }

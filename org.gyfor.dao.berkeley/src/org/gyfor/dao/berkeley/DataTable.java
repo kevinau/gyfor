@@ -166,6 +166,11 @@ public class DataTable implements AutoCloseable {
   }
   
   
+  public int getNextSequence (Transaction txn) {
+    return (int)idSequence.get(txn, 1);
+  }
+  
+  
   public IEntityPlan<?> getEntityPlan() {
     return entityPlan;
   }

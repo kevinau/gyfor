@@ -16,13 +16,13 @@ public interface IDataAccessObject<T> extends AutoCloseable {
   
   public List<IdValuePair<String>> getDescriptionAll ();
   
-  public void add (T entity);
+  public void add (T instance);
   
-  public void update (T entity);
+  public void update (T instance);
   
-  public void addOrUpdate (T entity);
+  public void addOrUpdate (T instance);
   
-  public void remove (T entity);
+  public void remove (T instance);
   
   @Override
   public void close ();
