@@ -84,14 +84,22 @@ public class LongType extends IntegerBasedType<Long> {
   }
 
   @Override
-  public void setSQLValue(PreparedStatement stmt, int sqlIndex, Long value) throws SQLException {
-    stmt.setLong(sqlIndex, value);
+  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, Long value) {
+    try {
+      stmt.setLong(sqlIndex, value);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public Long getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
-    return resultSet.getLong(sqlIndex);
+  public Long getResultValue(ResultSet resultSet, int sqlIndex) {
+    try {
+      return resultSet.getLong(sqlIndex);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 }

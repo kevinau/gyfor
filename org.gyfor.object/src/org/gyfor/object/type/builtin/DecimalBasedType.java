@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.gyfor.object.type.builtin;
 
+import org.gyfor.object.NumberSign;
+import org.gyfor.object.UserEntryException;
 import org.gyfor.object.type.IScaleSettable;
 import org.gyfor.object.type.ISignAndPrecisionSettable;
 import org.gyfor.object.type.IType;
-import org.gyfor.object.NumberSign;
-import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.builtin.Type;
 
 
 public abstract class DecimalBasedType<T> extends Type<T> implements IType<T>, ISignAndPrecisionSettable, IScaleSettable {

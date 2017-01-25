@@ -346,21 +346,28 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
 
 
   @Override
-  public void setSQLValue(PreparedStatement stmt, int sqlIndex, E value) throws SQLException {
-    stmt.setShort(sqlIndex, (short)value.ordinal());
+  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, E value) {
+    try {
+      stmt.setShort(sqlIndex, (short)value.ordinal());
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public E getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
-    short i = resultSet.getShort(sqlIndex);
-    E[] values = enumClass.getEnumConstants();
-    if (i >= 0 && i < values.length) {
-      return values[i];
-    } else {
-      throw new IllegalArgumentException("Ordinal value: " + i);
+  public E getResultValue(ResultSet resultSet, int sqlIndex) {
+    try {
+      short i = resultSet.getShort(sqlIndex);
+      E[] values = enumClass.getEnumConstants();
+      if (i >= 0 && i < values.length) {
+        return values[i];
+      } else {
+        throw new IllegalArgumentException("Ordinal value: " + i);
+      }
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
     }
   }
-
 
 }

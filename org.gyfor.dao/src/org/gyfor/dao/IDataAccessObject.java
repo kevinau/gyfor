@@ -1,5 +1,6 @@
 package org.gyfor.dao;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.gyfor.object.plan.IEntityPlan;
@@ -16,9 +17,9 @@ public interface IDataAccessObject<T> extends AutoCloseable {
   
   public List<IdValuePair<String>> getDescriptionAll ();
   
-  public void add (T instance);
+  public DataAddStatus add (T instance);
   
-  public void update (T instance);
+  public Timestamp update (T instance);
   
   public void addOrUpdate (T instance);
   

@@ -115,15 +115,23 @@ public class DecimalType extends DecimalBasedType<Decimal> {
   
   
   @Override
-  public void setSQLValue(PreparedStatement stmt, int sqlIndex, Decimal value) throws SQLException {
-    stmt.setBigDecimal(sqlIndex, new BigDecimal(value.toString()));
+  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, Decimal value) {
+    try {
+      stmt.setBigDecimal(sqlIndex, new BigDecimal(value.toString()));
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public Decimal getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
-    BigDecimal bd = resultSet.getBigDecimal(sqlIndex);
-    return new Decimal(bd.toString());
+  public Decimal getResultValue(ResultSet resultSet, int sqlIndex) {
+    try {
+      BigDecimal bd = resultSet.getBigDecimal(sqlIndex);
+      return new Decimal(bd.toString());
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 }

@@ -86,14 +86,22 @@ public class IntegerType extends IntegerBasedType<Integer> {
 
 
   @Override
-  public void setSQLValue(PreparedStatement stmt, int sqlIndex, Integer value) throws SQLException {
-    stmt.setInt(sqlIndex, value);
+  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, Integer value) {
+    try {
+      stmt.setInt(sqlIndex, value);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public Integer getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
-    return resultSet.getInt(sqlIndex);
+  public Integer getResultValue(ResultSet resultSet, int sqlIndex) {
+    try {
+      return resultSet.getInt(sqlIndex);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 }

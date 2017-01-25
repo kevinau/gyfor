@@ -91,14 +91,22 @@ public class ByteType extends IntegerBasedType<Byte> {
 
 
   @Override
-  public void setSQLValue(PreparedStatement stmt, int sqlIndex, Byte value) throws SQLException {
-    stmt.setShort(sqlIndex, value.shortValue());
+  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, Byte value) {
+    try {
+      stmt.setShort(sqlIndex, value.shortValue());
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public Byte getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
-    return (byte)resultSet.getShort(sqlIndex);
+  public Byte getResultValue(ResultSet resultSet, int sqlIndex) {
+    try {
+      return (byte)resultSet.getShort(sqlIndex);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 }

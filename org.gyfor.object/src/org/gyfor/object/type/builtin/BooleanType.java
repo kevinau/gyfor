@@ -162,14 +162,22 @@ public class BooleanType extends Type<Boolean> implements IType<Boolean> {
 
 
   @Override
-  public void setSQLValue(PreparedStatement stmt, int sqlIndex, Boolean value) throws SQLException {
-    stmt.setBoolean(sqlIndex, (Boolean)value);
+  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, Boolean value) {
+    try {
+      stmt.setBoolean(sqlIndex, (Boolean)value);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public Boolean getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
-    return resultSet.getBoolean(sqlIndex);
+  public Boolean getResultValue(ResultSet resultSet, int sqlIndex) {
+    try {
+      return resultSet.getBoolean(sqlIndex);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
   
 }

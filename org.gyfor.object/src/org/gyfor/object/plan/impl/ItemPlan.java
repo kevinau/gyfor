@@ -2,6 +2,8 @@ package org.gyfor.object.plan.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import org.gyfor.object.Describing;
 import org.gyfor.object.EntryMode;
@@ -28,7 +30,7 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
       throw new IllegalArgumentException("Type argument cannot be null");
     }
     this.field = field;
-    
+     
     Optional optionalAnn = field.getAnnotation(Optional.class);
     if (optionalAnn != null && type instanceof Type) {
       this.nullable = optionalAnn.value();
@@ -130,26 +132,15 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
 //  }
 
 
-  @SuppressWarnings("unchecked")
   @Override
-  public <X> X getValue(Object instance) {
-    try {
-      field.setAccessible(true);
-      return (X)field.get(instance);
-    } catch (IllegalArgumentException | IllegalAccessException ex) {
-      throw new RuntimeException(ex);
-    }
+  public T getResultValue (ResultSet rs, int i) {
+    return type.getResultValue(rs, i);
   }
 
-
+  
   @Override
-  public void setValue(Object instance, Object value) {
-    try {
-      field.setAccessible(true);
-      field.set(instance, value);
-    } catch (IllegalArgumentException | IllegalAccessException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue (PreparedStatement stmt, int[] i, T value) {
+    type.setStatementFromValue (stmt, i, value);
   }
   
   

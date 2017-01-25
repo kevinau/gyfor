@@ -123,14 +123,22 @@ public class DoubleType extends DecimalBasedType<Double> {
 
 
   @Override
-  public void setSQLValue(PreparedStatement stmt, int sqlIndex, Double value) throws SQLException {
-    stmt.setDouble(sqlIndex,  value);
+  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, Double value) {
+    try {
+      stmt.setDouble(sqlIndex,  value);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public Double getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
-    return resultSet.getDouble(sqlIndex);
+  public Double getResultValue(ResultSet resultSet, int sqlIndex)  {
+    try {
+      return resultSet.getDouble(sqlIndex);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 }

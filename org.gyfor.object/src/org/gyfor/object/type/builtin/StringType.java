@@ -64,14 +64,22 @@ public class StringType extends StringBasedType<String> {
 
 
   @Override
-  public void setSQLValue(PreparedStatement stmt, int sqlIndex, String value) throws SQLException {
-    stmt.setString(sqlIndex,  value);
+  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, String value) {
+    try {
+      stmt.setString(sqlIndex,  value);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public String getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
-    return resultSet.getString(sqlIndex);
+  public String getResultValue(ResultSet resultSet, int sqlIndex) {
+    try {
+      return resultSet.getString(sqlIndex);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 }

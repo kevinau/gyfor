@@ -95,33 +95,41 @@ public class FileContentType extends PathBasedType<FileContent> {
 
 
   @Override
-  public void setSQLValue(PreparedStatement stmt, int sqlIndex, FileContent value) throws SQLException {
+  public void setStatementFromValue (PreparedStatement stmt, int sqlIndex, FileContent value) {
     // Not used
   }
 
 
   @Override
-  public void setSQLValue(PreparedStatement stmt, int[] sqlIndex, FileContent value) throws SQLException {
-    stmt.setString(sqlIndex[0]++, value.getFileName());
-    Blob blob = stmt.getConnection().createBlob();
-    blob.setBytes(1, value.getContents());
-    stmt.setBlob(sqlIndex[0]++, blob);
+  public void setStatementFromValue (PreparedStatement stmt, int[] sqlIndex, FileContent value) {
+    try {
+      stmt.setString(sqlIndex[0]++, value.getFileName());
+      Blob blob = stmt.getConnection().createBlob();
+      blob.setBytes(1, value.getContents());
+      stmt.setBlob(sqlIndex[0]++, blob);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public FileContent getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
+  public FileContent getResultValue (ResultSet resultSet, int sqlIndex) {
     // Not used
     return null;
   }
 
 
   @Override
-  public FileContent getSQLValue(ResultSet resultSet, int[] sqlIndex) throws SQLException {
-    String fileName = resultSet.getString(sqlIndex[0]++);
-    Blob blob = resultSet.getBlob(sqlIndex[0]++);
-    byte[] bytes = blob.getBytes(1, (int)blob.length());
-    return new FileContent(fileName, bytes);
+  public FileContent getResultValue (ResultSet resultSet, int[] sqlIndex) {
+    try {
+      String fileName = resultSet.getString(sqlIndex[0]++);
+      Blob blob = resultSet.getBlob(sqlIndex[0]++);
+      byte[] bytes = blob.getBytes(1, (int)blob.length());
+      return new FileContent(fileName, bytes);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
   
 }

@@ -91,15 +91,23 @@ public class TimestampType extends StringBasedType<TimestampValue> {
 
 
   @Override
-  public void setSQLValue(PreparedStatement stmt, int sqlIndex, TimestampValue value) throws SQLException {
-    stmt.setTimestamp(sqlIndex, value.timestampValue());
+  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, TimestampValue value) {
+    try {
+      stmt.setTimestamp(sqlIndex, value.timestampValue());
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public TimestampValue getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
-    Timestamp t = resultSet.getTimestamp(sqlIndex);
-    return new TimestampValue(t);
+  public TimestampValue getResultValue(ResultSet resultSet, int sqlIndex) {
+    try {
+      Timestamp t = resultSet.getTimestamp(sqlIndex);
+      return new TimestampValue(t);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 }

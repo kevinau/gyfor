@@ -282,18 +282,26 @@ public abstract class CodeBasedType<T extends ICodeValue> implements IType<T> {
 
 
   @Override
-  public void setSQLValue(PreparedStatement stmt, int sqlIndex, T value) throws SQLException {
-    stmt.setString(sqlIndex, value.getCode());
+  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, T value) {
+    try {
+      stmt.setString(sqlIndex, value.getCode());
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public T getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
-    String s = resultSet.getString(sqlIndex);
+  public T getResultValue(ResultSet resultSet, int sqlIndex) {
     try {
-      return createFromString(s);
-    } catch (UserEntryException ex) {
-      throw new SQLException("Illegal value: " + s);
+      String s = resultSet.getString(sqlIndex);
+      try {
+        return createFromString(s);
+      } catch (UserEntryException ex) {
+        throw new SQLException("Illegal value: " + s);
+      }
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
     }
   }
 

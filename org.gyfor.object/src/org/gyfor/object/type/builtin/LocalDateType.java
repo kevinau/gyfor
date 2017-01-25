@@ -84,15 +84,23 @@ public class LocalDateType extends DateBasedType<LocalDate> {
   
   
   @Override
-  public void setSQLValue(PreparedStatement stmt, int sqlIndex, LocalDate value) throws SQLException {
-    stmt.setDate(sqlIndex, new java.sql.Date(value.toEpochDay()), tzCal);
+  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, LocalDate value) {
+    try {
+      stmt.setDate(sqlIndex, new java.sql.Date(value.toEpochDay()), tzCal);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public LocalDate getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
-    java.util.Date d = (java.util.Date)resultSet.getDate(sqlIndex, tzCal);
-    return LocalDate.ofEpochDay(d.getTime());
+  public LocalDate getResultValue(ResultSet resultSet, int sqlIndex) {
+    try {
+      java.util.Date d = (java.util.Date)resultSet.getDate(sqlIndex, tzCal);
+      return LocalDate.ofEpochDay(d.getTime());
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
   
 }

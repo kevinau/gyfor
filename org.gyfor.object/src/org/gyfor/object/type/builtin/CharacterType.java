@@ -139,18 +139,26 @@ public class CharacterType extends Type<Character> implements ICaseSettable {
 
 
   @Override
-  public void setSQLValue(PreparedStatement stmt, int sqlIndex, Character value) throws SQLException {
-    stmt.setString(sqlIndex, String.valueOf(value));
+  public void setStatementFromValue (PreparedStatement stmt, int sqlIndex, Character value) {
+    try {
+      stmt.setString(sqlIndex, String.valueOf(value));
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public Character getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
-    String s = resultSet.getString(sqlIndex);
-    if (s.length() == 0) {
-      return ' ';
-    } else {
-      return s.charAt(0);
+  public Character getResultValue (ResultSet resultSet, int sqlIndex) {
+    try {
+      String s = resultSet.getString(sqlIndex);
+      if (s.length() == 0) {
+        return ' ';
+      } else {
+        return s.charAt(0);
+      }
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
     }
   }
 

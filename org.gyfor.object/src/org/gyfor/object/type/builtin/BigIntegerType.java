@@ -99,14 +99,22 @@ public class BigIntegerType extends IntegerBasedType<BigInteger> {
 
 
   @Override
-  public void setSQLValue(PreparedStatement stmt, int sqlIndex, BigInteger value) throws SQLException {
-    stmt.setBigDecimal(sqlIndex, new BigDecimal(value));
+  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, BigInteger value) {
+    try {
+      stmt.setBigDecimal(sqlIndex, new BigDecimal(value));
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public BigInteger getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
-    return resultSet.getBigDecimal(sqlIndex).toBigInteger();
+  public BigInteger getResultValue(ResultSet resultSet, int sqlIndex) {
+    try {
+      return resultSet.getBigDecimal(sqlIndex).toBigInteger();
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 }

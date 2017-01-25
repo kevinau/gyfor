@@ -87,15 +87,23 @@ public class DateType extends DateBasedType<Date> {
   
   
   @Override
-  public void setSQLValue(PreparedStatement stmt, int sqlIndex, Date value) throws SQLException {
-    stmt.setDate(sqlIndex, new java.sql.Date(value.getTime()), tzCal);
+  public void setStatementFromValue (PreparedStatement stmt, int sqlIndex, Date value) {
+    try {
+      stmt.setDate(sqlIndex, new java.sql.Date(value.getTime()), tzCal);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public Date getSQLValue(ResultSet resultSet, int sqlIndex) throws SQLException {
-    return resultSet.getDate(sqlIndex, tzCal);
+  public Date getResultValue (ResultSet resultSet, int sqlIndex) {
+    try {
+      return resultSet.getDate(sqlIndex, tzCal);
+    } catch (SQLException ex) {
+      throw new RuntimeException(ex);
+    }
   }
-  
+ 
 }
 

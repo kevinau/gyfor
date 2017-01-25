@@ -12,7 +12,6 @@ package org.gyfor.object.type;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import org.gyfor.object.UserEntryException;
 import org.gyfor.util.SimpleBuffer;
@@ -122,24 +121,23 @@ public interface IType<T> {
   
   /**
    * Set an value, of this type, in a SQL statement.
-   * @throws SQLException 
    */
-  public void setSQLValue (PreparedStatement stmt, int sqlIndex, T value) throws SQLException;
-    
-    
-  public default void setSQLValue (PreparedStatement stmt, int[] sqlIndex, T value) throws SQLException {
-    setSQLValue (stmt, sqlIndex[0]++, value);
+  public void setStatementFromValue (PreparedStatement stmt, int sqlIndex, T value);
+  
+  
+  public default void setStatementFromValue (PreparedStatement stmt, int[] sqlIndex, T value) {
+    setStatementFromValue (stmt, sqlIndex[0]++, value);
   }
   
 
   /**
    * Get a value from a SQL statement
    */
-  public T getSQLValue (ResultSet resultSet, int sqlIndex) throws SQLException;
+  public T getResultValue (ResultSet rs, int sqlIndex);
   
   
-  public default T getSQLValue (ResultSet resultSet, int[] sqlIndex) throws SQLException {
-    return getSQLValue (resultSet, sqlIndex[0]++);
+  public default T getResultValue (ResultSet rs, int[] sqlIndex) {
+    return getResultValue (rs, sqlIndex[0]++);
   }
 
 }
