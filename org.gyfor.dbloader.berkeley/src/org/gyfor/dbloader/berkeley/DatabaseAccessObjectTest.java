@@ -7,6 +7,7 @@ import java.util.List;
 import org.gyfor.dao.IDataAccessObject;
 import org.gyfor.dao.IDataTableReferenceRegistry;
 import org.gyfor.object.UserEntryException;
+import org.gyfor.sql.IConnectionFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -14,26 +15,26 @@ import org.pennyledger.party.Party;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-//@Component (service = CVSDatabaseLoader.class, immediate = true)
-public class CVSDatabaseLoader {
+@Component (immediate = true, property={"dataAccessObject.target=(name=pennyledger)"})
+public class DatabaseAccessObjectTest {
 
-  private IDataTableReferenceRegistry referenceRegistry;
+  private IConnectionFactory connFactory;
   
   
   @Reference
-  public void setDataTableRegistry (IDataTableReferenceRegistry referenceRegistry) {
-    this.referenceRegistry = referenceRegistry;
+  public void setConnFactory (IConnectionFactory connFactory) {
+    this.connFactory = connFactory;
   }
   
   
-  public void unsetDataTableRegistry (IDataTableReferenceRegistry referenceRegistry) {
-    this.referenceRegistry = null;
+  public void unsetConnFactory (IConnectionFactory connFactory) {
+    this.connFactory = null;
   }
   
     
   @Activate
   public void activate () {
-    System.out.println("activate CVS database loader.................." + referenceRegistry);
+    System.out.println("activate CVS database loader.................." + connFactory);
     String className = "org.pennyledger.party.Party";
     
     referenceRegistry.getService(className, e -> {

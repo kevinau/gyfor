@@ -54,4 +54,8 @@ public interface IItemPlan<T> extends INodePlan {
     setValue (instance, value);
   }
 
+  public default void setInstanceFromResult (Object instance, IResultSet rs, int[] i) {
+    setInstanceFromResult (instance, rs, i[0]++);
+  }
+  
 }
