@@ -29,5 +29,9 @@ public interface IDataAccessObject<T> extends AutoCloseable {
   public void close ();
   
   public IEntityPlan<T> getEntityPlan();
+
+  public Timestamp retire(int id);
+  
+  public Timestamp unRetire(int id);
   
 }

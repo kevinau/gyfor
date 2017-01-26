@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.gyfor.object.type.builtin;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.gyfor.object.UserEntryException;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 public class IntegerType extends IntegerBasedType<Integer> {
@@ -86,22 +84,14 @@ public class IntegerType extends IntegerBasedType<Integer> {
 
 
   @Override
-  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, Integer value) {
-    try {
-      stmt.setInt(sqlIndex, value);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Integer value) {
+    stmt.setInt(sqlIndex, value);
   }
 
 
   @Override
-  public Integer getResultValue(ResultSet resultSet, int sqlIndex) {
-    try {
-      return resultSet.getInt(sqlIndex);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public Integer getResultValue(IResultSet resultSet, int sqlIndex) {
+    return resultSet.getInt(sqlIndex);
   }
 
 }

@@ -1,10 +1,9 @@
 package org.gyfor.object.type.builtin;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.type.IType;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 public class VoidType implements IType<Void> {
@@ -88,12 +87,12 @@ public class VoidType implements IType<Void> {
   }
 
   @Override
-  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, Void value) {
+  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Void value) {
     throw new IllegalStateException("Void type value is never set in the database");
   }
 
   @Override
-  public Void getResultValue(ResultSet resultSet, int sqlIndex) {
+  public Void getResultValue(IResultSet resultSet, int sqlIndex) {
     throw new IllegalStateException("Void type value is never retrieved from the database");
   }
 

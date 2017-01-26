@@ -12,11 +12,10 @@ package org.gyfor.object.type.builtin;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import org.gyfor.object.UserEntryException;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 
@@ -99,22 +98,14 @@ public class BigIntegerType extends IntegerBasedType<BigInteger> {
 
 
   @Override
-  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, BigInteger value) {
-    try {
-      stmt.setBigDecimal(sqlIndex, new BigDecimal(value));
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, BigInteger value) {
+    stmt.setBigDecimal(sqlIndex, new BigDecimal(value));
   }
 
 
   @Override
-  public BigInteger getResultValue(ResultSet resultSet, int sqlIndex) {
-    try {
-      return resultSet.getBigDecimal(sqlIndex).toBigInteger();
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public BigInteger getResultValue(IResultSet resultSet, int sqlIndex) {
+    return resultSet.getBigDecimal(sqlIndex).toBigInteger();
   }
 
 }

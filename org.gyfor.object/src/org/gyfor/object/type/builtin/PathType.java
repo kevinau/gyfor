@@ -11,11 +11,10 @@
 package org.gyfor.object.type.builtin;
 
 import java.io.File;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import org.gyfor.object.UserEntryException;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.todo.NotYetImplementedException;
 import org.gyfor.util.SimpleBuffer;
 
@@ -85,22 +84,14 @@ public class PathType extends PathBasedType<File> {
 
 
   @Override
-  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, File value) {
-    try {
-      stmt.setString(sqlIndex, value.toString());
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, File value) {
+    stmt.setString(sqlIndex, value.toString());
   }
 
 
   @Override
-  public File getResultValue(ResultSet resultSet, int sqlIndex) {
-    try {
-      return new File(resultSet.getString(sqlIndex));
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public File getResultValue(IResultSet resultSet, int sqlIndex) {
+    return new File(resultSet.getString(sqlIndex));
   }
 
 }

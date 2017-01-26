@@ -11,14 +11,13 @@
 package org.gyfor.object.type.builtin;
 
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.gyfor.object.UserEntryException;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 
@@ -87,22 +86,14 @@ public class DateType extends DateBasedType<Date> {
   
   
   @Override
-  public void setStatementFromValue (PreparedStatement stmt, int sqlIndex, Date value) {
-    try {
-      stmt.setDate(sqlIndex, new java.sql.Date(value.getTime()), tzCal);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue (IPreparedStatement stmt, int sqlIndex, Date value) {
+    stmt.setDate(sqlIndex, new java.sql.Date(value.getTime()));
   }
 
 
   @Override
-  public Date getResultValue (ResultSet resultSet, int sqlIndex) {
-    try {
-      return resultSet.getDate(sqlIndex, tzCal);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public Date getResultValue (IResultSet resultSet, int sqlIndex) {
+    return resultSet.getDate(sqlIndex);
   }
  
 }

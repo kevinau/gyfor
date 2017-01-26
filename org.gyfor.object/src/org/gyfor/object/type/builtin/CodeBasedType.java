@@ -11,14 +11,13 @@
 package org.gyfor.object.type.builtin;
 
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.value.ICodeValue;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 
@@ -282,26 +281,18 @@ public abstract class CodeBasedType<T extends ICodeValue> implements IType<T> {
 
 
   @Override
-  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, T value) {
-    try {
-      stmt.setString(sqlIndex, value.getCode());
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, T value) {
+    stmt.setString(sqlIndex, value.getCode());
   }
 
 
   @Override
-  public T getResultValue(ResultSet resultSet, int sqlIndex) {
+  public T getResultValue(IResultSet resultSet, int sqlIndex) {
+    String s = resultSet.getString(sqlIndex);
     try {
-      String s = resultSet.getString(sqlIndex);
-      try {
-        return createFromString(s);
-      } catch (UserEntryException ex) {
-        throw new SQLException("Illegal value: " + s);
-      }
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
+      return createFromString(s);
+    } catch (UserEntryException ex) {
+      throw new RuntimeException("Illegal value: " + s);
     }
   }
 

@@ -11,13 +11,12 @@
 package org.gyfor.object.type.builtin;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import org.gyfor.math.Decimal;
 import org.gyfor.object.NumberSign;
 import org.gyfor.object.UserEntryException;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 
@@ -115,23 +114,15 @@ public class DecimalType extends DecimalBasedType<Decimal> {
   
   
   @Override
-  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, Decimal value) {
-    try {
-      stmt.setBigDecimal(sqlIndex, new BigDecimal(value.toString()));
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Decimal value) {
+    stmt.setBigDecimal(sqlIndex, new BigDecimal(value.toString()));
   }
 
 
   @Override
-  public Decimal getResultValue(ResultSet resultSet, int sqlIndex) {
-    try {
-      BigDecimal bd = resultSet.getBigDecimal(sqlIndex);
-      return new Decimal(bd.toString());
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public Decimal getResultValue(IResultSet resultSet, int sqlIndex) {
+    BigDecimal bd = resultSet.getBigDecimal(sqlIndex);
+    return new Decimal(bd.toString());
   }
 
 }

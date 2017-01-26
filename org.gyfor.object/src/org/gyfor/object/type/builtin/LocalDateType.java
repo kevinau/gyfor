@@ -11,12 +11,11 @@
 package org.gyfor.object.type.builtin;
 
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 
 import org.gyfor.object.UserEntryException;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 
@@ -84,23 +83,14 @@ public class LocalDateType extends DateBasedType<LocalDate> {
   
   
   @Override
-  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, LocalDate value) {
-    try {
-      stmt.setDate(sqlIndex, new java.sql.Date(value.toEpochDay()), tzCal);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, LocalDate value) {
+    stmt.setLocalDate(sqlIndex, value);
   }
 
 
   @Override
-  public LocalDate getResultValue(ResultSet resultSet, int sqlIndex) {
-    try {
-      java.util.Date d = (java.util.Date)resultSet.getDate(sqlIndex, tzCal);
-      return LocalDate.ofEpochDay(d.getTime());
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public LocalDate getResultValue(IResultSet resultSet, int sqlIndex) {
+    return resultSet.getLocalDate();
   }
   
 }

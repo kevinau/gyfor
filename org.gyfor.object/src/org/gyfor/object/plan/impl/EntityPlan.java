@@ -28,9 +28,11 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   private final String entityName;
   private final EntityLabelGroup labels;
 
-  private IItemPlan<?> idPlan;
-  private IItemPlan<?> versionPlan;
-  private IItemPlan<?> entityLifePlan;
+  private IItemPlan<Integer> idPlan;
+  private IItemPlan<Timestamp> versionPlan;
+  private IItemPlan<EntityLife> entityLifePlan;
+  private List<IItemPlan<?>> dataPlans;
+  
   private List<IItemPlan<?>[]> uniqueConstraints;
 
   
@@ -58,7 +60,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   
   
   @Override
-  public IItemPlan<?> getIdPlan () {
+  public IItemPlan<Integer> getIdPlan () {
     return idPlan;
   }
   
@@ -79,7 +81,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   }
   
   @Override
-  public IItemPlan<?> getVersionPlan () {
+  public IItemPlan<Timestamp> getVersionPlan () {
     return versionPlan;
   }
   
@@ -102,7 +104,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   
   
   @Override
-  public IItemPlan<?> getEntityLifePlan () {
+  public IItemPlan<EntityLife> getEntityLifePlan () {
     return entityLifePlan;
   }
   
@@ -136,38 +138,38 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   }
   
   
-  @Override
-  public List<INodePlan> getDataNodes (int index) {
-    IItemPlan<?>[] keys = getKeyItems(index);
-    IItemPlan<?> idNode = getIdPlan();
-    IItemPlan<?> versionNode = getVersionPlan();
-    IItemPlan<?> entityLifeNode = getEntityLifePlan();
-    
-    List<INodePlan> dataNodes = new ArrayList<>();
-    for (INodePlan node : getMemberPlans()) {
-      boolean isKey = false;
-      for (IItemPlan<?> key : keys) {
-        if (key.equals(node)) {
-          isKey = true;
-          break;
-        }
-      }
-      if (isKey) {
-        continue;
-      }
-      if (node.equals(idNode)) {
-        continue;
-      }
-      if (node.equals(versionNode)) {
-        continue;
-      }
-      if (node.equals(entityLifeNode)) {
-        continue;
-      }
-      dataNodes.add(node);
-    }
-    return dataNodes;
-  }
+//  @Override
+//  public List<INodePlan> getDataNodes (int index) {
+//    IItemPlan<?>[] keys = getKeyItems(index);
+//    IItemPlan<?> idNode = getIdPlan();
+//    IItemPlan<?> versionNode = getVersionPlan();
+//    IItemPlan<?> entityLifeNode = getEntityLifePlan();
+//    
+//    List<INodePlan> dataNodes = new ArrayList<>();
+//    for (INodePlan node : getMemberPlans()) {
+//      boolean isKey = false;
+//      for (IItemPlan<?> key : keys) {
+//        if (key.equals(node)) {
+//          isKey = true;
+//          break;
+//        }
+//      }
+//      if (isKey) {
+//        continue;
+//      }
+//      if (node.equals(idNode)) {
+//        continue;
+//      }
+//      if (node.equals(versionNode)) {
+//        continue;
+//      }
+//      if (node.equals(entityLifeNode)) {
+//        continue;
+//      }
+//      dataNodes.add(node);
+//    }
+//    return dataNodes;
+//  }
   
   
 //  @Override
@@ -227,41 +229,46 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   
   
   private void findEntityItems () {
-    IItemPlan<?> idPlan2 = null;
-    IItemPlan<?> versionPlan2 = null;
-
+    IItemPlan<Integer> idPlan2 = null;
+    IItemPlan<Timestamp> versionPlan2 = null;
+    dataPlans = new ArrayList<>();
+    
     INodePlan[] memberPlans = getMemberPlans();
     for (INodePlan member : memberPlans) {
       if (member.isItem()) {
         IItemPlan<?> itemPlan = (IItemPlan<?>)member;
         Id idann = itemPlan.getAnnotation(Id.class);
         if (idann != null) {
-          idPlan = itemPlan;
+          idPlan = (IItemPlan<Integer>)itemPlan;
           // Id fields are not key or data columns
           continue;
         }
         String name = itemPlan.getName();
         if (name.equals("id")) {
-          idPlan2 = itemPlan;
+          idPlan2 = (IItemPlan<Integer>)itemPlan;
+          continue;
         }
         
         Version vann = itemPlan.getAnnotation(Version.class);
         if (vann != null) {
-          versionPlan = itemPlan;
+          versionPlan = (IItemPlan<Timestamp>)itemPlan;
           // Version fields are not key or data columns
           continue;
         }
         if (name.equals("version")) {
-          versionPlan2 = itemPlan;
+          versionPlan2 = (IItemPlan<Timestamp>)itemPlan;
+          continue;
         }
         
         IType<?> type = itemPlan.getType();
         if (EntityLifeType.class.isInstance(type)) {
           // Entity life fields are not key or data columns
           // TODO The above statement may not be correct
-          entityLifePlan = itemPlan;
+          entityLifePlan = (IItemPlan<EntityLife>)itemPlan;
           continue;
         }
+        
+        dataPlans.add(itemPlan);
       }
     }
     if (idPlan == null) {
@@ -276,6 +283,12 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   @Override
   public List<IItemPlan<?>[]> getUniqueConstraints() {
     return uniqueConstraints;
+  }
+  
+  
+  @Override
+  public List<IItemPlan<?>> getDataPlans() {
+    return dataPlans;
   }
   
   

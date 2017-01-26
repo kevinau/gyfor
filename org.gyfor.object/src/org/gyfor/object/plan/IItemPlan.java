@@ -1,10 +1,10 @@
 package org.gyfor.object.plan;
 
 import java.lang.annotation.Annotation;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 import org.gyfor.object.type.IType;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 
 public interface IItemPlan<T> extends INodePlan {
 
@@ -40,16 +40,16 @@ public interface IItemPlan<T> extends INodePlan {
 
   public boolean isDescribing();
   
-  public T getResultValue(ResultSet rs, int i);
+  public T getResultValue(IResultSet rs, int i);
 
-  public default void setStatementFromInstance (PreparedStatement stmt, int[] i, Object instance) {
+  public default void setStatementFromInstance (IPreparedStatement stmt, int[] i, Object instance) {
     T value = getValue(instance);
     setStatementFromValue (stmt, i, value);
   }
   
-  public void setStatementFromValue (PreparedStatement stmt, int[] i, T value);
+  public void setStatementFromValue (IPreparedStatement stmt, int[] i, T value);
 
-  public default void setInstanceFromResult (Object instance, ResultSet rs, int i) {
+  public default void setInstanceFromResult (Object instance, IResultSet rs, int i) {
     T value = getType().getResultValue(rs, i);
     setValue (instance, value);
   }

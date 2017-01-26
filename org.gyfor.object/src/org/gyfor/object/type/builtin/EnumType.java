@@ -11,13 +11,11 @@
 package org.gyfor.object.type.builtin;
 
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.value.ICodeValue;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 
@@ -346,27 +344,19 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
 
 
   @Override
-  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, E value) {
-    try {
-      stmt.setShort(sqlIndex, (short)value.ordinal());
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, E value) {
+    stmt.setShort(sqlIndex, (short)value.ordinal());
   }
 
 
   @Override
-  public E getResultValue(ResultSet resultSet, int sqlIndex) {
-    try {
-      short i = resultSet.getShort(sqlIndex);
-      E[] values = enumClass.getEnumConstants();
-      if (i >= 0 && i < values.length) {
-        return values[i];
-      } else {
-        throw new IllegalArgumentException("Ordinal value: " + i);
-      }
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
+  public E getResultValue(IResultSet resultSet, int sqlIndex) {
+    short i = resultSet.getShort(sqlIndex);
+    E[] values = enumClass.getEnumConstants();
+    if (i >= 0 && i < values.length) {
+      return values[i];
+    } else {
+      throw new IllegalArgumentException("Ordinal value: " + i);
     }
   }
 

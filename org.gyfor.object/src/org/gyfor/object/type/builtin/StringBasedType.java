@@ -1,14 +1,13 @@
 package org.gyfor.object.type.builtin;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.MessageFormat;
 
 import org.gyfor.object.TextCase;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.type.ICaseSettable;
 import org.gyfor.object.type.ILengthSettable;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 
@@ -134,23 +133,15 @@ public abstract class StringBasedType<T> extends Type<T> implements ILengthSetta
 
 
   @Override
-  public void setStatementFromValue (PreparedStatement stmt, int sqlIndex, T value) {
-    try {
-      stmt.setString(sqlIndex, value.toString());
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue (IPreparedStatement stmt, int sqlIndex, T value) {
+    stmt.setString(sqlIndex, value.toString());
   }
 
 
   @SuppressWarnings("unchecked")
   @Override
-  public T getResultValue (ResultSet resultSet, int sqlIndex) {
-    try {
-      return (T)resultSet.getString(sqlIndex);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public T getResultValue (IResultSet resultSet, int sqlIndex) {
+    return (T)resultSet.getString(sqlIndex);
   }
   
 }  

@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.gyfor.object.type;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
 import org.gyfor.object.UserEntryException;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 public interface IType<T> {
@@ -122,10 +121,10 @@ public interface IType<T> {
   /**
    * Set an value, of this type, in a SQL statement.
    */
-  public void setStatementFromValue (PreparedStatement stmt, int sqlIndex, T value);
+  public void setStatementFromValue (IPreparedStatement stmt, int sqlIndex, T value);
   
   
-  public default void setStatementFromValue (PreparedStatement stmt, int[] sqlIndex, T value) {
+  public default void setStatementFromValue (IPreparedStatement stmt, int[] sqlIndex, T value) {
     setStatementFromValue (stmt, sqlIndex[0]++, value);
   }
   
@@ -133,10 +132,10 @@ public interface IType<T> {
   /**
    * Get a value from a SQL statement
    */
-  public T getResultValue (ResultSet rs, int sqlIndex);
+  public T getResultValue (IResultSet rs, int sqlIndex);
   
   
-  public default T getResultValue (ResultSet rs, int[] sqlIndex) {
+  public default T getResultValue (IResultSet rs, int[] sqlIndex) {
     return getResultValue (rs, sqlIndex[0]++);
   }
 

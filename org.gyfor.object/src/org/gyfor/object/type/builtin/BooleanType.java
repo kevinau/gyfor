@@ -10,12 +10,10 @@ ow * Copyright (c) 2012 Kevin Holloway (kholloway@geckosoftware.co.uk).
  *******************************************************************************/
 package org.gyfor.object.type.builtin;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.type.IType;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 public class BooleanType extends Type<Boolean> implements IType<Boolean> {
@@ -162,22 +160,14 @@ public class BooleanType extends Type<Boolean> implements IType<Boolean> {
 
 
   @Override
-  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, Boolean value) {
-    try {
-      stmt.setBoolean(sqlIndex, (Boolean)value);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Boolean value) {
+    stmt.setBoolean(sqlIndex, (Boolean)value);
   }
 
 
   @Override
-  public Boolean getResultValue(ResultSet resultSet, int sqlIndex) {
-    try {
-      return resultSet.getBoolean(sqlIndex);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public Boolean getResultValue(IResultSet resultSet, int sqlIndex) {
+    return resultSet.getBoolean(sqlIndex);
   }
   
 }

@@ -2,8 +2,6 @@ package org.gyfor.object.plan.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 import org.gyfor.object.Describing;
 import org.gyfor.object.EntryMode;
@@ -12,6 +10,8 @@ import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.PlanStructure;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.Type;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 
 public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
 
@@ -133,13 +133,13 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
 
 
   @Override
-  public T getResultValue (ResultSet rs, int i) {
+  public T getResultValue (IResultSet rs, int i) {
     return type.getResultValue(rs, i);
   }
 
   
   @Override
-  public void setStatementFromValue (PreparedStatement stmt, int[] i, T value) {
+  public void setStatementFromValue (IPreparedStatement stmt, int[] i, T value) {
     type.setStatementFromValue (stmt, i, value);
   }
   

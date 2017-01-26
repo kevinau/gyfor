@@ -10,7 +10,7 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
 
   public String getEntityName();
 
-  public IItemPlan<?> getIdPlan();
+  public IItemPlan<Integer> getIdPlan();
   
   public boolean hasId();
   
@@ -22,7 +22,7 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
 
   public String getDescription (Object instance);
   
-  public IItemPlan<?> getEntityLifePlan();
+  public IItemPlan<EntityLife> getEntityLifePlan();
   
   public boolean hasEntityLife();
   
@@ -34,7 +34,7 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
    * Returns the version field for this entity.  If the entity does not have
    * a version field, <code>null</code> is returned.
    */
-  public IItemPlan<?> getVersionPlan();
+  public IItemPlan<Timestamp> getVersionPlan();
   
   public boolean hasVersion ();
   
@@ -44,8 +44,8 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
 
   public IItemPlan<?>[] getKeyItems(int index);
   
-  public List<INodePlan> getDataNodes(int index);
-  
   public T newInstance();
+
+  public List<IItemPlan<?>> getDataPlans();
   
 }

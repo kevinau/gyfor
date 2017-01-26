@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.gyfor.object.type.builtin;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.gyfor.object.UserEntryException;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 public class ShortType extends IntegerBasedType<Short> {
@@ -85,22 +83,14 @@ public class ShortType extends IntegerBasedType<Short> {
 
   
   @Override
-  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, Short value) {
-    try {
-      stmt.setShort(sqlIndex, value);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Short value) {
+    stmt.setShort(sqlIndex, value);
   }
 
 
   @Override
-  public Short getResultValue(ResultSet resultSet, int sqlIndex) {
-    try {
-      return resultSet.getShort(sqlIndex);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public Short getResultValue(IResultSet resultSet, int sqlIndex) {
+    return resultSet.getShort(sqlIndex);
   }
 
 }

@@ -1,12 +1,10 @@
 package org.gyfor.object.type.builtin;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.gyfor.object.TextCase;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.type.ICaseSettable;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 
@@ -139,26 +137,18 @@ public class CharacterType extends Type<Character> implements ICaseSettable {
 
 
   @Override
-  public void setStatementFromValue (PreparedStatement stmt, int sqlIndex, Character value) {
-    try {
-      stmt.setString(sqlIndex, String.valueOf(value));
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue (IPreparedStatement stmt, int sqlIndex, Character value) {
+    stmt.setString(sqlIndex, String.valueOf(value));
   }
 
 
   @Override
-  public Character getResultValue (ResultSet resultSet, int sqlIndex) {
-    try {
-      String s = resultSet.getString(sqlIndex);
-      if (s.length() == 0) {
-        return ' ';
-      } else {
-        return s.charAt(0);
-      }
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
+  public Character getResultValue (IResultSet resultSet, int sqlIndex) {
+    String s = resultSet.getString(sqlIndex);
+    if (s.length() == 0) {
+      return ' ';
+    } else {
+      return s.charAt(0);
     }
   }
 

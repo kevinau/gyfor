@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.gyfor.object.type.builtin;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.gyfor.object.NumberSign;
 import org.gyfor.object.UserEntryException;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 
@@ -123,22 +121,14 @@ public class DoubleType extends DecimalBasedType<Double> {
 
 
   @Override
-  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, Double value) {
-    try {
-      stmt.setDouble(sqlIndex,  value);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Double value) {
+    stmt.setDouble(sqlIndex,  value);
   }
 
 
   @Override
-  public Double getResultValue(ResultSet resultSet, int sqlIndex)  {
-    try {
-      return resultSet.getDouble(sqlIndex);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public Double getResultValue(IResultSet resultSet, int sqlIndex)  {
+    return resultSet.getDouble(sqlIndex);
   }
 
 }

@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.gyfor.object.type.builtin;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.gyfor.object.NumberSign;
 import org.gyfor.object.UserEntryException;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 
@@ -112,22 +110,14 @@ public class FloatType extends DecimalBasedType<Float> {
 
 
   @Override
-  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, Float value) {
-    try {
-      stmt.setFloat(sqlIndex, value);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Float value) {
+    stmt.setFloat(sqlIndex, value);
   }
 
 
   @Override
-  public Float getResultValue(ResultSet resultSet, int sqlIndex) {
-    try {
-      return resultSet.getFloat(sqlIndex);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public Float getResultValue(IResultSet resultSet, int sqlIndex) {
+    return resultSet.getFloat(sqlIndex);
   }
 
 }

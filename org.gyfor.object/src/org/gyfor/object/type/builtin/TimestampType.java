@@ -11,17 +11,15 @@
 package org.gyfor.object.type.builtin;
 
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.builtin.StringBasedType;
 import org.gyfor.object.value.TimestampValue;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 
 
 public class TimestampType extends StringBasedType<TimestampValue> {
@@ -91,23 +89,15 @@ public class TimestampType extends StringBasedType<TimestampValue> {
 
 
   @Override
-  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, TimestampValue value) {
-    try {
-      stmt.setTimestamp(sqlIndex, value.timestampValue());
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, TimestampValue value) {
+    stmt.setTimestamp(sqlIndex, value.timestampValue());
   }
 
 
   @Override
-  public TimestampValue getResultValue(ResultSet resultSet, int sqlIndex) {
-    try {
-      Timestamp t = resultSet.getTimestamp(sqlIndex);
-      return new TimestampValue(t);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public TimestampValue getResultValue(IResultSet resultSet, int sqlIndex) {
+    Timestamp t = resultSet.getTimestamp(sqlIndex);
+    return new TimestampValue(t);
   }
 
 }

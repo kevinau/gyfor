@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.gyfor.object.type.builtin;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.gyfor.object.UserEntryException;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 public class ByteType extends IntegerBasedType<Byte> {
@@ -91,22 +89,14 @@ public class ByteType extends IntegerBasedType<Byte> {
 
 
   @Override
-  public void setStatementFromValue(PreparedStatement stmt, int sqlIndex, Byte value) {
-    try {
-      stmt.setShort(sqlIndex, value.shortValue());
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Byte value) {
+    stmt.setShort(sqlIndex, value.shortValue());
   }
 
 
   @Override
-  public Byte getResultValue(ResultSet resultSet, int sqlIndex) {
-    try {
-      return (byte)resultSet.getShort(sqlIndex);
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
-    }
+  public Byte getResultValue(IResultSet resultSet, int sqlIndex) {
+    return (byte)resultSet.getShort(sqlIndex);
   }
 
 }

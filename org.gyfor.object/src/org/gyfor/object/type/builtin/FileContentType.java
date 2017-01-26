@@ -11,12 +11,12 @@ s * Copyright (c) 2012 Kevin Holloway (kholloway@geckosoftware.co.uk).
 package org.gyfor.object.type.builtin;
 
 import java.sql.Blob;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.value.FileContent;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.gyfor.todo.NotYetImplementedException;
 import org.gyfor.util.SimpleBuffer;
 
@@ -95,16 +95,17 @@ public class FileContentType extends PathBasedType<FileContent> {
 
 
   @Override
-  public void setStatementFromValue (PreparedStatement stmt, int sqlIndex, FileContent value) {
+  public void setStatementFromValue (IPreparedStatement stmt, int sqlIndex, FileContent value) {
     // Not used
   }
 
 
   @Override
-  public void setStatementFromValue (PreparedStatement stmt, int[] sqlIndex, FileContent value) {
+  public void setStatementFromValue (IPreparedStatement stmt, int[] sqlIndex, FileContent value) {
     try {
       stmt.setString(sqlIndex[0]++, value.getFileName());
-      Blob blob = stmt.getConnection().createBlob();
+      // TODO should a IBlob be created to avoid the SQLException
+      Blob blob = stmt.createBlob();
       blob.setBytes(1, value.getContents());
       stmt.setBlob(sqlIndex[0]++, blob);
     } catch (SQLException ex) {
@@ -114,16 +115,17 @@ public class FileContentType extends PathBasedType<FileContent> {
 
 
   @Override
-  public FileContent getResultValue (ResultSet resultSet, int sqlIndex) {
+  public FileContent getResultValue (IResultSet resultSet, int sqlIndex) {
     // Not used
     return null;
   }
 
 
   @Override
-  public FileContent getResultValue (ResultSet resultSet, int[] sqlIndex) {
+  public FileContent getResultValue (IResultSet resultSet, int[] sqlIndex) {
     try {
       String fileName = resultSet.getString(sqlIndex[0]++);
+      // TODO should a IBlob be created to avoid the SQLException
       Blob blob = resultSet.getBlob(sqlIndex[0]++);
       byte[] bytes = blob.getBytes(1, (int)blob.length());
       return new FileContent(fileName, bytes);
