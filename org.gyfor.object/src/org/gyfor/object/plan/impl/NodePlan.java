@@ -52,7 +52,9 @@ public abstract class NodePlan implements INodePlan {
   
   public NodePlan (Field field, String name, EntryMode entryMode) {
     this.field = field;
-    field.setAccessible(true);
+    if (field != null) {
+      field.setAccessible(true);
+    }
     this.name = name;
     this.staticMode = entryMode;
     this.nullable = isNullable(field);

@@ -60,10 +60,11 @@ public class ComponentConfiguration {
                 field.setAccessible(true);
                 field.set(target, fieldValue);
               } else if (configAnn.required()) {
+                System.out.println("Dictionary elenents: " + dict.size());
                 for (Enumeration<String> e = dict.keys(); e.hasMoreElements(); ) {
                   String key = e.nextElement();
                   Object value = dict.get(key);
-                  System.out.println(key + " = " + value);
+                  System.out.println("Dictionary: " + key + " = " + value);
                 }
                 throw new IllegalConfigurationException(
                     "Configuration value '" + propertyName + "' required for " + klass.getSimpleName());

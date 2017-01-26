@@ -35,6 +35,7 @@ public class DatabaseAccessObjectTest {
   @Activate
   public void activate () {
     System.out.println("activate CVS database loader.................." + dao);
+    System.out.println("activate CVS database loader.................." + dao.getEntityPlan());
     
     try {
       CSVReader reader = new CSVReader(new FileReader("C:/Users/Kevin/git/gyfor/org.gyfor.dbloader.berkeley/party.csv"));
