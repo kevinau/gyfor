@@ -32,11 +32,12 @@ import org.gyfor.object.type.builtin.PathType;
 import org.gyfor.object.type.builtin.ShortType;
 import org.gyfor.object.type.builtin.SqlDateType;
 import org.gyfor.object.type.builtin.StringType;
-import org.gyfor.object.type.builtin.TimestampType;
+import org.gyfor.object.type.builtin.VersionType;
 import org.gyfor.object.type.builtin.Type;
 import org.gyfor.object.type.builtin.URLType;
 import org.gyfor.object.value.EntityLife;
 import org.gyfor.object.value.FileContent;
+import org.gyfor.object.value.VersionValue;
 
 
 public class ItemTypeRegistry {
@@ -86,7 +87,7 @@ public class ItemTypeRegistry {
     typeMap.put(Short.TYPE, ShortType.class);
     typeMap.put(java.sql.Date.class, SqlDateType.class);
     typeMap.put(String.class, StringType.class);
-    typeMap.put(Timestamp.class, TimestampType.class);
+    typeMap.put(VersionValue.class, VersionType.class);
     typeMap.put(URL.class, URLType.class);
   }
 

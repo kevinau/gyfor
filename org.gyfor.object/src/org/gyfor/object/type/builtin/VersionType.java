@@ -17,19 +17,19 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.value.TimestampValue;
+import org.gyfor.object.value.VersionValue;
 import org.gyfor.sql.IPreparedStatement;
 import org.gyfor.sql.IResultSet;
 
 
-public class TimestampType extends StringBasedType<TimestampValue> {
+public class VersionType extends StringBasedType<VersionValue> {
 
   private static final String REQUIRED_MESSAGE = "a date/time is required";
   
   private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
   
-  public TimestampType () {
+  public VersionType () {
   	super (10 + 1 + 8);
   }
   
@@ -41,11 +41,11 @@ public class TimestampType extends StringBasedType<TimestampValue> {
   
   
   @Override
-  public TimestampValue createFromString (String source) throws UserEntryException {
+  public VersionValue createFromString (String source) throws UserEntryException {
     try {
       long x = format.parse(source).getTime();
       Timestamp t = new Timestamp(x);
-      return new TimestampValue(t);
+      return new VersionValue(t);
     } catch (ParseException ex) {
       throw new UserEntryException("invalid date/time");
     }
@@ -59,17 +59,17 @@ public class TimestampType extends StringBasedType<TimestampValue> {
   
   
   @Override
-  public TimestampValue primalValue () {
-    return new TimestampValue(new Timestamp(0L));
+  public VersionValue primalValue () {
+    return new VersionValue(new Timestamp(0L));
   }
   
   
   @Override
-  public TimestampValue newInstance (String source) {
+  public VersionValue newInstance (String source) {
     try {
       long x = format.parse(source).getTime();
       Timestamp t = new Timestamp(x);
-      return new TimestampValue(t);
+      return new VersionValue(t);
     } catch (ParseException ex) {
       throw new RuntimeException(ex);
     }
@@ -77,7 +77,7 @@ public class TimestampType extends StringBasedType<TimestampValue> {
 
 
   @Override
-  protected void validate(TimestampValue value) throws UserEntryException {
+  protected void validate(VersionValue value) throws UserEntryException {
     // Nothing more to do
   }
 
@@ -89,15 +89,15 @@ public class TimestampType extends StringBasedType<TimestampValue> {
 
 
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, TimestampValue value) {
+  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, VersionValue value) {
     stmt.setTimestamp(sqlIndex, value.timestampValue());
   }
 
 
   @Override
-  public TimestampValue getResultValue(IResultSet resultSet, int sqlIndex) {
+  public VersionValue getResultValue(IResultSet resultSet, int sqlIndex) {
     Timestamp t = resultSet.getTimestamp(sqlIndex);
-    return new TimestampValue(t);
+    return new VersionValue(t);
   }
 
 }

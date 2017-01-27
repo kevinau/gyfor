@@ -3,14 +3,16 @@ package org.gyfor.dao;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import org.gyfor.object.value.VersionValue;
+
 public class DataAddStatus implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   private final int id;
-  private final Timestamp version;
+  private final VersionValue version;
 
-  public DataAddStatus (int id, Timestamp version) {
+  public DataAddStatus (int id, VersionValue version) {
     this.id = id;
     this.version = version;
   }
@@ -20,7 +22,7 @@ public class DataAddStatus implements Serializable {
   }
   
   
-  public Timestamp getVersion () {
+  public VersionValue getVersion () {
     return version;
   }
   

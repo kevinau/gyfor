@@ -34,8 +34,7 @@ public class DatabaseAccessObjectTest {
     
   @Activate
   public void activate () {
-    System.out.println("activate CVS database loader.................." + dao);
-    System.out.println("activate CVS database loader.................." + dao.getEntityPlan());
+    dao.removeAll();
     
     try {
       CSVReader reader = new CSVReader(new FileReader("C:/Users/Kevin/git/gyfor/org.gyfor.dbloader.berkeley/party.csv"));
@@ -53,13 +52,11 @@ public class DatabaseAccessObjectTest {
         try {
           instance = objectLoader.getValue(lineNo, line);
           System.out.println(instance);
+          dao.add (instance);
         } catch (UserEntryException ex) {
           System.err.println(ex);
         }
-//         int id = Integer.parseInt(line[0]);
-//         data.setValue(line);
-//         das.addOrUpdate(data);
-             
+
         line = reader.readNext();
         lineNo++;
       }

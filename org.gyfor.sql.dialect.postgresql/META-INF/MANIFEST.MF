@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: gyfor - Postgresql SQL dialect
+Bundle-SymbolicName: org.gyfor.sql.dialect.postgresql
+Bundle-Version: 1.0.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.gyfor.sql,
+ org.gyfor.sql.dialect
+Service-Component: OSGI-INF/org.gyfor.sql.dialect.postgresql.PostgresqlDialect.xml
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: lib/org.postgresql-9.1-901.jar,
+ lib/commons-dbcp-1.4.jar,
+ lib/commons-logging-1.1.1.jar,
+ lib/commons-pool-1.5.5.jar,
+ .

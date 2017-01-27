@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import org.gyfor.object.value.EntityLife;
+import org.gyfor.object.value.VersionValue;
 
 
 public interface IEntityPlan<T> extends IClassPlan<T> {
@@ -34,7 +35,7 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
    * Returns the version field for this entity.  If the entity does not have
    * a version field, <code>null</code> is returned.
    */
-  public IItemPlan<Timestamp> getVersionPlan();
+  public IItemPlan<VersionValue> getVersionPlan();
   
   public boolean hasVersion ();
   

@@ -18,19 +18,29 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 
-public class TimestampValue {
-  private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-  private static final DateFormat sqlFormat = new SimpleDateFormat("'yyyy-MM-dd hh:mm:ss'");
+public class VersionValue {
+  private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+  private static final DateFormat sqlFormat = new SimpleDateFormat("'yyyy-MM-dd hh:mm:ss.SSS'");
   
   
   private final Timestamp t;
 
   
-  public TimestampValue (Timestamp t) {
+  private VersionValue () {
+    this.t = new Timestamp(System.currentTimeMillis());
+  }
+  
+  
+  public VersionValue (Timestamp t) {
     this.t = t;
   }
   
 
+  public static VersionValue now () {
+    return new VersionValue();
+  }
+  
+  
   public Timestamp timestampValue () {
     return t;
   }
@@ -90,7 +100,7 @@ public class TimestampValue {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    TimestampValue other = (TimestampValue)obj;
+    VersionValue other = (VersionValue)obj;
     if (!t.equals(other.t)) {
       return false;
     }

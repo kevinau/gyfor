@@ -7,6 +7,7 @@ Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.gyfor.dao
 Import-Package: org.gyfor.object.plan,
+ org.gyfor.object.value,
  org.osgi.service.component.annotations,
  org.slf4j;version="1.7.21"
 Bundle-ActivationPolicy: lazy

@@ -33,7 +33,6 @@ public class CVSDatabaseLoader {
     
   @Activate
   public void activate () {
-    System.out.println("activate CVS database loader.................." + referenceRegistry);
     String className = "org.pennyledger.party.Party";
     
     referenceRegistry.getService(className, e -> {

@@ -23,6 +23,8 @@ public interface IDataAccessObject<T> extends AutoCloseable {
   
   public void addOrUpdate (T instance);
   
+  public void removeAll();
+  
   public void remove (T instance);
   
   @Override
@@ -33,5 +35,5 @@ public interface IDataAccessObject<T> extends AutoCloseable {
   public Timestamp retire(int id);
   
   public Timestamp unRetire(int id);
-  
+
 }

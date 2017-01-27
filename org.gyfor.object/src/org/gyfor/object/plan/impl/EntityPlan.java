@@ -19,7 +19,9 @@ import org.gyfor.object.plan.PlanStructure;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.EntityLifeType;
 import org.gyfor.object.type.builtin.StringBasedType;
+import org.gyfor.object.type.builtin.VersionType;
 import org.gyfor.object.value.EntityLife;
+import org.gyfor.object.value.VersionValue;
 
 
 public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClassPlan<T>, INameMappedPlan, INodePlan {
@@ -29,7 +31,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   private final EntityLabelGroup labels;
 
   private IItemPlan<Integer> idPlan;
-  private IItemPlan<Timestamp> versionPlan;
+  private IItemPlan<VersionValue> versionPlan;
   private IItemPlan<EntityLife> entityLifePlan;
   private List<IItemPlan<?>> dataPlans;
   
@@ -81,7 +83,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   }
   
   @Override
-  public IItemPlan<Timestamp> getVersionPlan () {
+  public IItemPlan<VersionValue> getVersionPlan () {
     return versionPlan;
   }
   
@@ -228,9 +230,10 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
 //  }
   
   
+  @SuppressWarnings("unchecked")
   private void findEntityItems () {
     IItemPlan<Integer> idPlan2 = null;
-    IItemPlan<Timestamp> versionPlan2 = null;
+    IItemPlan<VersionValue> versionPlan2 = null;
     dataPlans = new ArrayList<>();
     
     INodePlan[] memberPlans = getMemberPlans();
@@ -248,22 +251,22 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
           idPlan2 = (IItemPlan<Integer>)itemPlan;
           continue;
         }
-        
+
+        IType<?> type = itemPlan.getType();
+
         Version vann = itemPlan.getAnnotation(Version.class);
         if (vann != null) {
-          versionPlan = (IItemPlan<Timestamp>)itemPlan;
+          versionPlan = (IItemPlan<VersionValue>)itemPlan;
           // Version fields are not key or data columns
           continue;
         }
-        if (name.equals("version")) {
-          versionPlan2 = (IItemPlan<Timestamp>)itemPlan;
+        if (VersionType.class.isInstance(type)) {
+          versionPlan2 = (IItemPlan<VersionValue>)itemPlan;
           continue;
         }
         
-        IType<?> type = itemPlan.getType();
         if (EntityLifeType.class.isInstance(type)) {
           // Entity life fields are not key or data columns
-          // TODO The above statement may not be correct
           entityLifePlan = (IItemPlan<EntityLife>)itemPlan;
           continue;
         }

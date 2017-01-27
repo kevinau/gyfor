@@ -207,7 +207,6 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
 //            Field field = fields[i];
 //            // TODO for the moment we only support integer and String field values.  This code should be replaced
 //            // by proper plan and model code
-//            System.out.println("................." + field.getType());
 //            if (Integer.TYPE.isAssignableFrom(field.getType())) {
 //              int intValue = Integer.parseInt(args[i]);
 //              field.setAccessible(true);

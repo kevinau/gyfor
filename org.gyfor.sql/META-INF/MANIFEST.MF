@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: gyfor - SQL support
+Bundle-SymbolicName: org.gyfor.sql
+Bundle-Version: 1.0.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.gyfor.math,
+ org.gyfor.osgi,
+ org.gyfor.sql.dialect,
+ org.osgi.framework;version="1.8.0",
+ org.osgi.service.component;version="1.2.0"
+Service-Component: OSGI-INF/org.gyfor.sql.ConnectionFactory.xml
+Bundle-ActivationPolicy: lazy
+Export-Package: org.gyfor.sql
