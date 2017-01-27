@@ -401,25 +401,31 @@ public class FieldDependency implements IFieldDependency {
   public void parseClass(String className) {
     try {
       Class<?> cx = Class.forName(className);
-      JavaClass klass = Repository.lookupClass(cx);
-
-      wide = false;
-      methodDependsOn = new HashMap<String, List<String>>();
-      methodProvides = new HashMap<String, List<String>>();
-      // /fieldDependsOn = new HashMap<String, List<String>>();
-
-      for (Method method : klass.getMethods()) {
-        if (!method.isStatic() && !method.isNative() && !method.isAbstract()) {
-          Code code = method.getCode();
-          String methodFQN = klass.getClassName() + "." + method.getName();
-          parseMethod(methodFQN, code.getCode(), method.getConstantPool(), 0, code.getLength());
-        }
-      }
+      parseClass(cx);
     } catch (ClassNotFoundException ex) {
       throw new RuntimeException(ex);
     }
   }
 
+  
+  public void parseClass(Class<?> cx) {
+    JavaClass klass = Repository.lookupClass(cx);
+
+    wide = false;
+    methodDependsOn = new HashMap<String, List<String>>();
+    methodProvides = new HashMap<String, List<String>>();
+    // /fieldDependsOn = new HashMap<String, List<String>>();
+
+    for (Method method : klass.getMethods()) {
+      if (!method.isStatic() && !method.isNative() && !method.isAbstract()) {
+        Code code = method.getCode();
+        String methodFQN = klass.getClassName() + "." + method.getName();
+        parseMethod(methodFQN, code.getCode(), method.getConstantPool(), 0, code.getLength());
+      }
+    }
+  }
+
+  
   private void getDependencies(int prefixLength, String methodName, List<String> fieldList) {
     List<String> fields = methodDependsOn.get(methodName);
     if (fields != null) {

@@ -1,9 +1,9 @@
 package org.gyfor.dao;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import org.gyfor.object.plan.IEntityPlan;
+import org.gyfor.object.value.VersionValue;
 
 public interface IDataAccessObject<T> extends AutoCloseable {
 
@@ -19,7 +19,7 @@ public interface IDataAccessObject<T> extends AutoCloseable {
   
   public DataAddStatus add (T instance);
   
-  public Timestamp update (T instance);
+  public VersionValue update (T instance);
   
   public void addOrUpdate (T instance);
   
@@ -32,8 +32,8 @@ public interface IDataAccessObject<T> extends AutoCloseable {
   
   public IEntityPlan<T> getEntityPlan();
 
-  public Timestamp retire(int id);
+  public VersionValue retire(int id);
   
-  public Timestamp unRetire(int id);
+  public VersionValue unRetire(int id);
 
 }

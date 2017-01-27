@@ -13,7 +13,6 @@ Export-Package: com.sleepycat.je,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.gyfor.math,
  org.gyfor.object,
- org.gyfor.object.context,
  org.gyfor.object.plan,
  org.gyfor.object.type,
  org.gyfor.object.type.builtin,

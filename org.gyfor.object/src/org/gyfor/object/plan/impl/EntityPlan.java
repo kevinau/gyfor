@@ -18,7 +18,7 @@ import org.gyfor.object.plan.IPlanContext;
 import org.gyfor.object.plan.PlanStructure;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.EntityLifeType;
-import org.gyfor.object.type.builtin.StringBasedType;
+import org.gyfor.object.type.builtin.StringType;
 import org.gyfor.object.type.builtin.VersionType;
 import org.gyfor.object.value.EntityLife;
 import org.gyfor.object.value.VersionValue;
@@ -315,6 +315,45 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
     }
   }
 
+  
+  @Override
+  public List<String> getDescriptionFieldNames () {
+    // Use the entity's self describing method if present
+    if (SelfDescribing.class.isAssignableFrom(entityClass)) {
+      FieldDependency fieldDependency = new FieldDependency();
+      fieldDependency.parseClass(entityClass);
+      return fieldDependency.getDependencies(entityClass.getName(), "getDescription");
+    }
+    
+    // Otherwise, concatenate all top level nodes that are marked as describing.
+    List<String> fieldNames = new ArrayList<>();
+    for (INodePlan nodePlan : getMemberPlans()) {
+      if  (nodePlan.getStructure() == PlanStructure.ITEM) {
+        IItemPlan<?> itemPlan = (IItemPlan<?>)nodePlan;
+        if (itemPlan.isDescribing()) {
+          fieldNames.add(itemPlan.getName());
+        }
+      }
+    }
+    if (fieldNames.size() > 0) {
+      return fieldNames;
+    }
+    
+    // Otherwise, use the first top level String node
+    for (INodePlan nodePlan : getMemberPlans()) {
+      if  (nodePlan.getStructure() == PlanStructure.ITEM) {
+        IItemPlan<?> itemPlan = (IItemPlan<?>)nodePlan;
+        IType<?> type = itemPlan.getType();
+        if (type instanceof StringType) {
+          fieldNames.add(itemPlan.getName());
+          return fieldNames;
+        }
+      }
+    }
+    
+    // Otherwise, return an empty list
+    return fieldNames;
+  }
 
   @Override
   public String getDescription (Object instance) {
@@ -348,11 +387,13 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
     for (INodePlan nodePlan : getMemberPlans()) {
       if  (nodePlan.getStructure() == PlanStructure.ITEM) {
         IType<?> type = ((IItemPlan<?>)nodePlan).getType();
-        if (type instanceof StringBasedType) {
+        if (type instanceof StringType) {
           return nodePlan.getValue(instance).toString();
         }
       }
     }
+
+    // Otherwise, return an empty description
     return "";
   }
 

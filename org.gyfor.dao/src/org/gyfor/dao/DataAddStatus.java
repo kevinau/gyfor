@@ -1,7 +1,6 @@
 package org.gyfor.dao;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import org.gyfor.object.value.VersionValue;
 
