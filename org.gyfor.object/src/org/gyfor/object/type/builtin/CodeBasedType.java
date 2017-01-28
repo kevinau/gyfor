@@ -281,14 +281,14 @@ public abstract class CodeBasedType<T extends ICodeValue> implements IType<T> {
 
 
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, T value) {
-    stmt.setString(sqlIndex, value.getCode());
+  public void setStatementFromValue(IPreparedStatement stmt, T value) {
+    stmt.setString(value.getCode());
   }
 
 
   @Override
-  public T getResultValue(IResultSet resultSet, int sqlIndex) {
-    String s = resultSet.getString(sqlIndex);
+  public T getResultValue(IResultSet resultSet) {
+    String s = resultSet.getString();
     try {
       return createFromString(s);
     } catch (UserEntryException ex) {

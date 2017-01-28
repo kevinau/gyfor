@@ -83,14 +83,14 @@ public class ShortType extends IntegerBasedType<Short> {
 
   
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Short value) {
-    stmt.setShort(sqlIndex, value);
+  public void setStatementFromValue(IPreparedStatement stmt, Short value) {
+    stmt.setShort(value);
   }
 
 
   @Override
-  public Short getResultValue(IResultSet resultSet, int sqlIndex) {
-    return resultSet.getShort(sqlIndex);
+  public Short getResultValue(IResultSet resultSet) {
+    return resultSet.getShort();
   }
 
 }

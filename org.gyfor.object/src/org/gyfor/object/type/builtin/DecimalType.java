@@ -114,14 +114,14 @@ public class DecimalType extends DecimalBasedType<Decimal> {
   
   
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Decimal value) {
-    stmt.setBigDecimal(sqlIndex, new BigDecimal(value.toString()));
+  public void setStatementFromValue(IPreparedStatement stmt,Decimal value) {
+    stmt.setBigDecimal(new BigDecimal(value.toString()));
   }
 
 
   @Override
-  public Decimal getResultValue(IResultSet resultSet, int sqlIndex) {
-    BigDecimal bd = resultSet.getBigDecimal(sqlIndex);
+  public Decimal getResultValue(IResultSet resultSet) {
+    BigDecimal bd = resultSet.getBigDecimal();
     return new Decimal(bd.toString());
   }
 

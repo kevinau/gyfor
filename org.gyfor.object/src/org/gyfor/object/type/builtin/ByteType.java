@@ -89,14 +89,14 @@ public class ByteType extends IntegerBasedType<Byte> {
 
 
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Byte value) {
-    stmt.setShort(sqlIndex, value.shortValue());
+  public void setStatementFromValue(IPreparedStatement stmt, Byte value) {
+    stmt.setShort(value.shortValue());
   }
 
 
   @Override
-  public Byte getResultValue(IResultSet resultSet, int sqlIndex) {
-    return (byte)resultSet.getShort(sqlIndex);
+  public Byte getResultValue(IResultSet resultSet) {
+    return (byte)resultSet.getShort();
   }
 
 }

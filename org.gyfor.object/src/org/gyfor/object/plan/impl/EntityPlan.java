@@ -34,6 +34,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   private IItemPlan<VersionValue> versionPlan;
   private IItemPlan<EntityLife> entityLifePlan;
   private List<IItemPlan<?>> dataPlans;
+  private List<IItemPlan<?>> descriptionPlans;
   
   private List<IItemPlan<?>[]> uniqueConstraints;
 
@@ -45,6 +46,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
     this.labels = new EntityLabelGroup(entityClass);
     
     findEntityItems();
+    findDescriptionItems();
     findUniqueConstraints();
   }
 
@@ -317,26 +319,37 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
 
   
   @Override
-  public List<String> getDescriptionFieldNames () {
+  public List<IItemPlan<?>> getDescriptionPlans () {
+    return descriptionPlans;
+  }
+  
+  
+  private void findDescriptionItems () {
+    descriptionPlans = new ArrayList<>();
+
     // Use the entity's self describing method if present
     if (SelfDescribing.class.isAssignableFrom(entityClass)) {
       FieldDependency fieldDependency = new FieldDependency();
       fieldDependency.parseClass(entityClass);
-      return fieldDependency.getDependencies(entityClass.getName(), "getDescription");
+      List<String> fieldNames = fieldDependency.getDependencies(entityClass.getName(), "getDescription");
+      for (String fieldName : fieldNames) {
+        IItemPlan<?> itemPlan = (IItemPlan<?>)getMemberPlan(fieldName);
+        descriptionPlans.add(itemPlan);
+      }
+      return;
     }
     
     // Otherwise, concatenate all top level nodes that are marked as describing.
-    List<String> fieldNames = new ArrayList<>();
     for (INodePlan nodePlan : getMemberPlans()) {
       if  (nodePlan.getStructure() == PlanStructure.ITEM) {
         IItemPlan<?> itemPlan = (IItemPlan<?>)nodePlan;
         if (itemPlan.isDescribing()) {
-          fieldNames.add(itemPlan.getName());
+          descriptionPlans.add(itemPlan);
         }
       }
     }
-    if (fieldNames.size() > 0) {
-      return fieldNames;
+    if (descriptionPlans.size() > 0) {
+      return;
     }
     
     // Otherwise, use the first top level String node
@@ -345,14 +358,13 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
         IItemPlan<?> itemPlan = (IItemPlan<?>)nodePlan;
         IType<?> type = itemPlan.getType();
         if (type instanceof StringType) {
-          fieldNames.add(itemPlan.getName());
-          return fieldNames;
+          descriptionPlans.add(itemPlan);
+          return;
         }
       }
     }
     
-    // Otherwise, return an empty list
-    return fieldNames;
+    // Otherwise, leave the list empty
   }
 
   @Override

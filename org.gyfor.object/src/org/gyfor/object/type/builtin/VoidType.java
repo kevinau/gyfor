@@ -87,12 +87,12 @@ public class VoidType implements IType<Void> {
   }
 
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Void value) {
+  public void setStatementFromValue(IPreparedStatement stmt, Void value) {
     throw new IllegalStateException("Void type value is never set in the database");
   }
 
   @Override
-  public Void getResultValue(IResultSet resultSet, int sqlIndex) {
+  public Void getResultValue(IResultSet resultSet) {
     throw new IllegalStateException("Void type value is never retrieved from the database");
   }
 

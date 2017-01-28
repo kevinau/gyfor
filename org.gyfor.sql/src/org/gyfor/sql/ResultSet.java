@@ -28,8 +28,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public Object getObject (int i, int[] colType) {
+  //@Override
+  private Object getObject (int i, int[] colType) {
     try {
       switch (colType[i - 1]) {
       case Types.CHAR :
@@ -68,13 +68,11 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public <T> T getEnum (int i, Class<T> enumClass) {
+  //@Override
+  private <T> T getEnum (int i, Class<T> enumClass) {
     T[] values = enumClass.getEnumConstants();
     
     try {
-      // TODO This class has Postgresql dependences
-      //org.postgresql.util.PGobject obj = (org.postgresql.util.PGobject)rs.getObject(i);
       String target = rs.getString(i).toUpperCase();
       for (T value : values) {
         if (value.toString().equals(target)) {
@@ -94,8 +92,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public BigDecimal getBigDecimal (int i) {
+  //@Override
+  private BigDecimal getBigDecimal (int i) {
     try {
       return rs.getBigDecimal(i);
     } catch (SQLException ex) {
@@ -110,8 +108,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public BigInteger getBigInteger (int i) {
+  //@Override
+  private BigInteger getBigInteger (int i) {
     try {
       BigDecimal value = rs.getBigDecimal(i);
       return value.toBigInteger();
@@ -127,8 +125,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public byte[] getBytes (int i) {
+  //@Override
+  private byte[] getBytes (int i) {
     try {
       return rs.getBytes(i);
     } catch (SQLException ex) {
@@ -143,8 +141,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public Blob getBlob (int i) {
+  //@Override
+  private Blob getBlob (int i) {
     try {
       return rs.getBlob(i);
     } catch (SQLException ex) {
@@ -159,8 +157,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public boolean getBoolean (int i) {
+  //@Override
+  private boolean getBoolean (int i) {
     try {
       return rs.getBoolean(i);
     } catch (SQLException ex) {
@@ -175,8 +173,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public float getFloat (int i) {
+  //@Override
+  private float getFloat (int i) {
     try {
       return rs.getFloat(i);
     } catch (SQLException ex) {
@@ -191,8 +189,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public double getDouble (int i) {
+  //@Override
+  private double getDouble (int i) {
     try {
       return rs.getDouble(i);
     } catch (SQLException ex) {
@@ -207,8 +205,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public int getInt (int i) {
+  //@Override
+  private int getInt (int i) {
     try {
       return rs.getInt(i);
     } catch (SQLException ex) {
@@ -223,8 +221,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public long getLong (int i) {
+  //@Override
+  private long getLong (int i) {
     try {
       return rs.getLong(i);
     } catch (SQLException ex) {
@@ -239,8 +237,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public short getShort (int i) {
+  //@Override
+  private short getShort (int i) {
     try {
       return rs.getShort(i);
     } catch (SQLException ex) {
@@ -255,8 +253,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public Decimal getDecimal (int i) {
+  //@Override
+  private Decimal getDecimal (int i) {
     try {
       BigDecimal bd = rs.getBigDecimal(i);
       return new Decimal(bd.toString());
@@ -272,8 +270,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public LocalDate getLocalDate (int i) {
+  //@Override
+  private LocalDate getLocalDate (int i) {
     try {
       java.util.Date d = (java.util.Date)rs.getDate(i, tzCal);
       return LocalDate.ofEpochDay(d.getTime());
@@ -289,8 +287,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public java.sql.Date getDate (int i) {
+  //@Override
+  private java.sql.Date getDate (int i) {
     try {
       java.sql.Date d = rs.getDate(i, tzCal);
       return d;
@@ -306,8 +304,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public URL getURL (int i) {
+  //@Override
+  private URL getURL (int i) {
     try {
       String s = rs.getString(i);
       return new URL(s);
@@ -325,8 +323,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public Object getObject (int i) {
+  //@Override
+  private Object getObject (int i) {
     try {
       return rs.getObject(i);
     } catch (SQLException ex) {
@@ -341,8 +339,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public String getString (int i) {
+  //@Override
+  private String getString (int i) {
     try {
       return rs.getString(i);
     } catch (SQLException ex) {
@@ -357,8 +355,8 @@ public class ResultSet implements IResultSet {
   }
   
   
-  @Override
-  public Timestamp getTimestamp (int i) {
+  //@Override
+  private Timestamp getTimestamp (int i) {
     try {
       return rs.getTimestamp(i);
     } catch (SQLException ex) {

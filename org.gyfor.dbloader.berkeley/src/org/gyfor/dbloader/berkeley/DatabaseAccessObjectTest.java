@@ -2,9 +2,11 @@ package org.gyfor.dbloader.berkeley;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import org.gyfor.dao.IDataAccessObject;
+import org.gyfor.dao.IdValuePair;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.plan.IEntityPlan;
 import org.osgi.service.component.annotations.Activate;
@@ -67,10 +69,25 @@ public class DatabaseAccessObjectTest {
       
     // Read the database: first in primary key order
     System.out.println("Primary key order:");
-    List<?> results = dao.getAll();
-    for (Object entity: results) {
+    List<Party> results = dao.getAll();
+    for (Party entity: results) {
       System.out.println(entity);
     }
+    
+    System.out.println("Descriptions one-by-one");
+    for (Party entity: results) {
+      int id = entity.getId();
+      String desc = dao.getDescriptionById(id);
+      System.out.println(id + ": " + desc);
+    }
+
+    System.out.println("Fetch and sort all descriptions:");
+    List<IdValuePair<String>> results2 = dao.getDescriptionAll();
+    Collections.sort(results2);
+    for (IdValuePair<String> idValue: results2) {
+      System.out.println(idValue);
+    }
+
   }
 
 }

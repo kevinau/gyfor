@@ -84,14 +84,14 @@ public class IntegerType extends IntegerBasedType<Integer> {
 
 
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Integer value) {
-    stmt.setInt(sqlIndex, value);
+  public void setStatementFromValue(IPreparedStatement stmt, Integer value) {
+    stmt.setInt(value);
   }
 
 
   @Override
-  public Integer getResultValue(IResultSet resultSet, int sqlIndex) {
-    return resultSet.getInt(sqlIndex);
+  public Integer getResultValue(IResultSet resultSet) {
+    return resultSet.getInt();
   }
 
 }

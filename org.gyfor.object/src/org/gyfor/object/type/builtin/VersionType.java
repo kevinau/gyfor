@@ -89,14 +89,14 @@ public class VersionType extends StringBasedType<VersionValue> {
 
 
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, VersionValue value) {
-    stmt.setTimestamp(sqlIndex, value.timestampValue());
+  public void setStatementFromValue(IPreparedStatement stmt, VersionValue value) {
+    stmt.setTimestamp(value.timestampValue());
   }
 
 
   @Override
-  public VersionValue getResultValue(IResultSet resultSet, int sqlIndex) {
-    Timestamp t = resultSet.getTimestamp(sqlIndex);
+  public VersionValue getResultValue(IResultSet resultSet) {
+    Timestamp t = resultSet.getTimestamp();
     return new VersionValue(t);
   }
 

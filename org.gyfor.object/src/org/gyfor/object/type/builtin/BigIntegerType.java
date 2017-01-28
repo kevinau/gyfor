@@ -98,14 +98,14 @@ public class BigIntegerType extends IntegerBasedType<BigInteger> {
 
 
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, BigInteger value) {
-    stmt.setBigDecimal(sqlIndex, new BigDecimal(value));
+  public void setStatementFromValue(IPreparedStatement stmt, BigInteger value) {
+    stmt.setBigDecimal(new BigDecimal(value));
   }
 
 
   @Override
-  public BigInteger getResultValue(IResultSet resultSet, int sqlIndex) {
-    return resultSet.getBigDecimal(sqlIndex).toBigInteger();
+  public BigInteger getResultValue(IResultSet resultSet) {
+    return resultSet.getBigDecimal().toBigInteger();
   }
 
 }

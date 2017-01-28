@@ -133,14 +133,14 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
 
 
   @Override
-  public T getResultValue (IResultSet rs, int i) {
-    return type.getResultValue(rs, i);
+  public T getResultValue (IResultSet rs) {
+    return type.getResultValue(rs);
   }
 
   
   @Override
-  public void setStatementFromValue (IPreparedStatement stmt, int[] i, T value) {
-    type.setStatementFromValue (stmt, i, value);
+  public void setStatementFromValue (IPreparedStatement stmt, T value) {
+    type.setStatementFromValue (stmt, value);
   }
   
   

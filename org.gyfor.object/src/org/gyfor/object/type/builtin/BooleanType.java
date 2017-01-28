@@ -160,14 +160,14 @@ public class BooleanType extends Type<Boolean> implements IType<Boolean> {
 
 
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Boolean value) {
-    stmt.setBoolean(sqlIndex, (Boolean)value);
+  public void setStatementFromValue(IPreparedStatement stmt, Boolean value) {
+    stmt.setBoolean((Boolean)value);
   }
 
 
   @Override
-  public Boolean getResultValue(IResultSet resultSet, int sqlIndex) {
-    return resultSet.getBoolean(sqlIndex);
+  public Boolean getResultValue(IResultSet resultSet) {
+    return resultSet.getBoolean();
   }
   
 }

@@ -83,13 +83,13 @@ public class LocalDateType extends DateBasedType<LocalDate> {
   
   
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, LocalDate value) {
-    stmt.setLocalDate(sqlIndex, value);
+  public void setStatementFromValue(IPreparedStatement stmt, LocalDate value) {
+    stmt.setLocalDate(value);
   }
 
 
   @Override
-  public LocalDate getResultValue(IResultSet resultSet, int sqlIndex) {
+  public LocalDate getResultValue(IResultSet resultSet) {
     return resultSet.getLocalDate();
   }
   

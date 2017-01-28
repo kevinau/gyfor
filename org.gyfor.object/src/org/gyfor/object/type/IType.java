@@ -121,22 +121,22 @@ public interface IType<T> {
   /**
    * Set an value, of this type, in a SQL statement.
    */
-  public void setStatementFromValue (IPreparedStatement stmt, int sqlIndex, T value);
+  public void setStatementFromValue (IPreparedStatement stmt, T value);
   
   
-  public default void setStatementFromValue (IPreparedStatement stmt, int[] sqlIndex, T value) {
-    setStatementFromValue (stmt, sqlIndex[0]++, value);
-  }
+//  public default void setStatementFromValue (IPreparedStatement stmt, T value) {
+//    setStatementFromValue (stmt, sqlIndex[0]++, value);
+//  }
   
 
   /**
    * Get a value from a SQL statement
    */
-  public T getResultValue (IResultSet rs, int sqlIndex);
+  public T getResultValue (IResultSet rs);
   
   
-  public default T getResultValue (IResultSet rs, int[] sqlIndex) {
-    return getResultValue (rs, sqlIndex[0]++);
-  }
+//  public default T getResultValue (IResultSet rs, int[] sqlIndex) {
+//    return getResultValue (rs, sqlIndex[0]++);
+//  }
 
 }

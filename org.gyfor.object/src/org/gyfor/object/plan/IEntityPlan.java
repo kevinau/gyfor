@@ -49,6 +49,6 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
 
   public List<IItemPlan<?>> getDataPlans();
 
-  public List<String> getDescriptionFieldNames();
+  public List<IItemPlan<?>> getDescriptionPlans();
   
 }

@@ -40,22 +40,22 @@ public interface IItemPlan<T> extends INodePlan {
 
   public boolean isDescribing();
   
-  public T getResultValue(IResultSet rs, int i);
+  public T getResultValue(IResultSet rs);
 
-  public default void setStatementFromInstance (IPreparedStatement stmt, int[] i, Object instance) {
+  public default void setStatementFromInstance (IPreparedStatement stmt, Object instance) {
     T value = getValue(instance);
-    setStatementFromValue (stmt, i, value);
+    setStatementFromValue (stmt, value);
   }
   
-  public void setStatementFromValue (IPreparedStatement stmt, int[] i, T value);
+  public void setStatementFromValue (IPreparedStatement stmt, T value);
 
-  public default void setInstanceFromResult (Object instance, IResultSet rs, int i) {
-    T value = getType().getResultValue(rs, i);
+  public default void setInstanceFromResult (Object instance, IResultSet rs) {
+    T value = getType().getResultValue(rs);
     setValue (instance, value);
   }
 
-  public default void setInstanceFromResult (Object instance, IResultSet rs, int[] i) {
-    setInstanceFromResult (instance, rs, i[0]++);
-  }
+//  public default void setInstanceFromResult (Object instance, IResultSet rs, int[] i) {
+//    setInstanceFromResult (instance, rs, i[0]++);
+//  }
   
 }

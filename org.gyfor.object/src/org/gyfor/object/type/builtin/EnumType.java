@@ -344,14 +344,14 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
 
 
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, E value) {
-    stmt.setShort(sqlIndex, (short)value.ordinal());
+  public void setStatementFromValue(IPreparedStatement stmt, E value) {
+    stmt.setShort((short)value.ordinal());
   }
 
 
   @Override
-  public E getResultValue(IResultSet resultSet, int sqlIndex) {
-    short i = resultSet.getShort(sqlIndex);
+  public E getResultValue(IResultSet resultSet) {
+    short i = resultSet.getShort();
     E[] values = enumClass.getEnumConstants();
     if (i >= 0 && i < values.length) {
       return values[i];

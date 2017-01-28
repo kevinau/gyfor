@@ -137,14 +137,14 @@ public class CharacterType extends Type<Character> implements ICaseSettable {
 
 
   @Override
-  public void setStatementFromValue (IPreparedStatement stmt, int sqlIndex, Character value) {
-    stmt.setString(sqlIndex, String.valueOf(value));
+  public void setStatementFromValue (IPreparedStatement stmt, Character value) {
+    stmt.setString(String.valueOf(value));
   }
 
 
   @Override
-  public Character getResultValue (IResultSet resultSet, int sqlIndex) {
-    String s = resultSet.getString(sqlIndex);
+  public Character getResultValue (IResultSet resultSet) {
+    String s = resultSet.getString();
     if (s.length() == 0) {
       return ' ';
     } else {

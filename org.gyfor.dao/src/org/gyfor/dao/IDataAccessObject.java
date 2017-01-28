@@ -17,6 +17,8 @@ public interface IDataAccessObject<T> extends AutoCloseable {
   
   public List<IdValuePair<String>> getDescriptionAll ();
   
+  public String getDescriptionById (int id);
+  
   public DataAddStatus add (T instance);
   
   public VersionValue update (T instance);

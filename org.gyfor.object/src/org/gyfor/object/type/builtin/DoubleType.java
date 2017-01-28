@@ -121,14 +121,14 @@ public class DoubleType extends DecimalBasedType<Double> {
 
 
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Double value) {
-    stmt.setDouble(sqlIndex,  value);
+  public void setStatementFromValue(IPreparedStatement stmt, Double value) {
+    stmt.setDouble(value);
   }
 
 
   @Override
-  public Double getResultValue(IResultSet resultSet, int sqlIndex)  {
-    return resultSet.getDouble(sqlIndex);
+  public Double getResultValue(IResultSet resultSet)  {
+    return resultSet.getDouble();
   }
 
 }

@@ -110,14 +110,14 @@ public class FloatType extends DecimalBasedType<Float> {
 
 
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, Float value) {
-    stmt.setFloat(sqlIndex, value);
+  public void setStatementFromValue(IPreparedStatement stmt, Float value) {
+    stmt.setFloat(value);
   }
 
 
   @Override
-  public Float getResultValue(IResultSet resultSet, int sqlIndex) {
-    return resultSet.getFloat(sqlIndex);
+  public Float getResultValue(IResultSet resultSet) {
+    return resultSet.getFloat();
   }
 
 }

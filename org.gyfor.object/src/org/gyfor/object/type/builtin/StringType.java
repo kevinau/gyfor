@@ -61,14 +61,14 @@ public class StringType extends StringBasedType<String> {
 
 
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, String value) {
-    stmt.setString(sqlIndex,  value);
+  public void setStatementFromValue(IPreparedStatement stmt, String value) {
+    stmt.setString(value);
   }
 
 
   @Override
-  public String getResultValue(IResultSet resultSet, int sqlIndex) {
-    return resultSet.getString(sqlIndex);
+  public String getResultValue(IResultSet resultSet) {
+    return resultSet.getString();
   }
 
 }

@@ -84,14 +84,14 @@ public class PathType extends PathBasedType<File> {
 
 
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, File value) {
-    stmt.setString(sqlIndex, value.toString());
+  public void setStatementFromValue(IPreparedStatement stmt, File value) {
+    stmt.setString(value.toString());
   }
 
 
   @Override
-  public File getResultValue(IResultSet resultSet, int sqlIndex) {
-    return new File(resultSet.getString(sqlIndex));
+  public File getResultValue(IResultSet resultSet) {
+    return new File(resultSet.getString());
   }
 
 }

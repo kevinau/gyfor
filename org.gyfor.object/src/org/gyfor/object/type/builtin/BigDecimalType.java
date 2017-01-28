@@ -108,14 +108,14 @@ public class BigDecimalType extends DecimalBasedType<BigDecimal> {
 
 
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, int sqlIndex, BigDecimal value) {
-    stmt.setBigDecimal(sqlIndex, value);
+  public void setStatementFromValue(IPreparedStatement stmt, BigDecimal value) {
+    stmt.setBigDecimal(value);
   }
 
 
   @Override
-  public BigDecimal getResultValue(IResultSet resultSet, int sqlIndex) {
-    return resultSet.getBigDecimal(sqlIndex);
+  public BigDecimal getResultValue(IResultSet resultSet) {
+    return resultSet.getBigDecimal();
   }
 
 }

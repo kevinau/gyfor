@@ -133,15 +133,15 @@ public abstract class StringBasedType<T> extends Type<T> implements ILengthSetta
 
 
   @Override
-  public void setStatementFromValue (IPreparedStatement stmt, int sqlIndex, T value) {
-    stmt.setString(sqlIndex, value.toString());
+  public void setStatementFromValue (IPreparedStatement stmt, T value) {
+    stmt.setString(value.toString());
   }
 
 
   @SuppressWarnings("unchecked")
   @Override
-  public T getResultValue (IResultSet resultSet, int sqlIndex) {
-    return (T)resultSet.getString(sqlIndex);
+  public T getResultValue (IResultSet resultSet) {
+    return (T)resultSet.getString();
   }
   
 }  

@@ -97,8 +97,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
   
 
-  @Override
-  public void setBigDecimal (int i, BigDecimal d) {
+  //@Override
+  private void setBigDecimal (int i, BigDecimal d) {
     try {
       stmt.setBigDecimal(i, d);
     } catch (SQLException ex) {
@@ -113,8 +113,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
   
 
-  @Override
-  public void setBoolean (int i, boolean b) {
+  //@Override
+  private void setBoolean (int i, boolean b) {
     try {
       stmt.setBoolean(i, b);
     } catch (SQLException ex) {
@@ -129,8 +129,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
   
 
-  @Override
-  public void setBlob (int i, Blob b) {
+  //@Override
+  private void setBlob (int i, Blob b) {
     try {
       stmt.setBlob(i, b);
     } catch (SQLException ex) {
@@ -145,8 +145,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
   
 
-  @Override
-  public void setBigInteger (int i, BigInteger d) {
+  //@Override
+  private void setBigInteger (int i, BigInteger d) {
     try {
       stmt.setBigDecimal(i, new BigDecimal(d));
     } catch (SQLException ex) {
@@ -161,8 +161,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
   
 
-  @Override
-  public void setBytes (int i, byte[] bx) {
+  //@Override
+  private void setBytes (int i, byte[] bx) {
     try {
       stmt.setBytes(i, bx);
     } catch (SQLException ex) {
@@ -177,8 +177,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
   
 
-  @Override
-  public void setNull (int i, int sqlType) {
+  //@Override
+  private void setNull (int i, int sqlType) {
     try {
       stmt.setNull(i, sqlType);
     } catch (SQLException ex) {
@@ -193,8 +193,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
   
   
-  @Override
-  public void setString (int i, String s) {
+  //@Override
+  private void setString (int i, String s) {
     try {
       stmt.setString(i, s);
     } catch (SQLException ex) {
@@ -209,8 +209,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
   
 
-  @Override
-  public void setInt (int i, int v) {
+  //@Override
+  private void setInt (int i, int v) {
     try {
       stmt.setInt(i, v);
     } catch (SQLException ex) {
@@ -225,8 +225,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
 
 
-  @Override
-  public void setFloat (int i, float f) {
+  //@Override
+  private void setFloat (int i, float f) {
     try {
       stmt.setFloat(i, f);
     } catch (SQLException ex) {
@@ -241,8 +241,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
 
 
-  @Override
-  public void setDouble (int i, double d) {
+  //@Override
+  private void setDouble (int i, double d) {
     try {
       stmt.setDouble(i, d);
     } catch (SQLException ex) {
@@ -257,8 +257,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
 
 
-  @Override
-  public void setShort (int i, short v) {
+  //@Override
+  private void setShort (int i, short v) {
     try {
       stmt.setShort(i, v);
     } catch (SQLException ex) {
@@ -273,8 +273,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
 
 
-  @Override
-  public void setLong (int i, long v) {
+  //@Override
+  private void setLong (int i, long v) {
     try {
       stmt.setLong(i, v);
     } catch (SQLException ex) {
@@ -289,8 +289,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
 
 
-  @Override
-  public void setDate (int i, java.sql.Date d) {
+  //@Override
+  private void setDate (int i, java.sql.Date d) {
     try {
       stmt.setDate(i, new java.sql.Date(d.getTime()), tzCal);
     } catch (SQLException ex) {
@@ -305,8 +305,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
 
 
-  @Override
-  public void setLocalDate (int i, LocalDate d) {
+  //@Override
+  private void setLocalDate (int i, LocalDate d) {
     try {
       stmt.setDate(i, new java.sql.Date(d.toEpochDay()), tzCal);
     } catch (SQLException ex) {
@@ -321,8 +321,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
 
 
-  @Override
-  public void setTimestamp (int i, Timestamp ts) {
+  //@Override
+  private void setTimestamp (int i, Timestamp ts) {
     try {
       stmt.setTimestamp(i, ts);
     } catch (SQLException ex) {
@@ -337,8 +337,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
 
 
-  @Override
-  public void setDecimal (int i, Decimal d) {
+  //@Override
+  private void setDecimal (int i, Decimal d) {
     try {
       stmt.setBigDecimal(i, new BigDecimal(d.toString()));
     } catch (SQLException ex) {
@@ -353,8 +353,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
 
 
-  @Override
-  public void setEnum (int i, Enum<?> v) {
+  //@Override
+  private void setEnum (int i, Enum<?> v) {
     try {
       stmt.setInt(i, v.ordinal());
     } catch (SQLException ex) {
@@ -369,8 +369,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
 
 
-  @Override
-  public void setURL (int i, URL v) {
+  //@Override
+  private void setURL (int i, URL v) {
     try {
       stmt.setString(i, v.toString());
     } catch (SQLException ex) {
@@ -385,8 +385,8 @@ public class PreparedStatement implements IPreparedStatement {
   }
 
 
-  @Override
-  public void setObject (int i, Object obj) {
+  //@Override
+  private void setObject (int i, Object obj) {
     try {
       if (obj instanceof Decimal) {
         setDecimal(i, (Decimal)obj);

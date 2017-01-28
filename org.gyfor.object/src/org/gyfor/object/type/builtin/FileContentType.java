@@ -95,38 +95,25 @@ public class FileContentType extends PathBasedType<FileContent> {
 
 
   @Override
-  public void setStatementFromValue (IPreparedStatement stmt, int sqlIndex, FileContent value) {
-    // Not used
-  }
-
-
-  @Override
-  public void setStatementFromValue (IPreparedStatement stmt, int[] sqlIndex, FileContent value) {
+  public void setStatementFromValue (IPreparedStatement stmt, FileContent value) {
     try {
-      stmt.setString(sqlIndex[0]++, value.getFileName());
+      stmt.setString(value.getFileName());
       // TODO should a IBlob be created to avoid the SQLException
       Blob blob = stmt.createBlob();
       blob.setBytes(1, value.getContents());
-      stmt.setBlob(sqlIndex[0]++, blob);
+      stmt.setBlob(blob);
     } catch (SQLException ex) {
       throw new RuntimeException(ex);
     }
   }
 
 
-  @Override
-  public FileContent getResultValue (IResultSet resultSet, int sqlIndex) {
-    // Not used
-    return null;
-  }
-
-
-  @Override
-  public FileContent getResultValue (IResultSet resultSet, int[] sqlIndex) {
+ @Override
+  public FileContent getResultValue (IResultSet resultSet) {
     try {
-      String fileName = resultSet.getString(sqlIndex[0]++);
+      String fileName = resultSet.getString();
       // TODO should a IBlob be created to avoid the SQLException
-      Blob blob = resultSet.getBlob(sqlIndex[0]++);
+      Blob blob = resultSet.getBlob();
       byte[] bytes = blob.getBytes(1, (int)blob.length());
       return new FileContent(fileName, bytes);
     } catch (SQLException ex) {

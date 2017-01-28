@@ -1,7 +1,7 @@
 package org.gyfor.dao;
 
 
-public class IdValuePair<T> {
+public class IdValuePair<T extends Comparable<T>> implements Comparable<IdValuePair<T>> {
 
   private final int id;
   
@@ -21,6 +21,18 @@ public class IdValuePair<T> {
   
   public T getValue () {
     return value;
+  }
+
+
+  @Override
+  public String toString() {
+    return id + ": " + value;
+  }
+
+
+  @Override
+  public int compareTo(IdValuePair<T> arg) {
+    return value.compareTo(arg.value);
   }
   
 }

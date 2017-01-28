@@ -86,14 +86,14 @@ public class DateType extends DateBasedType<Date> {
   
   
   @Override
-  public void setStatementFromValue (IPreparedStatement stmt, int sqlIndex, Date value) {
-    stmt.setDate(sqlIndex, new java.sql.Date(value.getTime()));
+  public void setStatementFromValue (IPreparedStatement stmt, Date value) {
+    stmt.setDate(new java.sql.Date(value.getTime()));
   }
 
 
   @Override
-  public Date getResultValue (IResultSet resultSet, int sqlIndex) {
-    return resultSet.getDate(sqlIndex);
+  public Date getResultValue (IResultSet resultSet) {
+    return resultSet.getDate();
   }
  
 }
