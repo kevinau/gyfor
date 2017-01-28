@@ -9,10 +9,6 @@ public interface IDataAccessObject<T> extends AutoCloseable {
 
   public T getById (int id);
   
-  public T getByKey (Object... keyValues);
-  
-  public boolean existsByKey (Object... keyValues);
-  
   public List<T> getAll ();
   
   public List<IdValuePair<String>> getDescriptionAll ();
@@ -22,8 +18,6 @@ public interface IDataAccessObject<T> extends AutoCloseable {
   public DataAddStatus add (T instance);
   
   public VersionValue update (T instance);
-  
-  public void addOrUpdate (T instance);
   
   public void removeAll();
   
@@ -37,5 +31,7 @@ public interface IDataAccessObject<T> extends AutoCloseable {
   public VersionValue retire(int id);
   
   public VersionValue unRetire(int id);
+
+  public boolean existsUnique(int uniqueIndex, Object[] values, int id);
 
 }

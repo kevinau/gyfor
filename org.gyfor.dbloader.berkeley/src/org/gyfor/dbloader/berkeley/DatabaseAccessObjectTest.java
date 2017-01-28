@@ -9,6 +9,7 @@ import org.gyfor.dao.IDataAccessObject;
 import org.gyfor.dao.IdValuePair;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.plan.IEntityPlan;
+import org.gyfor.object.value.VersionValue;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -68,9 +69,13 @@ public class DatabaseAccessObjectTest {
     }
       
     // Read the database: first in primary key order
+    int qantasId = 0;
     System.out.println("Primary key order:");
     List<Party> results = dao.getAll();
     for (Party entity: results) {
+      if (entity.getShortName().equals("QAN")) {
+        qantasId = entity.getId();
+      }
       System.out.println(entity);
     }
     
@@ -87,6 +92,14 @@ public class DatabaseAccessObjectTest {
     for (IdValuePair<String> idValue: results2) {
       System.out.println(idValue);
     }
+
+    System.out.println("Fetch by id and update:");
+    Party party4 = dao.getById(qantasId);
+    System.out.println(party4);;
+    party4.setFormalName(party4.getFormalName().toUpperCase());
+    VersionValue v4 = dao.update(party4);
+    System.out.println(v4);;
+    System.out.println(party4);;
 
   }
 

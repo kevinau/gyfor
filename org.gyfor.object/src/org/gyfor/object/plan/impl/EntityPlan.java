@@ -312,6 +312,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
           throw new IllegalArgumentException("Node '" + name + "' in unique constraint on class '" + entityClass.getName() + "' must be an item");
         }
         fields[i] = (ItemPlan<?>)keyNode;
+        i++;
       }
       uniqueConstraints.add(fields);
     }

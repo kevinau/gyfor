@@ -11,4 +11,3 @@ Import-Package: org.gyfor.object.plan,
  org.osgi.service.component.annotations,
  org.slf4j;version="1.7.21"
 Bundle-ActivationPolicy: lazy
-Service-Component: OSGI-INF/org.gyfor.dao.registry.DataTableReferenceRegistry.xml
