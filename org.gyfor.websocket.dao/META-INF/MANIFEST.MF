@@ -18,7 +18,6 @@ Import-Package: com.sleepycat.je,
  org.gyfor.template,
  org.osgi.framework;version="1.8.0",
  org.osgi.service.component;version="1.2.2",
- org.osgi.service.component.annotations;version="1.2.0",
  org.pennyledger.party,
  org.xnio
 Bundle-ActivationPolicy: lazy

@@ -50,6 +50,14 @@ public abstract class RepeatingPlan extends NodePlan implements IRepeatingPlan {
   
 
   @Override
+  public INodePlan[] getChildNodes () {
+    return new INodePlan[] {
+        elemPlan,
+    };
+  }
+  
+  
+  @Override
   public INodePlan getElementPlan () {
     return elemPlan;
   }
@@ -85,6 +93,11 @@ public abstract class RepeatingPlan extends NodePlan implements IRepeatingPlan {
     return dimension;
   }
 
+  
+  @Override
+  public <X> X newInstance (X fromInstance) {
+    return elemPlan.newInstance(fromInstance);
+  }
   
 //  @Override
 //  public void accumulateTopItemPlans(List<IItemPlan<?>> fieldPlans) {

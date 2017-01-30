@@ -2,6 +2,7 @@ package org.gyfor.object.model;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,17 @@ public abstract class NameMappedModel extends ContainerModel {
     super(rootModel, parent, id);
     this.valueRef = valueRef;
     this.mappedPlan = mappedPlan;
+  }
+  
+  
+  @Override
+  public List<NodeModel> getChildNodes () {
+    // TODO this could be optimized
+    List<NodeModel> children = new ArrayList<>();
+    for (NodeModel member : memberModels.values()) {
+      children.add(member);
+    }
+    return children;
   }
   
   

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" immediate="true" name="org.gyfor.dbloader.berkeley.DatabaseAccessObjectTest">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.gyfor.dbloader.berkeley.DatabaseAccessObjectTest">
    <property name="dataAccessObject.target" value="(name=pennyledger.party)"/>
    <reference bind="setDao" cardinality="1..1" interface="org.gyfor.dao.IDataAccessObject" name="dao" policy="static" unbind="unsetDao"/>
    <implementation class="org.gyfor.dbloader.berkeley.DatabaseAccessObjectTest"/>

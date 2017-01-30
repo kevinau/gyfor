@@ -46,7 +46,7 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
   public IItemPlan<?>[] getKeyItems(int index);
   
   public T newInstance();
-
+  
   public List<IItemPlan<?>> getDataPlans();
 
   public List<IItemPlan<?>> getDescriptionPlans();

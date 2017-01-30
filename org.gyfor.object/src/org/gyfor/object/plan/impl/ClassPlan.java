@@ -41,6 +41,12 @@ public abstract class ClassPlan<T> extends NodePlan implements IClassPlan<T> {
 
   
   @Override
+  public INodePlan[] getChildNodes () {
+    return augmented.getMemberPlans();
+  }
+  
+    
+  @Override
   public void dump(int level) {
     indent (level);
     System.out.println("NameMappedPlan: " + augmented.getClassName());
@@ -113,4 +119,10 @@ public abstract class ClassPlan<T> extends NodePlan implements IClassPlan<T> {
     return augmented.getClassName();
   }
 
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  public <X> X newInstance (X fromInstance) {
+    return (X)augmented.newInstance (fromInstance);
+  }
 }

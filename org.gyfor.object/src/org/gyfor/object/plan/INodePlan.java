@@ -36,6 +36,10 @@ public interface INodePlan {
     }
   }
 
+  public <X> X newInstance(X fromValue);
+
+  public INodePlan[] getChildNodes();
+  
   public ILabelGroup getLabels();
   
   public boolean isNullable();

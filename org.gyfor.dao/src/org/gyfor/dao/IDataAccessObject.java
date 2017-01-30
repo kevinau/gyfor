@@ -17,11 +17,11 @@ public interface IDataAccessObject<T> extends AutoCloseable {
   
   public DataAddStatus add (T instance);
   
-  public VersionValue update (T instance);
+  public VersionValue update (T oldInstance, T newInstance);
   
   public void removeAll();
   
-  public void remove (T instance);
+  public void remove (T oldInstance);
   
   @Override
   public void close ();
@@ -30,8 +30,10 @@ public interface IDataAccessObject<T> extends AutoCloseable {
 
   public VersionValue retire(int id);
   
-  public VersionValue unRetire(int id);
+  public VersionValue unretire(int id);
 
   public boolean existsUnique(int uniqueIndex, Object[] values, int id);
-
+  
+  public T newInstance (T fromValue);
+  
 }

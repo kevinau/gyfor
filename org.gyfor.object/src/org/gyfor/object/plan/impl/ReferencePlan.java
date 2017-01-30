@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import org.gyfor.object.Entity;
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.plan.IEntityPlan;
+import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.IPlanContext;
 import org.gyfor.object.plan.IReferencePlan;
 import org.gyfor.object.plan.PlanStructure;
@@ -32,6 +33,14 @@ public class ReferencePlan<T> extends NodePlan implements IReferencePlan<T> {
   }
 
 
+  @Override
+  public INodePlan[] getChildNodes () {
+    return new INodePlan[] {
+        referencedPlan,
+    };
+  }
+  
+    
   @Override
   public ItemLabelGroup getLabels () {
     return labels;
@@ -65,6 +74,12 @@ public class ReferencePlan<T> extends NodePlan implements IReferencePlan<T> {
   @Override
   public PlanStructure getStructure () {
     return PlanStructure.REFERENCE;
+  }
+
+
+  @Override
+  public <X> X newInstance(X fromValue) {
+    return fromValue;
   }
 
 }

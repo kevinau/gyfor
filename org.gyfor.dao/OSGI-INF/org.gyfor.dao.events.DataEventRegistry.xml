@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.gyfor.dao.events.DataEventRegistry">
+   <service>
+      <provide interface="org.gyfor.dao.IDataEventRegistry"/>
+   </service>
+   <implementation class="org.gyfor.dao.events.DataEventRegistry"/>
+</scr:component>

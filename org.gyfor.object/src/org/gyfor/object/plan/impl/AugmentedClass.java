@@ -28,6 +28,8 @@ import org.gyfor.object.Optional;
 import org.gyfor.object.TypeFor;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.Validation;
+import org.gyfor.object.plan.IContainerPlan;
+import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.IRuntimeDefaultProvider;
 import org.gyfor.object.plan.IRuntimeFactoryProvider;
@@ -1049,6 +1051,35 @@ public class AugmentedClass<T> {
 
   public Class<?> getSourceClass() {
     return klass;
+  }
+
+
+  public Object newInstance () {
+    Object instance;
+    try {
+      instance = klass.newInstance();
+    } catch (InstantiationException | IllegalAccessException ex) {
+      throw new RuntimeException(ex);
+    }
+    return instance;  
+  }
+  
+  
+  public Object newInstance (Object fromInstance) {
+    Object toInstance = newInstance();
+    for (INodePlan member : memberPlans.values()) {
+      Object fromValue = member.getValue(fromInstance);
+
+      if (member instanceof IItemPlan) {
+        member.setValue(toInstance, fromValue);      
+      } else if (member instanceof IContainerPlan) {
+        Object newValue = ((IContainerPlan)member).newInstance(fromValue);
+        member.setValue(toInstance, newValue);      
+      } else {
+        throw new RuntimeException("Non-supported node plan: " + member);
+      }
+    }
+    return toInstance;
   }
 
 

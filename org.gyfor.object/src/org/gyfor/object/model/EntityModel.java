@@ -1,5 +1,8 @@
 package org.gyfor.object.model;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.gyfor.object.plan.IEntityPlan;
 
 public class EntityModel extends NameMappedModel {

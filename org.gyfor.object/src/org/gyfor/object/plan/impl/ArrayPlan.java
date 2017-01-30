@@ -1,5 +1,6 @@
 package org.gyfor.object.plan.impl;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 
@@ -39,6 +40,19 @@ public class ArrayPlan extends RepeatingPlan {
   @Override
   public PlanStructure getStructure () {
     return PlanStructure.ARRAY;
+  }
+
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <X> X newInstance(X fromValue) {
+    Object[] fromArray = (Object[])fromValue;
+    Object[] toArray = (Object[])Array.newInstance(Object.class, fromArray.length);
+    for (int i = 0; i < fromArray.length; i++) {
+      Object v = super.newInstance(fromArray[i]);
+      toArray[i] = v;
+    }
+    return (X)toArray;
   }
   
 }

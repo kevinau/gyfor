@@ -71,13 +71,19 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
 
   
   @Override
+  public List<NodeModel> getChildNodes () {
+    return Collections.emptyList();
+  }
+  
+  
+  @Override
   public INodePlan getPlan () {
     return itemPlan;
   }
 
 
   @Override
-  public boolean isItem () {
+  public boolean isItemModel () {
     return true;
   }
   

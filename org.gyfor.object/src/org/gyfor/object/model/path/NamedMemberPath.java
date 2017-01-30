@@ -41,14 +41,14 @@ public class NamedMemberPath extends StepPath implements IPathExpression {
 
   
   @Override
-  public void matches(NodeModel model, Trail<NodeModel> trail, INodeVisitable x) {
+  public void matches(NodeModel model, Trail<NodeModel> trail, Consumer<NodeModel> x) {
     if (model instanceof NameMappedModel) {
       NameMappedModel mapped = (NameMappedModel)model;
       NodeModel member = mapped.getMember(name);
       if (member == null) {
         // Do nothing
       } else {
-        super.matches(member, new Trail(trail, member), x);
+        super.matches(member, new Trail<>(trail, member), x);
       }
     } else {
       // Do nothing

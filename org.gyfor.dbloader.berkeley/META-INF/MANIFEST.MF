@@ -17,6 +17,9 @@ Import-Package: com.sleepycat.je,
  org.gyfor.sql,
  org.gyfor.todo,
  org.gyfor.util,
+ org.osgi.framework;version="1.8.0",
+ org.osgi.service.component.annotations;version="1.3.0";resolution:=optional,
+ org.osgi.service.event;version="1.3.0",
  org.pennyledger.party
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/opencsv-2.3-osgi.jar,

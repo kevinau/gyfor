@@ -3,16 +3,25 @@ package org.gyfor.dbloader.berkeley;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 
+import org.gyfor.dao.DataChangeListener;
 import org.gyfor.dao.IDataAccessObject;
 import org.gyfor.dao.IdValuePair;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.plan.IEntityPlan;
+import org.gyfor.object.value.EntityLife;
 import org.gyfor.object.value.VersionValue;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 import org.pennyledger.party.Party;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -20,9 +29,23 @@ import au.com.bytecode.opencsv.CSVReader;
 @Component (immediate = true, property={"dataAccessObject.target=(name=pennyledger.party)"})
 public class DatabaseAccessObjectTest {
 
+  //@Reference
+//  private IDataEventRegistry dataEventRegistry;
+  
   private IDataAccessObject<Party> dao;
   
+
+//  @Reference
+//  public void setDataEventRegistry (IDataEventRegistry dataEventRegistry) {
+//    this.dataEventRegistry = dataEventRegistry;
+//  }
+//  
+//  
+//  public void unsetDataEventRegistry (IDataEventRegistry dataEventRegistry) {
+//    this.dataEventRegistry = null;
+//  }
   
+
   @SuppressWarnings("unchecked")
   @Reference(name="dao")
   public void setDao (IDataAccessObject<?> dao) {
@@ -34,9 +57,34 @@ public class DatabaseAccessObjectTest {
     this.dao = null;
   }
   
-    
+
+  public class DataChangeEventHandler implements EventHandler {
+    @Override
+    public void handleEvent(Event event) {
+      int id = (int)event.getProperty("id");
+      String description = (String)event.getProperty("description");
+      if (description != null) {
+        System.err.println("Description changed: " + id + ": " + description);
+      }
+      EntityLife entityLife = (EntityLife)event.getProperty("entityLife");
+      if (entityLife != null) {
+        System.err.println("Entity life changed: " + id + ": " + entityLife);
+      }
+    }
+  }
+
+  
   @Activate
-  public void activate () {
+  public void activate (BundleContext bundleContext) {
+//    dataEventRegistry.addDataChangeListener(dataChangeListener);
+    String[] topics = new String[] {
+        "org/gyfor/data/DataAccessObject/*"
+    };
+
+    Dictionary<String, Object> props = new Hashtable<>();
+    props.put(EventConstants.EVENT_TOPIC, topics);
+    bundleContext.registerService(EventHandler.class.getName(), new DataChangeEventHandler() , props);
+    
     dao.removeAll();
     
     try {
@@ -95,12 +143,29 @@ public class DatabaseAccessObjectTest {
 
     System.out.println("Fetch by id and update:");
     Party party4 = dao.getById(qantasId);
-    System.out.println(party4);;
-    party4.setFormalName(party4.getFormalName().toUpperCase());
-    VersionValue v4 = dao.update(party4);
-    System.out.println(v4);;
-    System.out.println(party4);;
+    Party party5 = dao.newInstance(party4);
+    System.out.println(party5);
+    party4.setFormalName(party5.getFormalName().toUpperCase());
+    VersionValue v5 = dao.update(party4, party5);
+    System.out.println(v5);
+    System.out.println(party4);
+    System.out.println(party5);
 
+    System.out.println("Fetch by id and update 2:");
+    Party party6 = dao.newInstance(party4);
+    System.out.println(party6);
+    party4.setWebPage(party6.getWebPage().toUpperCase());
+    VersionValue v6 = dao.update(party4, party6);
+    System.out.println(v6);
+    System.out.println(party4);
+    System.out.println(party6);
+
+  }
+
+  
+  @Deactivate
+  public void deactivate () {
+    //dataEventRegistry.removeDataChangeListener(dataChangeListener);
   }
 
 }

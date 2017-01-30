@@ -1,6 +1,7 @@
 package org.gyfor.object.plan;
 
-public interface INameMappedPlan extends INodePlan {
+
+public interface INameMappedPlan extends IContainerPlan {
   
   public INodePlan[] getMemberPlans();
 

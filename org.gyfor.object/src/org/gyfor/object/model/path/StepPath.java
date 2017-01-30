@@ -39,7 +39,7 @@ public class StepPath implements IPathExpression {
   }
 
   @Override
-  public void matches(NodeModel model, Trail<NodeModel> trail, INodeVisitable x) {
+  public void matches(NodeModel model, Trail<NodeModel> trail, Consumer<NodeModel> x) {
     if (next != null) {
       next.matches(model, trail, x);
     } else {

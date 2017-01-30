@@ -1,9 +1,11 @@
 package org.gyfor.object.model.path;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.gyfor.object.model.NodeModel;
 import org.gyfor.object.model.RepeatingModel;
+import org.gyfor.object.plan.INodePlan;
 
 
 public class IndexedElementPath extends StepPath implements IPathExpression {
@@ -30,30 +32,25 @@ public class IndexedElementPath extends StepPath implements IPathExpression {
   }
 
   @Override
-  public void matches(NodeModel model, Trail trail, INodeVisitable x) {
-    if (model instanceof RepeatingModel) {
-      RepeatingModel repeating = (RepeatingModel)model;
-      NodeModel member = repeating.etMember(name);
-    List<IObjectWrapper> children = wrapper.getChildren();
-    int n = children.size();
-    if (n > 0 && (index - 1) < n) {
-      IObjectWrapper elem = children.get(index - 1);
-      return super.matches(elem, new Trail(trail, elem), x);
-    } else {
-      return false;
-    }
+  public void matches(INodePlan plan, Trail<INodePlan> trail, Consumer<INodePlan> x) {
+    throw new IllegalArgumentException("'indexed element' within a path expression, does not apply to node plans (only node models)");
   }
+
   
   @Override
-  public boolean matches(IObjectWrapper wrapper, IFieldVisitable x) {
-    List<IObjectWrapper> children = wrapper.getChildren();
-    int n = children.size();
-    if (n > 0 && (index - 1) < n) {
-      IObjectWrapper elem = children.get(index - 1);
-      return super.matches(elem, x);
+  public void matches(NodeModel model, Trail<NodeModel> trail, Consumer<NodeModel> x) {
+    if (model instanceof RepeatingModel) {
+      RepeatingModel repeating = (RepeatingModel)model;
+      List<NodeModel> members = repeating.getMembers();
+      int n = members.size();
+      if (index < n) {
+        NodeModel member = members.get(index);
+        super.matches(member, new Trail<>(trail, member), x);
+      }
     } else {
-      return false;
+      throw new IllegalArgumentException("'indexed element' within a path expression, only applies to repeating models");
     }
   }
+
   
 }

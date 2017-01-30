@@ -7,6 +7,7 @@ import org.gyfor.object.Describing;
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.Optional;
 import org.gyfor.object.plan.IItemPlan;
+import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.PlanStructure;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.Type;
@@ -72,6 +73,13 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
   public boolean isDescribing () {
     return describing;
   }
+  
+  
+  @Override
+  public INodePlan[] getChildNodes () {
+    return new INodePlan[0];
+  }
+  
   
 //  public Field getLastEntryField () {
 //    return lastEntryField;
@@ -147,6 +155,12 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
   @Override
   public PlanStructure getStructure () {
     return PlanStructure.ITEM;
+  }
+
+
+  @Override
+  public <X> X newInstance(X fromValue) {
+    return fromValue;
   }
 
 }

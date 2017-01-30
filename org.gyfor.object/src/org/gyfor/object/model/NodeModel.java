@@ -1,5 +1,7 @@
 package org.gyfor.object.model;
 
+import java.util.List;
+
 import org.gyfor.object.plan.INodePlan;
 
 public abstract class NodeModel {
@@ -29,6 +31,9 @@ public abstract class NodeModel {
   protected ContainerModel getParent() {
     return parent;
   }
+  
+  
+  public abstract List<NodeModel> getChildNodes();
   
   
   private static void buildCanonicalName (NodeModel nodeModel, StringBuilder builder, boolean[] isTop) {
@@ -116,7 +121,7 @@ public abstract class NodeModel {
     return false;
   }
   
-  public boolean isItemItem () {
+  public boolean isItemModel () {
     return false;
   }
   

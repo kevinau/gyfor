@@ -28,7 +28,7 @@ public class DescendentPath extends StepPath implements IPathExpression {
     Trail<INodePlan> trail2 = new Trail<>(trail, plan);
     super.matches(plan, trail2, x);
     
-    for (INodePlan child : plan.getChildren()) {
+    for (INodePlan child : plan.getChildNOdes()) {
       matchDeep(child, trail, x);
     }
     return true;
@@ -36,17 +36,17 @@ public class DescendentPath extends StepPath implements IPathExpression {
 
 
   @Override
-  public void matches(NodeModel model, Trail trail, INodeVisitable x) {
+  public void matches(NodeModel model, Trail<NodeModel> trail, Consumer<NodeModel> x) {
     matchDeep(model, trail, x);
   }
   
   
-  private boolean matchDeep(NodeModel model, Trail trail, INodeVisitable x) {
-    Trail trail2 = new Trail(trail, model);
+  private boolean matchDeep(NodeModel model, Trail<NodeModel> trail, Consumer<NodeModel> x) {
+    Trail<NodeModel> trail2 = new Trail<>(trail, model);
     super.matches(model, trail2, x);
     
-    for (IObjectWrapper child : wrapper.getChildren()) {
-      matchDeep(child, x);
+    for (NodeModel child : model.getChildNodes()) {
+      matchDeep(child, trail, x);
     }
     return true;
   }

@@ -1,6 +1,7 @@
 package org.gyfor.object.plan.impl;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -42,4 +43,17 @@ public class ListPlan extends RepeatingPlan {
     return PlanStructure.LIST;
   }
 
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  public <X> X newInstance(X fromValue) {
+    List<?> fromList = (List<?>)fromValue;
+    List<Object> toList = new ArrayList<>(fromList.size());
+    for (Object v0 : fromList) {
+      Object v1 = super.newInstance(v0);
+      toList.add(v1);
+    }
+    return (X)toList;
+  }
+  
 }

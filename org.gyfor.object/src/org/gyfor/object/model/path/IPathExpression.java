@@ -22,9 +22,6 @@ public interface IPathExpression {
 
   public void matches(INodePlan plan, Trail<INodePlan> trail, Consumer<INodePlan> x);
   
-  public void matches(NodeModel model, Trail<NodeModel> trail, INodeVisitable x);
-
-
-  //public boolean matches(NodeModel model, IItemVisitable x);
+  public void matches(NodeModel model, Trail<NodeModel> trail, Consumer<NodeModel> x);
 
 }
