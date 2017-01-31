@@ -8,7 +8,7 @@ import java.util.List;
 import org.gyfor.dao.DataAddStatus;
 import org.gyfor.dao.IDataAccessObject;
 //import org.gyfor.dao.IDataEventRegistry;
-import org.gyfor.dao.IdValuePair;
+import org.gyfor.dao.EntityDescription;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.IPlanContext;
@@ -170,7 +170,7 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
         props.put("entity", entityPlan.getEntityName());
         props.put("id", id);
         props.put("description", newDesc);
-        sendEvent("REMOVED", props);
+        sendEvent("SEARCHCHANGE", props);
       }
     }
     return version;
@@ -279,7 +279,7 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
       props.put("entity", entityPlan.getEntityName());
       props.put("id", id);
       props.put("entityLife", entityLife);
-      sendEvent("CHANGED", props);
+      sendEvent("SEARCHCHANGE", props);
     }
     return version;
   }
@@ -390,8 +390,8 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
 
 
   @Override
-  public List<IdValuePair<String>> getDescriptionAll() {
-    List<IdValuePair<String>> results = new ArrayList<>();
+  public List<EntityDescription> getDescriptionAll() {
+    List<EntityDescription> results = new ArrayList<>();
     
     try (
         IConnection conn = connFactory.getIConnection();
@@ -405,8 +405,16 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
         for (IItemPlan<?> plan : descPlans) {
           plan.setInstanceFromResult(instance, rs);
         }
+        EntityLife entityLife;
+        if (entityLifePlan != null) {
+          entityLife = entityLifePlan.getResultValue(rs);
+        } else {
+          entityLife = EntityLife.ACTIVE;
+        }
+        
         String desc = entityPlan.getDescription(instance);
-        IdValuePair<String> idValue = new IdValuePair<>(id, desc);
+        
+        EntityDescription idValue = new EntityDescription(id, desc, entityLife);
         results.add(idValue);
       }
     }

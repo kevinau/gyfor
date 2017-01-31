@@ -364,7 +364,10 @@ public class SQLBuilder<T> {
       buffer.append(toSQLName(idPlan.getName()));
       buffer.append(",");
       appendDescriptionNames(buffer);
-
+      if (entityLifePlan != null) {
+        buffer.append(",");
+        buffer.append(toSQLName(entityLifePlan.getName()));
+      }
       buffer.append(" from ");
       buffer.append(tableName);
 

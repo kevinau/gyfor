@@ -58,10 +58,10 @@ import io.undertow.websockets.core.WebSockets;
  * <p>
  * All commands and responses are tab delimited fields, with the first field the command or response name.
  */
-@Context("/ws/entity")
-@Resource(path = "/static", location = "static")
-@Component(service = HttpHandler.class)
-public class EntityEdit extends WebSocketProtocolHandshakeHandler {
+//@Context("/ws/entity")
+//@Resource(path = "/static", location = "static")
+//@Component(service = HttpHandler.class)
+public class DataAccessObjectWebSocket2 extends WebSocketProtocolHandshakeHandler {
 
   private final EntityWebSocketConnectionCallback callback;
   private final String context;
@@ -74,7 +74,7 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
   private DataTable entityTable;
   
 
-  public EntityEdit() {
+  public DataAccessObjectWebSocket2() {
     super(new EntityWebSocketConnectionCallback());
     
     callback = CallbackAccessor.getCallback(this);
@@ -138,7 +138,7 @@ public class EntityEdit extends WebSocketProtocolHandshakeHandler {
   
   protected static class EntityWebSocketConnectionCallback extends AbstractWebSocketConnectionCallback {
 
-    private final Logger logger = LoggerFactory.getLogger(EntityEdit.class);
+    private final Logger logger = LoggerFactory.getLogger(DataAccessObjectWebSocket2.class);
     
     private IPlanContext planContext;
     private DataEnvironment dataEnvironment;

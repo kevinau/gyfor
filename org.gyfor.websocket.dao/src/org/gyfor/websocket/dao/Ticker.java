@@ -15,6 +15,7 @@ import org.osgi.service.component.annotations.Deactivate;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
+import io.undertow.websockets.core.WebSocketChannel;
 
 
 //@Context("/ws/entity")
@@ -139,6 +140,21 @@ public class Ticker extends WebSocketProtocolHandshakeHandler {
 
     public void stopTicking() {
       timer.cancel();
+    }
+
+
+    @Override
+    protected void doRequest(Request request, Object sessionData, WebSocketChannel channel) {
+    }
+
+
+    @Override
+    protected void openResources() {
+    }
+
+
+    @Override
+    protected void closeResources() {
     }
 
   }

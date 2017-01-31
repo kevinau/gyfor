@@ -7,9 +7,8 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.gyfor.dao.DataChangeListener;
+import org.gyfor.dao.EntityDescription;
 import org.gyfor.dao.IDataAccessObject;
-import org.gyfor.dao.IdValuePair;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.value.EntityLife;
@@ -135,9 +134,9 @@ public class DatabaseAccessObjectTest {
     }
 
     System.out.println("Fetch and sort all descriptions:");
-    List<IdValuePair<String>> results2 = dao.getDescriptionAll();
+    List<EntityDescription> results2 = dao.getDescriptionAll();
     Collections.sort(results2);
-    for (IdValuePair<String> idValue: results2) {
+    for (EntityDescription idValue: results2) {
       System.out.println(idValue);
     }
 

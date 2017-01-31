@@ -67,7 +67,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
         }
       }
     }
-    Object sessionData = buildSessionData(requestPath, queryMap);
+    Object sessionData = buildSessionData(requestPath, queryMap, channel);
     
     synchronized (sessions) {
       if (sessions.isEmpty()) {
@@ -115,7 +115,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
   }
   
   
-  protected Object buildSessionData (String path, Map<String, String> queryMap) {
+  protected Object buildSessionData (String path, Map<String, String> queryMap, WebSocketChannel channel) {
     return null;
   }
   

@@ -11,7 +11,7 @@ public interface IDataAccessObject<T> extends AutoCloseable {
   
   public List<T> getAll ();
   
-  public List<IdValuePair<String>> getDescriptionAll ();
+  public List<EntityDescription> getDescriptionAll ();
   
   public String getDescriptionById (int id);
   
