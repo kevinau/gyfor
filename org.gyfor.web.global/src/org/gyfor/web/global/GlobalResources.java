@@ -18,7 +18,7 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 
 
-@Resource(path = "/global/resources", dynamic = true)
+@Resource(path = "/global", dynamic = true)
 @Component(service = HttpHandler.class, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class GlobalResources implements HttpHandler, IDynamicResourceLocation  {
 
