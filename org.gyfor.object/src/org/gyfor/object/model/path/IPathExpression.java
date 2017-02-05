@@ -2,7 +2,7 @@ package org.gyfor.object.model.path;
 
 import java.util.function.Consumer;
 
-import org.gyfor.object.model.NodeModel;
+import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.plan.INodePlan;
 
 
@@ -22,6 +22,6 @@ public interface IPathExpression {
 
   public void matches(INodePlan plan, Trail<INodePlan> trail, Consumer<INodePlan> x);
   
-  public void matches(NodeModel model, Trail<NodeModel> trail, Consumer<NodeModel> x);
+  public void matches(INodeModel model, Trail<INodeModel> trail, Consumer<INodeModel> x);
 
 }

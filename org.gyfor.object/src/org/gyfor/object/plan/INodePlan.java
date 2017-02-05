@@ -1,5 +1,7 @@
 package org.gyfor.object.plan;
 
+import java.lang.reflect.Field;
+
 import org.gyfor.object.EntryMode;
 
 /**
@@ -47,5 +49,7 @@ public interface INodePlan {
   public boolean isItem();
   
   public PlanStructure getStructure();
+
+  public Field getField();
   
 }

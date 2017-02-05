@@ -6,10 +6,10 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.gyfor.object.model.EntityModel;
-import org.gyfor.object.model.ItemModel;
-import org.gyfor.object.model.NodeModel;
-import org.gyfor.object.model.RootModel;
+import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.model.impl.EntityModel2;
+import org.gyfor.object.model.impl.ItemModel;
+import org.gyfor.object.model.impl.RootModel;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
@@ -54,14 +54,14 @@ public class ModelHtmlBuilder {
     IEntityPlan<Person> entityPlan = objectContext.getEntityPlan(Person.class);
     
     Person instance = new Person("Kevin Holloway", "Kevin", "0447 252 976", null, "kholloway@geckosoftware.com.au");
-    EntityModel entityModel = rootModel.buildEntityModel(entityPlan, instance);
+    EntityModel2 entityModel = rootModel.buildEntityModel(entityPlan, instance);
     Writer writer = new StringWriter();
     buildHtml(templateEngine.getPebbleEngine(), writer, entityModel, null);
     System.out.println(writer.toString());
   }
   
   
-  public static void buildHtml (PebbleEngine templateEngine, Writer writer, NodeModel nodeModel, Map<String, Object> withValues) {
+  public static void buildHtml (PebbleEngine templateEngine, Writer writer, INodeModel nodeModel, Map<String, Object> withValues) {
     // Build template name
     String templateName = nodeModel.getCanonicalName();
     String defaultName;

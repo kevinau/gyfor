@@ -1,137 +1,30 @@
-package org.gyfor.object.model;
+package org.gyfor.object.model.impl;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.gyfor.object.UserEntryException;
+import org.gyfor.object.model.IContainerModel;
+import org.gyfor.object.model.IEntityModel;
+import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ref.IValueReference;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.todo.NotYetImplementedException;
 
 
-/*
- * This is the topmost model in the herirachy.
- */
-public class RootModel {
 
-  private AtomicInteger idSource = new AtomicInteger(1);
-  
-  private final FastAccessList<ContainerChangeListener> containerChangeListenerList = new FastAccessList<>(ContainerChangeListener.class);
-  private final FastAccessList<EffectiveModeListener> effectiveModeListenerList = new FastAccessList<>(EffectiveModeListener.class);
-  private final FastAccessList<ItemEventListener> itemEventListenerList = new FastAccessList<>(ItemEventListener.class);
+public class ModelFactory {
 
-  
-  public RootModel () {
-  }
-  
-  
-  public void addContainerChangeListener(ContainerChangeListener x) {
-    containerChangeListenerList.add(x);
-  }
-  
-  
-  public void removeContainerChangeListener(ContainerChangeListener x) {
-    containerChangeListenerList.remove(x);
-  }
-  
-  
-  public void addEffectiveModeListener(EffectiveModeListener x) {
-    effectiveModeListenerList.add(x);
-  }
-  
-  
-  public void removeEffectiveModeListener(EffectiveModeListener x) {
-    effectiveModeListenerList.remove(x);
-  }
-  
-  
-  public void addItemEventListener(ItemEventListener x) {
-    itemEventListenerList.add(x);
-  }
-  
-  
-  public void removeItemEventListener(ItemEventListener x) {
-    itemEventListenerList.remove(x);
-  }
-  
-  
-  void fireChildAdded(ContainerModel parent, NodeModel node) {
-    for (ContainerChangeListener listener : containerChangeListenerList) {
-      listener.childAdded(parent, node);
-    }
-  }
-
-
-  void fireChildRemoved(ContainerModel parent, NodeModel node) {
-    for (ContainerChangeListener listener : containerChangeListenerList) {
-      listener.childRemoved(parent, node);
-    }
-  }
-
-  
-  void fireCompareEqualityChange(ItemModel model) {
-    for (ItemEventListener listener : itemEventListenerList) {
-      listener.compareEqualityChange(model);
-    }
-  }
-
-
-  void fireCompareSourceChange(ItemModel model, boolean isDataTrigger) {
-    for (ItemEventListener listener : itemEventListenerList) {
-      listener.compareSourceChange(model, isDataTrigger);
-    }
-  }
-
-
-  void fireComparisonBasisChange(ItemModel model) {
-    for (ItemEventListener listener : itemEventListenerList) {
-      listener.comparisonBasisChange(model);
-    }
-  }
-
-
-  void fireErrorNoted(ItemModel model, UserEntryException ex) {
-    for (ItemEventListener listener : itemEventListenerList) {
-      listener.errorNoted(model, ex);
-    }
-  }
-
-
-  void fireErrorCleared(ItemModel model) {
-    for (ItemEventListener listener : itemEventListenerList) {
-      listener.errorCleared(model);
-    }
-  }
-
-
-  void fireErrorCleared(NodeModel model) {
-    for (EffectiveModeListener listener : effectiveModeListenerList) {
-      listener.modeChange(model);
-    }
-  }
-
-
-  public int nextId() {
-    return idSource.getAndIncrement();
-  }
-  
-  
-  protected NodeModel buildNodeModel (ContainerModel parent, IValueReference valueRef, INodePlan plan) {
-    return buildNodeModel (parent, nextId(), valueRef, plan);
-  }
-  
-  
-  protected NodeModel buildNodeModel (ContainerModel parent, int id, IValueReference valueRef, INodePlan plan) {
+  protected static INodeModel buildNodeModel (AtomicInteger idSource, IEntityModel entityModel, IContainerModel parent, IValueReference valueRef, INodePlan plan) {
     if (plan instanceof IItemPlan) {
-      return new ItemModel(this, parent, id, valueRef, (IItemPlan<?>)plan);
+      return new ItemModel(idSource, entityModel, parent, valueRef, (IItemPlan<?>)plan);
     } else if (plan instanceof IEntityPlan) {
-      return new EntityModel(this, null, id, valueRef, (IEntityPlan<?>)plan);
+      throw new IllegalArgumentException("An entity plan cannot be the child of any plan");
     } else {
-      throw new RuntimeException("Unsupported plan: " + plan.getClass());
+      throw new NotYetImplementedException("Plan: " + plan.getClass());
     }
   }
-
-
+  
 //  @SuppressWarnings("unchecked")
 //  private NodeModel buildNodeModel (NodeModel parent, INodePlan plan, Object instance) {
 //    switch (plan.kind()) {
@@ -221,32 +114,25 @@ public class RootModel {
 //  }
   
 
-  public EntityModel buildEntityModel (int id, IEntityPlan<?> entityPlan) {
-    EntityModel entityModel = new EntityModel(this, null, id, entityPlan);
-    return entityModel;
-  }
+//  public EntityModel2 buildEntityModel (int id, IEntityPlan<?> entityPlan) {
+//    EntityModel2 entityModel = new EntityModel2(this, null, id, entityPlan);
+//    return entityModel;
+//  }
+//  
+//
+//  public EntityModel2 buildEntityModel (int id, IEntityPlan<?> entityPlan, Object instance) {
+//    EntityModel2 entityModel = new EntityModel2(this, null, id, entityPlan, instance);
+//    return entityModel;
+//  }
+//  
+//
+//  public EntityModel2 buildEntityModel (IEntityPlan<?> entityPlan) {
+//    return buildEntityModel (nextId(), entityPlan);
+//  }
+//  
+//
+//  public EntityModel2 buildEntityModel (IEntityPlan<?> entityPlan, Object instance) {
+//    return buildEntityModel (nextId(), entityPlan, instance);
+//  }
   
-
-  public EntityModel buildEntityModel (int id, IEntityPlan<?> entityPlan, Object instance) {
-    EntityModel entityModel = new EntityModel(this, null, id, entityPlan, instance);
-    return entityModel;
-  }
-  
-
-  public EntityModel buildEntityModel (IEntityPlan<?> entityPlan) {
-    return buildEntityModel (nextId(), entityPlan);
-  }
-  
-
-  public EntityModel buildEntityModel (IEntityPlan<?> entityPlan, Object instance) {
-    return buildEntityModel (nextId(), entityPlan, instance);
-  }
-  
-
-  @Override
-  public String toString () {
-    return "RootModel()";
-  }
-
-
 }

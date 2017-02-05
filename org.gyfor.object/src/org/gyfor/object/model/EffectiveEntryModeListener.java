@@ -7,11 +7,11 @@ import java.util.EventListener;
  * @author Kevin Holloway
  * 
  */
-public interface EffectiveModeListener extends EventListener {
+public interface EffectiveEntryModeListener extends EventListener {
 
   /**
    * The effective entry mode of the object model has changed.
    */
-  public void modeChange (NodeModel model);
+  public void effectiveModeChanged (INodeModel model);
 
 }

@@ -5,24 +5,28 @@ import java.util.List;
 import org.gyfor.object.Entity;
 import org.gyfor.object.EntityPlanFactory;
 import org.gyfor.object.Optional;
-import org.gyfor.object.model.EntityModel;
-import org.gyfor.object.model.ItemModel;
 import org.gyfor.object.model.ContainerChangeListener;
-import org.gyfor.object.model.NodeModel;
-import org.gyfor.object.model.RootModel;
+import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.model.impl.EntityModel2;
+import org.gyfor.object.model.impl.ItemModel;
+import org.gyfor.object.model.impl.NodeModel;
+import org.gyfor.object.model.impl.RootModel;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.ILabelGroup;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.plan.IPlanContext;
 import org.gyfor.object.plan.impl.PlanContext;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.StringType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
-
-public class SimpleEntityTest {
+@Component
+public class EntityPlanTest implements ITestClass {
 
   @Entity
   public static class SimpleEntity {
@@ -52,19 +56,32 @@ public class SimpleEntityTest {
   }
 
 
-  private PlanContext context;
-  private IEntityPlan<SimpleEntity> plan;
+  private IPlanContext planContext;
+  
+  @Reference
+  public void setPlanContext (IPlanContext planContext) {
+    this.planContext = planContext;
+  }
+  
+  
+  public void unsetPlanContext (IPlanContext planContext) {
+    this.planContext = null;
+  }
+  
+
+  private IEntityPlan<?> plan;
   
   
   @Before
   public void before () {
-    context = new PlanContext();
-    plan = EntityPlanFactory.getEntityPlan(context, SimpleEntity.class);
+    plan = planContext.getEntityPlan(SimpleEntity.class);
   }
   
   
   @Test
   public void testBasicPlan () {
+    IEntityPlan<?> plan = planContext.getEntityPlan(SimpleEntity.class);
+    
     Assert.assertNotNull(plan);
     
     INodePlan idPlan = plan.getIdPlan();
@@ -95,26 +112,27 @@ public class SimpleEntityTest {
     Assert.assertEquals("", description);
   }
 
+  
   @Test
   public void testEntityModel () {
     RootModel root = new RootModel();
     root.addStructureChangeListener(new ContainerChangeListener() {
 
       @Override
-      public void childAdded(NodeModel parent, NodeModel node) {
-        Assert.assertTrue(parent instanceof EntityModel);
-        Assert.assertEquals("SimpleEntity", ((EntityModel)parent).getPlan().getEntityName());
+      public void childAdded(INodeModel parent, INodeModel node) {
+        Assert.assertTrue(parent instanceof EntityModel2);
+        Assert.assertEquals("SimpleEntity", ((EntityModel2)parent).getPlan().getEntityName());
         Assert.assertTrue(node instanceof ItemModel);
       }
 
       @Override
-      public void childRemoved(NodeModel parent, NodeModel node) {
+      public void childRemoved(INodeModel parent, INodeModel node) {
         // TODO Auto-generated method stub
         System.out.println("child removed: " + parent + "   " + node);
       }
 
     });
-    EntityModel model = root.buildEntityModel(plan);
+    EntityModel2 model = root.buildEntityModel(plan);
     SimpleEntity instance = new SimpleEntity();
     instance.name = "Kevin";
     instance.location = "Australia";
@@ -128,7 +146,7 @@ public class SimpleEntityTest {
     
     SimpleEntity instance = new SimpleEntity("Kevin", "Nailsworth");
     
-    EntityModel model = root.buildEntityModel(plan, instance);
+    EntityModel2 model = root.buildEntityModel(plan, instance);
 
     Assert.assertEquals(1, model.getId());
     List<NodeModel> members = model.getMembers();
@@ -137,7 +155,7 @@ public class SimpleEntityTest {
     Assert.assertEquals(plan, model.getPlan());
     Assert.assertEquals(instance, model.getValue());
     
-    NodeModel field1 = model.getMember("name");
+    INodeModel field1 = model.getMember("name");
     Assert.assertTrue(field1 instanceof ItemModel);
     Assert.assertEquals("name", ((ItemModel)field1).getName());
   }    
@@ -148,7 +166,7 @@ public class SimpleEntityTest {
     
     SimpleEntity instance = new SimpleEntity("Kevin", "Nailsworth");
     
-    EntityModel model = root.buildEntityModel(plan, instance);
+    EntityModel2 model = root.buildEntityModel(plan, instance);
     ItemModel nameModel = model.getMember("name");
     Assert.assertEquals(2, nameModel.getId());
     Assert.assertEquals("Kevin", nameModel.getValue());
@@ -158,13 +176,14 @@ public class SimpleEntityTest {
     Assert.assertTrue(nameType instanceof StringType);
   }    
   
+  
   @Test
   public void testBasicModelField2 () {
     RootModel root = new RootModel();
     
     SimpleEntity instance = new SimpleEntity();
     
-    EntityModel model = root.buildEntityModel(plan, instance);
+    EntityModel2 model = root.buildEntityModel(plan, instance);
     ItemModel nameModel = model.getMember("location");
     Assert.assertEquals(3, nameModel.getId());
     Assert.assertEquals(null, nameModel.getValue());

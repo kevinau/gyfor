@@ -12,6 +12,14 @@ import org.gyfor.dao.IDataAccessObject;
 import org.gyfor.http.CallbackAccessor;
 import org.gyfor.http.Context;
 import org.gyfor.http.Resource;
+import org.gyfor.object.model.ContainerChangeListener;
+import org.gyfor.object.model.IContainerModel;
+import org.gyfor.object.model.IEntityModel;
+import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.model.impl.EntityModel;
+import org.gyfor.object.plan.IEntityPlan;
+import org.gyfor.object.plan.IItemPlan;
+import org.gyfor.object.plan.INodePlan;
 import org.gyfor.template.ITemplate;
 import org.gyfor.template.ITemplateEngine;
 import org.gyfor.template.ITemplateEngineFactory;
@@ -111,6 +119,7 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
   private static class SessionData {
     private final IDataAccessObject<?> dao;
     private final ServiceReference<IDataAccessObject> serviceRef;
+    private IEntityModel entityModel;
     
     private SessionData (IDataAccessObject<?> dao, ServiceReference<IDataAccessObject> ref) {
       this.dao = dao;
@@ -137,7 +146,7 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
     }
     
     
-    public class DataChangeEventHandler implements EventHandler {
+    public static class DataChangeEventHandler implements EventHandler {
       @Override
       public void handleEvent(Event event) {
         int id = (int)event.getProperty("id");
@@ -148,6 +157,37 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
       }
     }
 
+    
+    private static class EntityContainerChangeHandler implements ContainerChangeListener {
+      private final WebSocketChannel channel;
+      private final ITemplateEngine templateEngine;
+      
+      private EntityContainerChangeHandler(WebSocketChannel channel, ITemplateEngine templateEngine) {
+        this.channel = channel;
+        this.templateEngine = templateEngine;
+      }
+      
+      @Override
+      public void childAdded(IContainerModel parent, INodeModel node) {
+        ITemplate nodeTempl = templateEngine.getTemplate("node");
+        nodeTempl.putContext("model", node);
+        
+        INodePlan plan = node.getPlan();
+        nodeTempl.putContext("plan", node.getPlan());
+        if (plan instanceof IItemPlan) {
+          nodeTempl.putContext("type", ((IItemPlan<?>)plan).getType());
+        }
+        String html = nodeTempl.evaluate();
+        Response response = new Response("update", parent.getNodeId(), node.getNodeId(), html);
+        WebSockets.sendText(response.toString(), channel, null);
+      }
+
+      @Override
+      public void childRemoved(IContainerModel parent, INodeModel node) {
+        Response response = new Response("update", "node" + parent.getNodeId(), "node" + node.getNodeId(), "");
+        WebSockets.sendText(response.toString(), channel, null);
+      }
+    }
     
     @SuppressWarnings("rawtypes")
     @Override
@@ -161,7 +201,7 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
         case 1 :
           ServiceReference<IDataAccessObject> ref = refs.iterator().next();
           IDataAccessObject dao = bundleContext.getService(ref);
-
+          
           // Register this session as an event listener
           String[] topics = new String[] {
               "org/gyfor/data/DataAccessObject/*"
@@ -191,13 +231,20 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
 
  
     @Override
-    protected void doRequest (Request request, Object sessionData, WebSocketChannel channel) {
+    protected void doRequest (Request request, Object sessionObj, WebSocketChannel channel) {
       logger.info("Performing request {}", request.getName());
+      System.err.println(request.getName());
+      System.err.println(request);
       
       switch (request.getName()) {
       case "descriptions" :
-        IDataAccessObject<?> dao = ((SessionData)sessionData).dao;
+        IDataAccessObject<?> dao = ((SessionData)sessionObj).dao;
         doDescriptions (channel, dao);
+        break;
+      case "init" :
+//        SessionData sessionData = (SessionData)sessionObj;
+//        IDataAccessObject<?> dao2 = sessionData.dao;
+        doInit (channel, (SessionData)sessionObj);
         break;
       default :
         throw new RuntimeException("Unrecognised command '" + request.getName() + "'");
@@ -221,6 +268,16 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
       WebSockets.sendText(response, channel, null);
     }
 
+    
+    private void doInit (WebSocketChannel channel, SessionData sessionData) {
+      IEntityPlan<?> entityPlan = sessionData.dao.getEntityPlan();
+      sessionData.entityModel = new EntityModel(entityPlan);
+      sessionData.entityModel.addContainerChangeListener(new EntityContainerChangeHandler(channel, templateEngine));
+      
+      Object instance = entityPlan.newInstance();
+      sessionData.entityModel.setValue(instance);
+    }
+
   }  
-  
+
 }

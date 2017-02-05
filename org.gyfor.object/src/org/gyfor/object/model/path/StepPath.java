@@ -2,7 +2,7 @@ package org.gyfor.object.model.path;
 
 import java.util.function.Consumer;
 
-import org.gyfor.object.model.NodeModel;
+import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.plan.INodePlan;
 
 public class StepPath implements IPathExpression {
@@ -39,7 +39,7 @@ public class StepPath implements IPathExpression {
   }
 
   @Override
-  public void matches(NodeModel model, Trail<NodeModel> trail, Consumer<NodeModel> x) {
+  public void matches(INodeModel model, Trail<INodeModel> trail, Consumer<INodeModel> x) {
     if (next != null) {
       next.matches(model, trail, x);
     } else {

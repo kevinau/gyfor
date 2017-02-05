@@ -5,7 +5,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.gyfor.object.model.EntityModel;
+import org.gyfor.object.model.impl.EntityModel2;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.web.form.MultiLoader;
 
@@ -58,7 +58,7 @@ public class EntityNode extends AbstractRenderableNode {
 //    IEntityPlan<?> entityPlan = EntityPlanFactory.getEntityPlan(klass);
 //    EntityLabels entityLabels = EntityLabels.getLabels(klass);
     
-    EntityModel model = (EntityModel)context.getScopeChain().get(entityName);
+    EntityModel2 model = (EntityModel2)context.getScopeChain().get(entityName);
     if (model == null) {
       throw new PebbleException(null, "No model for entity '" + entityName + "'", getLineNumber(), self.getName());
     }

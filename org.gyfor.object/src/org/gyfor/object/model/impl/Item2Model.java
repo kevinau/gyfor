@@ -1,4 +1,4 @@
-package org.gyfor.object.model;
+package org.gyfor.object.model.impl;
 
 import org.gyfor.object.plan.IItemPlan;
 

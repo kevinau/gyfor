@@ -2,7 +2,7 @@ package org.gyfor.object.model.path;
 
 import java.util.function.Consumer;
 
-import org.gyfor.object.model.NodeModel;
+import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.plan.INodePlan;
 
 public class DescendentPath extends StepPath implements IPathExpression {
@@ -28,7 +28,7 @@ public class DescendentPath extends StepPath implements IPathExpression {
     Trail<INodePlan> trail2 = new Trail<>(trail, plan);
     super.matches(plan, trail2, x);
     
-    for (INodePlan child : plan.getChildNOdes()) {
+    for (INodePlan child : plan.getChildNodes()) {
       matchDeep(child, trail, x);
     }
     return true;
@@ -36,16 +36,16 @@ public class DescendentPath extends StepPath implements IPathExpression {
 
 
   @Override
-  public void matches(NodeModel model, Trail<NodeModel> trail, Consumer<NodeModel> x) {
+  public void matches(INodeModel model, Trail<INodeModel> trail, Consumer<INodeModel> x) {
     matchDeep(model, trail, x);
   }
   
   
-  private boolean matchDeep(NodeModel model, Trail<NodeModel> trail, Consumer<NodeModel> x) {
-    Trail<NodeModel> trail2 = new Trail<>(trail, model);
+  private boolean matchDeep(INodeModel model, Trail<INodeModel> trail, Consumer<INodeModel> x) {
+    Trail<INodeModel> trail2 = new Trail<>(trail, model);
     super.matches(model, trail2, x);
     
-    for (NodeModel child : model.getChildNodes()) {
+    for (INodeModel child : model.getChildNodes()) {
       matchDeep(child, trail, x);
     }
     return true;

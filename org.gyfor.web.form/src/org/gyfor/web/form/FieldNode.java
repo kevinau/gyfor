@@ -4,8 +4,8 @@ import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import org.gyfor.object.model.NameMappedModel;
-import org.gyfor.object.model.NodeModel;
+import org.gyfor.object.model.INameMappedModel;
+import org.gyfor.object.model.INodeModel;
 
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
@@ -53,12 +53,12 @@ public class FieldNode extends AbstractRenderableNode {
       throw new PebbleException(null, "field tag: field reference evaluates to null", getLineNumber(), self.getName());
     }
     
-    NodeModel model = (NodeModel)context.getScopeChain().get("model");
+    INodeModel model = (INodeModel)context.getScopeChain().get("model");
     if (!model.isNameMapped()) {
       throw new PebbleException(null, "field tag: no 'name mapped' model in scope", getLineNumber(), self.getName());
     }
     
-    NodeModel fieldModel = ((NameMappedModel)model).getMember(fieldRef);
+    INodeModel fieldModel = ((INameMappedModel)model).getMember(fieldRef);
     if (fieldModel == null) {
       throw new PebbleException(null, "field tag: no member named '" + fieldRef + "' in name mapped model " + model.getCanonicalName());
     }

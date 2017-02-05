@@ -34,7 +34,7 @@ public class UndertowService implements BundleActivator {
 
   @Override
   public void start(BundleContext bundleContext) throws Exception {
-    webServer = new UndertowWebServer("localhost", 8080);
+    webServer = new UndertowWebServer("localhost", 8123);
     webServer.start();
 
     ServiceListener sl = new ServiceListener() {

@@ -2,11 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: gyfor - API for data entry objects
 Bundle-SymbolicName: org.gyfor.object
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-Vendor: Kevin Holloway
 Export-Package: org.apache.regexp,
  org.gyfor.object,
  org.gyfor.object.model,
+ org.gyfor.object.model.impl,
  org.gyfor.object.model.path,
  org.gyfor.object.plan,
  org.gyfor.object.plan.impl,

@@ -5,8 +5,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gyfor.object.model.EntityModel;
-import org.gyfor.object.model.RootModel;
+import org.gyfor.object.model.impl.EntityModel2;
+import org.gyfor.object.model.impl.RootModel;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.impl.PlanContext;
 import org.osgi.framework.BundleContext;
@@ -137,7 +137,7 @@ public class ProxyWebSocketConnectionCallback implements WebSocketConnectionCall
 
           // Build an entityModel for the class
           IEntityPlan<?> entityPlan = objectContext.getEntityPlan(className);
-          EntityModel entityModel = rootModel.buildEntityModel(entityPlan);
+          EntityModel2 entityModel = rootModel.buildEntityModel(entityPlan);
           
           // Create and set an empty instance of the class
           Object instance = entityPlan.newInstance();

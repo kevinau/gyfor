@@ -8,7 +8,7 @@
  * Contributors:
  *     Kevin Holloway - initial API and implementation
  *******************************************************************************/
-package org.gyfor.object.model;
+package org.gyfor.object.model.impl;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;

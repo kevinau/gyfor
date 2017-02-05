@@ -1,12 +1,22 @@
-package org.gyfor.object.model;
+package org.gyfor.object.model.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.gyfor.object.UserEntryException;
+import org.gyfor.object.model.ComparisonBasis;
+import org.gyfor.object.model.EffectiveEntryMode;
+import org.gyfor.object.model.EffectiveEntryModeListener;
+import org.gyfor.object.model.IContainerModel;
+import org.gyfor.object.model.IEntityModel;
+import org.gyfor.object.model.IItemModel;
+import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.model.ItemEventListener;
 import org.gyfor.object.model.ref.IValueReference;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
@@ -14,7 +24,7 @@ import org.gyfor.object.plan.IValidationMethod;
 import org.gyfor.object.type.IType;
 
 
-public class ItemModel extends NodeModel implements EffectiveModeListener {
+public class ItemModel extends NodeModel implements EffectiveEntryModeListener, IItemModel {
 
   private static class ErrorInstance {
     private ItemModel[] models;
@@ -28,15 +38,15 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
 
   private final Map<Object, ErrorInstance> validationErrors = new HashMap<Object, ErrorInstance>();
 
-  private final IValueReference valueRef;
+  private final IEntityModel entityModel;
   private final IItemPlan<?> itemPlan;
+  private final IValueReference valueRef;
   private final IType<Object> type;
 
   private Object defaultValue;
   private String defaultSource = "";
   private boolean isComparedValueEqual = true;
   private boolean isComparedSourceEqual = true;
-  private boolean allowEntryEvents = false;
 
   private Object referenceValue;
   private String referenceSource = "";
@@ -49,72 +59,111 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   private String itemSource = "";
   private boolean itemValueInError = true;
   
+  private List<ItemEventListener> itemEventListeners = new ArrayList<>();
+  
   
   @SuppressWarnings("unchecked")
-  public ItemModel (RootModel rootModel, ContainerModel parent, int id, IValueReference valueRef, IItemPlan<?> itemPlan) {
+  public ItemModel (AtomicInteger idSource, IEntityModel entityModel, IContainerModel parent, IValueReference valueRef, IItemPlan<?> itemPlan) {
 //  public ItemModel (IContainerModel parentModel, IContainerObject container, IItemPlan<?> itemPlan) {
-    super (rootModel, parent, id);
+    super (idSource, entityModel, parent);
+    this.entityModel = entityModel;
     this.itemPlan = itemPlan;
     this.valueRef = valueRef;
     this.type = (IType<Object>)itemPlan.getType();
     
     // Add event listener so this field can react to effective mode changes
-    addEffectiveModeListener(this);
+//    addEffectiveModeListener(this);
     setInitialDefaultValue();
   }
 
   
-  public ItemModel (RootModel rootModel, ContainerModel parent, int id, IValueReference valueRef, IItemPlan<?> itemPlan, Object value) {
-    this (rootModel, parent, id, valueRef, itemPlan);
+  public ItemModel (IEntityModel entityModel, IContainerModel parent, IValueReference valueRef, IItemPlan<?> itemPlan, Object value) {
+    this (entityModel, parent, valueRef, itemPlan);
     setValue(value);
   }
 
   
   @Override
-  public List<NodeModel> getChildNodes () {
+  public List<INodeModel> getChildNodes () {
     return Collections.emptyList();
   }
   
   
+  @SuppressWarnings("unchecked")
   @Override
-  public INodePlan getPlan () {
-    return itemPlan;
+  public <X extends INodePlan> X getPlan () {
+    return (X)itemPlan;
   }
 
 
+  /**
+   * Add a ItemChangeListener.  
+   */
   @Override
-  public boolean isItemModel () {
-    return true;
+  public void addItemEventListener (ItemEventListener x) {
+    itemEventListeners.add(x);
   }
   
   
   /**
-   * Add a FieldChangeListener.  
-   * //If the conditions are right, fire off an event immediately.
+   * Remove a ItemChangeListener.  
    */
-  public void addFieldEventListener (ItemEventListener x) {
-    super.addEffectiveModeListener(x);
-    super.addItemEventListener(x);
-//    
-//    if (isEventsActive()) {
-//      // Fire all applicable events
-//      x.sourceChange(this);
-//      if (allowEntryEvents) {
-//        x.comparisonBasisChange(this);
-//        x.compareShowingChange(this, false);
-//        x.compareEqualityChange(this);
-//        if (validationErrors.isEmpty()) {
-//          x.valueChange(this);
-//          x.errorCleared(this);
-//        } else {
-//          for (ErrorInstance ei : validationErrors.values()) {
-//            x.errorNoted(this, ei.exception);
-//          }
-//        }
-//      } else {
-//        x.valueChange(this);
-//      }
-//    }
+  @Override
+  public void removeItemEventListener (ItemEventListener x) {
+    itemEventListeners.remove(x);
+    // Notify listeners if this model was in error
+    for (Object source : validationErrors.values()) {
+      clearError(source);
+    }
+  }
+  
+  
+  private void fireErrorNoted (IItemModel model, UserEntryException ex) {
+    for (ItemEventListener x : itemEventListeners) {
+      x.errorNoted(model, ex);
+    }
+  }
+  
+  
+  private void fireErrorCleared (IItemModel model) {
+    for (ItemEventListener x : itemEventListeners) {
+      x.errorCleared(model);
+    }
+  }
+  
+  
+  private void fireSourceChange (IItemModel model) {
+    for (ItemEventListener x : itemEventListeners) {
+      x.sourceChange(model);
+    }
+  }
+  
+  
+  private void fireSourceEqualityChange (IItemModel model) {
+    for (ItemEventListener x : itemEventListeners) {
+      x.sourceEqualityChange(model);
+    }
+  }
+  
+  
+  private void fireValueChange (IItemModel model) {
+    for (ItemEventListener x : itemEventListeners) {
+      x.valueChange(model);
+    }
+  }
+  
+  
+  private void fireValueEqualityChange (IItemModel model) {
+    for (ItemEventListener x : itemEventListeners) {
+      x.valueEqualityChange(model);
+    }
+  }
+  
+  
+  private void fireComparisonBasisChange (IItemModel model) {
+    for (ItemEventListener x : itemEventListeners) {
+      x.comparisonBasisChange(model);
+    }
   }
   
   
@@ -125,7 +174,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   public void clearError (Object sourceRef) {
     ErrorInstance error = validationErrors.remove(sourceRef);
     if (error != null && validationErrors.isEmpty()) {
-      getRoot().fireErrorCleared(this);
+      fireErrorCleared(this);
     }
   }
 
@@ -186,10 +235,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   public void noteValidationError (Object sourceRef, ItemModel[] mx, UserEntryException userError) {
     ErrorInstance error = new ErrorInstance(mx, userError);
     validationErrors.put(sourceRef, error);
-    
-    if (allowEntryEvents) {
-      getRoot().fireErrorNoted(this, userError);
-    }
+    fireErrorNoted(this, userError);
   }
 
   
@@ -206,7 +252,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
         clearDependentValidationErrors(ss);
       }
     }
-    getRoot().fireErrorNoted(this, userError);
+    fireErrorNoted(this, userError);
   }
 
 
@@ -220,10 +266,15 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   }
 
 
-  @SuppressWarnings("unchecked")
   @Override
   public <T> T getValue () {
-    return (T)itemValue;
+    return valueRef.getValue();
+  }
+  
+  
+  @Override
+  public IValueReference getValueRef () {
+    return valueRef;
   }
   
   
@@ -316,21 +367,20 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   @Override
   public void setValue(Object value) {
     String source = type.toEntryString(value, null);
-    itemSource = source;
-    if (value == null ? itemValue != null : !value.equals(itemValue)) {
-      getRoot().fireValueChange(this, null);
+    if (source == null ? itemSource != null : !source.equals(itemSource)) {
+      itemSource = source;
+      fireSourceChange(this);
     }
-    
     testAndFireSourceEqualityChange(true);
-    try {
-      boolean creating = true;
-      Object newValue = type.createFromString(null, itemPlan.isOptional(), creating, source);
-      setRawValue(newValue, null, true);
-    } catch (UserEntryException ex) {
-      itemValueInError = true;
-      testAndFireValueEqualityChange();
-      noteValidationError (ex);
-    }
+//    try {
+//      boolean creating = true;
+      //Object newValue = type.createFromString(null, itemPlan.isNullable(), creating, source);
+      setRawValue(value, null, true);
+//    } catch (UserEntryException ex) {
+//      itemValueInError = true;
+//      testAndFireValueEqualityChange();
+//      noteValidationError (ex);
+//    }
   }
 
   
@@ -345,13 +395,13 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
     String source = type.toEntryString(primalValue, null);
     itemSource = source;
     if (primalValue == null ? itemValue != null : !primalValue.equals(itemValue)) {
-      fireSourceChange(this, null);
+      fireSourceChange(this);
     }
     
     testAndFireSourceEqualityChange(true);
     try {
       boolean creating = true;
-      Object newValue = type.createFromString(null, itemPlan.isOptional(), creating, source);
+      Object newValue = type.createFromString(null, itemPlan.isNullable(), creating, source);
       setRawValue(newValue, null, true);
     } catch (UserEntryException ex) {
       itemValueInError = true;
@@ -365,13 +415,13 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
     String source = type.toEntryString(defaultValue, null);
     itemSource = source;
     if (defaultValue == null ? itemValue != null : !defaultValue.equals(itemValue)) {
-      fireSourceChange(this, null);
+      fireSourceChange(this);
     }
     
     testAndFireSourceEqualityChange(true);
     try {
       boolean creating = true;
-      Object newValue = type.createFromString(null, itemPlan.isOptional(), creating, source);
+      Object newValue = type.createFromString(null, itemPlan.isNullable(), creating, source);
       setRawValue(newValue, null, true);
     } catch (UserEntryException ex) {
       itemValueInError = true;
@@ -385,13 +435,13 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
     String source = type.toEntryString(referenceValue, null);
     itemSource = source;
     if (referenceValue == null ? itemValue != null : !referenceValue.equals(itemValue)) {
-      fireSourceChange(this, null);
+      fireSourceChange(this);
     }
     
     testAndFireSourceEqualityChange(true);
     try {
       boolean creating = true;
-      Object newValue = type.createFromString(null, itemPlan.isOptional(), creating, source);
+      Object newValue = type.createFromString(null, itemPlan.isNullable(), creating, source);
       setRawValue(newValue, null, true);
     } catch (UserEntryException ex) {
       itemValueInError = true;
@@ -426,14 +476,14 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   public void setValueFromSource(String source, ItemEventListener self, boolean creating) {
     if (!itemSource.equals(source)) {
       itemSource = source;
-      fireSourceChange(this, self);
+      fireSourceChange(this);
     } else {
       itemSource = source;
     }
     
     testAndFireSourceEqualityChange(true);
     try {
-      Object newValue = type.createFromString(null, itemPlan.isOptional(), creating, source);
+      Object newValue = type.createFromString(null, itemPlan.isNullable(), creating, source);
       setRawValue (newValue, self, true);
     } catch (UserEntryException ex) {
       itemValueInError = true;
@@ -449,6 +499,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   }
 
 
+  @Override
   public void setValueFromSource(String source) {
     setValueFromSource(source, null, true);
   }
@@ -467,7 +518,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
       itemValueInError = false;
       valueRef.setValue(value);
       if (fireValueChangeEvents) {
-        fireValueChange(this, self);
+        fireValueChange(this);
       }
     } else {
       if (value == null ? itemValue != null : !value.equals(itemValue)) {
@@ -477,7 +528,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
         valueRef.setValue(value);
         // Firing a value change will trigger validation
         if (fireValueChangeEvents) {
-          fireValueChange(this, self);
+          fireValueChange(this);
         }
       }
     }
@@ -492,59 +543,55 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   
   
   private void testAndFireValueEqualityChange () {
-    if (allowEntryEvents) { 
-      boolean ce;
-      if (validationErrors.isEmpty()) {
-        if (itemValueInError) {
-          ce = true;
-        } else {
-          switch (comparisonBasis) {
-          case DEFAULT :
-            ce = defaultValue == null ? itemValue == null : defaultValue.equals(itemValue);
-            break;
-          case REFERENCE :
-            ce = referenceValue == null ? itemValue == null : referenceValue.equals(itemValue);
-            break;
-          default :
-            ce = true;
-            break;
-          }
-        }
-      } else {
+    boolean ce;
+    if (validationErrors.isEmpty()) {
+      if (itemValueInError) {
         ce = true;
+      } else {
+        switch (comparisonBasis) {
+        case DEFAULT :
+          ce = defaultValue == null ? itemValue == null : defaultValue.equals(itemValue);
+          break;
+        case REFERENCE :
+          ce = referenceValue == null ? itemValue == null : referenceValue.equals(itemValue);
+          break;
+        default :
+          ce = true;
+          break;
+        }
       }
-      if (isComparedValueEqual != ce) {
-        isComparedValueEqual = ce;
-        fireCompareEqualityChange(this); 
-      }
+    } else {
+      ce = true;
+    }
+    if (isComparedValueEqual != ce) {
+      isComparedValueEqual = ce;
+      fireValueEqualityChange(this); 
     }
   }
   
   
   private void testAndFireSourceEqualityChange (boolean isSourceTrigger) {
-    if (allowEntryEvents) { 
-      boolean cs;
-      switch (comparisonBasis) {
-      case DEFAULT :
-        cs = defaultSource.equals(itemSource);
-        break;
-      case REFERENCE :
-        cs = referenceSource.equals(itemSource);
-        break;
-      default :
-        cs = true;
-        break;
-      }
-      if (isComparedSourceEqual != cs) {
-        isComparedSourceEqual = cs;
-        fireCompareShowingChange(this, isSourceTrigger);
-      }
+    boolean cs;
+    switch (comparisonBasis) {
+    case DEFAULT :
+      cs = defaultSource.equals(itemSource);
+      break;
+    case REFERENCE :
+      cs = referenceSource.equals(itemSource);
+      break;
+    default :
+      cs = true;
+      break;
+    }
+    if (isComparedSourceEqual != cs) {
+      isComparedSourceEqual = cs;
+      fireSourceEqualityChange(this);
     }
   }
   
   
   @Override
-  public void modeChange (IObjectModel model) {
+  public void modeChange (INodeModel model) {
     boolean aee = getEffectiveMode().allowEntryEvents();
     if (allowEntryEvents != aee) {
       allowEntryEvents = aee;
@@ -581,9 +628,9 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
  
   
   @Override
-  public void setCompareBasis (ComparisonBasis compareBasis) {
+  public void setComparisonBasis (ComparisonBasis comparisonBasis) {
 
-    if (this.comparisonBasis != compareBasis) {
+    if (this.comparisonBasis != comparisonBasis) {
 //      // Clear any "before" showing and equality
 //      if (isCompareShowing == false) {
 //        isCompareShowing = true;
@@ -594,7 +641,7 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
 //        fireCompareEqualityChange();
 //      }
 //      
-      this.comparisonBasis = compareBasis;
+      this.comparisonBasis = comparisonBasis;
 
       // Set the showing and equality based on the new comparison basis
       testAndFireSourceEqualityChange(false);
@@ -603,45 +650,45 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   }
   
 
-//  @Override
-//  protected void setEffectiveMode (EffectiveMode newEffectiveMode, boolean fireEvents) {
-//    EffectiveMode oldEffectiveMode = getEffectiveMode();
-//    boolean postProcess = false;
-//    if (newEffectiveMode != oldEffectiveMode) {
-//      if (newEffectiveMode == EffectiveMode.NA) {
-//        // We are changing to NA, and we want to ignore any errors (we still capture them,
-//        // but we do not report them).  Ditto default showing and reference showing.
-//        
-//        // Clear errors
-//        if (!validationErrors.isEmpty()) {
-//          fireErrorCleared();
+  @Override
+  protected void setEffectiveEntryMode (EffectiveEntryMode newEffectiveMode) {
+    EffectiveEntryMode oldEffectiveMode = getEffectiveEntryMode();
+    boolean postProcess = false;
+    if (newEffectiveMode != oldEffectiveMode) {
+      if (newEffectiveMode == EffectiveEntryMode.HIDDEN) {
+        // We are changing to HIDDEN, and we want to ignore any errors (we still capture them,
+        // but we do not report them).  Ditto default showing and reference showing.
+        
+        // Clear errors
+        if (!validationErrors.isEmpty()) {
+          fireErrorCleared(this);
+        }
+//        if (isCompareShowing) {
+//          fireCompareShowingChange(false, false);
 //        }
-////        if (isCompareShowing) {
-////          fireCompareShowingChange(false, false);
-////        }
+      }
+      if (oldEffectiveMode == EffectiveEntryMode.HIDDEN) {
+        postProcess = true;
+      }
+    }
+    super.setEffectiveEntryMode(newEffectiveMode);
+    if (postProcess) {
+      // We are changing from NA to something else, so report any errors.
+      Collection<ErrorInstance> errors = validationErrors.values();
+      for (ErrorInstance error : errors) {
+        fireErrorNoted(this, error.exception);
+      }
+//      if (isCompareShowing) {
+//        fireCompareShowingChange(true, false);
 //      }
-//      if (oldEffectiveMode == EffectiveMode.NA) {
-//        postProcess = true;
-//      }
-//    }
-//    super.setEffectiveMode(newEffectiveMode, fireEvents);
-//    if (postProcess) {
-//      // We are changing from NA to something else, so report any errors.
-//      Collection<ErrorInstance> errors = validationErrors.values();
-//      for (ErrorInstance error : errors) {
-//        fireErrorNoted(error.exception);
-//      }
-////      if (isCompareShowing) {
-////        fireCompareShowingChange(true, false);
-////      }
-//    }
-//  }
+    }
+  }
   
   
   @Override
   public boolean isInError () {
-    EffectiveMode effectiveMode = getEffectiveMode();
-    if (effectiveMode == EffectiveMode.NA) {
+    EffectiveEntryMode effectiveMode = getEffectiveEntryMode();
+    if (effectiveMode == EffectiveEntryMode.HIDDEN) {
       return false;
     } else {
       Collection<ErrorInstance> errors = validationErrors.values();
@@ -659,8 +706,8 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   
   @Override
   public UserEntryException.Type getStatus() {
-    EffectiveMode effectiveMode = getEffectiveMode();
-    if (effectiveMode == EffectiveMode.NA) {
+    EffectiveEntryMode effectiveMode = getEffectiveEntryMode();
+    if (effectiveMode == EffectiveEntryMode.HIDDEN) {
       return UserEntryException.Type.OK;
     } else {
       int incompleteCount = 0;
@@ -701,23 +748,21 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   
   
   @Override
-  public void fireInitialFieldEvents (ItemEventListener x, boolean isSourceTrigger) {
-    x.sourceChange(this);
+  public void syncEventsWithNode () {
+    super.syncEventsWithNode();
+    
+    fireSourceChange(this);
+    fireValueChange(this);
 
-    if (allowEntryEvents) {
-      x.comparisonBasisChange(this);
-      x.compareShowingChange(this, isSourceTrigger);
-      x.compareEqualityChange(this);
-      if (validationErrors.isEmpty()) {
-        x.valueChange(this);
-        x.errorCleared(this);
-      } else {
-        for (ErrorInstance ei : validationErrors.values()) {
-          x.errorNoted(this, ei.exception);
-        }
-      }
+    fireComparisonBasisChange(this);
+    fireSourceEqualityChange(this);
+    fireValueEqualityChange(this);
+    if (validationErrors.isEmpty()) {
+      fireErrorCleared(this);
     } else {
-      x.valueChange(this);
+      for (ErrorInstance ei : validationErrors.values()) {
+        fireErrorNoted(this, ei.exception);
+      }
     }
   }
 
@@ -813,17 +858,6 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   }
 
 
-  @Override
-  public void removeFieldEventListener(ItemEventListener x) {
-    super.removeFieldEventListener(x);
-    super.removeEffectiveModeListener(x);
-    // Notify listeners if this model was in error
-    for (Object source : validationErrors.values()) {
-      clearError(source);
-    }
-  }
-
-
 //  @Override
 //  public void setLastEntryValue(Object value) {
 //    Field lastEntryField = itemPlan.getLastEntryField();
@@ -844,27 +878,15 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
     for (int i = 0; i < level; i++) {
       System.out.print("  ");
     }
-    System.out.println(getPathName() + " = " + getValue() + " [" + super.getEffectiveMode() + " " + itemPlan + "]");
+    System.out.println(itemPlan.getName() + " = " + getValue() + " [" + super.getEffectiveEntryMode() + " " + itemPlan + "]");
   }
 
 
-  @Override
-  public Collection<IObjectModel> getChildren() {
-    return Collections.emptyList();
-  }
-
-
-  protected void accumulateFields (List<IFieldModel> list) {
+  protected void accumulateItemModels (List<IItemModel> list) {
     list.add(this);
   }
   
   
-  @Override
-  public boolean walkFields (IFieldVisitable x) {
-    return x.visit(this);
-  }
-
-
   @Override
   public IType<?> getType() {
     return itemPlan.getType();
@@ -881,11 +903,11 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
   public void setEventsActive (boolean fireEvents) {
     super.setEventsActive(fireEvents);
     if (fireEvents) {
-      fireSourceChange(this, null);
+      fireSourceChange(this);
 
       if (allowEntryEvents) {
         fireComparisonBasisChange(this);
-        fireCompareShowingChange(this, false);
+        fireSourceChange(this);
         fireCompareEqualityChange(this);
         if (validationErrors.isEmpty()) {
           fireValueChange(this, null);
@@ -901,5 +923,5 @@ public class ItemModel extends NodeModel implements EffectiveModeListener {
 
     }
   }
-  
+
 }

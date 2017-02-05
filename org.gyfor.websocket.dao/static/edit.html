@@ -9,16 +9,20 @@
 
 <div id="party-select"></div>
 
+<div id="inner1">Entity placeholder...</div>
+
 <input list="partyDescriptions" name="party">
 <datalist id="partyDescriptions">
 </datalist>
 
 <a href="javascript:doSend('descriptions')">Describe all</a>
 <br>
+<a href="javascript:doSend('init')">Load form</a>
+<br>
 <a href="javascript:doSend('close')">Close</a>
 
 <script type="text/javascript">
-	var wsUri = "ws://localhost:8080/ws/entity/party";
+	var wsUri = "ws://localhost:8123/ws/entity/party";
 	var output;
 
 	function init() {
@@ -52,7 +56,8 @@
 	}
 
 	function onMessage(evt) {
-		writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
+		console.log(">>>> " + evt.data);
+		writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;") + '</span>');
 		// Split on the middot character
 		let args = evt.data.split('|');
 		switch (args[0]) {
@@ -65,9 +70,31 @@
 				target.parentNode.replaceChild(template.content.firstChild, target);
 			}
 			break;
-	    default :
+		case "update" :
+			let parentId = args[1];
+			let nodeId = args[2];
+			let node = document.getElementById("outer" + nodeId);
+			console.log("node " + nodeId + " " + node);
+			if (node) {
+			    let template = document.createElement('template');
+			    template.innerHTML = args[3];
+				node.parentNode.replaceChild(template.content.firstChild, node);
+			} else {
+				let parent = document.getElementById("inner" + parentId);
+				console.log("parent " + parent);
+				if (parent) {
+  				    let template = document.createElement('template');
+				    template.innerHTML = args[3];
+				    console.log("add... " + template.content.firstChild);
+					parent.appendChild(template.content.firstChild);
+				} else {
+					console.log("Cannot update: " + parentId + " " + nodeId);
+				}
+			}
+			break;
+		default :
 	    	alert ("Un-recognised message name: " + args[0]);
-	        break;
+			break;
 		}
 	}
 

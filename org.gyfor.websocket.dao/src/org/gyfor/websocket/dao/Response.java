@@ -3,13 +3,13 @@ package org.gyfor.websocket.dao;
 
 public class Response {
 
-  private static final char DELIMITER = '\t';
+  private static final char DELIMITER = '|';
   
   private final String name;
-  private final String[] args;
+  private final Object[] args;
   
   
-  public Response (String name, String... args) {
+  public Response (String name, Object... args) {
     this.name = name;
     this.args = args;
   }
@@ -19,7 +19,7 @@ public class Response {
   public String toString() {
     StringBuilder buffer = new StringBuilder();
     buffer.append(name);
-    for (String arg : args) {
+    for (Object arg : args) {
       buffer.append(DELIMITER);
       buffer.append(arg);
     }

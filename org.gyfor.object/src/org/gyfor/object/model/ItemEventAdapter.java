@@ -3,30 +3,30 @@ package org.gyfor.object.model;
 import org.gyfor.object.UserEntryException;
 
 
-public class ItemEventAdapter extends EffectiveModeAdapter implements ItemEventListener {
+public class ItemEventAdapter extends EffectiveEntryModeAdapter implements ItemEventListener {
 
   @Override
-  public void valueEqualityChange(ItemModel model) {
+  public void valueEqualityChange(IItemModel model) {
   }
 
   @Override
-  public void sourceEqualityChange(ItemModel model) {
+  public void sourceEqualityChange(IItemModel model) {
   }
 
   @Override
-  public void errorCleared(ItemModel model) {
+  public void errorCleared(IItemModel model) {
   }
 
   @Override
-  public void errorNoted(ItemModel model, UserEntryException ex) {
+  public void errorNoted(IItemModel model, UserEntryException ex) {
   }
 
   @Override
-  public void valueChange(ItemModel model) {
+  public void valueChange(IItemModel model) {
   }
 
   @Override
-  public void comparisonBasisChange(ItemModel model) {
+  public void comparisonBasisChange(IItemModel model) {
   }
 
   @Override
@@ -35,7 +35,7 @@ public class ItemEventAdapter extends EffectiveModeAdapter implements ItemEventL
   }
 
   @Override
-  public void sourceChange(ItemModel model) {
+  public void sourceChange(IItemModel model) {
   }
 
 }

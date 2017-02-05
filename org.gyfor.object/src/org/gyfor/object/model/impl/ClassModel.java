@@ -1,4 +1,4 @@
-package org.gyfor.object.model;
+package org.gyfor.object.model.impl;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ref.ClassValueReference;
 import org.gyfor.object.model.ref.IValueReference;
 import org.gyfor.object.plan.IClassPlan;
@@ -34,7 +35,7 @@ public abstract class ClassModel extends ContainerModel {
     for (INodePlan memberPlan : classPlan.getMemberPlans()) {
       Object memberValue = memberPlan.getValue(instance);
       Field field = memberPlan.getField();
-      NodeModel memberModel = getRoot().buildNodeModel(getParent(), new ClassValueReference(instance, field), memberPlan);
+      INodeModel memberModel = getRoot().buildNodeModel(getParent(), new ClassValueReference(instance, field), memberPlan);
     }
   }
 
@@ -53,7 +54,7 @@ public abstract class ClassModel extends ContainerModel {
       
     if (memberPlan instanceof IItemPlan) {
       // Create or update member model
-      NodeModel memberModel = getOrCreateMember(memberName, memberPlan);
+      INodeModel memberModel = getOrCreateMember(memberName, memberPlan);
       memberModel.setValue(memberValue);
     } else {
       if (memberValue == null && memberPlan.isNullable()) {
@@ -61,14 +62,14 @@ public abstract class ClassModel extends ContainerModel {
         removeChildModel(memberName);
       } else {
         // Create or update member model
-        NodeModel memberModel = getOrCreateMember(memberName, memberPlan);
+        INodeModel memberModel = getOrCreateMember(memberName, memberPlan);
         memberModel.setValue(memberValue);
       }          
     }
   }
 
 
-  protected NodeModel getOrCreateMember (String name, INodePlan plan) {
+  protected INodeModel getOrCreateMember (String name, INodePlan plan) {
     NodeModel memberModel = memberModels.get(name);
     if (memberModel == null) {
       memberModel = getRoot().buildNodeModel(this, new ClassValueReference(plan);
@@ -86,7 +87,7 @@ public abstract class ClassModel extends ContainerModel {
   
   
   protected void removeChildModel (String name) {
-    NodeModel removed = memberModels.remove(name);
+    INodeModel removed = memberModels.remove(name);
     if (removed != null) {
       getRoot().fireChildRemoved(this, removed);
     }
@@ -94,7 +95,7 @@ public abstract class ClassModel extends ContainerModel {
 
 
   @SuppressWarnings("unchecked")
-  public <X extends NodeModel> X getMember (String name) {
+  public <X extends INodeModel> X getMember (String name) {
     return (X)memberModels.get(name);
   }
   

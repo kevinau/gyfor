@@ -1,5 +1,6 @@
-package org.gyfor.object.model;
+package org.gyfor.object.model.impl;
 
+import org.gyfor.object.model.INodeModel;
 import org.pennyledger.object.model.FormModel;
 import org.pennyledger.object.model.NodeModel;
 import org.pennyledger.object.plan.INodePlan;
@@ -11,17 +12,17 @@ public class MultiModel extends NodeModel {
   @SuppressWarnings("unused")
   private final Object instance;
   
-  private NodeModel[] members;
+  private INodeModel[] members;
   
-  protected MultiModel(RootModel formModel, NodeModel parent, INodePlan[] nodePlans, Object instance) {
+  protected MultiModel(RootModel formModel, INodeModel parent, INodePlan[] nodePlans, Object instance) {
     super(formModel.nextId(), formModel, parent);
     this.nodePlans = nodePlans;
     this.instance = instance;
-    members = new NodeModel[nodePlans.length];
+    members = new INodeModel[nodePlans.length];
   }
 
 
-  protected void setChildModel (int i, NodeModel model) {
+  protected void setChildModel (int i, INodeModel model) {
     members[i] = model;
   }
 

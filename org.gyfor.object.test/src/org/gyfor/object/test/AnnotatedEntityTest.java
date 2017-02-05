@@ -1,7 +1,5 @@
 package org.gyfor.object.test;
 
-import java.sql.Timestamp;
-
 import org.gyfor.object.Entity;
 import org.gyfor.object.EntityPlanFactory;
 import org.gyfor.object.Id;
@@ -11,6 +9,7 @@ import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.impl.PlanContext;
 import org.gyfor.object.value.EntityLife;
+import org.gyfor.object.value.VersionValue;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +24,7 @@ public class AnnotatedEntityTest {
     private int identity;
     
     @Version 
-    private Timestamp versionField;
+    private VersionValue versionField;
     
     private String name;
 

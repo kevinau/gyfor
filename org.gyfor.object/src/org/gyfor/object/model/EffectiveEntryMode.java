@@ -3,28 +3,16 @@ package org.gyfor.object.model;
 import org.gyfor.object.EntryMode;
 
 
-public enum EffectiveMode {
+public enum EffectiveEntryMode {
 
-  ENABLED (true),
-  DISABLED (true),
-  VIEW (true),
-  HIDDEN (false);
+  ENABLED,
+  DISABLED,
+  VIEW,
+  HIDDEN;
 
-  private final boolean allowEntryEvents;
-  
-  private EffectiveMode (boolean allowEntryEvents) {
-    this.allowEntryEvents = allowEntryEvents;
-  }
-  
-  
-  public boolean allowEntryEvents () {
-    return allowEntryEvents;
-  }
-  
-  
-  public EffectiveMode getEffective (EntryMode entryMode) {
-    EffectiveMode parentMode = this;
-    switch (parentMode) {
+
+  public static EffectiveEntryMode getEffective (EffectiveEntryMode parent, EntryMode entryMode) {
+    switch (parent) {
     case ENABLED :
       if (entryMode == EntryMode.HIDDEN) {
         return HIDDEN;
@@ -55,15 +43,15 @@ public enum EffectiveMode {
   }
   
 
-  public static EffectiveMode toEffective (EntryMode entryMode) {
+  public static EffectiveEntryMode toEffective (EntryMode entryMode) {
     if (entryMode == EntryMode.VIEW) {
-      return EffectiveMode.VIEW;
+      return EffectiveEntryMode.VIEW;
     } else if (entryMode == EntryMode.HIDDEN) {
-      return EffectiveMode.HIDDEN;
+      return EffectiveEntryMode.HIDDEN;
     } else if (entryMode == EntryMode.DISABLED) {
-      return EffectiveMode.DISABLED;
+      return EffectiveEntryMode.DISABLED;
     } else {
-      return EffectiveMode.ENABLED;
+      return EffectiveEntryMode.ENABLED;
     }
   }
 

@@ -1,31 +1,31 @@
-package org.gyfor.object.model;
+package org.gyfor.object.model.impl;
 
 import java.util.Collections;
 import java.util.List;
 
 import org.gyfor.object.plan.IEntityPlan;
 
-public class EntityModel extends NameMappedModel {
+public class EntityModel2 extends NameMappedModel {
 
   private final IEntityPlan<?> entityPlan;
 
-  public EntityModel (RootModel rootModel, IEntityPlan<?> entityPlan) {
+  public EntityModel2 (RootModel rootModel, IEntityPlan<?> entityPlan) {
     this (rootModel, null, rootModel.nextId(), entityPlan);
   }
     
   
-  public EntityModel (RootModel rootModel, IEntityPlan<?> entityPlan, Object instance) {
+  public EntityModel2 (RootModel rootModel, IEntityPlan<?> entityPlan, Object instance) {
     this (rootModel, null, rootModel.nextId(), entityPlan, instance);
   }
     
   
-  public EntityModel (RootModel rootModel, ContainerModel parent, int id, IEntityPlan<?> entityPlan) {
+  public EntityModel2 (RootModel rootModel, ContainerModel parent, int id, IEntityPlan<?> entityPlan) {
     super (rootModel, parent, id, entityPlan);
     this.entityPlan = entityPlan;
   }
     
   
-  public EntityModel (RootModel rootModel, ContainerModel parent, int id, IEntityPlan<?> entityPlan, Object instance) {
+  public EntityModel2 (RootModel rootModel, ContainerModel parent, int id, IEntityPlan<?> entityPlan, Object instance) {
     this (rootModel, parent, id, entityPlan);
     setValue (instance);
   }

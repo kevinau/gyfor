@@ -124,6 +124,12 @@ public abstract class NodePlan implements INodePlan {
   
   
   @Override
+  public Field getField () {
+    return field;
+  }
+  
+  
+  @Override
   public boolean isItem () {
     return false;
   }

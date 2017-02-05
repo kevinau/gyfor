@@ -1,4 +1,4 @@
-package org.gyfor.object.model;
+package org.gyfor.object.model.impl;
 
 import java.util.ArrayList;
 import java.util.List;

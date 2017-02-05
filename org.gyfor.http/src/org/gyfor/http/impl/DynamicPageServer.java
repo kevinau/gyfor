@@ -26,7 +26,7 @@ public class DynamicPageServer {
     };
 
     PathHandler pathHandler = new PathHandler(defaultHandler);
-    Undertow server = Undertow.builder().addHttpListener(8080, "localhost").setHandler(pathHandler).build();
+    Undertow server = Undertow.builder().addHttpListener(8088, "localhost").setHandler(pathHandler).build();
     server.start();
 
     pathHandler.addPrefixPath("/aaa", new HttpHandler() {

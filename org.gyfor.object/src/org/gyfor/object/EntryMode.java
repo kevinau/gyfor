@@ -28,7 +28,7 @@ public enum EntryMode {
   /**
    * No entry mode has been specified. The data entry mode will be inherited
    * from the parent object of this field. If there is no parent object, the
-   * data entry mode will be ENTRY.
+   * data entry mode will be ENABLED.
    */
   UNSPECIFIED,
 
@@ -38,13 +38,14 @@ public enum EntryMode {
   ENABLED,
 
   /**
-   * Normal data entry, but disabled. 
+   * Normal data entry, but disabled.  The user may view the field value, but not change it.
    */
   DISABLED,
 
   /**
    * Normal field display. The user may view the field value but cannot change
-   * the value.
+   * the value.  If a field can sometimes be ENABLED, use DISABLED when the user cannot change the field value.
+   * If a field is never ENABLED, use VIEW when the user may view he field value but not change it.
    */
   VIEW,
 
@@ -52,7 +53,7 @@ public enum EntryMode {
    * The field is "not applicable". Typically this is used when a data entry
    * field is conditional on some other logic-- it can be open for data entry or
    * display under some conditions, and hidden from view under other conditions.
-   * If a data field is "not applicable", the field label is not shown.
+   * If a data field is "not applicable", the field labels are not shown.
    */
   HIDDEN;
 

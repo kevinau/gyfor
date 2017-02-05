@@ -6,7 +6,7 @@ import org.gyfor.object.UserEntryException;
  * @author Kevin Holloway
  * 
  */
-public interface ItemEventListener extends EffectiveModeListener {
+public interface ItemEventListener {
 
   /** 
    * Return a string that describes the origin of this event listener.  This is used for debugging only.
@@ -22,7 +22,7 @@ public interface ItemEventListener extends EffectiveModeListener {
    * the equality of the field and default value).
    * 
    */
-  public void valueEqualityChange(ItemModel model);
+  public void valueEqualityChange(IItemModel model);
 
   /**
    * The field or default <b>source</b> values have changed so they are now equal, or no
@@ -33,7 +33,7 @@ public interface ItemEventListener extends EffectiveModeListener {
    * than the value itself.
    * 
    */
-  public void sourceEqualityChange(ItemModel model);
+  public void sourceEqualityChange(IItemModel model);
 
   /**
    * The field value has changed, either by user data entry or by the
@@ -45,7 +45,7 @@ public interface ItemEventListener extends EffectiveModeListener {
    * @param model
    * @param value
    */
-  public void valueChange(ItemModel model);
+  public void valueChange(IItemModel model);
 
   /**
    * The control has left the error state--all previously noted errors have been
@@ -62,7 +62,7 @@ public interface ItemEventListener extends EffectiveModeListener {
    * 
    * @param ev
    */
-  public void errorCleared(ItemModel model);
+  public void errorCleared(IItemModel model);
 
   /**
    * The control has gone into an error state. This is either because the user
@@ -73,7 +73,7 @@ public interface ItemEventListener extends EffectiveModeListener {
    * Subsequent error notifications will not cause this event to fire again.
    * 
    */
-  public void errorNoted(ItemModel model, UserEntryException ex);
+  public void errorNoted(IItemModel model, UserEntryException ex);
 
   /**
    * An attempt was made to change the field value by the user, but no change
@@ -81,11 +81,11 @@ public interface ItemEventListener extends EffectiveModeListener {
    * will be fired regardless of error status of the control.
    * 
    */
-  public void sourceChange(ItemModel model);
+  public void sourceChange(IItemModel model);
 
   /**
-   * The reference applicability of the object model has changed.
+   * The comparison basis of the object model has changed.
    */
-  public void comparisonBasisChange (ItemModel model);
+  public void comparisonBasisChange (IItemModel model);
   
 }

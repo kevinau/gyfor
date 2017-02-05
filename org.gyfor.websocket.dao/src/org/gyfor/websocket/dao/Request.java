@@ -1,9 +1,10 @@
 package org.gyfor.websocket.dao;
 
+import java.util.Arrays;
 
 public class Request {
 
-  private static final char DELIMITER = '\t';
+  private static final char DELIMITER = '|';
   
   private final String name;
   private final String[] args;
@@ -50,6 +51,12 @@ public class Request {
   }
   
   
+  @Override
+  public String toString() {
+    return "Request [" + name + ", " + Arrays.toString(args) + "]";
+  }
+
+
   public static void main (String[] argsx) {
     String[] testData = {
         "add\tthe\tqick\tbrown\tfox",

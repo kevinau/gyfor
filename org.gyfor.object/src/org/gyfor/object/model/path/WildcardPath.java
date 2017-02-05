@@ -2,10 +2,10 @@ package org.gyfor.object.model.path;
 
 import java.util.function.Consumer;
 
-import org.gyfor.object.model.ContainerModel;
-import org.gyfor.object.model.ItemModel;
-import org.gyfor.object.model.NodeModel;
-import org.gyfor.object.model.RepeatingModel;
+import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.model.impl.ContainerModel;
+import org.gyfor.object.model.impl.ItemModel;
+import org.gyfor.object.model.impl.RepeatingModel;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INameMappedPlan;
 import org.gyfor.object.plan.INodePlan;
@@ -47,15 +47,15 @@ public class WildcardPath extends StepPath implements IPathExpression {
 
   
   @Override
-  public void matches(NodeModel model, Trail<NodeModel> trail, Consumer<NodeModel> x) {
+  public void matches(INodeModel model, Trail<INodeModel> trail, Consumer<INodeModel> x) {
     if (model instanceof ContainerModel) {
       ContainerModel container = (ContainerModel)model;
-      for (NodeModel member : container.getMembers()) {
+      for (INodeModel member : container.getMembers()) {
         super.matches(member, new Trail<>(trail, member), x);
       }
     } else if (model instanceof RepeatingModel) {
       RepeatingModel repeating = (RepeatingModel)model;
-      for (NodeModel member : repeating.getMembers()) {
+      for (INodeModel member : repeating.getMembers()) {
         super.matches(member, new Trail<>(trail, member), x);
       }
     } else if (model instanceof ItemModel) {
