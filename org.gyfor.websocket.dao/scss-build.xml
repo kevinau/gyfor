@@ -1,0 +1,11 @@
+<project basedir="." default="scss">
+    <target name="scss">
+        <apply dest="resources" executable="C:/Ruby22-x64\bin/ruby.exe">
+        	<arg value="C:/Ruby22-x64/bin/scss" />
+            <srcfile/>
+            <targetfile/>
+            <fileset dir="scss" includes="*.scss"/>
+            <mapper from="*.scss" to="*.css" type="glob"/>
+        </apply>
+    </target>
+</project>
