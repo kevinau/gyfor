@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block htmlTitle %}{{labels.shortTitle}}{% endblock %}</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/global/favicon.ico" />
+  <!-- 
+  <link rel="stylesheet" type="text/css" href="{{context}}/resources/css.css">
+  <link rel="stylesheet" type="text/css" href="{{context}}/resources/kube.css">
+  <link rel="stylesheet" type="text/css" href="{{context}}/resources/kube_003.css">
+  <link rel="stylesheet" type="text/css" href="{{context}}/resources/master.css">
+  <link rel="stylesheet" type="text/css" href="{{context}}/resources/kube_002.css">
+  <link rel="stylesheet" type="text/css" href="{{context}}/resources/kube-overrides.css">
+   -->
+  <script src="{{context}}/resources/ws.js"></script>
+  <script>
+	//var wsUri = "ws://localhost:8123/ws/entity/party";
+	var wsUri = "ws://" + window.location.host + "/ws/entity/party";
+
+	function init() {
+		setupWebSocket();
+	}
+
+	function setupWebSocket() {
+		websocket = new WebSocket(wsUri);
+		websocket.onopen = function(evt) {
+			onOpen(evt)
+		};
+		websocket.onclose = function(evt) {
+			onClose(evt)
+		};
+		websocket.onmessage = function(evt) {
+			onMessage(evt)
+		};
+		websocket.onerror = function(evt) {
+			onError(evt)
+		};
+	}
+
+	function onOpen(evt) {
+		console.log("ws CONNECTED");
+		//doSend("WebSocket rocks");
+		doSend("init");
+	}
+
+	function onClose(evt) {
+		console.log("ws DISCONNECTED");
+	}
+
+	function onMessage(evt) {
+		//console.log(">>>> " + evt.data);
+		console.log('<span style="color: blue;">RESPONSE: ' + evt.data.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;") + '</span>');
+		// Split on the middot character
+		let args = evt.data.split('|');
+		switch (args[0]) {
+		case "update" :
+			let parentId = args[1];
+			let nodeId = args[2];
+			let node = document.getElementById("outer-" + nodeId);
+			console.log("node " + nodeId + " " + node);
+			if (node) {
+				let content = args[3];
+				if (content) {
+				    let template = document.createElement('template');
+				    template.innerHTML = args[3];
+				    console.log("replace... " + template.content.firstChild);
+					node.parentNode.replaceChild(template.content.firstChild, node);
+				} else {
+					node.parentNode.remove(node);
+				}
+			} else {
+				let parent = document.getElementById("inner-" + parentId);
+				console.log("parent " + parentId + " " + parent);
+				if (parent) {
+				    let template = document.createElement('template');
+				    template.innerHTML = args[3];
+				    console.log("add... " + template.content.firstChild);
+					parent.appendChild(template.content.firstChild);
+				} else {
+					console.log("Cannot update: " + parentId + " " + nodeId);
+				}
+			}
+			break;
+		default :
+	    	alert ("Un-recognised message name: " + args[0]);
+			break;
+		}
+	}
+
+	function onError(evt) {
+		writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+	}
+
+	function doSend(message) {
+		console.log("ws SENT: " + message);
+		websocket.send(message);
+	}
+
+	function writeToScreen(message) {
+		var pre = document.createElement("p");
+		pre.style.wordWrap = "break-word";
+		pre.innerHTML = message;
+		output.appendChild(pre);
+	}
+
+	window.addEventListener("load", init, false);
+	
+  </script>
+</head>
+<body class="page-kube">
+  <div id="main">
+    <div id="kube-component" class="content">
+      <div id="inner-1"></div>
+    </div>
+  </div>
+</body>
+</html>

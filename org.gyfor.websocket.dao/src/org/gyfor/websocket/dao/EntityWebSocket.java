@@ -19,7 +19,9 @@ import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.impl.EntityModel;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
+import org.gyfor.object.plan.ILabelGroup;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.type.IType;
 import org.gyfor.template.ITemplate;
 import org.gyfor.template.ITemplateEngine;
 import org.gyfor.template.ITemplateEngineFactory;
@@ -66,7 +68,7 @@ import io.undertow.websockets.core.WebSockets;
  * All commands and responses are tab delimited fields, with the first field the command or response name.
  */
 @Context("/ws/entity")
-@Resource(path = "/static", location = "static")
+@Resource(path = "/resources", location = "resources")
 @Component(service = HttpHandler.class, immediate=true)
 public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
 
@@ -169,22 +171,42 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
       
       @Override
       public void childAdded(IContainerModel parent, INodeModel node) {
-        ITemplate nodeTempl = templateEngine.getTemplate("node");
+        INodePlan plan = node.getPlan();
+
+        // Build template name
+        String templateName = node.getCanonicalName();
+        String defaultName;
+        if (plan instanceof IItemPlan) {
+          IType<?> type = ((IItemPlan<?>)plan).getType();
+          defaultName = type.getClass().getSimpleName() + "Model";
+        } else {
+          defaultName = node.getClass().getSimpleName();
+        }
+        templateName += "(" + defaultName + ")";
+
+        System.out.println("............ " + templateName);
+        ITemplate nodeTempl = templateEngine.getTemplate(templateName);
+
+        if (plan instanceof IItemPlan) {
+          IType<?> type = ((IItemPlan<?>)plan).getType();
+          nodeTempl.putContext("type", type);
+        }
+        nodeTempl.putContext("plan", node.getPlan());
         nodeTempl.putContext("model", node);
         
-        INodePlan plan = node.getPlan();
-        nodeTempl.putContext("plan", node.getPlan());
-        if (plan instanceof IItemPlan) {
-          nodeTempl.putContext("type", ((IItemPlan<?>)plan).getType());
-        }
+        // TODO the following should come from a template page
+        ILabelGroup labelGroup = plan.getLabels();
+        nodeTempl.putContext("labels", labelGroup);
+        
         String html = nodeTempl.evaluate();
+        System.out.println("..............update" + parent.getNodeId() + " " + node.getNodeId() + " " + html);
         Response response = new Response("update", parent.getNodeId(), node.getNodeId(), html);
         WebSockets.sendText(response.toString(), channel, null);
       }
 
       @Override
       public void childRemoved(IContainerModel parent, INodeModel node) {
-        Response response = new Response("update", "node" + parent.getNodeId(), "node" + node.getNodeId(), "");
+        Response response = new Response("update", parent.getNodeId(), node.getNodeId(), "");
         WebSockets.sendText(response.toString(), channel, null);
       }
     }
@@ -192,31 +214,29 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
     @SuppressWarnings("rawtypes")
     @Override
     protected Object buildSessionData (String path, Map<String, String> queryMap, WebSocketChannel channel) throws IllegalArgumentException {
-      String className = path;
+      IDataAccessObject dao;
+      ServiceReference<IDataAccessObject> ref;
+      
       try {
         Collection<ServiceReference<IDataAccessObject>> refs = bundleContext.getServiceReferences(IDataAccessObject.class, "(name=" + path + ")");
-        switch (refs.size()) {
-        case 0 :
-          throw new IllegalArgumentException("No IDataAccessObject with (class=" + className + ")");
-        case 1 :
-          ServiceReference<IDataAccessObject> ref = refs.iterator().next();
-          IDataAccessObject dao = bundleContext.getService(ref);
-          
-          // Register this session as an event listener
-          String[] topics = new String[] {
-              "org/gyfor/data/DataAccessObject/*"
-          };
-          Dictionary<String, Object> props = new Hashtable<>();
-          props.put(EventConstants.EVENT_TOPIC, topics);
-          bundleContext.registerService(EventHandler.class.getName(), new DataChangeEventHandler() , props);
-
-          return new SessionData(dao, ref);
-        default :
-          throw new RuntimeException("Multiple IDataAccessObject's with (class=" + className + ")");
+        if (refs.size() != 1) {
+          throw new IllegalArgumentException("Expecting only one IDataAccessObject with (name=" + path + "), found " + refs.size());
         }
+        ref = refs.iterator().next();
+        dao = bundleContext.getService(ref);
       } catch (InvalidSyntaxException ex) {
         throw new RuntimeException(ex);
       }
+
+      // Register this session as an event listener
+      String[] topics = new String[] {
+          "org/gyfor/data/DataAccessObject/*"
+      };
+      Dictionary<String, Object> props = new Hashtable<>();
+      props.put(EventConstants.EVENT_TOPIC, topics);
+      bundleContext.registerService(EventHandler.class.getName(), new DataChangeEventHandler() , props);
+
+      return new SessionData(dao, ref);
     }
     
     
@@ -242,9 +262,10 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
         doDescriptions (channel, dao);
         break;
       case "init" :
-//        SessionData sessionData = (SessionData)sessionObj;
-//        IDataAccessObject<?> dao2 = sessionData.dao;
         doInit (channel, (SessionData)sessionObj);
+        break;
+      case "clear" :
+        doClear (channel, (SessionData)sessionObj);
         break;
       default :
         throw new RuntimeException("Unrecognised command '" + request.getName() + "'");
@@ -276,6 +297,11 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
       
       Object instance = entityPlan.newInstance();
       sessionData.entityModel.setValue(instance);
+    }
+
+    
+    private void doClear (WebSocketChannel channel, SessionData sessionData) {
+      sessionData.entityModel.setValue(null);
     }
 
   }  

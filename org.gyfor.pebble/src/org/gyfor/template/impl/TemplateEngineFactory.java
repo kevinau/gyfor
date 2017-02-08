@@ -16,11 +16,11 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 
 
-@Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class TemplateEngineFactory implements ITemplateEngineFactory {
 
-  @Configurable(required = true)
-  private Path templateDir;
+  @Configurable
+  private Path templateDir = Paths.get("templates");
   
   
   @Activate
@@ -32,12 +32,16 @@ public class TemplateEngineFactory implements ITemplateEngineFactory {
       Dictionary<String, Object> dict = componentContext.getProperties();
       String cfgName = (String)dict.get("felix.fileinstall.filename");
       if (cfgName == null) {
-        throw new RuntimeException("Relative path name with no 'felix.fileinstall.filename'");
+        // This component was not started using Felix fileinstall, so try for the default configuration location
+        cfgName = System.getProperty("felix.fileinstall.dir");
+        if (cfgName == null) {
+          throw new RuntimeException("Relative path name with no 'felix.fileinstall.filename' or 'felix.fileinstall.dir'");
+        }
       }
-      if (!cfgName.startsWith("file:/")) {
-        throw new RuntimeException("'felix.fileinstall.filename' does not name a file system file");
+      if (cfgName.startsWith("file:/")) {
+        cfgName = cfgName.substring(6);
       }
-      Path cfgPath = Paths.get(cfgName.substring(6));
+      Path cfgPath = Paths.get(cfgName);
       templateDir = cfgPath.resolveSibling(templateDir).normalize();
     }
   }

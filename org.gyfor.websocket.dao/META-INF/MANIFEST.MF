@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: io.undertow.server,
  io.undertow.server.protocol.framed,
+ io.undertow.util,
  io.undertow.websockets,
  io.undertow.websockets.core,
  io.undertow.websockets.spi,
@@ -14,6 +15,7 @@ Import-Package: io.undertow.server,
  org.gyfor.object.model,
  org.gyfor.object.model.impl,
  org.gyfor.object.plan,
+ org.gyfor.object.type,
  org.gyfor.template,
  org.osgi.framework;version="1.8.0",
  org.osgi.service.component;version="1.2.0",
@@ -22,4 +24,5 @@ Import-Package: io.undertow.server,
 Bundle-ActivationPolicy: lazy
 Eclipse-BuddyPolicy: global
 Require-Bundle: slf4j.api
-Service-Component: OSGI-INF/org.gyfor.websocket.dao.EntityWebSocket.xml
+Service-Component: OSGI-INF/org.gyfor.websocket.dao.EntityWebSocket.xml,
+ OSGI-INF/org.gyfor.websocket.dao.EntityEditPage.xml

@@ -20,10 +20,13 @@
 <br>
 <a href="javascript:doSend('init')">Load form</a>
 <br>
+<a href="javascript:doSend('clear')">Clear form</a>
+<br>
 <a href="javascript:doSend('close')">Close</a>
 
 <script type="text/javascript">
-	var wsUri = "ws://localhost:8123/ws/entity/party";
+ 	//var wsUri = "ws://localhost:8123/ws/entity/party";
+	var wsUri = "ws://" + window.location.host + "/ws/entity/party";
 	var output;
 
 	function init() {
@@ -57,7 +60,7 @@
 	}
 
 	function onMessage(evt) {
-		console.log(">>>> " + evt.data);
+		//console.log(">>>> " + evt.data);
 		writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;") + '</span>');
 		// Split on the middot character
 		let args = evt.data.split('|');
@@ -75,21 +78,26 @@
 			let parentId = args[1];
 			let nodeId = args[2];
 			let node = document.getElementById("outer" + nodeId);
-			console.log("node " + nodeId + " " + node);
+			//console.log("node " + nodeId + " " + node);
 			if (node) {
-			    let template = document.createElement('template');
-			    template.innerHTML = args[3];
-				node.parentNode.replaceChild(template.content.firstChild, node);
+				let content = args[3];
+				if (content) {
+				    let template = document.createElement('template');
+				    template.innerHTML = args[3];
+					node.parentNode.replaceChild(template.content.firstChild, node);
+				} else {
+					node.parentNode.remove(node);
+				}
 			} else {
 				let parent = document.getElementById("inner" + parentId);
-				console.log("parent " + parent);
+				//console.log("parent " + parent);
 				if (parent) {
   				    let template = document.createElement('template');
 				    template.innerHTML = args[3];
-				    console.log("add... " + template.content.firstChild);
+				    //console.log("add... " + template.content.firstChild);
 					parent.appendChild(template.content.firstChild);
 				} else {
-					console.log("Cannot update: " + parentId + " " + nodeId);
+					//console.log("Cannot update: " + parentId + " " + nodeId);
 				}
 			}
 			break;
