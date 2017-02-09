@@ -70,9 +70,10 @@ public class Request {
       String[] args = req.getArgs();
       if (args != null) {
         for (String arg : args) {
-          System.out.println(">> " + arg);
+          System.out.println(">>> " + arg);
         }
       }
     }  
   }
+  
 }

@@ -1,10 +1,18 @@
 /** 
  * Support for a searchable text field.
  */
+function getDropListChildren (dropList) {
+	if (!dropList.loaded) {
+		// Get a list of descriptions (but from what channel?)
+		doSend ("getDescriptions");
+	}
+	return dropList.children;
+}
+
 function setToggleButton (e, checked) {
 	let toggleButton = e.parentElement.querySelector("button.upDownButton");
 	let dropList = e.parentElement.querySelector("div.dropList");
-	let dropListItems = dropList.children;
+	let dropListItems = getDropListChildren(dropList);
 
 	let n = countShowing(dropList);
 	if (checked) {
@@ -59,7 +67,7 @@ function deactivateSearchInput(ev) {
 
 function toggleItemList (ev, e) {
 	let dropList = e.parentElement.querySelector("div.dropList");
-	let dropListItems = dropList.children;
+	let dropListItems = getDropListChildren(dropList);
 	let toggleButton = e.parentElement.querySelector("button.upDownButton");
 
 	if (toggleButton.checked) {
@@ -87,7 +95,7 @@ function clearDropList (inputElem, inputBackground, dropList) {
 	inputElem.style.paddingLeft = inputElem.paddingLeft;
 	inputElem.style.width = inputElem.elemWidth + "px";
     
-	let dropListItems = dropList.children;
+	let dropListItems = getDropListChildren(dropList);
 	for (var i = 0; i < dropListItems.length; i++) {
 		dropListItems[i].classList.remove("show", "highlight");
 	}
@@ -96,7 +104,7 @@ function clearDropList (inputElem, inputBackground, dropList) {
 
 function filterItems (e) {
 	let dropList = e.parentElement.querySelector("div.dropList");
-	let dropListItems = dropList.children;
+	let dropListItems = getDropListChildren(dropList);
 	let inputElem = e.parentElement.querySelector("input.visible");
 	let inputShadow = e.parentElement.querySelector("input.shadow");
 	let inputBackground = e.parentElement.querySelector("div.inputBackground");
@@ -210,7 +218,7 @@ function filterItems (e) {
 }
 
 function countShowing (dropList) {
-	let dropListItems = dropList.children;
+	let dropListItems = getDropListChildren(dropList);
 
 	let n = 0;
 	for (var i = 0; i < dropListItems.length; i++) {
@@ -247,7 +255,7 @@ function menuKeyHandler (ev, e) {
 	case 38 :			// Up arrow			
 	case 40 :			// Down arrow
     	var dropList = e.parentElement.querySelector("div.dropList");
-    	var dropListItems = dropList.children;
+    	var dropListItems = getDropListChildren(dropList);
         
         var i = 0;
         while (i < dropListItems.length) {
@@ -290,7 +298,7 @@ function menuKeyHandler (ev, e) {
 			var inputShadow = e.parentElement.querySelector("input.shadow");
 			var inputBackground = e.parentElement.querySelector("div.inputBackground");
     		var dropList = e.parentElement.querySelector("div.dropList");
-    		var dropListItems = dropList.children;
+    		var dropListItems = getDropListChildren(dropList);
         	
         	var i = 0;
         	while (i < dropListItems.length) {
@@ -379,7 +387,7 @@ function selectItem (e) {
 	let inputShadow = searchInput.querySelector("input.shadow");
 	let inputBackground = searchInput.querySelector("div.inputBackground");
 	let dropList = e.parentElement;
-	let dropListItems = dropList.children;
+	let dropListItems = getDropListChildren(dropList);
 	
 	// Remove any highlight
 	let highlighted = dropList.querySelector("div.highlight");

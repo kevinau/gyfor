@@ -1,0 +1,11 @@
+{% macro searchInput (id, inputName) %}
+<div class="searchInput">
+	<label for="searchInput-1">Search<!-- <img src="{{context}}/resources/search_18px.svg">--></label>
+    <input id="searchInput-1" class="visible" type="text" oninput="filterItems(this)" onfocus="activateSearchInput(event)" onblur="deactivateSearchInput(event)" onkeydown="menuKeyHandler(event,this)">
+    <input class="shadow" name="{{inputName}}" type="text">
+    <div class="inputBackground">&nbsp;</div>
+   	<button class="upDownButton" onclick="toggleItemList(event,this)" tabindex="-1" type="button" title="Show all" onblur="deactivateSearchInput(event)"></button>
+   	<div id="{{id}}" class="dropList">
+	</div>
+</div>
+{% endmacro %}

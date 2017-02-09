@@ -5,14 +5,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" href="/global/favicon.ico" />
-  <!-- 
-  <link rel="stylesheet" type="text/css" href="{{context}}/resources/css.css">
-  <link rel="stylesheet" type="text/css" href="{{context}}/resources/kube.css">
-  <link rel="stylesheet" type="text/css" href="{{context}}/resources/kube_003.css">
-  <link rel="stylesheet" type="text/css" href="{{context}}/resources/master.css">
-  <link rel="stylesheet" type="text/css" href="{{context}}/resources/kube_002.css">
-  <link rel="stylesheet" type="text/css" href="{{context}}/resources/kube-overrides.css">
-   -->
+  <link rel="stylesheet" type="text/css" href="{{context}}/resources/gyfor.css">
+  <link rel="stylesheet" type="text/css" href="{{context}}/resources/searchInput.css">
   <script src="{{context}}/resources/ws.js"></script>
   <script>
 	//var wsUri = "ws://localhost:8123/ws/entity/party";
@@ -50,7 +44,7 @@
 
 	function onMessage(evt) {
 		//console.log(">>>> " + evt.data);
-		console.log('<span style="color: blue;">RESPONSE: ' + evt.data.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;") + '</span>');
+		console.log('ws RESPONSE: ' + evt.data); //evt.data.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
 		// Split on the middot character
 		let args = evt.data.split('|');
 		switch (args[0]) {
@@ -63,7 +57,7 @@
 				let content = args[3];
 				if (content) {
 				    let template = document.createElement('template');
-				    template.innerHTML = args[3];
+				    template.innerHTML = content;
 				    console.log("replace... " + template.content.firstChild);
 					node.parentNode.replaceChild(template.content.firstChild, node);
 				} else {
@@ -80,6 +74,24 @@
 				} else {
 					console.log("Cannot update: " + parentId + " " + nodeId);
 				}
+			}
+			break;
+		case "replace" :
+			let nodeId1 = args[1];
+			let content1 = args[2];
+			let node1 = document.getElementById(nodeId1);
+			console.log("Replacing node: " + nodeId1 + ": " + content1);
+			if (node1) {
+				if (content1) {
+				    let template = document.createElement('template');
+				    template.innerHTML = content1;
+				    console.log("replace... " + template.content.firstChild);
+					node1.parentNode.replaceChild(template.content.firstChild, node1);
+				} else {
+					node1.parentNode.remove(node1);
+				}
+			} else {
+				console.log("Node: id='" + nodeId1 + "' not found");
 			}
 			break;
 		default :
@@ -107,12 +119,15 @@
 	window.addEventListener("load", init, false);
 	
   </script>
+  <script src="{{context}}/resources/searchInput.js"></script>
 </head>
-<body class="page-kube">
-  <div id="main">
-    <div id="kube-component" class="content">
+<body>
+  <section class="top">
+    {% import "SearchInputMacro" %}
+    {{ searchInput("descriptionList", "searchInput") }}
+    <form class="form" action="javascript:void(0)" >
       <div id="inner-1"></div>
-    </div>
-  </div>
+    </form>
+  </section>
 </body>
 </html>

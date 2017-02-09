@@ -257,7 +257,7 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
       System.err.println(request);
       
       switch (request.getName()) {
-      case "descriptions" :
+      case "getDescriptions" :
         IDataAccessObject<?> dao = ((SessionData)sessionObj).dao;
         doDescriptions (channel, dao);
         break;
@@ -283,10 +283,14 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
       List<EntityDescription> selectList = dao.getDescriptionAll();
       Collections.sort(selectList);
 
+      String nodeId = "descriptionList";
       ITemplate template = templateEngine.getTemplate("descriptionList");
+      template.putContext("nodeId", nodeId);
       template.putContext("descriptions", selectList);
-      String response = template.evaluate();
-      WebSockets.sendText(response, channel, null);
+      String html = template.evaluate();
+      
+      Response response = new Response("replace", nodeId, html);
+      WebSockets.sendText(response.toString(), channel, null);
     }
 
     

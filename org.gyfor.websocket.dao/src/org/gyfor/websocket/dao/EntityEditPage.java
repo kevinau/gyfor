@@ -85,7 +85,7 @@ public class EntityEditPage implements HttpHandler {
     try {
       Collection<ServiceReference<IDataAccessObject>> refs = bundleContext.getServiceReferences(IDataAccessObject.class, "(name=" + path + ")");
       if (refs.size() != 1) {
-        throw new IllegalArgumentException("Expecting only one IDataAccessObject with (name=" + path + "), found " + refs.size());
+        throw new IllegalArgumentException("Expecting one IDataAccessObject with (name=" + path + "), found " + refs.size());
       }
       ServiceReference<IDataAccessObject> ref = refs.iterator().next();
       dao = bundleContext.getService(ref);
@@ -105,6 +105,8 @@ public class EntityEditPage implements HttpHandler {
     
     entityEditContext.put("entityName", path);
     entityEditContext.put("labels", labels);
+    entityEditContext.put("descriptionListId", "descriptionsList");
+
 
     exchange.startBlocking();
     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");

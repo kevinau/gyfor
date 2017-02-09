@@ -1,20 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Test entitySelect</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="reset.css" />
-  <style>
-  /* for testing */
-body { 
-  margin:20px; 
-}
-
-*:focus {
-    outline: none;
-}
-
 .searchInput {
   position: relative;
   top: 0;
@@ -159,50 +142,3 @@ input:focus {
 .searchInput img {
   margin-left: -24px;
 }
-  </style>
-  <script type="text/javascript" src="searchInput.js"></script>
-</head>
-<body>
-    <form>
-    	<input name="pre1" type="text">
-    	<p>
-	    <div class="searchInput">
-	        <label for="search-1"><img src="search_18px.svg"></label>
-    	  	<input id="search-1" class="visible" type="text" oninput="filterItems(this)" onfocus="activateSearchInput(event)" onblur="deactivateSearchInput(event)" onkeydown="menuKeyHandler(event,this)">
-      		<input class="shadow" name="partyName" type="text">
-      		<div class="inputBackground">&nbsp;</div>
-      		<button class="upDownButton" onclick="toggleItemList(event,this)" tabindex="-1" type="button" title="Show all" onblur="deactivateSearchInput(event)"></button>
-      		<div class="dropList">
-        		<div data-value="2" onclick="selectItem(this)">Australian Foundation Investment Company</div>
-        		<div data-value="3" onclick="selectItem(this)">BHP Billiton</div>
-        		<div data-value="4" onclick="selectItem(this)">Commonwealth Bank of Australia</div>
-        		<div data-value="1" onclick="selectItem(this)">Qantas Airways</div>
-        		<div data-value="5" onclick="selectItem(this)">Telstra Corporation</div>
-      		</div>
-    	</div>
-    	<p>
-    	<input name="mid1" type="text">
-    	<p>
-	    <div class="searchInput">
-    	  	<input class="visible" type="text" oninput="filterItems(this)" onfocus="activateSearchInput(event)" onblur="deactivateSearchInput(event)" onkeydown="menuKeyHandler(event,this)">
-      		<input class="shadow" name="partyDescription" type="text">
-      		<div class="inputBackground">&nbsp;</div>
-      		<button class="upDownButton" onclick="toggleItemList(event,this)" tabindex="-1" type="button" title="Show all" onblur="deactivateSearchInput(event)"></button>
-      		<div class="dropList">
-        		<div data-value="2" onclick="selectItem(this)">Australian Foundation Investment Company</div>
-        		<div data-value="3" onclick="selectItem(this)">BHP Billiton</div>
-        		<div data-value="4" onclick="selectItem(this)">Commonwealth Bank of Australia</div>
-        		<div data-value="1" onclick="selectItem(this)">Qantas Airways</div>
-        		<div data-value="5" onclick="selectItem(this)">Telstra Corporation</div>
-      		</div>
-    	</div>
-    	<p>
-    	<input name="end1" type="text">
-    </form>
-  
-<script>
-window.addEventListener("load", setSizeOfSearchInput);
-</script>
-</body>
-</html>
- 
