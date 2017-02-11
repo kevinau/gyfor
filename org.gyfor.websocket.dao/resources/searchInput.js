@@ -30,6 +30,14 @@ function getDropListChildren (dropList, s, callback) {
 	}
 }
 
+function setShadowValue (shadowElem, value) {
+	let v = shadowElem.value;
+	if (v != value) {
+		shadowElem.value = value;
+		console.log("Shadow value set to: " + value);
+	}
+}
+
 // All calls to setToggleButton should be protected, and only called
 // within a callback from getDropListChildren
 function setToggleButton (e, checked) {
@@ -174,16 +182,16 @@ function filterItems (e) {
 		clearDropList(inputElem, inputBackground, dropList);
 		inputElem.classList.remove("error", "incomplete");
 		inputElem.classList.add("required");
-		inputShadow.value = "";
 		setToggleButton(e, false);
+		setShadowValue(inputShadow, "");
 		return;
 	}
 	let dataValue = exactMatch(inputElem.value, dropListItems);
 	if (dataValue) {
 		clearDropList(inputElem, inputBackground, dropList);
 		inputElem.classList.remove("error", "incomplete", "required");
-		inputShaddow.value = dataValue;
 		setToggleButton(e, false);
+		setShadowValue(inputShadow, dataValue);
 		return;
 	}
 	partial = inputElem.value.toLowerCase();
@@ -208,7 +216,7 @@ function filterItems (e) {
 		clearDropList(inputElem, inputBackground, dropList);
 		inputElem.classList.remove("incomplete", "required");
 		inputElem.classList.add("error");
-		inputShadow.value = "";
+		setShadowValue(inputShadow, "");
 		break;
 	case 1 :
 		// Single value found
@@ -243,7 +251,7 @@ function filterItems (e) {
 		inputElem.style.paddingLeft = offsetLeft + "px";
 		inputElem.style.width = (inputElem.elemWidth - offsetLeft + 10) + "px";
 		inputElem.classList.remove("error", "incomplete", "required");
-		inputShadow.value = dataValue;
+		setShadowValue(inputShadow, dataValue);
 		break;
 	default :
 		// Multiple values found
@@ -253,7 +261,6 @@ function filterItems (e) {
 		inputElem.style.width = inputElem.elemWidth + "px";
 		inputElem.classList.remove("error", "required");
 		inputElem.classList.add("incomplete");
-		inputShadow.value = "";
 		
 		for (var i = 0; i < dropListItems.length; i++) {
 			let t = dropListItems[i].innerText.toLowerCase();
@@ -264,6 +271,7 @@ function filterItems (e) {
 				dropListItems[i].classList.add("show");
 			}
 		}
+		setShadowValue(inputShadow, "");
 		break;
 	}
 	if (n == 0) {
@@ -343,6 +351,7 @@ function menuKeyHandler (ev, e) {
     		ev.stopPropagation();
     		break;
 		case 9 :			// Tab
+		case 13 :			// Enter
 			if (!ev.shiftKey) {
 				var inputElem = e.parentElement.querySelector("input.visible");
 				var inputShadow = e.parentElement.querySelector("input.shadow");
@@ -360,8 +369,8 @@ function menuKeyHandler (ev, e) {
     			if (i < dropListItems.length) {
     				// Use the highlighted value as the input value
     				inputElem.value = dropListItems[i].innerText;
-    				inputShadow.value = dropListItems[i].getAttribute("data-value");
     				inputElem.classList.remove("error", "incomplete", "required");
+    				setShadowValue(inputShadow, dropListItems[i].getAttribute("data-value"));
     			} else {
     				// Look for a partial match with only one result
     				let partial = inputElem.value.toLowerCase();
@@ -380,10 +389,10 @@ function menuKeyHandler (ev, e) {
     				if (n == 1) {
     					// We found a matching item (i.e. the partial matches a value)
     					inputElem.value = dropListItems[i0].innerText;
-    					inputShadow.value = dropListItems[i0].getAttribute("data-value");
     					inputElem.classList.remove("error", "incomplete", "required");
+    					setShadowValue(inputShadow, dropListItems[i0].getAttribute("data-value"));
     				} else {
-    					inputShadow.value = "";
+    					setShadowValue(inputShadow, "");
     				}
     			}
     			clearDropList(inputElem, inputBackground, dropList);
@@ -454,7 +463,6 @@ function selectItem (e) {
 		}
 		inputElem.value = e.innerText;
 		inputElem.classList.remove("error", "incomplete", "required");
-		inputShadow.value = e.getAttribute("data-value");
 		clearDropList(inputElem, inputBackground, dropList);
 		setToggleButton(e.parentElement, false);
 		
@@ -469,6 +477,8 @@ function selectItem (e) {
 				searchInput.classList.remove("active");
 			}
 		}
+		console.log("select item: " + e.getAttribute("data-value"));
+		setShadowValue(inputShadow, e.getAttribute("data-value"));
 	});
 }
 
@@ -492,20 +502,29 @@ function selectItem (e) {
 
 // Close the dropdown if the user clicks outside of it
 window.addEventListener("click", function(event) {
+	console.log("click event handler");
 	let searchInput = document.querySelector(".searchInput.active");
 	if (searchInput) {
 		if (event.target.matches(".searchInput.active input.visible")) {
 			// On the search input field, so do nothing
+			console.log("over input.visible");
 			return;
 		}
 		if (event.target.matches(".searchInput.active button.upDownButton")) {
+			console.log("over up/down button");
 			// On the up/down button, so do nothing
 			return;
 		}
 	  	if (event.target.matches(".searchInput.active div.dropList")) {
 		  	// On the drop down list, so do nothing
+	  		console.log("over dropList:");
 		  	return;
 	  	}
+	  	//if (event.target.matches(".searchInput.active div.dropList div")) {
+		//  	// On the drop down list item, so select it
+	  	//	selectItem(event.target);
+		//  	return;
+	  	//}
 		searchInput.classList.remove("active");
 	}
 });

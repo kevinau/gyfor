@@ -2,6 +2,10 @@ $label-font : Helvetica, Arial, sans-serif;
 $font-size: 16px;
 $height: 26px;
 
+#entitySearchInput {
+  padding-bottom: 1em;
+}
+
 input.error {
   border: 1px solid red;
 }
@@ -17,23 +21,13 @@ input:focus {
   position: relative;
   display: inline-block;
   height: $height;
-  ////font-size: 0;
-}
-
-.form-item.fixtest {
-  /////height: 26px !IMPORTANT;
 }
 
 .searchInput input.visible {
   font-family: $label-font;
   font-size: $font-size;
   height: $height;
-  //////// wrong width: 200px;   /* to be calculated */
-  //box-sizing: border-box;
   background: transparent;
-  //padding: 4px 10px;
-  //padding: 0;
-  //margin: 0;
   display: inline;
   vertical-align: top;
   line-height: $height; /* the same value as height */
@@ -44,8 +38,6 @@ input:focus {
   left: -9999px;
 }
 .searchInput div.inputBackground {
-  /////// wrong width: 200px;
-  //height: 20px;
   height: $height;
   font-size: $font-size;
   position: absolute;
@@ -53,13 +45,11 @@ input:focus {
   line-height: 24px; /* height (26) less top and bottom border (2 x 1) */
   z-index: -1;
   border: 1px solid transparent;
-  //padding: 4px 10px;
   padding: 0;
   margin: 0;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  //box-sizing: border-box;
 }
 .searchInput div.inputBackground span {
   font-size: $font-size;
@@ -71,21 +61,19 @@ input:focus {
 .searchInput div.dropList {
   display: none;
   font-size: $font-size;
-  //box-sizing: border-box;
-  ////// wrong width: 200px;
   border: 1px solid green;
   background: #ffffff;
-  padding: 0 6px;
   margin: 0;
   position: absolute;
   top: $height;
   line-height: 24px;  /* some figure yet to be determined */
-  ////height: 0;
   z-index: 2;
   cursor: pointer;
 }
 .searchInput div.dropList div {
   white-space: nowrap;
+  padding: 0 6px;
+  z-index: 2;
 }
 .searchInput div.dropList.calcSize div {
   display: block !IMPORTANT;
@@ -98,28 +86,32 @@ input:focus {
 .searchInput.active div.dropList.allShowing,
 .searchInput.active div.dropList.someShowing {
   display: block;
-  background: cyan;
 }
 
 .searchInput.active div.dropList.allShowing div {
   display: block;
+  padding: 0 6px;
 }
 .searchInput.active div.dropList.someShowing div {
   display: none;
+  padding: 0 6px;
 }
 .searchInput.active div.dropList.someShowing div.show {
   display: block;
+  padding: 0 6px;
 }
 .searchInput.active div.dropList>div {
   font-size: $font-size;
-  //padding: 4px 10px;
   padding: 0;
+  padding: 0 6px;
 }
 .searchInput.active div.dropList>div:hover {
   background-color: #FFE2BF;
+  padding: 0 6px;
 }
 .searchInput.active div.dropList>div.highlight {
   background-color: #FFC57F;
+  padding: 0 6px;
 }
 
 .searchInput button.upDownButton {
@@ -128,12 +120,9 @@ input:focus {
 }
 .searchInput.active button.upDownButton {
   font-size: $font-size;
-  //box-sizing: border-box;
   display: inline;
   width: $height;
   height: $height;
-  //width: 24px;
-  //height: 24px;
   cursor: pointer;
   outline: none;
   user-select: none;
@@ -147,9 +136,6 @@ input:focus {
 }
 .searchInput.active button.upDownButton:before {
   position: relative;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   display: block;
   width: $height;
   height: $height;
