@@ -285,11 +285,10 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
 
       String nodeId = "descriptionList";
       ITemplate template = templateEngine.getTemplate("descriptionList");
-      template.putContext("nodeId", nodeId);
       template.putContext("descriptions", selectList);
       String html = template.evaluate();
       
-      Response response = new Response("replace", nodeId, html);
+      Response response = new Response("replaceContents", nodeId, html);
       WebSockets.sendText(response.toString(), channel, null);
     }
 

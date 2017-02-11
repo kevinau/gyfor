@@ -16,14 +16,14 @@ body {
 }
 
 section.top {
-  padding: 1em; 
+  padding: 3em; 
 }
 
 input, textarea, select {
     display: inline-block;
     //width: 100%;
     font-family: $input-font;
-    font-size: 15px;
+    font-size: 16px;
     height: 26px;
     vertical-align: middle;
     background-color: #fff;
@@ -35,18 +35,18 @@ input, textarea, select {
 }
 
 label {
-    display: inline-block;
-    font-family: $label-font;
-    width: 10em;
-    font-size: 15px;
-    height: 22px;
-    vertical-align: bottom;
-    border: 1px solid transparent;
-    color: #313439;
-    margin-right: 4px;
-    text-align: right;
-    padding-top: 4px;
-    
+  display: inline-block;
+  font-family: $label-font;
+  width: 10em;
+  font-size: 16px;
+  height: 22px;
+  vertical-align: top;
+  border: 1px solid transparent;
+  color: #313439;
+  margin-right: 4px;
+  text-align: right;
+  padding-top: 4px;
+  line-height: 20px; /* height (22) - top and bottom border (2 x 1) */
 }
 
 .form > .form-item:last-child {

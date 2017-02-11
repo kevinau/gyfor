@@ -1,24 +1,3 @@
-.searchInput {
-  position: relative;
-  top: 0;
-  left: 0;
-  font-family: Hevetica, Arial, sans-serif;
-  z-index: 10; }
-
-.searchInput input.visible {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 20px;
-  font-size: 14px;
-  background: transparent;
-  padding: 4px 10px;
-  margin: 0;
-  z-index: 2; }
-
-input {
-  border: 1px solid #888888; }
-
 input.error {
   border: 1px solid red; }
 
@@ -29,40 +8,63 @@ input.incomplete {
 input:focus {
   border-style: dotted; }
 
+.searchInput {
+  position: relative;
+  display: inline-block;
+  height: 26px; }
+
+.searchInput input.visible {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  height: 26px;
+  background: transparent;
+  display: inline;
+  vertical-align: top;
+  line-height: 26px;
+  /* the same value as height */
+  outline: none; }
+
 .searchInput input.shadow {
   position: absolute;
-  left: -9999px;
-  display: none; }
+  left: -9999px; }
 
 .searchInput div.inputBackground {
+  height: 26px;
+  font-size: 16px;
   position: absolute;
   top: 0;
-  left: 0;
-  height: 20px;
-  font-size: 14px;
+  line-height: 24px;
+  /* height (26) less top and bottom border (2 x 1) */
+  z-index: -1;
   border: 1px solid transparent;
-  padding: 4px 10px;
+  padding: 0;
   margin: 0;
-  z-index: 1;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap; }
 
 .searchInput div.inputBackground span {
-  font-size: 14px;
+  font-size: 16px;
   color: #AAAAAA;
-  line-height: 20px;
-  z-index: 1; }
+  line-height: 26px;
+  z-index: -1; }
 
 .searchInput div.dropList {
   display: none;
+  font-size: 16px;
+  border: 1px solid green;
+  background: #ffffff;
+  padding: 0 6px;
+  margin: 0;
   position: absolute;
-  top: 30px;
-  left: 0;
-  border: 1px solid darkorange;
-  background: #FFFFFF;
-  z-index: 100;
+  top: 26px;
+  line-height: 24px;
+  /* some figure yet to be determined */
+  z-index: 2;
   cursor: pointer; }
+
+.searchInput div.dropList div {
+  white-space: nowrap; }
 
 .searchInput div.dropList.calcSize div {
   display: block !IMPORTANT; }
@@ -74,7 +76,8 @@ input:focus {
 
 .searchInput.active div.dropList.allShowing,
 .searchInput.active div.dropList.someShowing {
-  display: block; }
+  display: block;
+  background: cyan; }
 
 .searchInput.active div.dropList.allShowing div {
   display: block; }
@@ -86,44 +89,45 @@ input:focus {
   display: block; }
 
 .searchInput.active div.dropList > div {
-  font-size: 14px;
-  padding: 4px 10px; }
+  font-size: 16px;
+  padding: 0; }
 
 .searchInput.active div.dropList > div:hover {
-  background-color: rgba(255, 140, 0, 0.25); }
+  background-color: #FFE2BF; }
 
 .searchInput.active div.dropList > div.highlight {
-  background-color: rgba(255, 140, 0, 0.5); }
+  background-color: #FFC57F; }
 
 .searchInput button.upDownButton {
-  display: none; }
+  display: none;
+  line-height: 24px;
+  /* height (26) less top and bottom border (2 x 1) */ }
 
 .searchInput.active button.upDownButton {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 24px;
-  height: 24px;
+  font-size: 16px;
+  display: inline;
+  width: 26px;
+  height: 26px;
   cursor: pointer;
   outline: none;
   user-select: none;
   padding: 0;
   margin: 0;
-  border: none; }
+  border: none;
+  vertical-align: top; }
+
+.searchInput.active button.upDownButton:disabled {
+  cursor: default; }
 
 .searchInput.active button.upDownButton:before {
-  position: absolute;
+  position: relative;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   display: block;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   content: url(downArrow.svg); }
-
-.searchInput.active button.upDownButton:disabled {
-  cursor: default; }
 
 .searchInput.active button.upDownButton:disabled:before {
   opacity: 0.4; }
@@ -135,6 +139,6 @@ input:focus {
   content: url(upAndFilter.svg); }
 
 .searchInput img {
-  margin-left: -24px; }
+  margin-left: -26px; }
 
 /*# sourceMappingURL=searchInput.css.map */

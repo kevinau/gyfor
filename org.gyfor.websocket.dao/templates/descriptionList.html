@@ -1,5 +1,3 @@
-<div id="{{nodeId}}" class="dropList">
   {% for d in descriptions %}
     <div data-value="{{d.id}}" class="{{d.entityLife.toString() | lower}} onclick="selectItem(this)">{{d.description}}</div>
   {% endfor %}
-</div>

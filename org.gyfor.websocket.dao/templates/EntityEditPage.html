@@ -36,6 +36,7 @@
 		console.log("ws CONNECTED");
 		//doSend("WebSocket rocks");
 		doSend("init");
+		onSearchInputLoad();
 	}
 
 	function onClose(evt) {
@@ -89,6 +90,36 @@
 					node1.parentNode.replaceChild(template.content.firstChild, node1);
 				} else {
 					node1.parentNode.remove(node1);
+				}
+				if (node1.onload) {
+					node1.onload(node1);
+				}
+			} else {
+				console.log("Node: id='" + nodeId1 + "' not found");
+			}
+			break;
+		case "replaceContents" :
+			let nodeId2 = args[1];
+			let content2 = args[2];
+			let node2 = document.getElementById(nodeId2);
+			console.log("Replacing contents of node: " + nodeId2 + ": " + content2);
+			if (node2) {
+				while (node2.firstChild) node2.removeChild(node2.firstChild);
+				if (content2) {
+				    let template = document.createElement('template');
+				    template.innerHTML = "<div>" + content2 + "</div>";
+				    console.log("replace content... " + template.content.firstChild);
+				    console.log("replace content... " + template.content.firstChild.children);
+				    console.log("replace content... " + template.content.firstChild.children.length);
+				    let newNodes = template.content.firstChild;
+				    while (newNodes.firstChild) {
+				    	//console.log("appending " + j + ": " + newNodes[0].innerText);
+				    	node2.appendChild(newNodes.firstChild);
+				    	console.log("appending " + node2.children.length);
+				    }
+				}
+				if (node2.onload) {
+					node2.onload(node2);
 				}
 			} else {
 				console.log("Node: id='" + nodeId1 + "' not found");

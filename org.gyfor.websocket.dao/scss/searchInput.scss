@@ -1,24 +1,7 @@
-.searchInput {
-  position: relative;
-  top: 0;
-  left: 0;
-  font-family: Hevetica, Arial, sans-serif;
-  z-index: 10;
-}
-.searchInput input.visible {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 20px;
-  font-size: 14px;
-  background: transparent;
-  padding: 4px 10px;
-  margin: 0;
-  z-index: 2;
-}
-input {
-  border: 1px solid #888888;
-}
+$label-font : Helvetica, Arial, sans-serif;
+$font-size: 16px;
+$height: 26px;
+
 input.error {
   border: 1px solid red;
 }
@@ -30,40 +13,79 @@ input:focus {
   border-style: dotted;
 }
 
+.searchInput {
+  position: relative;
+  display: inline-block;
+  height: $height;
+  ////font-size: 0;
+}
+
+.form-item.fixtest {
+  /////height: 26px !IMPORTANT;
+}
+
+.searchInput input.visible {
+  font-family: $label-font;
+  font-size: $font-size;
+  height: $height;
+  //////// wrong width: 200px;   /* to be calculated */
+  //box-sizing: border-box;
+  background: transparent;
+  //padding: 4px 10px;
+  //padding: 0;
+  //margin: 0;
+  display: inline;
+  vertical-align: top;
+  line-height: $height; /* the same value as height */
+  outline: none;
+}
 .searchInput input.shadow {
   position: absolute;
   left: -9999px;
-  display: none;
 }
 .searchInput div.inputBackground {
+  /////// wrong width: 200px;
+  //height: 20px;
+  height: $height;
+  font-size: $font-size;
   position: absolute;
   top: 0;
-  left: 0;
-  height: 20px;
-  font-size: 14px;
+  line-height: 24px; /* height (26) less top and bottom border (2 x 1) */
+  z-index: -1;
   border: 1px solid transparent;
-  padding: 4px 10px;
+  //padding: 4px 10px;
+  padding: 0;
   margin: 0;
-  z-index: 1;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  //box-sizing: border-box;
 }
 .searchInput div.inputBackground span {
-  font-size: 14px;
+  font-size: $font-size;
   color: #AAAAAA;
-  line-height: 20px;
-  z-index: 1;
+  line-height: $height;
+  z-index: -1;
 }
+
 .searchInput div.dropList {
   display: none;
+  font-size: $font-size;
+  //box-sizing: border-box;
+  ////// wrong width: 200px;
+  border: 1px solid green;
+  background: #ffffff;
+  padding: 0 6px;
+  margin: 0;
   position: absolute;
-  top: 30px;
-  left: 0;
-  border: 1px solid rgba(255, 140, 0, 1);
-  background: #FFFFFF;
-  z-index: 100;
+  top: $height;
+  line-height: 24px;  /* some figure yet to be determined */
+  ////height: 0;
+  z-index: 2;
   cursor: pointer;
+}
+.searchInput div.dropList div {
+  white-space: nowrap;
 }
 .searchInput div.dropList.calcSize div {
   display: block !IMPORTANT;
@@ -76,6 +98,7 @@ input:focus {
 .searchInput.active div.dropList.allShowing,
 .searchInput.active div.dropList.someShowing {
   display: block;
+  background: cyan;
 }
 
 .searchInput.active div.dropList.allShowing div {
@@ -88,45 +111,49 @@ input:focus {
   display: block;
 }
 .searchInput.active div.dropList>div {
-  font-size: 14px;
-  padding: 4px 10px;
+  font-size: $font-size;
+  //padding: 4px 10px;
+  padding: 0;
 }
 .searchInput.active div.dropList>div:hover {
-  background-color: rgba(255, 140, 0, 0.25);
+  background-color: #FFE2BF;
 }
 .searchInput.active div.dropList>div.highlight {
-  background-color: rgba(255, 140, 0, 0.5);
+  background-color: #FFC57F;
 }
 
 .searchInput button.upDownButton {
   display: none;
+  line-height: 24px; /* height (26) less top and bottom border (2 x 1) */
 }
 .searchInput.active button.upDownButton {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0; 
-  width: 24px;
-  height: 24px;
+  font-size: $font-size;
+  //box-sizing: border-box;
+  display: inline;
+  width: $height;
+  height: $height;
+  //width: 24px;
+  //height: 24px;
   cursor: pointer;
   outline: none;
   user-select: none;
   padding: 0;
   margin: 0;
   border: none;
+  vertical-align: top;
+}
+.searchInput.active button.upDownButton:disabled {
+  cursor: default;
 }
 .searchInput.active button.upDownButton:before {
-  position: absolute;
+  position: relative;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   display: block;
-  width: 24px;
-  height: 24px;
+  width: $height;
+  height: $height;
   content: url(downArrow.svg);
-}
-.searchInput.active button.upDownButton:disabled {
-  cursor: default;
 }
 .searchInput.active button.upDownButton:disabled:before {
   opacity: 0.4;
@@ -138,5 +165,5 @@ input:focus {
   content: url(upAndFilter.svg);
 }
 .searchInput img {
-  margin-left: -24px;
+  margin-left: -26px;
 }
