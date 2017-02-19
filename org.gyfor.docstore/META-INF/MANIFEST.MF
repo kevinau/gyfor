@@ -8,6 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.sleepycat.persist,
  com.sleepycat.persist.model,
  org.gyfor.berkeleydb,
+ org.gyfor.classifier,
  org.gyfor.math,
  org.gyfor.nio,
  org.gyfor.object,
@@ -26,8 +27,9 @@ Bundle-ClassPath: lib/com.objectplanet.image.PngEncoder.jar,
  lib/pdfbox-2.0.3.jar,
  lib/preflight-2.0.3.jar,
  lib/xmpbox-2.0.3.jar,
- .,
- lib/pdfbox-tools-2.0.3.jar
+ lib/commons-math3-3.6.1.jar,
+ lib/pdfbox-tools-2.0.3.jar,
+ lib/weka.jar
 Export-Package: org.gyfor.docstore
 Service-Component: OSGI-INF/org.gyfor.docstore.parser.impl.TesseractImageOCR.xml,
  OSGI-INF/org.gyfor.docstore.DocumentStore.xml

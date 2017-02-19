@@ -32,7 +32,7 @@ class PDFTextStripper3 extends PDFTextStripper {
     TextPosition posn0 = textPositions.get(0);
     float x0 = posn0.getX();
     float y0 = posn0.getY() - posn0.getHeight();
-    System.out.println(">>>> " + text + ":  " + posn0.getFont() + " " + posn0.getFontSize() + " " + posn0.getFontSizeInPt());
+//    System.out.println(">>>> " + text + ":  " + posn0.getFont() + " " + posn0.getFontSize() + " " + posn0.getFontSizeInPt());
 
     // Ending position
     TextPosition posn1 = textPositions.get(textPositions.size() - 1);

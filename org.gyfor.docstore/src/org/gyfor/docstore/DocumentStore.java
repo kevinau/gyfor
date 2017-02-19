@@ -259,12 +259,12 @@ public class DocumentStore implements IDocumentStore {
     logger.info("Import complete: {} -> {}", originName, id);
     
     // For debugging
-    Document d = primaryIndex.get(id);
-    IDocumentContents dc = d.getContents();
-    System.out.println(">>>> " + dc);
-    for (ISegment seg : dc.getSegments()) {
-      System.out.println(">>>> " + seg);
-    }
+//    Document d = primaryIndex.get(id);
+//    IDocumentContents dc = d.getContents();
+//    System.out.println(">>>> " + dc);
+//    for (ISegment seg : dc.getSegments()) {
+//      System.out.println(">>>> " + seg);
+//    }
   }
 
   

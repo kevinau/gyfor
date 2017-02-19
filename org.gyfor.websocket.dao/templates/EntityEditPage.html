@@ -7,6 +7,7 @@
   <link rel="icon" href="/global/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="{{context}}/resources/gyfor.css">
   <link rel="stylesheet" type="text/css" href="{{context}}/resources/searchInput.css">
+  <link rel="stylesheet" type="text/css" href="{{context}}/resources/menuButton.css">
   <script src="{{context}}/resources/ws.js"></script>
   <script>
 	//var wsUri = "ws://localhost:8123/ws/entity/party";
@@ -155,6 +156,9 @@
 <body>
   <section class="top">
     {% import "SearchInputMacro" %}
+    {% import "MenuButtonMacro" %}
+    {{ menuButton("startCreating", "Create a new " + labels.shortTitle) }}
+    {{ menuButton("startChanging", "Edit this " + labels.shortTitle) }}
     {{ searchInput("entitySearchInput", "descriptionList") }}
     <form class="form" action="javascript:void(0)" >
       <div id="inner-1"></div>

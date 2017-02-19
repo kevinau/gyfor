@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.gyfor.classifier.impl.ClassifierTest4">
+   <reference bind="setClassifier" cardinality="1..1" interface="org.gyfor.classifier.IDocumentClassifier" name="Classifier" policy="static" unbind="unsetClassifier"/>
+   <implementation class="org.gyfor.classifier.impl.ClassifierTest4"/>
+</scr:component>
