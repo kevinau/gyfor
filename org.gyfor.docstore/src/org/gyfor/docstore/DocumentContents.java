@@ -5,14 +5,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.gyfor.doc.Dictionary;
+import org.gyfor.doc.IDocumentContents;
+import org.gyfor.doc.ISegment;
+import org.gyfor.doc.PageImage;
+import org.gyfor.doc.SegmentType;
 import org.gyfor.docstore.parser.ISegmentMatchResult;
 import org.gyfor.docstore.parser.ISegmentMatcher;
 import org.gyfor.docstore.segment.SegmentMatcherList;
 
-import com.sleepycat.persist.model.Persistent;
 
-
-@Persistent
 public class DocumentContents implements IDocumentContents, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -44,6 +46,18 @@ public class DocumentContents implements IDocumentContents, Serializable {
     findMatchAndAdd (partialSegment, word, 0, word.length());
   }
 
+  
+  @Override
+  public void addSegment (ISegment segment) {
+    segments.add(segment);
+  }
+  
+  
+  @Override
+  public void addPageImage (PageImage pageImage) {
+    pageImages.add(pageImage);
+  }
+  
  
   private void findMatchAndAdd (PartialSegment partialSegment, String text, int n0, int nz) {
     ISegment s = null;
@@ -242,12 +256,6 @@ public class DocumentContents implements IDocumentContents, Serializable {
       System.out.println(segment);
     }
     System.out.println();
-  }
-  
-  
-  @Override
-  public void addPageImage (PageImage pageImage) {
-    pageImages.add(pageImage);
   }
   
   

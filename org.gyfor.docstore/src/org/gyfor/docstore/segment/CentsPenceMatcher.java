@@ -3,7 +3,7 @@ package org.gyfor.docstore.segment;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.gyfor.docstore.SegmentType;
+import org.gyfor.doc.SegmentType;
 import org.gyfor.docstore.parser.ISegmentMatchResult;
 import org.gyfor.docstore.parser.ISegmentMatcher;
 import org.gyfor.math.Decimal;

@@ -7,12 +7,10 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Kevin Holloway
 Bundle-ClassPath: lib/weka.jar,
  .
-Import-Package: com.sleepycat.persist,
- org.gyfor.docstore,
+Import-Package: org.gyfor.doc,
  org.gyfor.osgi,
  org.osgi.service.component;version="1.2.0",
  org.slf4j
 Bundle-ActivationPolicy: lazy
-Service-Component: OSGI-INF/org.gyfor.classifier.impl.DocumentPartyClassifier.xml,
- OSGI-INF/org.gyfor.classifier.impl.ClassifierTest4.xml
+Service-Component: OSGI-INF/org.gyfor.classifier.impl.DocumentClassifier.xml
 Export-Package: org.gyfor.classifier

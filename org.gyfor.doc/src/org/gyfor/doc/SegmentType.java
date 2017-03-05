@@ -1,4 +1,4 @@
-package org.gyfor.docstore;
+package org.gyfor.doc;
 
 public enum SegmentType {
 

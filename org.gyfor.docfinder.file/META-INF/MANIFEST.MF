@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.gyfor.docfinder.file
 Bundle-Version: 1.0.0
 Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.gyfor.docstore,
+Import-Package: org.gyfor.doc,
  org.gyfor.nio,
  org.gyfor.osgi,
  org.gyfor.value,

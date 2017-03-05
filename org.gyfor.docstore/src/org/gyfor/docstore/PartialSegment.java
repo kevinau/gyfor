@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.gyfor.doc.Dictionary;
+
 public class PartialSegment {
 
   public static class Nibble {
@@ -143,7 +145,7 @@ public class PartialSegment {
   
   float adjustedX1 (int endChar) {
     int n = 0;
-    Nibble lastNibble = null;
+    Nibble lastNibble = nibbles.get(0);
     for (Nibble nibble : nibbles) {
       if (n + nibble.chars > endChar) {
         return (float)(x0 + nibble.offset + (endChar - n) * nibble.width / nibble.chars);

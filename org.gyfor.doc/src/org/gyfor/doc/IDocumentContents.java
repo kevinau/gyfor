@@ -1,4 +1,4 @@
-package org.gyfor.docstore;
+package org.gyfor.doc;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -55,6 +55,8 @@ public interface IDocumentContents {
 
   public void dump();
 
+  public void addSegment (ISegment segment);
+  
   public void addPageImage (PageImage docImage);
   
   public List<PageImage> getPageImages ();

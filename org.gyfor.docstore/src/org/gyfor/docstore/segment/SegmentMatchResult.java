@@ -2,7 +2,7 @@ package org.gyfor.docstore.segment;
 
 import java.util.regex.MatchResult;
 
-import org.gyfor.docstore.SegmentType;
+import org.gyfor.doc.SegmentType;
 import org.gyfor.docstore.parser.ISegmentMatchResult;
 
 

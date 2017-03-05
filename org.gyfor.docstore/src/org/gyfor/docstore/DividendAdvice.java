@@ -4,17 +4,8 @@ import java.time.LocalDate;
 
 import org.gyfor.math.Decimal;
 
-import com.sleepycat.persist.model.DeleteAction;
-import com.sleepycat.persist.model.Entity;
-import com.sleepycat.persist.model.Relationship;
-import com.sleepycat.persist.model.SecondaryKey;
+public class DividendAdvice {
 
-@Entity
-public class DividendAdvice extends Document {
-
-  private static final long serialVersionUID = 1L;
-
-  @SecondaryKey(relate = Relationship.MANY_TO_ONE, relatedEntity = Party.class, onRelatedEntityDelete = DeleteAction.ABORT)
   private int partyId;
   
   private LocalDate declaredDate;
@@ -40,7 +31,6 @@ public class DividendAdvice extends Document {
   }
   
   
-  @Override
   public String getType () {
     return "Dividend advice";
   }

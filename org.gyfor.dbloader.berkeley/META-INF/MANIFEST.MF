@@ -24,4 +24,5 @@ Import-Package: com.sleepycat.je,
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/opencsv-2.3-osgi.jar,
  .
-Service-Component: OSGI-INF/org.gyfor.dbloader.berkeley.DatabaseAccessObjectTest.xml
+Service-Component: OSGI-INF/org.gyfor.dbloader.berkeley.DatabaseAccessObjectTest.xml,
+ OSGI-INF/org.gyfor.dbloader.berkeley.ClassifierTest5.xml

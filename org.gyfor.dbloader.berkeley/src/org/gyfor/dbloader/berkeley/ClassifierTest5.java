@@ -1,4 +1,4 @@
-package org.gyfor.docstore.parser.impl;
+package org.gyfor.dbloader.berkeley;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -13,6 +13,8 @@ import org.gyfor.docstore.IDocumentContents;
 import org.gyfor.docstore.IDocumentStore;
 import org.gyfor.docstore.parser.IImageParser;
 import org.gyfor.docstore.parser.IPDFParser;
+import org.gyfor.docstore.parser.impl.PDFBoxPDFParser;
+import org.gyfor.docstore.parser.impl.TesseractImageOCR;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

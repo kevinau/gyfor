@@ -1,4 +1,4 @@
-package org.gyfor.docstore.parser.impl;
+package org.gyfor.dbloader.berkeley;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -15,6 +15,8 @@ import org.gyfor.docstore.ISegment;
 import org.gyfor.docstore.SegmentType;
 import org.gyfor.docstore.parser.IImageParser;
 import org.gyfor.docstore.parser.IPDFParser;
+import org.gyfor.docstore.parser.impl.PDFBoxPDFParser;
+import org.gyfor.docstore.parser.impl.TesseractImageOCR;
 import org.gyfor.docstore.parser.util.SparseIntArray;
 
 import weka.classifiers.Classifier;

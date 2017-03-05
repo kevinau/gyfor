@@ -13,12 +13,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.codehaus.stax2.XMLInputFactory2;
+import org.gyfor.doc.IDocumentContents;
+import org.gyfor.docstore.DocumentContents;
+import org.gyfor.docstore.PartialSegment;
 import org.gyfor.docstore.parser.IImageParser;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.gyfor.docstore.DocumentContents;
-import org.gyfor.docstore.IDocumentContents;
-import org.gyfor.docstore.PartialSegment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.gyfor.docstore.Document;
-import org.gyfor.docstore.IDocumentStore;
-import org.gyfor.docstore.ISegment;
-import org.gyfor.docstore.SegmentType;
+import org.gyfor.doc.Document;
+import org.gyfor.doc.IDocumentStore;
+import org.gyfor.doc.ISegment;
+import org.gyfor.doc.SegmentType;
 import org.gyfor.http.Context;
 import org.gyfor.http.HttpUtility;
 import org.gyfor.template.ITemplate;
@@ -23,6 +23,8 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.pennyledger.party.Party;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -30,8 +32,10 @@ import io.undertow.util.Headers;
 
 
 @Context("/d")
-@Component(service = HttpHandler.class, immediate = false, configurationPolicy = ConfigurationPolicy.OPTIONAL)
+@Component(service = HttpHandler.class, immediate = true, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class SingleDocumentView implements HttpHandler {
+
+  private static Logger logger = LoggerFactory.getLogger(ListThumbsView.class);
 
   private ITemplateEngine templateEngine;
   private ITemplate template = null;
@@ -79,6 +83,7 @@ public class SingleDocumentView implements HttpHandler {
       exchange.dispatch(this);
       return;
     }
+    logger.info("Handle request: {}", exchange.getRequestPath());
     
     String id = exchange.getRelativePath();
     if (id == null || id.length() <= 1) {
@@ -129,7 +134,7 @@ public class SingleDocumentView implements HttpHandler {
     int pages = doc.getContents().getPageCount();
     List<String> imagePaths = new ArrayList<>(pages);
     for (int i = 0; i < pages; i++) {
-      imagePaths.add(docStore.webViewImagePath(doc.getId(), doc.getOriginExtension(), i));
+      imagePaths.add(docStore.webViewImagePath(doc.getHashCode(), doc.getOriginExtension(), i));
     }
     context.put("imagePaths", imagePaths);
     context.put("pageImages", doc.getContents().getPageImages());

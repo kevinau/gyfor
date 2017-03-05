@@ -10,9 +10,9 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
-import org.gyfor.docstore.IDocumentContents;
-import org.gyfor.docstore.IDocumentStore;
-import org.gyfor.docstore.PageImage;
+import org.gyfor.doc.IDocumentContents;
+import org.gyfor.doc.IDocumentStore;
+import org.gyfor.doc.PageImage;
 import org.gyfor.docstore.parser.IImageParser;
 import org.gyfor.docstore.parser.IPDFParser;
 import org.slf4j.Logger;
@@ -129,7 +129,7 @@ public class PDFBoxPDFParser implements IPDFParser {
         Path imageFile = docStore.newViewImagePath(id, i);
         ImageIO.writeImage(image, imageFile);
         ImageIOUtil.writeImage(image, imageFile.toString(), dpi);
-        PageImage pageImage = new PageImage(image.getWidth(), image.getHeight());
+        PageImage pageImage = new PageImage(i, image.getWidth(), image.getHeight());
         docContents.addPageImage(pageImage);
       }
       return docContents;

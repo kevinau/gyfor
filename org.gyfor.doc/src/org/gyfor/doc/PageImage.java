@@ -1,28 +1,27 @@
-package org.gyfor.docstore;
+package org.gyfor.doc;
 
 import java.io.Serializable;
 
-import com.sleepycat.persist.model.Persistent;
 
-
-@Persistent
 public class PageImage implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private int imageWidth;
-  private int imageHeight;
+  private final int imageIndex;
+  private final int imageWidth;
+  private final int imageHeight;
   
   
-  public PageImage () {
-  }
-  
-  
-  public PageImage (int imageWidth, int imageHeight) {
+  public PageImage (int imageIndex, int imageWidth, int imageHeight) {
+    this.imageIndex = imageIndex;
     this.imageWidth = imageWidth;
     this.imageHeight = imageHeight;
   }
   
+  
+  public int getImageIndex () {
+    return imageIndex;
+  }
   
   public int getWidth () {
     return imageWidth;

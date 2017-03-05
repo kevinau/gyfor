@@ -4,9 +4,9 @@ import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.gyfor.doc.SegmentType;
 import org.gyfor.docstore.parser.ISegmentMatchResult;
 import org.gyfor.docstore.parser.ISegmentMatcher;
-import org.gyfor.docstore.SegmentType;
 
 
 class DelimitedDateMatcher implements ISegmentMatcher {

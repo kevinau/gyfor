@@ -1,5 +1,7 @@
 package org.gyfor.docstore;
 
+import org.gyfor.doc.SegmentType;
+
 //import java.io.FileOutputStream;
 //import java.io.FileReader;
 //import java.io.IOException;

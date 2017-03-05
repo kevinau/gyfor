@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" configuration-policy="require" name="org.gyfor.classifier.impl.DocumentClassifier">
+   <service>
+      <provide interface="org.gyfor.classifier.IDocumentClassifier"/>
+   </service>
+   <implementation class="org.gyfor.classifier.impl.DocumentClassifier"/>
+</scr:component>

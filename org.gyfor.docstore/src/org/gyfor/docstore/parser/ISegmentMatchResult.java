@@ -1,6 +1,6 @@
 package org.gyfor.docstore.parser;
 
-import org.gyfor.docstore.SegmentType;
+import org.gyfor.doc.SegmentType;
 
 public interface ISegmentMatchResult {
 

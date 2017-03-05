@@ -2,9 +2,9 @@ package org.gyfor.docstore.segment;
 
 import java.util.List;
 
+import org.gyfor.doc.ISegment;
 import org.gyfor.docstore.parser.ISegmentMatchResult;
 import org.gyfor.docstore.parser.ISegmentMatcher;
-import org.gyfor.docstore.ISegment;
 
 
 public class SegmentMatcherList {

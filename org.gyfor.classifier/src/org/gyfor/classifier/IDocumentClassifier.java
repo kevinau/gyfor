@@ -1,6 +1,6 @@
 package org.gyfor.classifier;
 
-import org.gyfor.docstore.IDocumentContents;
+import org.gyfor.doc.IDocumentContents;
 
 public interface IDocumentClassifier {
 

@@ -2,14 +2,14 @@ package org.gyfor.web.docstore;
 
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.gyfor.docstore.Document;
-import org.gyfor.docstore.IDocumentStore;
+import org.gyfor.doc.DocumentSummary;
+import org.gyfor.doc.IDocumentStore;
 import org.gyfor.http.Context;
 import org.gyfor.template.ITemplate;
 import org.gyfor.template.ITemplateEngine;
@@ -20,9 +20,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-
-import com.sleepycat.persist.EntityCursor;
-import com.sleepycat.persist.SecondaryIndex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -32,6 +31,8 @@ import io.undertow.util.Headers;
 @Context("/d/list")
 @Component(service = HttpHandler.class, immediate = false, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class ListThumbsView implements HttpHandler {
+
+  private static Logger logger = LoggerFactory.getLogger(ListThumbsView.class);
 
   private ITemplateEngine templateEngine;
   private ITemplate template = null;
@@ -79,6 +80,7 @@ public class ListThumbsView implements HttpHandler {
       exchange.dispatch(this);
       return;
     }
+    logger.info("Handle request: {}", exchange.getRequestPath());
     
 //    String id = exchange.getRelativePath();
 //    if (id == null || id.length() <= 1) {
@@ -103,19 +105,16 @@ public class ListThumbsView implements HttpHandler {
     context.put("hostAndPort", exchange.getHostAndPort());
     context.put("context", exchange.getResolvedPath());
 
-    List<String> idList = new ArrayList<>();
-    SecondaryIndex<Date, String, Document> importDateIndex = docStore.getImportDateIndex();
-    EntityCursor<Document> indexCursor = importDateIndex.entities();
-    try {
-      for (Document doc : indexCursor) {
-        idList.add(doc.getId());
+    List<DocumentSummary> docList = docStore.getAllDocuments();
+    Collections.sort(docList, new Comparator<DocumentSummary>() {
+      @Override
+      public int compare(DocumentSummary arg0, DocumentSummary arg1) {
+        return arg0.getImportTime().compareTo(arg1.getImportTime());
       }
-    } finally {
-      indexCursor.close();
-    } 
+    });
 
     context.put("docStore", docStore);
-    context.put("idList", idList);
+    context.put("docList", docList);
     
     exchange.startBlocking();
     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");    

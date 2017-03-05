@@ -7,7 +7,8 @@ import java.nio.file.Path;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
-import org.gyfor.docstore.IDocumentStore;
+import org.gyfor.doc.IDocumentStore;
+
 
 public class PDFToImage {
 

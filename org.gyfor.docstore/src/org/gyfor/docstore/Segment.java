@@ -2,10 +2,11 @@ package org.gyfor.docstore;
 
 import java.io.Serializable;
 
-import com.sleepycat.persist.model.Persistent;
+import org.gyfor.doc.Dictionary;
+import org.gyfor.doc.ISegment;
+import org.gyfor.doc.SegmentType;
 
 
-@Persistent
 public class Segment implements Serializable, ISegment {
 
   private static final long serialVersionUID = 1L;
@@ -26,7 +27,6 @@ public class Segment implements Serializable, ISegment {
   private String word;
   private final SegmentType type;
   private final Object value;
-  private String fieldName;
   
 //  @Deprecated
 //  Segment(PartialSegment old) {
@@ -183,18 +183,6 @@ public class Segment implements Serializable, ISegment {
   @Override
   public Object getValue() {
     return value;
-  }
-  
-  
-  @Override 
-  public void setFieldName(String fieldName) {
-    this.fieldName = fieldName;
-  }
-
-  
-  @Override
-  public String getFieldName() {
-    return fieldName;
   }
   
   

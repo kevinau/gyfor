@@ -2,8 +2,9 @@ package org.gyfor.docstore.parser;
 
 import java.nio.file.Path;
 
-import org.gyfor.docstore.IDocumentContents;
-import org.gyfor.docstore.IDocumentStore;
+import org.gyfor.doc.IDocumentContents;
+import org.gyfor.doc.IDocumentStore;
+
 
 public interface IPDFParser {
 

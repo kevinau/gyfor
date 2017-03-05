@@ -27,9 +27,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.gyfor.docstore.Document;
-import org.gyfor.docstore.ISegment;
-import org.gyfor.docstore.SegmentType;
+import org.gyfor.doc.Document;
+import org.gyfor.doc.ISegment;
+import org.gyfor.doc.SegmentType;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;

@@ -4,7 +4,7 @@
   <title>{{title}}</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" href="/global/resources/favicon.ico" />
+  <link rel="icon" href="/global/favicon.ico" />
   <style>
 html, body { 
   margin:0; padding:0; 
@@ -197,7 +197,7 @@ var docFields = [
 </head>
 <body>
   <div id="main">
-    <div id="origin"><a href="{{context}}/docstore{{sourcePath}}">{{document.originExtension | upper}}</a></div>
+    <div id="origin"><a href="/docstore{{sourcePath}}">{{document.originExtension | upper}}</a></div>
     {% if party is not empty %}
     <a id="party" href="http://{{party.webPage}}" target="_blank" rel="noopener noreferrer">{{party.formalName}}</a>
     {% endif %}
@@ -205,7 +205,7 @@ var docFields = [
       {% for p in imagePaths %}
       {% set i = loop.index %}
       {% set pageImage = pageImages[i] %}
-      <div class="docPage" style="background-image: url({{context}}/docstore{{p}}); background-size: {{pageImage.width * imageScale}}px {{pageImage.height * imageScale}}px; width:{{pageImage.width * imageScale}}px; height:{{pageImage.height * imageScale}}px;">
+      <div class="docPage" style="background-image: url(/docstore{{p}}); background-size: {{pageImage.width * imageScale}}px {{pageImage.height * imageScale}}px; width:{{pageImage.width * imageScale}}px; height:{{pageImage.height * imageScale}}px;">
         {% for seg in segments %}
           {% if i == seg.pageIndex %}
           <div style="left:{{seg.x0}}px; top:{{seg.y0}}px; width:{{seg.width}}px; height:{{seg.height}}px; font-size:{{seg.fontSize}}pt"
@@ -219,7 +219,7 @@ var docFields = [
             {% endif %}
           {% endif %}
        {% endfor %}
-        <!-- img src="{{context}}/docstore{{p}}" width="{{pageImage.width * imageScale}}" height="{{pageImage.height * imageScale}}" -->
+        <!-- img src="/docstore{{p}}" width="{{pageImage.width * imageScale}}" height="{{pageImage.height * imageScale}}" -->
       </div>
       {% endfor %}
     </div>

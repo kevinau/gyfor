@@ -52,20 +52,6 @@ import com.sleepycat.persist.PrimaryIndex;
 @Component(immediate = true)
 public class DocumentPartyClassifier {
 
-  private IDocumentStore docStore;
-
-
-  @Reference
-  public void setDocumentStore(IDocumentStore docStore) {
-    this.docStore = docStore;
-  }
-
-
-  public void unsetDocumentStore(IDocumentStore docStore) {
-    this.docStore = null;
-  }
-
-
   /**
    * Constructs empty training dataset.
    */

@@ -4,15 +4,16 @@ Bundle-Name: Web page listing of docstore contents
 Bundle-SymbolicName: org.gyfor.web.docstore
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: com.sleepycat.persist,
- io.undertow.server,
+Import-Package: io.undertow.server,
  io.undertow.util,
- org.gyfor.docstore,
+ org.gyfor.doc,
  org.gyfor.http,
+ org.gyfor.math,
  org.gyfor.template,
  org.gyfor.util,
  org.osgi.framework;version="1.8.0",
- org.pennyledger.party
+ org.pennyledger.party,
+ org.slf4j;version="1.7.21"
 Service-Component: OSGI-INF/org.gyfor.web.docstore.SingleDocumentView.xml,
  OSGI-INF/org.gyfor.web.docstore.DocstoreResources.xml,
  OSGI-INF/org.gyfor.web.docstore.ListThumbsView.xml

@@ -9,9 +9,12 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
+import java.sql.Timestamp;
 
-import org.gyfor.berkeleydb.DataStore;
+import org.gyfor.doc.Document;
+import org.gyfor.doc.IDocumentContents;
+import org.gyfor.doc.IDocumentStore;
+import org.gyfor.doc.ISegment;
 import org.gyfor.docstore.parser.IImageParser;
 import org.gyfor.docstore.parser.IPDFParser;
 import org.gyfor.docstore.parser.impl.ImageIO;
@@ -28,15 +31,11 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sleepycat.persist.PrimaryIndex;
-import com.sleepycat.persist.SecondaryIndex;
 
-
-@Component(configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class DocumentStore implements IDocumentStore {
 
   private Logger logger = LoggerFactory.getLogger(DocumentStore.class);
@@ -50,25 +49,15 @@ public class DocumentStore implements IDocumentStore {
   private static final String IMAGES = "images";
   private static final String SOURCE = "source";
   private static final String THUMBS = "thumbs";
+  private static final String DB = "db";
 
-
-  private DataStore dataStore;
-  
-  private PrimaryIndex<String, Document> primaryIndex;
-  private SecondaryIndex<Date, String, Document> importDateIndex;
-  
-  private Path sourceDir = baseDir.resolve(SOURCE);
-  private Path imagesDir = baseDir.resolve(IMAGES);
-  private Path thumbsDir = baseDir.resolve(THUMBS);
-  
-  @Reference
-  public void setDataStore (DataStore dataStore) {
-    this.dataStore = dataStore;
-  }
+  private Path sourceDir;
+  private Path imagesDir;
+  private Path thumbsDir;
+  private Path dbDir;
   
   
-  public void unsetDataStore (DataStore dataStore) {
-    this.dataStore = null;
+  public DocumentStore () {
   }
   
   
@@ -76,9 +65,6 @@ public class DocumentStore implements IDocumentStore {
   public void activate(ComponentContext context) {
     ComponentConfiguration.load(this, context);
 
-    primaryIndex = dataStore.getPrimaryIndex(String.class, Document.class);
-    importDateIndex = dataStore.getSecondaryIndex(primaryIndex, Date.class, "importTime");
-    
     try {
       sourceDir = baseDir.resolve(SOURCE);
       Files.createDirectories(sourceDir);
@@ -86,6 +72,8 @@ public class DocumentStore implements IDocumentStore {
       Files.createDirectories(imagesDir);
       thumbsDir = baseDir.resolve(THUMBS);
       Files.createDirectories(thumbsDir);
+      dbDir = baseDir.resolve(DB);
+      Files.createDirectories(dbDir);
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
@@ -93,19 +81,8 @@ public class DocumentStore implements IDocumentStore {
 
   
   @Override 
-  public Path getSourcePath (String id) {
-    Document doc = primaryIndex.get(id);
-    if (doc == null) {
-      throw new IllegalArgumentException("No source file with id: " + id);
-    }
-    String extn = doc.getOriginExtension();
-    return sourceDir.resolve(id + extn);
-  }
-
-  
-  @Override 
-  public Path getSourcePath (String id, String extn) {
-    return sourceDir.resolve(id + extn);
+  public Path getSourcePath (String hashCode, String extn) {
+    return sourceDir.resolve(hashCode + extn);
   }
 
   
@@ -121,14 +98,14 @@ public class DocumentStore implements IDocumentStore {
     String originName = new File(pathName).getName();
     
     Digest digest = digestFactory.getFileDigest(url);
-    String id = digest.toString();
+    String hashCode = digest.toString();
     InputStream is;
     try {
       is = url.openStream();
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
-    return importDocument(id, is, originName, extn);
+    return importDocument(hashCode, is, originName, extn);
   }
   
   
@@ -141,13 +118,14 @@ public class DocumentStore implements IDocumentStore {
   @Override
   public String importDocument(Path path) {
     Digest digest = digestFactory.getFileDigest(path);
-    String id = digest.toString();
+    String hashCode = digest.toString();
     
-    if (primaryIndex.contains(id)) {
-      // No need to import.  The file already exists.  The file is uniquely named by it's id, 
+    Path dbPath = dbDir.resolve(hashCode + ".ser");
+    if (Files.exists(dbPath)) {
+       // No need to import.  The file already exists.  The file is uniquely named by it's hashCode, 
       // so if it exists under that name, it exists and is current.  Size and timestamp do not 
       // need to be checked.
-      return id;
+      return hashCode;
     }
     
     logger.info("Importing document from file/path {}", path);
@@ -157,7 +135,7 @@ public class DocumentStore implements IDocumentStore {
       throw new IllegalArgumentException("Source path with no extension (ie no type)");
     }
     String extn = pathName.substring(n).toLowerCase();
-    Path newSourcePath = sourceDir.resolve(id + extn);
+    Path newSourcePath = sourceDir.resolve(hashCode + extn);
     
     // As a double check, check that the file does not exist
     if (!Files.exists(newSourcePath)) {
@@ -170,36 +148,37 @@ public class DocumentStore implements IDocumentStore {
       }
     }
     
-    Date lastModified = new Date(path.toFile().lastModified());
-    completeImport (id, newSourcePath, lastModified, path.getFileName().toString(), extn);
+    Timestamp lastModified = new Timestamp(path.toFile().lastModified());
+    completeImport (hashCode, newSourcePath, lastModified, path.getFileName().toString(), extn);
 
-    return id;
+    return hashCode;
   }
   
 
   @Override
   public String importDocument(InputStream is, MimeType mimeType) {
     Digest digest = digestFactory.getInputStreamDigest(is);
-    String id = digest.toString();
+    String hashCode = digest.toString();
     
     try {
       is.reset();
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
-    return importDocument(id, is, null, mimeType.getExtension());
+    return importDocument(hashCode, is, null, mimeType.getExtension());
   }
   
   
-  private String importDocument(String id, InputStream is, String originName, String extn) {
-    if (primaryIndex.contains(id)) {
+  private String importDocument(String hashCode, InputStream is, String originName, String extn) {
+    Path dbPath = dbDir.resolve(hashCode + ".ser");
+    if (Files.exists(dbPath)) {
       // No need to import.  The file already exists.  The file is uniquely named by it's id, 
       // so if it exists under that name, it exists and is current.  Size and timestamp do not 
       // need to be checked.
-      return id;
+      return hashCode;
     }
 
-    Path newSourcePath = sourceDir.resolve(id + extn);
+    Path newSourcePath = sourceDir.resolve(hashCode + extn);
     
     // As a double check, check that the file does not exist
     if (!Files.exists(newSourcePath)) {
@@ -217,30 +196,30 @@ public class DocumentStore implements IDocumentStore {
       }
     }
     
-    completeImport (id, newSourcePath, null, originName, extn);
-    return id;
+    completeImport (hashCode, newSourcePath, null, originName, extn);
+    return hashCode;
   }
 
   
-  private void completeImport (String id, Path sourcePath, Date originTime, String originName, String extn) {
-    Path path = getSourcePath(id, extn);
+  private void completeImport (String hashCode, Path sourcePath, Timestamp originTime, String originName, String extn) {
+    Path path = getSourcePath(hashCode, extn);
 
     logger.info("Parsing {} to extact textual contents", path.getFileName());
     IDocumentContents docContents;
     if (isImageFile(extn)) {
       IImageParser imageParser = new TesseractImageOCR();
-      docContents = imageParser.parse(id, 0, path);
+      docContents = imageParser.parse(hashCode, 0, path);
       
       // Write a thumbnail version of the image
       BufferedImage image = ImageIO.getImage(path);
-      Path thumbsFile = getThumbsImagePath(id);
+      Path thumbsFile = getThumbsImagePath(hashCode);
       ImageIO.writeThumbnail(image, thumbsFile);
     } else {
       switch (extn) {
       case ".pdf" :
         IImageParser imageParser = new TesseractImageOCR();
         IPDFParser pdfParser = new PDFBoxPDFParser(imageParser);
-        docContents = pdfParser.parse(id, path, IMAGE_RESOLUTION, this);
+        docContents = pdfParser.parse(hashCode, path, IMAGE_RESOLUTION, this);
         break;
       default :
         throw new RuntimeException("File type: " + path + " not supported");
@@ -254,9 +233,11 @@ public class DocumentStore implements IDocumentStore {
     ////}
     
     // Write Document record
-    Document document = new Document(id, originTime, originName, extn, docContents);
-    primaryIndex.put(document);
-    logger.info("Import complete: {} -> {}", originName, id);
+    Timestamp importTime = new Timestamp(System.currentTimeMillis());
+    Document document = new Document(hashCode, originTime, originName, extn, importTime, docContents);
+    Path dbPath = dbDir.resolve(hashCode + ".ser");
+    document.save(dbPath);
+    logger.info("Import complete: {} -> {}", originName, hashCode + ".ser");
     
     // For debugging
 //    Document d = primaryIndex.get(id);
@@ -312,16 +293,16 @@ public class DocumentStore implements IDocumentStore {
     // If the origin extension is that of an image, the view image path is the source path
     String extn = doc.getOriginExtension();
     if (isImageFile(extn)) {
-      return sourceDir.resolve(doc.getId() + extn);
+      return sourceDir.resolve(doc.getHashCode() + extn);
     } else {
-      return imagesDir.resolve(doc.getId() + ".png");
+      return imagesDir.resolve(doc.getHashCode() + ".png");
     }
   }
   
 
   @Override
-  public String webViewImagePath (String id, String extn, int page) {
-    String base = "/" + IMAGES + "/" + id;
+  public String webViewImagePath (String hashCode, String extn, int page) {
+    String base = "/" + IMAGES + "/" + hashCode;
     if (page > 0) {
       base += ".p" + page;
     }
@@ -334,30 +315,30 @@ public class DocumentStore implements IDocumentStore {
 
   
   @Override 
-  public String webThumbsImagePath (String id) {
-    return "/" + THUMBS + "/" + id + ".png";
+  public String webThumbsImagePath (String hashCode) {
+    return "/" + THUMBS + "/" + hashCode + ".png";
   }
   
 
   @Override 
   public String webSourcePath (Document doc) {
-    return "/" + SOURCE + "/" + doc.getId() + doc.getOriginExtension();
+    return "/" + SOURCE + "/" + doc.getHashCode() + doc.getOriginExtension();
   }
   
 
   @Override 
-  public Path newViewImagePath (String id, int page) {
+  public Path newViewImagePath (String hashCode, int page) {
     if (page == 0) {
-      return imagesDir.resolve(id + ".png");
+      return imagesDir.resolve(hashCode + ".png");
     } else {
-      return imagesDir.resolve(id + ".p" + page + ".png");
+      return imagesDir.resolve(hashCode + ".p" + page + ".png");
     }
   }
   
 
   @Override 
-  public Path getThumbsImagePath (String id) {
-    return thumbsDir.resolve(id + ".png");
+  public Path getThumbsImagePath (String hashCode) {
+    return thumbsDir.resolve(hashCode + ".png");
   }
   
 
@@ -384,46 +365,56 @@ public class DocumentStore implements IDocumentStore {
 
 
   @Override
-  public Path getViewHTMLPath(String id) {
+  public Path getViewHTMLPath(String hashCode) {
     Path htmlDir = baseDir.resolve("html");
     try {
       Files.createDirectories(htmlDir);
     } catch (IOException ex) {
       throw new UncheckedIOException(ex);
     }
-    return htmlDir.resolve(id + ".html");
+    return htmlDir.resolve(hashCode + ".html");
   }
 
 
   @Override
-  public void removeDocument(String id) {
-    primaryIndex.delete(id);
+  public void removeDocument(Document document) {
+    String hashCode = document.getHashCode();
+    
+    try {
+      // Remove the document from all the 'at-rest' places
+      // Document details and contents
+      Path dbDir = baseDir.resolve("db");
+      Path dbPath = dbDir.resolve(hashCode + ".ser");
+      Files.deleteIfExists(dbPath);
+      
+      // Source file
+      Path sourcePath = getSourcePath(hashCode, document.getOriginExtension());
+      Files.deleteIfExists(sourcePath);
+      
+      // Thumbnail
+      Path thumbPath = getThumbsImagePath(hashCode);
+      Files.deleteIfExists(thumbPath);
+      
+      // All page images
+      // TODO need to do this
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
   @Override
-  public Document getDocument(String id) {
-    return primaryIndex.get(id);
+  public Document getDocument(String hashCode) {
+    Path dbPath = dbDir.resolve(hashCode + ".ser");
+    return Document.load(dbPath);
   }
 
 
-  @Override
-  public PrimaryIndex<String, Document> getPrimaryIndex() {
-    return primaryIndex;
-  }
-
-
-  @Override
-  public SecondaryIndex<Date, String, Document> getImportDateIndex() {
-    return importDateIndex;
-  }
-
-  
-  public void rebuildPDF (String id, int dpi) {
-    Path path = getSourcePath(id, ".pdf");
+  public void rebuildPDF (String hashCode, int dpi) {
+    Path path = getSourcePath(hashCode, ".pdf");
     IImageParser imageParser = new TesseractImageOCR();
     IPDFParser pdfParser = new PDFBoxPDFParser(imageParser);
-    IDocumentContents docContents = pdfParser.parse(id, path, dpi, this);
+    IDocumentContents docContents = pdfParser.parse(hashCode, path, dpi, this);
     for (ISegment seg : docContents.getSegments()) {
       System.out.println(seg);
     }

@@ -3,7 +3,7 @@
    <service>
       <provide interface="io.undertow.server.HttpHandler"/>
    </service>
-   <reference bind="setDocumentStore" cardinality="1..1" interface="org.gyfor.docstore.IDocumentStore" name="DocumentStore" policy="static" unbind="unsetDocumentStore"/>
+   <reference bind="setDocumentStore" cardinality="1..1" interface="org.gyfor.doc.IDocumentStore" name="DocumentStore" policy="static" unbind="unsetDocumentStore"/>
    <reference bind="setTemplateEngineFactory" cardinality="1..1" interface="org.gyfor.template.ITemplateEngineFactory" name="TemplateEngineFactory" policy="static" unbind="unsetTemplateEngineFactory"/>
    <implementation class="org.gyfor.web.docstore.ListThumbsView"/>
 </scr:component>

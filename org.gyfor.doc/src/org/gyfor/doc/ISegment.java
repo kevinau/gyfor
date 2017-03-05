@@ -1,4 +1,4 @@
-package org.gyfor.docstore;
+package org.gyfor.doc;
 
 public interface ISegment extends Comparable<ISegment> {
 
@@ -37,10 +37,6 @@ public interface ISegment extends Comparable<ISegment> {
   public SegmentType getType();
   
   public Object getValue();
-  
-  public void setFieldName(String name);
-  
-  public String getFieldName();
   
   public boolean overlapsHorizontally (ISegment other);
   

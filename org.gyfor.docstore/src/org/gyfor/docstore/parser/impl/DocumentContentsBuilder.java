@@ -2,8 +2,8 @@ package org.gyfor.docstore.parser.impl;
 
 import java.nio.file.Path;
 
-import org.gyfor.docstore.IDocumentContents;
-import org.gyfor.docstore.IDocumentStore;
+import org.gyfor.doc.IDocumentContents;
+import org.gyfor.doc.IDocumentStore;
 import org.gyfor.docstore.parser.IImageParser;
 import org.gyfor.docstore.parser.IPDFParser;
 import org.slf4j.Logger;
@@ -14,21 +14,21 @@ public class DocumentContentsBuilder {
 
   private static final Logger logger = LoggerFactory.getLogger(DocumentContentsBuilder.class);
  
-  public IDocumentContents buildContent (String id, String extn, IDocumentStore docStore) {
-    Path path = docStore.getSourcePath(id);
+  public IDocumentContents buildContent (String hashCode, String extn, IDocumentStore docStore) {
+    Path path = docStore.getSourcePath(hashCode, extn);
     IDocumentContents docContents;
 
     logger.info("Parsing {} to extact textual contents", path.getFileName());
 
     if (docStore.isImageFile(extn)) {
       IImageParser imageParser = new TesseractImageOCR();
-      docContents = imageParser.parse(id, 0, path);
+      docContents = imageParser.parse(hashCode, 0, path);
     } else {
       switch (extn) {
       case ".pdf" :
         IImageParser imageParser = new TesseractImageOCR();
         IPDFParser pdfParser = new PDFBoxPDFParser(imageParser);
-        docContents = pdfParser.parse(id, path, IDocumentStore.IMAGE_RESOLUTION, docStore);
+        docContents = pdfParser.parse(hashCode, path, IDocumentStore.IMAGE_RESOLUTION, docStore);
         break;
       default :
         throw new RuntimeException("File type: " + path + " not supported");

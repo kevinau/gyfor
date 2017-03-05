@@ -9,11 +9,11 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.gyfor.docstore.Dictionary;
-import org.gyfor.docstore.IDocumentStore;
-import org.gyfor.docstore.ISegment;
+import org.gyfor.doc.Dictionary;
+import org.gyfor.doc.IDocumentStore;
+import org.gyfor.doc.ISegment;
+import org.gyfor.doc.SegmentType;
 import org.gyfor.docstore.ITrainingData;
-import org.gyfor.docstore.SegmentType;
 import org.gyfor.docstore.parser.IImageParser;
 import org.gyfor.docstore.parser.IPDFParser;
 

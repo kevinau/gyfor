@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gyfor.classifier.IDocumentClassifier;
-import org.gyfor.docstore.Dictionary;
-import org.gyfor.docstore.IDocumentContents;
-import org.gyfor.docstore.ISegment;
-import org.gyfor.docstore.SegmentType;
+import org.gyfor.doc.Dictionary;
+import org.gyfor.doc.IDocumentContents;
+import org.gyfor.doc.ISegment;
+import org.gyfor.doc.SegmentType;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+
 
 @Component(configurationPolicy=ConfigurationPolicy.REQUIRE)
 public class DocumentClassifier implements IDocumentClassifier {
