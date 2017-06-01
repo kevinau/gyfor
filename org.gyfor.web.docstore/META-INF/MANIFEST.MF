@@ -16,5 +16,6 @@ Import-Package: io.undertow.server,
  org.slf4j;version="1.7.21"
 Service-Component: OSGI-INF/org.gyfor.web.docstore.SingleDocumentView.xml,
  OSGI-INF/org.gyfor.web.docstore.DocstoreResources.xml,
- OSGI-INF/org.gyfor.web.docstore.ListThumbsView.xml
+ OSGI-INF/org.gyfor.web.docstore.ListThumbsView.xml,
+ OSGI-INF/org.gyfor.web.docstore.AccountingEdit.xml
 Bundle-ActivationPolicy: lazy

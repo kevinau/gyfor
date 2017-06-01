@@ -1,107 +1,78 @@
 package org.gyfor.web.form;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.INodeModel;
-import org.gyfor.object.model.impl.EntityModel2;
-import org.gyfor.object.model.impl.ItemModel;
-import org.gyfor.object.model.impl.RootModel;
-import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.impl.PlanContext;
 import org.gyfor.object.type.IType;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.pennyledger.party.Person;
-
-import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.error.PebbleException;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import org.gyfor.template.ITemplate;
+import org.gyfor.template.ITemplateEngine;
 
 /**
  * A class that builds HTML for a model.  Pebble templates--that contain HTML--are used 
  * to build the HTML.
  */
-@Component
 public class ModelHtmlBuilder {
 
-  private FormTemplateEngine templateEngine;
-  
-  
-  @Reference
-  public void setFormTemplateEngine (FormTemplateEngine templateEngine) {
-    this.templateEngine = templateEngine;
-  }
-  
-  
-  public void unsetFormTemplateEngine (FormTemplateEngine templateEngine) {
-    this.templateEngine = null;
-  }
 
+//  @Activate
+//  public void activate (BundleContext bundleContext) {
+//    RootModel rootModel = new RootModel();
+//    
+//    PlanContext objectContext = new PlanContext();
+//    IEntityPlan<Person> entityPlan = objectContext.getEntityPlan(Person.class);
+//    
+//    Person instance = new Person("Kevin Holloway", "Kevin", "0447 252 976", null, "kholloway@geckosoftware.com.au");
+//    EntityModel2 entityModel = rootModel.buildEntityModel(entityPlan, instance);
+//    Writer writer = new StringWriter();
+//    buildHtml(templateEngine.getPebbleEngine(), writer, entityModel, null);
+//    System.out.println(writer.toString());
+//  }
   
-  @Activate
-  public void activate (BundleContext bundleContext) {
-    RootModel rootModel = new RootModel();
-    
-    PlanContext objectContext = new PlanContext();
-    IEntityPlan<Person> entityPlan = objectContext.getEntityPlan(Person.class);
-    
-    Person instance = new Person("Kevin Holloway", "Kevin", "0447 252 976", null, "kholloway@geckosoftware.com.au");
-    EntityModel2 entityModel = rootModel.buildEntityModel(entityPlan, instance);
-    Writer writer = new StringWriter();
-    buildHtml(templateEngine.getPebbleEngine(), writer, entityModel, null);
-    System.out.println(writer.toString());
-  }
   
-  
-  public static void buildHtml (PebbleEngine templateEngine, Writer writer, INodeModel nodeModel, Map<String, Object> withValues) {
+  public static void buildHtml (ITemplateEngine templateEngine, Writer writer, INodeModel nodeModel, Map<String, Object> withValues) {
     // Build template name
     String templateName = nodeModel.getCanonicalName();
     String defaultName;
-    if (nodeModel.isItem()) {
-      IType<?> type = ((ItemModel)nodeModel).getPlan().getType();
+    if (nodeModel instanceof IItemModel) {
+      IType<?> type = ((IItemPlan<?>)nodeModel.getPlan()).getType();
       defaultName = type.getClass().getSimpleName();
     } else {
       defaultName = nodeModel.getClass().getSimpleName();
     }
     templateName += "(" + defaultName + ")";
     
-    PebbleTemplate nodeTemplate;
-    try {
-      nodeTemplate = templateEngine.getTemplate(templateName);
-    } catch (PebbleException ex) {
-      throw new RuntimeException(ex);
-    }
+    ITemplate nodeTemplate = templateEngine.getTemplate(templateName);
     
     Map<String, Object> templateContext = new HashMap<>();
     templateContext.put("model", nodeModel);
 
     // The labels are loaded individually.  This allows them to be overridden by field "with" values.
     INodePlan nodePlan = nodeModel.getPlan();
-    nodePlan.getLabels().loadAll(templateContext);
+    nodePlan.getLabels().loadContext(templateContext);
 
     // The following are a convenience to template writers
-    templateContext.put("id", nodeModel.getId());
+    int parentId = 0;
+    if (nodeModel.getParent() != null) {
+      parentId = nodeModel.getParent().getNodeId();
+    }
+    templateContext.put("parentId", parentId);
+    
+    templateContext.put("id", nodeModel.getNodeId());
     templateContext.put("plan", nodePlan);
-    if (nodeModel.isItem()) {
-      templateContext.put("type", ((IItemPlan<?>)nodePlan).getType());
+    if (nodeModel instanceof IItemModel) {
+      IType<?> type = ((IItemPlan<?>)nodeModel.getPlan()).getType();
+      templateContext.put("type", type);
     }
     if (withValues != null) {
       templateContext.putAll(withValues);
     }
     
-    try {
-      nodeTemplate.evaluate(writer, templateContext);
-    } catch (IOException | PebbleException ex) {
-      throw new RuntimeException(ex);
-    }
+    nodeTemplate.evaluate(writer, templateContext);
   }
   
 }

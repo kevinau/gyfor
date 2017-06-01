@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.gyfor.template.test
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.gyfor.template,
- org.osgi.framework;version="1.8.0",
- org.osgi.service.component
+ org.osgi.framework;version="1.8.0"
 Service-Component: OSGI-INF/org.gyfor.template.test.MultiLoaderTest.xml
 Bundle-ActivationPolicy: lazy
 Export-Package: org.gyfor.template.test

@@ -8,7 +8,7 @@ import org.gyfor.dao.IDataAccessObject;
 import org.gyfor.dao.IdValuePair;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
-import org.gyfor.object.plan.IPlanContext;
+import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.object.value.EntityLife;
 import org.gyfor.todo.NotYetImplementedException;
 import org.slf4j.Logger;
@@ -39,14 +39,14 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
   private ObjectDatabaseEntry dataEntry;
   
 
-  public DataAccessObject (DataEnvironment dataEnvironment, IPlanContext planContext, String className, boolean readOnly) {
+  public DataAccessObject (DataEnvironment dataEnvironment, IPlanFactory planFactory, String className, boolean readOnly) {
     logger.info ("Creating data access service {} with {}", this.getClass(), className);
     
     this.dataEnvironment = dataEnvironment;
     this.className = className;
     this.readOnly = readOnly;
         
-    entityPlan = planContext.getEntityPlan(className);
+    entityPlan = planFactory.getEntityPlan(className);
     dataTable = null;
   }
 

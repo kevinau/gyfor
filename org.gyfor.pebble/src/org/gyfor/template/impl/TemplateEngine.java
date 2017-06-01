@@ -1,7 +1,11 @@
 package org.gyfor.template.impl;
 
-import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.gyfor.template.IDefaultTemplateLoader;
 import org.gyfor.template.ITemplate;
 import org.gyfor.template.ITemplateEngine;
 import org.osgi.framework.BundleContext;
@@ -9,21 +13,40 @@ import org.osgi.framework.BundleContext;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.PebbleEngine.Builder;
 import com.mitchellbosecke.pebble.error.PebbleException;
+import com.mitchellbosecke.pebble.extension.AbstractExtension;
+import com.mitchellbosecke.pebble.extension.Extension;
 import com.mitchellbosecke.pebble.loader.Loader;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import com.mitchellbosecke.pebble.tokenParser.TokenParser;
 
 
 public class TemplateEngine implements ITemplateEngine {
 
-  private final Path templateDir;
-  private final BundleContext defaultBundleContext;
+//  private final Path templateDir;
+  private final BundleContext namedBundleContext;
+  
+  private final IDefaultTemplateLoader defaultTemplateLoader;
+  
+  private List<TokenParser> tokenParsers = null;
+  
+  private Map<String, Object> globalVariables = new HashMap<>();
   
   private PebbleEngine engine;
   
 
-  public TemplateEngine (Path templateDir, BundleContext defaultBundleContext) {
-    this.templateDir = templateDir;
-    this.defaultBundleContext = defaultBundleContext;
+  public TemplateEngine (BundleContext namedBundleContext, IDefaultTemplateLoader defaultTemplateLoader) {
+//    this.templateDir = templateDir;
+    this.namedBundleContext = namedBundleContext;
+    this.defaultTemplateLoader = defaultTemplateLoader;
+  }
+  
+  
+  @Override
+  public void addTokenParser (TokenParser tokenParser) {
+    if (tokenParsers == null) {
+      tokenParsers = new ArrayList<>();
+    }
+    tokenParsers.add(tokenParser);
   }
   
   
@@ -38,9 +61,25 @@ public class TemplateEngine implements ITemplateEngine {
         if (engine == null) {
           // Initialize the template engine.
           Builder builder = new PebbleEngine.Builder();
+          
+          // Add extensions
+          globalVariables.put("engine", this);
+          
+          Extension extension = new AbstractExtension() {
+            @Override
+            public List<TokenParser> getTokenParsers () {
+              return tokenParsers;
+            }
+            
+            @Override
+            public Map<String, Object> getGlobalVariables () {
+              return globalVariables;
+            }
+          };
+          builder.extension(extension);
 
           // Add bundle specific loader
-          Loader<?> loader = new MultiLoader(templateDir, defaultBundleContext);
+          Loader<?> loader = new MultiLoader(namedBundleContext, defaultTemplateLoader);
           builder.loader(loader);
 
           // Build the Pebble engine

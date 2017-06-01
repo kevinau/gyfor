@@ -22,6 +22,7 @@ import org.gyfor.object.type.builtin.DateType;
 import org.gyfor.object.type.builtin.DecimalType;
 import org.gyfor.object.type.builtin.DoubleType;
 import org.gyfor.object.type.builtin.EntityLifeType;
+import org.gyfor.object.type.builtin.EnumType;
 import org.gyfor.object.type.builtin.FileContentType;
 import org.gyfor.object.type.builtin.FloatType;
 import org.gyfor.object.type.builtin.IntegerType;
@@ -36,7 +37,7 @@ import org.gyfor.object.type.builtin.URLType;
 import org.gyfor.object.type.builtin.VersionType;
 import org.gyfor.object.value.EntityLife;
 import org.gyfor.object.value.FileContent;
-import org.gyfor.object.value.VersionValue;
+import org.gyfor.object.value.VersionTime;
 
 
 public class ItemTypeRegistry {
@@ -86,7 +87,7 @@ public class ItemTypeRegistry {
     typeMap.put(Short.TYPE, ShortType.class);
     typeMap.put(java.sql.Date.class, SqlDateType.class);
     typeMap.put(String.class, StringType.class);
-    typeMap.put(VersionValue.class, VersionType.class);
+    typeMap.put(VersionTime.class, VersionType.class);
     typeMap.put(URL.class, URLType.class);
   }
 
@@ -136,7 +137,7 @@ public class ItemTypeRegistry {
    * Implementation note: This method must match the following isItemType
    * method.
    */
-  @SuppressWarnings({ "rawtypes" })
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public static IType<?> lookupType(Class<?> nodeClass, ItemField fieldAnn) {
     IType<?> type = null;
 
@@ -147,7 +148,12 @@ public class ItemTypeRegistry {
         return null;
       }
       // TODO code value types are yet to be supported
-      type = (IType<?>)typeClass.newInstance();
+      if (Enum.class.isInstance(typeClass)) {
+        // Special case
+        type = new EnumType(nodeClass);
+      } else {
+        type = (IType<?>)typeClass.newInstance();
+      }
       if (nodeClass.isPrimitive()) {
         // We assume the found type is an instance of Type
         ((Type)type).setPrimitive(true);

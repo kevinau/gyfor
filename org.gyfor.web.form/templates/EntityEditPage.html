@@ -1,28 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>{% block htmlTitle %}{{labels.shortTitle}}{% endblock %}</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" href="{{context}}/resources/favicon.ico" />
-  <link rel="stylesheet" type="text/css" href="{{context}}/resources/css.css">
-  <link rel="stylesheet" type="text/css" href="{{context}}/resources/kube.css">
-  <link rel="stylesheet" type="text/css" href="{{context}}/resources/kube_003.css">
-  <link rel="stylesheet" type="text/css" href="{{context}}/resources/master.css">
-  <link rel="stylesheet" type="text/css" href="{{context}}/resources/kube_002.css">
-  <link rel="stylesheet" type="text/css" href="{{context}}/resources/kube-overrides.css">
+{% extends "page" %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{context}}/resources/kube.css">
+  <link rel="stylesheet" href="{{context}}/resources/kube_003.css">
+  <link rel="stylesheet" href="{{context}}/resources/master.css">
+  <link rel="stylesheet" href="{{context}}/resources/kube_002.css">
+  <link rel="stylesheet" href="{{context}}/resources/kube-overrides.css">
+{% endblock %}
+
+{% block scripts %}
   <script src="{{context}}/resources/ws.js"></script>
   <script>
   window.onload = function setup() {
-	  websocketStart("{{hostAndPort}}", "{{entityName}}");
+      // Note the 'x' following the context variable
+	  websocketStart("{{hostAndPort}}{{context}}x", "{{entityName}}");
   }
   </script>
-</head>
-<body class="page-kube">
-  <div id="main">
-    <div id="kube-component" class="content">
-      <div id="socket-0"></div>
-    </div>
-  </div>
-</body>
-</html>
+{% endblock %}
+
+{% block body %}
+  <div id="socket-0"></div>
+{% endblock %}

@@ -21,7 +21,6 @@ import org.gyfor.object.LabelFor;
 import org.gyfor.object.MappedSuperclass;
 import org.gyfor.object.Mode;
 import org.gyfor.object.ModeFor;
-import org.gyfor.object.NodePlanFactory;
 import org.gyfor.object.NotItemField;
 import org.gyfor.object.OccursFor;
 import org.gyfor.object.Optional;
@@ -39,6 +38,8 @@ import org.gyfor.object.plan.IRuntimeModeProvider;
 import org.gyfor.object.plan.IRuntimeOccursProvider;
 import org.gyfor.object.plan.IRuntimeTypeProvider;
 import org.gyfor.object.plan.IValidationMethod;
+import org.gyfor.object.plan.NodePlanFactory;
+import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.type.IType;
 import org.gyfor.util.CamelCase;
 
@@ -83,7 +84,7 @@ public class AugmentedClass<T> {
   }
   
 
-  public AugmentedClass (PlanContext context, Class<T> klass) {
+  public AugmentedClass (PlanFactory factory, INodePlan parent, Class<T> klass) {
     this.klass = klass;
     
 //    Mode modeAnn = klass.getAnnotation(Mode.class);
@@ -92,7 +93,7 @@ public class AugmentedClass<T> {
 //    } else {
 //      entryMode = EntryMode.UNSPECIFIED;
 //    }
-    addClassFields (context, klass, true);
+    addClassFields (factory, parent, klass, true);
   }
   
   
@@ -125,18 +126,18 @@ public class AugmentedClass<T> {
 //  }
    
   
-  public void addClassFields (PlanContext context, Class<?> klass, boolean include) {
+  public void addClassFields (PlanFactory factory, INodePlan parent, Class<?> klass, boolean include) {
     Field[] declaredFields = klass.getDeclaredFields();
-    addClassFields2 (context, klass, declaredFields, include);
+    addClassFields2 (factory, parent, klass, declaredFields, include);
   }
   
   
-  private void addClassFields2 (PlanContext context, Class<?> klass, Field[] fields, boolean include) {
+  private void addClassFields2 (PlanFactory factory, INodePlan parent, Class<?> klass, Field[] fields, boolean include) {
     // Parse the class hierarchy recursively
     Class<?> superKlass = klass.getSuperclass();
     if (superKlass != null && !superKlass.equals(Object.class)) {
       MappedSuperclass msc = superKlass.getAnnotation(MappedSuperclass.class);
-      addClassFields(context, superKlass, msc != null);
+      addClassFields(factory, parent, superKlass, msc != null);
     }
     
     FieldDependency fieldDependency = new FieldDependency();
@@ -246,7 +247,7 @@ public class AugmentedClass<T> {
         Type type = field.getGenericType();
         String name = field.getName();
         
-        INodePlan nodePlan = NodePlanFactory.getNodePlan(context, type, field, name, entryMode, -1, optional);
+        INodePlan nodePlan = NodePlanFactory.getNodePlan(factory, parent, type, field, name, entryMode, -1, optional);
         memberPlans.put(name, nodePlan);
         memberFields.put(name, field);
       }
@@ -1068,13 +1069,13 @@ public class AugmentedClass<T> {
   public Object newInstance (Object fromInstance) {
     Object toInstance = newInstance();
     for (INodePlan member : memberPlans.values()) {
-      Object fromValue = member.getValue(fromInstance);
+      Object fromValue = member.getFieldValue(fromInstance);
 
       if (member instanceof IItemPlan) {
-        member.setValue(toInstance, fromValue);      
+        member.setFieldValue(toInstance, fromValue);      
       } else if (member instanceof IContainerPlan) {
         Object newValue = ((IContainerPlan)member).newInstance(fromValue);
-        member.setValue(toInstance, newValue);      
+        member.setFieldValue(toInstance, newValue);      
       } else {
         throw new RuntimeException("Non-supported node plan: " + member);
       }

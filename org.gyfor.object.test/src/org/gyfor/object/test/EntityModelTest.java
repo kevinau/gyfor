@@ -6,14 +6,15 @@ import org.gyfor.object.Entity;
 import org.gyfor.object.Optional;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
+import org.gyfor.object.model.IModelFactory;
 import org.gyfor.object.model.INodeModel;
-import org.gyfor.object.model.impl.EntityModel;
+import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.IPlanContext;
-import org.gyfor.object.plan.impl.PlanContext;
+import org.gyfor.object.plan.IPlanFactory;
+import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.value.EntityLife;
-import org.gyfor.object.value.VersionValue;
+import org.gyfor.object.value.VersionTime;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -54,7 +55,7 @@ public class EntityModelTest {
 
     private int id;
     
-    private VersionValue version;
+    private VersionTime version;
     
     private String name;
 
@@ -78,7 +79,7 @@ public class EntityModelTest {
 
     public StandardEntity(int id, String name, String location) {
       this.id = id;
-      this.version = VersionValue.now();
+      this.version = VersionTime.now();
       this.name = name;
       this.location = location;
       this.entityLife = EntityLife.ACTIVE;
@@ -93,12 +94,12 @@ public class EntityModelTest {
   }
 
   
-  private IPlanContext planContext = new PlanContext();
-  
+  private IPlanFactory planFactory = new PlanFactory();
+  private IModelFactory modelFactory = new ModelFactory();
   
   @Test
   public void getSimpleEntityPlan () {
-    IEntityPlan<SimpleEntity> plan = planContext.getEntityPlan(SimpleEntity.class);
+    IEntityPlan<SimpleEntity> plan = planFactory.getEntityPlan(SimpleEntity.class);
     Assert.assertNotNull("Entity plan must not be null", plan);
 
     INodePlan idPlan = plan.getIdPlan();
@@ -119,7 +120,7 @@ public class EntityModelTest {
   
   @Test
   public void getStandardEntityPlan () {
-    IEntityPlan<StandardEntity> plan = planContext.getEntityPlan(StandardEntity.class);
+    IEntityPlan<StandardEntity> plan = planFactory.getEntityPlan(StandardEntity.class);
     Assert.assertNotNull("Entity plan must not be null", plan);
 
     INodePlan idPlan = plan.getIdPlan();
@@ -141,8 +142,8 @@ public class EntityModelTest {
   
   @Test 
   public void createEntityModel () {
-    IEntityPlan<StandardEntity> plan = planContext.getEntityPlan(StandardEntity.class);
-    IEntityModel model = new EntityModel(plan);
+    IEntityPlan<StandardEntity> plan = planFactory.getEntityPlan(StandardEntity.class);
+    IEntityModel model = modelFactory.buildEntityModel(plan);
     
     StandardEntity instance = new StandardEntity("Kevin Holloway", "Nailsworth");
     model.setValue(instance);
@@ -155,8 +156,8 @@ public class EntityModelTest {
   
   @Test 
   public void checkTopLevelEntityItems () {
-    IEntityPlan<StandardEntity> plan = planContext.getEntityPlan(StandardEntity.class);
-    IEntityModel entityModel = new EntityModel(plan);
+    IEntityPlan<StandardEntity> plan = planFactory.getEntityPlan(StandardEntity.class);
+    IEntityModel entityModel = modelFactory.buildEntityModel(plan);
     
     StandardEntity instance = new StandardEntity(123, "Kevin Holloway", "Nailsworth");
     entityModel.setValue(instance);
@@ -173,7 +174,7 @@ public class EntityModelTest {
     Assert.assertEquals(123, id);
 
     IItemModel versionModel = (IItemModel)children.get(1);
-    VersionValue version = versionModel.getValue();
+    VersionTime version = versionModel.getValue();
     Assert.assertEquals(version, instance.version);
 
     IItemModel nameModel = (IItemModel)children.get(2);

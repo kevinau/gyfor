@@ -2,23 +2,16 @@ package org.gyfor.web.form;
 
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.gyfor.object.model.impl.EntityModel2;
-import org.gyfor.object.model.impl.RootModel;
+import org.gyfor.object.model.IEntityModel;
+import org.gyfor.object.model.IModelFactory;
 import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.impl.PlanContext;
-import org.osgi.framework.BundleContext;
+import org.gyfor.object.plan.IPlanFactory;
+import org.gyfor.template.ITemplateEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.PebbleEngine.Builder;
-import com.mitchellbosecke.pebble.extension.AbstractExtension;
-import com.mitchellbosecke.pebble.extension.Extension;
-import com.mitchellbosecke.pebble.loader.Loader;
-import com.mitchellbosecke.pebble.tokenParser.TokenParser;
 
 import io.undertow.websockets.WebSocketConnectionCallback;
 import io.undertow.websockets.core.AbstractReceiveListener;
@@ -32,72 +25,31 @@ public class ProxyWebSocketConnectionCallback implements WebSocketConnectionCall
 
   private Logger logger = LoggerFactory.getLogger(ProxyWebSocketConnectionCallback.class);
 
-  // The following three class variables must be set in this class'es activate
-  // method
-  private BundleContext defaultContext;
-  private BundleContext globalContext;
+  private ITemplateEngine templateEngine;
 
-  private PlanContext objectContext;
+  private IPlanFactory planFactory;
 
-  private PebbleEngine templateEngine;
-
-  private RootModel rootModel;
+  private IModelFactory modelFactory;
   
 
-  public void setup(BundleContext defaultContext, BundleContext globalContext, PlanContext objectContext) {
+  public void setup(ITemplateEngine templateEngine, IPlanFactory planFactory, IModelFactory modelFactory) {
     // defaultContext, templateEngine and objectContext are shared amongst all
     // ProxyWebSocketConnectionCallback
-    this.defaultContext = defaultContext;
-    this.globalContext = globalContext;
-    this.objectContext = objectContext;
-
-    // rootModel and semaphore is specific to each web socket connection
-    rootModel = new RootModel();
+    this.templateEngine = templateEngine;
+    this.planFactory = planFactory;
+    this.modelFactory = modelFactory;
   }
 
 
-  private void buildPebbleEngine () {
-    // Initialize the template engine.
-    Builder builder = new PebbleEngine.Builder();
-
-    // Add bundle specific loader
-    Loader<?> loader = new MultiLoader(defaultContext, globalContext);
-    builder.loader(loader);
-
-    // Field and other tags
-    Extension extension = new AbstractExtension() {
-      @Override
-      public List<TokenParser> getTokenParsers() {
-        List<TokenParser> parsers = new ArrayList<>();
-        parsers.add(new FieldTokenParser());
-        return parsers;
-      }
-    };
-    builder.extension(extension);
-    
-    // Build the Pebble engine
-    templateEngine = builder.build();
-  }
-
-  
   @Override
   public void onConnect(WebSocketHttpExchange exchange, WebSocketChannel channel) {
-    if (defaultContext == null) {
+    if (templateEngine == null) {
       throw new IllegalStateException("Web socket 'onConnect' before this callback has been setup");
     }
     channel.getReceiveSetter().set(new AbstractReceiveListener() {
 
       @Override
       protected void onFullTextMessage(WebSocketChannel channel, BufferedTextMessage message) {
-        if (templateEngine == null) {
-          // Lazily create pebble engine
-          synchronized (this) {
-            if (templateEngine == null) {
-              buildPebbleEngine();
-            }
-          }
-        }
-        
         String data = message.getData();
         logger.info("On full text message: {}", data);
 
@@ -136,16 +88,20 @@ public class ProxyWebSocketConnectionCallback implements WebSocketConnectionCall
           String className = data.substring(1);
 
           // Build an entityModel for the class
-          IEntityPlan<?> entityPlan = objectContext.getEntityPlan(className);
-          EntityModel2 entityModel = rootModel.buildEntityModel(entityPlan);
+          IEntityPlan<?> entityPlan = planFactory.getEntityPlan(className);
+          IEntityModel entityModel = modelFactory.buildEntityModel(entityPlan);
           
           // Create and set an empty instance of the class
           Object instance = entityPlan.newInstance();
           entityModel.setValue(instance);
           
+          Map<String, Object> context = new HashMap<>();
+          context.put("entityName", className);
+          context.put(className, entityModel);
+          
           Writer writer = new StringWriter();
-          NodeChangeMessage.beginMessage(writer, 0, Action.ADD, entityModel.getId());
-          ModelHtmlBuilder.buildHtml(templateEngine, writer, entityModel, null);
+          NodeChangeMessage.beginMessage(writer, 0, Action.ADD, entityModel.getNodeId());
+          ModelHtmlBuilder.buildHtml(templateEngine, writer, entityModel, context);
 
           logger.info("Send text: {}", writer);
           WebSockets.sendText(writer.toString(), channel, null);

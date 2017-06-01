@@ -2,23 +2,15 @@ package org.gyfor.object.model.ref;
 
 import java.util.List;
 
-public class ListValueReference implements IValueReference {
+public abstract class ListValueReference implements IValueReference {
 
-  private final List<Object> instance;
   private final int index;
   
   
-  public ListValueReference (List<Object> instance, int index) {
-    if (instance == null) {
-      throw new IllegalArgumentException("'instance' argument must not be null");
-    }
-    if (instance instanceof IValueReference) {
-      throw new IllegalArgumentException(instance.toString());
-    }
+  public ListValueReference (int index) {
     if (index < 0 || index == Integer.MAX_VALUE) {
       throw new IllegalArgumentException("'index' argument must not be negative or MAX_VALUE");
     }
-    this.instance = instance;
     this.index = index;
   }
   
@@ -26,20 +18,25 @@ public class ListValueReference implements IValueReference {
   
   @Override
   public String toString() {
-    return "ListValueReference [" + instance + ", " + index + "]";
+    return "ListValueReference [" + index + "]";
   }
 
   
+  protected abstract List<Object> getContainer();
+  
+
   @Override
   public <T> void setValue(T value) {
-    instance.set(index, value);
+    List<Object> container = getContainer();
+    container.set(index, value);
   }
 
 
   @SuppressWarnings("unchecked")
   @Override
   public <T> T getValue() {
-    return (T)instance.get(index);
+    List<Object> container = getContainer();
+    return (T)container.get(index);
   }
 
 }

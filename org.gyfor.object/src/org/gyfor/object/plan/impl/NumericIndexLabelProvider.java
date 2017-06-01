@@ -1,6 +1,6 @@
 package org.gyfor.object.plan.impl;
 
-import org.gyfor.object.plan.IIndexLabelProvider;
+import org.gyfor.object.IIndexLabelProvider;
 
 public class NumericIndexLabelProvider implements IIndexLabelProvider {
 

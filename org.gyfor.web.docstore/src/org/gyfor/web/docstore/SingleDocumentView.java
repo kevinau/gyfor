@@ -9,8 +9,6 @@ import java.util.Map;
 
 import org.gyfor.doc.Document;
 import org.gyfor.doc.IDocumentStore;
-import org.gyfor.doc.ISegment;
-import org.gyfor.doc.SegmentType;
 import org.gyfor.http.Context;
 import org.gyfor.http.HttpUtility;
 import org.gyfor.template.ITemplate;
@@ -22,7 +20,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.pennyledger.party.Party;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,28 +105,6 @@ public class SingleDocumentView implements HttpHandler {
     context.put("hostAndPort", exchange.getHostAndPort());
     context.put("context", exchange.getResolvedPath());
     context.put("docStore", docStore);
-    
-    ISegment companySegment = doc.getContents().getUniqueSegment(SegmentType.COMPANY_NUMBER);
-    if (companySegment != null) {
-      int partyId = 1;
-      String shortName = "Qantas";
-      String formalName = "Qantas Airways";
-      String webPage = "www.qantas.com";
-      Party party = new Party(partyId, (String)companySegment.getValue(), shortName, formalName, webPage);
-      context.put("party", party);
-    }
-//    List<Company> companies = new ArrayList<>();
-//    boolean cleanCompanyList = true;
-//    for (ISegment seg : doc.getContents().getSegments()) {
-//      if (seg.getType() == SegmentType.COMPANY_NUMBER) {
-//        Company company = companyService.getCompany((String)seg.getValue());
-//        if (company == null) {
-//          cleanCompanyList = false;
-//        } else {
-//          companies.add(company);
-//        }
-//      }
-//    }
     
     int pages = doc.getContents().getPageCount();
     List<String> imagePaths = new ArrayList<>(pages);

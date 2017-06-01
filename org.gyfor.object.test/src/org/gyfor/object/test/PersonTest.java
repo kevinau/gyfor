@@ -1,9 +1,11 @@
 package org.gyfor.object.test;
 
 import org.gyfor.object.model.IEntityModel;
-import org.gyfor.object.model.impl.EntityModel;
+import org.gyfor.object.model.IModelFactory;
+import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.impl.PlanContext;
+import org.gyfor.object.plan.IPlanFactory;
+import org.gyfor.object.plan.PlanFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -63,10 +65,11 @@ public class PersonTest {
   
   @Test
   public void testNameMappedMembers () {
-    PlanContext planContext = new PlanContext();
-    IEntityPlan<Person> personPlan = planContext.getEntityPlan(Person.class);
+    IPlanFactory planFactory = new PlanFactory();
+    IEntityPlan<Person> personPlan = planFactory.getEntityPlan(Person.class);
     
-    IEntityModel personModel = new EntityModel(personPlan);
+    IModelFactory modelFactory = new ModelFactory();
+    IEntityModel personModel = modelFactory.buildEntityModel(personPlan);
     Assert.assertEquals(0, personModel.getMembers().size());
     
     Person person = new Person();

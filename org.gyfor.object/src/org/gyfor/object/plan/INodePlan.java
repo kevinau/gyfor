@@ -28,9 +28,11 @@ public interface INodePlan {
 
   public String getName();
   
-  public <X> X getValue (Object instance);
+  public String getQualifiedName();
   
-  public void setValue (Object instance, Object value);
+  public <X> X getFieldValue (Object instance);
+  
+  public void setFieldValue (Object instance, Object value);
   
   public default void indent (int level) {
     for (int i = 0; i < level; i++) {
@@ -42,7 +44,7 @@ public interface INodePlan {
 
   public INodePlan[] getChildNodes();
   
-  public ILabelGroup getLabels();
+  public <X extends ILabelGroup> X getLabels();
   
   public boolean isNullable();
   
@@ -51,5 +53,7 @@ public interface INodePlan {
   public PlanStructure getStructure();
 
   public Field getField();
-  
+
+  public INodePlan getParent();
+
 }

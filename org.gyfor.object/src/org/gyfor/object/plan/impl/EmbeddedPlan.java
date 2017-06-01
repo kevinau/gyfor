@@ -3,15 +3,18 @@ package org.gyfor.object.plan.impl;
 import java.lang.reflect.Field;
 
 import org.gyfor.object.EntryMode;
-import org.gyfor.object.plan.IPlanContext;
+import org.gyfor.object.plan.EmbeddedLabelGroup;
+import org.gyfor.object.plan.IEmbeddedPlan;
+import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.object.plan.PlanStructure;
 
-public class EmbeddedPlan<T> extends ClassPlan<T> {
+public class EmbeddedPlan<T> extends ClassPlan<T> implements IEmbeddedPlan<T> {
 
   private EmbeddedLabelGroup labels;
   
-  public EmbeddedPlan (IPlanContext context, Field field, Class<T> embeddedClass, String name, EntryMode entryMode) {
-    super (context, field, embeddedClass, name, entryMode);
+  public EmbeddedPlan (IPlanFactory context, INodePlan parent, Field field, Class<T> embeddedClass, String name, EntryMode entryMode) {
+    super (context, parent, field, embeddedClass, name, entryMode);
     this.labels = new EmbeddedLabelGroup(field, name);
     System.out.println("EmbeddedPlan... " + super.toString());
   }
@@ -25,6 +28,7 @@ public class EmbeddedPlan<T> extends ClassPlan<T> {
   }
 
   
+  @SuppressWarnings("unchecked")
   @Override
   public EmbeddedLabelGroup getLabels () {
     return labels;

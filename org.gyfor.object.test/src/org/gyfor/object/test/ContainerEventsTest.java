@@ -1,17 +1,20 @@
 package org.gyfor.object.test;
 
+import java.util.Map;
+
 import org.gyfor.object.Entity;
 import org.gyfor.object.Optional;
 import org.gyfor.object.model.ContainerChangeListener;
 import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.IEntityModel;
+import org.gyfor.object.model.IModelFactory;
 import org.gyfor.object.model.INodeModel;
-import org.gyfor.object.model.impl.EntityModel;
+import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.IPlanContext;
-import org.gyfor.object.plan.impl.PlanContext;
+import org.gyfor.object.plan.IPlanFactory;
+import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.value.EntityLife;
-import org.gyfor.object.value.VersionValue;
+import org.gyfor.object.value.VersionTime;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,7 +26,7 @@ public class ContainerEventsTest {
 
     private int id;
     
-    private VersionValue version;
+    private VersionTime version;
     
     private String name;
 
@@ -47,7 +50,7 @@ public class ContainerEventsTest {
 
     public StandardEntity(int id, String name, String location) {
       this.id = id;
-      this.version = VersionValue.now();
+      this.version = VersionTime.now();
       this.name = name;
       this.location = location;
       this.entityLife = EntityLife.ACTIVE;
@@ -62,7 +65,8 @@ public class ContainerEventsTest {
   }
 
   
-  private IPlanContext planContext = new PlanContext();
+  private IPlanFactory planFactory = new PlanFactory();
+  private IModelFactory modelFactory = new ModelFactory();
   
   private class EventCounter implements ContainerChangeListener {
 
@@ -70,7 +74,7 @@ public class ContainerEventsTest {
     private int childRemovedCount = 0;
     
     @Override
-    public void childAdded(IContainerModel parent, INodeModel node) {
+    public void childAdded(IContainerModel parent, INodeModel node, Map<String, Object> context) {
       childAddedCount++;
     }
 
@@ -84,8 +88,8 @@ public class ContainerEventsTest {
   
   @Test
   public void testContainerEvents () {
-    IEntityPlan<StandardEntity> plan = planContext.getEntityPlan(StandardEntity.class);
-    IEntityModel model = new EntityModel(plan);
+    IEntityPlan<StandardEntity> plan = planFactory.getEntityPlan(StandardEntity.class);
+    IEntityModel model = modelFactory.buildEntityModel(plan);
   
     EventCounter eventCounter = new EventCounter();
     model.addContainerChangeListener(eventCounter);

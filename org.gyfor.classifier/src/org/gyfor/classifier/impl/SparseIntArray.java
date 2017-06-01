@@ -183,10 +183,23 @@ public class SparseIntArray implements Cloneable {
      * Returns the number of key-value mappings that this SparseIntArray
      * currently stores.
      */
-    public int size() {
+    public int keyDataSize() {
         return mSize;
     }
 
+    
+    /** 
+     * Returns the size of this array, assuming it was dense.
+     */
+    public int size () {
+      if (mSize == 0) {
+        return 0;
+      } else {
+        return mKeys[mSize - 1];
+      }
+    }
+    
+    
     /**
      * Given an index in the range <code>0...size()-1</code>, returns
      * the key from the <code>index</code>th key-value mapping that this
@@ -204,7 +217,7 @@ public class SparseIntArray implements Cloneable {
     public int valueAt(int index) {
         return mValues[index];
     }
-
+    
     /**
      * Returns the index for which {@link #keyAt} would return the
      * specified key, or a negative number if the specified

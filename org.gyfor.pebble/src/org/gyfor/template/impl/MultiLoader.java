@@ -6,16 +6,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.gyfor.template.IDefaultTemplateLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -45,11 +43,11 @@ import com.mitchellbosecke.pebble.loader.Loader;
  * <p>
  * This template loader looks in the following bundles, in the order listed:
  * <ol>
- * <li>If &lt;classname&gt; only is specified, and the class is loadable, this
+ * <li>If &lt;classname&gt; only is specified, and the class is loadable, the
  * loader searches the bundle of the loaded class for a template named
  * &lt;classname&gt;.</li>
  * <li>If &lt;classname&gt;#&lt;fieldname&gt; is specified, and the named class
- * is loadable, this loader searches the bundle of the loaded class for a
+ * is loadable, the loader searches the bundle of the loaded class for a
  * template named:
  * <ul>
  * <li>&lt;classname&gt;#&lt;fieldname&gt;</li>
@@ -74,8 +72,9 @@ public class MultiLoader implements Loader<String> {
   private static final Pattern simplePattern = Pattern.compile(simpleRegex);
   private static final Pattern templatePattern = Pattern.compile(templateRegex);
 
-  private final Path templateDir;
-  private final BundleContext defaultBundleContext;
+  private final BundleContext localBundleContext;
+  
+  private final IDefaultTemplateLoader defaultTemplateLoader;
 
   private final String bundleDir = "/templates";
   private final String suffix = ".html";
@@ -83,14 +82,9 @@ public class MultiLoader implements Loader<String> {
   private String charset = StandardCharsets.UTF_8.name();
 
 
-  public MultiLoader(Path templateDir, BundleContext defaultBundleContext) {
-    this.templateDir = templateDir;
-    this.defaultBundleContext = defaultBundleContext;
-  }
-
-
-  public MultiLoader(BundleContext defaultBundleContext) {
-    this(null, defaultBundleContext);
+  public MultiLoader(BundleContext localBundleContext, IDefaultTemplateLoader defaultTemplateLoader) {
+    this.localBundleContext = localBundleContext;
+    this.defaultTemplateLoader = defaultTemplateLoader;
   }
 
 
@@ -109,7 +103,7 @@ public class MultiLoader implements Loader<String> {
     
     Matcher matcher = simplePattern.matcher(templateName);
     if (matcher.matches()) {
-      templateURL = findTemplateX2(templateName, tried);
+       templateURL = findTemplateX2(templateName, tried);
     } else {
       matcher = templatePattern.matcher(templateName);
       if (!matcher.matches()) {
@@ -134,22 +128,20 @@ public class MultiLoader implements Loader<String> {
         } catch (ClassNotFoundException ex) {
           // Don't look in the class path bundle
         }
-      }
-
-      if (templateURL == null && templateDir != null) {
-        // Look for templates in the template directory
-        templateURL = findTemplate(templateDir, className, fieldName, tried);
+      } else {
+        // Look for fieldName templates in the in the named bundle context
+        bundle = localBundleContext.getBundle();
+        templateURL = findTemplate(bundle, fieldName, tried);
       }
     
-      if (templateURL == null) {
-        // Look for default template in the default bundle
-        bundle = defaultBundleContext.getBundle();
-        templateURL = findTemplate(bundle, defaultName, tried);
+      // If no template found, look for the default template in the default bundle context
+      if (templateURL == null && defaultTemplateLoader != null) {
+        templateURL = findTemplateX2(defaultName, tried);
       }
     }
     
     if (templateURL == null) {
-      String msg = "Template not found after trying:";
+      String msg = "Template '" + templateName + "' not found after trying:";
       String x = " ";
       for (String s : tried) {
         msg += x + s;
@@ -171,36 +163,15 @@ public class MultiLoader implements Loader<String> {
 
   
   private URL findTemplateX2(String templateName, List<String> tried) {
-    URL url = null;
-    if (templateDir != null) {
-      url = findTemplate(templateDir, templateName, tried);  
-    }
-    if (url == null) {
-      Bundle bundle = defaultBundleContext.getBundle();
-      url = findTemplate(bundle, templateName, tried);
+    Bundle bundle = localBundleContext.getBundle();
+    URL url = findTemplate(bundle, templateName, tried);
+    if (url == null && defaultTemplateLoader != null) {
+      url = defaultTemplateLoader.findTemplate(templateName, tried);
     }
     return url;
   }
 
   
-  private URL findTemplate(Path templateDir, String templateName, List<String> tried) {
-    String fileName = templateName + suffix;
-    Path templatePath = templateDir.resolve(fileName);
-    URL url = null;
-    if (Files.exists(templatePath)) {
-      logger.info("Found template '" + fileName + "' in directory: " + templateDir);
-      try {
-        url = templatePath.toUri().toURL();
-      } catch (MalformedURLException ex) {
-        throw new RuntimeException(ex);
-      }
-    } else {
-      tried.add(templatePath.toString());
-    }
-    return url;
-  }
-
-
   private URL findTemplate(Bundle bundle, String templateName, List<String> tried) {
     String fileName = bundleDir + "/" + templateName + suffix;
     URL url = bundle.getResource(fileName);
@@ -210,21 +181,6 @@ public class MultiLoader implements Loader<String> {
       tried.add(bundle.getSymbolicName() + "::" + fileName);
     }
     return url;
-  }
-
-
-  private URL findTemplate(Path templateDir, String className, String fieldPath, List<String> tried) {
-    if (className == null) {
-      return findTemplate(templateDir, fieldPath, tried);
-    } else if (fieldPath == null) {
-      return findTemplate(templateDir, className, tried);
-    } else {
-      URL url = findTemplate(templateDir, className + fieldPath, tried);
-      if (url != null) {
-        return url;
-      }
-      return findTemplate(templateDir, fieldPath, tried);
-    }
   }
 
 
@@ -274,24 +230,4 @@ public class MultiLoader implements Loader<String> {
     throw new RuntimeException("Suffixes cannot be used in the BundleContextLoader");
   }
 
-
-  public static void main(String[] args) {
-    String[] xx = { 
-        "org.pennyledger.Person(entity)", 
-        "#name(StringType)", 
-        "#address.line1(StringType)",
-        "org.pennyledger.Person#emailAddress(StringType)", 
-        "org.pennyledger.Person#emailAddress.au(StringType)",
-    };
-
-    Pattern p = Pattern.compile(templateRegex);
-    for (String x : xx) {
-      Matcher m = p.matcher(x);
-      System.out.print(x + ": ");
-      for (int i = 1; i < m.groupCount() + 1; i++) {
-        System.out.print("/" + m.group(i));
-      }
-      System.out.println();
-    }
-  }
 }

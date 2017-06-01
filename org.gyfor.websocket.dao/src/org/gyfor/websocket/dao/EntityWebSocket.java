@@ -230,7 +230,7 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
 
       // Register this session as an event listener
       String[] topics = new String[] {
-          "org/gyfor/data/DataAccessObject/*"
+          IDataAccessObject.EVENT_BASE + "*"
       };
       Dictionary<String, Object> props = new Hashtable<>();
       props.put(EventConstants.EVENT_TOPIC, topics);

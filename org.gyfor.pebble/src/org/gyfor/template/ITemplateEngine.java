@@ -1,7 +1,11 @@
 package org.gyfor.template;
 
+import com.mitchellbosecke.pebble.tokenParser.TokenParser;
+
 public interface ITemplateEngine {
 
-  ITemplate getTemplate(String templateName);
+  public void addTokenParser (TokenParser tokenParser);
+  
+  public ITemplate getTemplate(String templateName);
 
 }

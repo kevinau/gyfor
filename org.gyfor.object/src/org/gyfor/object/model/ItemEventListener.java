@@ -1,12 +1,14 @@
 package org.gyfor.object.model;
 
+import java.util.EventListener;
+
 import org.gyfor.object.UserEntryException;
 
 /**
  * @author Kevin Holloway
  * 
  */
-public interface ItemEventListener {
+public interface ItemEventListener extends EventListener {
 
   /** 
    * Return a string that describes the origin of this event listener.  This is used for debugging only.

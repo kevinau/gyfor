@@ -15,10 +15,8 @@ Import-Package: com.mitchellbosecke.pebble,
  com.mitchellbosecke.pebble.parser,
  com.mitchellbosecke.pebble.template,
  com.mitchellbosecke.pebble.tokenParser,
- org.gyfor.osgi,
- org.gyfor.value,
  org.osgi.framework;version="1.8.0",
- org.osgi.service.component;version="1.2.0",
+ org.osgi.service.component.annotations;version="1.2.0",
  org.slf4j;version="1.7.21"
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/org.gyfor.template.impl.TemplateEngineFactory.xml

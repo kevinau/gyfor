@@ -5,11 +5,12 @@ import java.lang.reflect.Field;
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.Mode;
 import org.gyfor.object.Optional;
+import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.INodePlan;
 
 public abstract class NodePlan implements INodePlan {
 
-//  private final INodePlan parent;
+  private final INodePlan parent;
   
   private final Field field;
   
@@ -18,6 +19,8 @@ public abstract class NodePlan implements INodePlan {
   private EntryMode staticMode = EntryMode.UNSPECIFIED;
   
   private final boolean nullable;
+  
+  private String qualifiedName;
   
   
   protected static String entityName (Class<?> entityClass) {
@@ -50,25 +53,31 @@ public abstract class NodePlan implements INodePlan {
   }
   
   
-  public NodePlan (Field field, String name, EntryMode entryMode) {
+  public NodePlan (INodePlan parent, Field field, String name, EntryMode entryMode) {
+    if (parent == null && !(this instanceof IEntityPlan)) {
+      throw new IllegalArgumentException("Parent cannot be null (except for IEntityPlan)");
+    }
+    this.parent = parent;
     this.field = field;
     if (field != null) {
       field.setAccessible(true);
     }
     this.name = name;
+    
     this.staticMode = entryMode;
     this.nullable = isNullable(field);
   }
   
   
-//  @Override
-//  public INodePlan getParent() {
-//    return parent;
-//  }
+  @Override
+  public INodePlan getParent() {
+    return parent;
+  }
+
   
   @SuppressWarnings("unchecked")
   @Override
-  public <X> X getValue (Object instance) {
+  public <X> X getFieldValue (Object instance) {
     if (field == null) {
       throw new RuntimeException("Cannot invoke getValue on Entity level plan");
     }
@@ -81,7 +90,7 @@ public abstract class NodePlan implements INodePlan {
   
   
   @Override
-  public void setValue (Object instance, Object value) {
+  public void setFieldValue (Object instance, Object value) {
     if (field == null) {
       throw new RuntimeException("Cannot invoke setValue on Entity level plan");
     }
@@ -98,6 +107,44 @@ public abstract class NodePlan implements INodePlan {
     return name;
   }
   
+  
+  private static void buildQualifiedName (INodePlan nodePlan, StringBuilder builder, boolean[] isTop) {
+    INodePlan parent = nodePlan.getParent();
+    if (parent == null) {
+      if (nodePlan instanceof IEntityPlan) {
+        builder.append(((IEntityPlan<?>)nodePlan).getClassName());
+      } else {
+        throw new RuntimeException("Parent of " + nodePlan + " is null, but this is not an IEntityPlan");
+      }
+      isTop[0] = true;
+    } else {
+      buildQualifiedName(parent, builder, isTop);
+      if (isTop[0]) {
+        builder.append('#');
+      } else {
+        builder.append('.');
+      }
+      builder.append(nodePlan.getName());
+    }
+  }
+  
+
+  private String buildQualifiedName () {
+    StringBuilder builder = new StringBuilder();
+    boolean[] isTop = new boolean[1];
+    buildQualifiedName(this, builder, isTop);
+    return builder.toString();
+  }
+  
+  
+  @Override
+  public String getQualifiedName() {
+    if (qualifiedName == null) {
+      qualifiedName = buildQualifiedName();
+    }
+    return qualifiedName;
+  }
+
   
   @Override
   public EntryMode getEntryMode () {

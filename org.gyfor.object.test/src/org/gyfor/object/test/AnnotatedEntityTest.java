@@ -7,9 +7,10 @@ import org.gyfor.object.Version;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.impl.PlanContext;
+import org.gyfor.object.plan.IPlanFactory;
+import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.value.EntityLife;
-import org.gyfor.object.value.VersionValue;
+import org.gyfor.object.value.VersionTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +25,7 @@ public class AnnotatedEntityTest {
     private int identity;
     
     @Version 
-    private VersionValue versionField;
+    private VersionTime versionField;
     
     private String name;
 
@@ -41,12 +42,12 @@ public class AnnotatedEntityTest {
   }
 
 
-  private PlanContext context;
+  private IPlanFactory context;
   
   
   @Before
   public void before () {
-    context = new PlanContext();
+    context = new PlanFactory();
   }
   
   

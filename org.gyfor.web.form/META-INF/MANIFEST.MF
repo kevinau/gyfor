@@ -5,10 +5,9 @@ Bundle-SymbolicName: org.gyfor.web.form
 Bundle-Version: 1.0.0
 Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Service-Component: OSGI-INF/org.gyfor.web.form.FormTemplateEngine.xml,
- OSGI-INF/org.gyfor.web.form.EntityEditPage.xml,
+Service-Component: OSGI-INF/org.gyfor.web.form.EntityEditPage.xml,
  OSGI-INF/org.gyfor.web.form.EntityWebSocket.xml,
- OSGI-INF/org.gyfor.web.form.ModelHtmlBuilder.xml
+ OSGI-INF/org.gyfor.web.form.ModelWebSocketHandler.xml
 Import-Package: com.mitchellbosecke.pebble,
  com.mitchellbosecke.pebble.error,
  com.mitchellbosecke.pebble.extension,
@@ -19,7 +18,6 @@ Import-Package: com.mitchellbosecke.pebble,
  com.mitchellbosecke.pebble.parser,
  com.mitchellbosecke.pebble.template,
  com.mitchellbosecke.pebble.tokenParser,
- io.undertow.io,
  io.undertow.server,
  io.undertow.server.protocol.framed,
  io.undertow.util,
@@ -27,13 +25,13 @@ Import-Package: com.mitchellbosecke.pebble,
  io.undertow.websockets.core,
  io.undertow.websockets.spi,
  org.gyfor.http,
+ org.gyfor.object.model,
  org.gyfor.object.model.impl,
  org.gyfor.object.plan,
  org.gyfor.object.type,
  org.gyfor.template,
  org.osgi.framework;version="1.8.0",
  org.osgi.service.component.annotations,
- org.pennyledger.party,
  org.slf4j;version="1.7.21",
  org.xnio
 Bundle-ActivationPolicy: lazy

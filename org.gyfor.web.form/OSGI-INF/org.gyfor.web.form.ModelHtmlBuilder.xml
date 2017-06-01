@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" name="org.gyfor.web.form.ModelHtmlBuilder">
-   <reference bind="setFormTemplateEngine" cardinality="1..1" interface="org.gyfor.web.form.FormTemplateEngine" name="FormTemplateEngine" policy="static" unbind="unsetFormTemplateEngine"/>
-   <implementation class="org.gyfor.web.form.ModelHtmlBuilder"/>
-</scr:component>

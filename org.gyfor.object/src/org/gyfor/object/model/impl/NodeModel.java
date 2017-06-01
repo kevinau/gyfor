@@ -2,18 +2,20 @@ package org.gyfor.object.model.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.model.EffectiveEntryMode;
 import org.gyfor.object.model.EffectiveEntryModeListener;
 import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.IEntityModel;
+import org.gyfor.object.model.IModelFactory;
 import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.INodePlan;
 
 public abstract class NodeModel implements INodeModel {
 
+  @SuppressWarnings("unused")
   private final IEntityModel entityModel;
   private final IContainerModel parent;
   private final int nodeId;
@@ -24,10 +26,10 @@ public abstract class NodeModel implements INodeModel {
   private List<EffectiveEntryModeListener> effectiveEntryModeListeners = new ArrayList<>();
   
   
-  public NodeModel (AtomicInteger idSource, IEntityModel entityModel, IContainerModel parent) {
+  public NodeModel (IModelFactory modelFactory, IEntityModel entityModel, IContainerModel parent) {
     this.entityModel = entityModel;
     this.parent = parent;
-    this.nodeId = idSource.incrementAndGet();
+    this.nodeId = modelFactory.getNodeId();
   }
   
   
@@ -58,8 +60,8 @@ public abstract class NodeModel implements INodeModel {
   
   private static void buildCanonicalName (INodeModel nodeModel, StringBuilder builder, boolean[] isTop) {
     if (nodeModel.getParent() == null) {
-      if (nodeModel instanceof EntityModel) {
-        builder.append(((EntityModel)nodeModel).getPlan().getClassName());
+      if (nodeModel instanceof IEntityModel) {
+        builder.append(((IEntityPlan<?>)nodeModel.getPlan()).getClassName());
       } else {
         throw new RuntimeException("Parent of " + nodeModel + " is null, but it is not an entity model");
       }

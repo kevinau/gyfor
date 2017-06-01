@@ -14,18 +14,8 @@ import org.osgi.service.component.annotations.Reference;
 @Component
 public class MultiLoaderTest {
 
-  private ITemplateEngineFactory engineFactory;
-  
   @Reference
-  public void setTemplateEngineFactory (ITemplateEngineFactory engineFactory) {
-    this.engineFactory = engineFactory;
-  }
-  
-  
-  public void unsetTemplateEngineFactory (ITemplateEngineFactory engineFactory) {
-    this.engineFactory = null;
-  }
-  
+  private ITemplateEngineFactory engineFactory;
   
   @Activate
   public void activate (BundleContext bundleContext) {

@@ -2,38 +2,33 @@ package org.gyfor.object.model.ref;
 
 import java.lang.reflect.Field;
 
-public class ClassValueReference implements IValueReference {
+public abstract class ClassValueReference implements IValueReference {
 
-  private final Object instance;
   private final Field field;
   
   
-  public ClassValueReference (Object instance, Field field) {
-    if (instance == null) {
-      throw new IllegalArgumentException("'instance' argument must not be null");
-    }
-    if (instance instanceof IValueReference) {
-      throw new IllegalArgumentException(instance.toString());
-    }
+  public ClassValueReference (Field field) {
     if (field == null) {
       throw new IllegalArgumentException("'field' argument must not be null");
     }
-    this.instance = instance;
     this.field = field;
   }
   
     
   @Override
   public String toString() {
-    return "ClassValueReference [" + instance + ", " + field + "]";
+    return "ClassValueReference [" + field + "]";
   }
 
+  
+  protected abstract Object getInstance();
 
+  
   @Override
   public <T> void setValue(T value) {
     try {
       field.setAccessible(true);
-      field.set(instance, value);
+      field.set(getInstance(), value);
     } catch (IllegalArgumentException | IllegalAccessException ex) {
       throw new RuntimeException(ex);
     }
@@ -45,8 +40,18 @@ public class ClassValueReference implements IValueReference {
   public <T> T getValue() {
     T value;
     try {
+      System.out.println("1........" + field.getName());
+      Object inst = getInstance();
+      System.out.println("2........" + inst + "  " + inst.getClass() + "  " + field);
+      System.out.println("3........." + field.getType());
       field.setAccessible(true);
-      value = (T)field.get(instance);
+      Object x = field.get(inst);
+      System.out.println("4........" + x);
+      if (x != null) {
+        System.out.println("5........." + x.getClass());
+      }
+      
+      value = (T)field.get(getInstance());
     } catch (IllegalArgumentException | IllegalAccessException ex) {
       throw new RuntimeException(ex);
     }

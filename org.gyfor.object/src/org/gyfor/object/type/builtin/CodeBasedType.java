@@ -219,14 +219,14 @@ public abstract class CodeBasedType<T extends ICodeValue> implements IType<T> {
   
   
   @Override
-  public T newInstance (String source) {
+  public T newInstance (String code) {
     lazyValueListUpdate(valueList);
     for (T v : valueList) {
-      if (v.equals(source)) {
+      if (v.getCode().equals(code)) {
         return v;
       }
     }
-    throw new RuntimeException("Illegal value: " + source);
+    throw new RuntimeException("Illegal value: " + code);
   }
   
   

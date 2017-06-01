@@ -4,11 +4,12 @@ import org.gyfor.object.Entity;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
+import org.gyfor.object.model.IModelFactory;
 import org.gyfor.object.model.ItemEventListener;
-import org.gyfor.object.model.impl.EntityModel;
+import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.IPlanContext;
-import org.gyfor.object.plan.impl.PlanContext;
+import org.gyfor.object.plan.IPlanFactory;
+import org.gyfor.object.plan.PlanFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,17 +32,18 @@ public class ItemEventsTest {
   }
 
   
-  private IPlanContext planContext = new PlanContext();
+  private IPlanFactory planFactory = new PlanFactory();
+  private IModelFactory modelFactory = new ModelFactory();
   
   private class EventCounter implements ItemEventListener {
 
     private int valueChangeCount = 0;
-    private int valueEqualityChangeCount = 0;
+    //private int valueEqualityChangeCount = 0;
     private int sourceChangeCount = 0;
-    private int sourceEqualityChangeCount = 0;
+    //private int sourceEqualityChangeCount = 0;
     private int errorNoted = 0;
     private int errorCleared = 0;
-    private UserEntryException lastError;
+    //private UserEntryException lastError;
     
     
     @Override
@@ -52,12 +54,12 @@ public class ItemEventsTest {
 
     @Override
     public void valueEqualityChange(IItemModel model) {
-      valueEqualityChangeCount++;
+      //valueEqualityChangeCount++;
     }
 
     @Override
     public void sourceEqualityChange(IItemModel model) {
-      sourceEqualityChangeCount++;
+      //sourceEqualityChangeCount++;
     }
 
     @Override
@@ -73,7 +75,7 @@ public class ItemEventsTest {
     @Override
     public void errorNoted(IItemModel model, UserEntryException ex) {
       errorNoted++;
-      lastError = ex;
+      //lastError = ex;
     }
 
     @Override
@@ -91,8 +93,8 @@ public class ItemEventsTest {
   
   @Test
   public void testItemEvents () {
-    IEntityPlan<StandardEntity> plan = planContext.getEntityPlan(StandardEntity.class);
-    IEntityModel model = new EntityModel(plan);
+    IEntityPlan<StandardEntity> plan = planFactory.getEntityPlan(StandardEntity.class);
+    IEntityModel model = modelFactory.buildEntityModel(plan);
     
     StandardEntity instance = new StandardEntity();
     model.setValue(instance);
@@ -119,8 +121,8 @@ public class ItemEventsTest {
 
   @Test
   public void testItemErrors () {
-    IEntityPlan<StandardEntity> plan = planContext.getEntityPlan(StandardEntity.class);
-    IEntityModel model = new EntityModel(plan);
+    IEntityPlan<StandardEntity> plan = planFactory.getEntityPlan(StandardEntity.class);
+    IEntityModel model = modelFactory.buildEntityModel(plan);
     
     StandardEntity instance = new StandardEntity();
     model.setValue(instance);

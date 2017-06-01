@@ -6,8 +6,9 @@ import org.gyfor.object.Entity;
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.IPlanContext;
+import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.object.plan.IReferencePlan;
+import org.gyfor.object.plan.ItemLabelGroup;
 import org.gyfor.object.plan.PlanStructure;
 
 
@@ -17,8 +18,8 @@ public class ReferencePlan<T> extends NodePlan implements IReferencePlan<T> {
   private final ReferenceLabelGroup labels;
 
 
-  public ReferencePlan(IPlanContext context, Field field, Class<T> referencedClass, String pathName, EntryMode entryMode) {
-    super(field, pathName, entryMode);
+  public ReferencePlan(IPlanFactory context, INodePlan parent, Field field, Class<T> referencedClass, String pathName, EntryMode entryMode) {
+    super(parent, field, pathName, entryMode);
     if (!referencedClass.isAnnotationPresent(Entity.class)) {
       throw new IllegalArgumentException("Referenced class is not annotated with @Entity");
     }
@@ -41,6 +42,7 @@ public class ReferencePlan<T> extends NodePlan implements IReferencePlan<T> {
   }
   
     
+  @SuppressWarnings("unchecked")
   @Override
   public ItemLabelGroup getLabels () {
     return labels;

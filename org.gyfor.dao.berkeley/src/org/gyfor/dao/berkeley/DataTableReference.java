@@ -3,7 +3,7 @@ package org.gyfor.dao.berkeley;
 import org.gyfor.dao.IDataAccessObject;
 import org.gyfor.dao.IDataTableReference;
 import org.gyfor.dao.IDataTableReferenceRegistry;
-import org.gyfor.object.plan.IPlanContext;
+import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.osgi.ComponentConfiguration;
 import org.gyfor.osgi.Configurable;
 import org.osgi.service.component.ComponentContext;
@@ -24,7 +24,7 @@ public class DataTableReference implements IDataTableReference {
   
   private DataEnvironment dataEnvironment;
   
-  private IPlanContext planContext;
+  private IPlanFactory planFactory;
   
   private IDataTableReferenceRegistry referenceRegistry;
   
@@ -45,13 +45,13 @@ public class DataTableReference implements IDataTableReference {
   
   
   @Reference
-  void setPlanContext (IPlanContext planContext) {
-    this.planContext = planContext;
+  void setPlanFactory (IPlanFactory planFactory) {
+    this.planFactory = planFactory;
   }
   
   
-  void unsetPlanContext (IPlanContext planContext) {
-    this.planContext = null;
+  void unsetPlanFactory (IPlanFactory planFactory) {
+    this.planFactory = null;
   }
   
   
@@ -87,7 +87,7 @@ public class DataTableReference implements IDataTableReference {
   
   @Override
   public <T> IDataAccessObject<T> newDataAccessService(boolean readOnly) {
-    return new DataAccessObject<T>(dataEnvironment, planContext, className, readOnly);
+    return new DataAccessObject<T>(dataEnvironment, planFactory, className, readOnly);
   }
 
 }

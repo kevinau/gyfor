@@ -1,25 +1,27 @@
 package org.gyfor.object.model.ref;
 
-public class ArrayValueReference implements IValueReference {
+public abstract class ArrayValueReference implements IValueReference {
 
-  private final Object[] container;
   private final int index;
   
   
-  public ArrayValueReference (Object[] container, int index) {
-    this.container = container;
+  public ArrayValueReference (int index) {
     this.index = index;
   }
   
   
   @Override
   public String toString() {
-    return "ArrayContainerReference [" + container + ", " + index + "]";
+    return "ArrayContainerReference [" + index + "]";
   }
 
+  
+  protected abstract Object[] getContainer();
 
+  
   @Override
   public <T> void setValue(T value) {
+    Object[] container = getContainer();
     container[index] = value;
   }
 
@@ -27,6 +29,7 @@ public class ArrayValueReference implements IValueReference {
   @SuppressWarnings("unchecked")
   @Override
   public <T> T getValue() {
+    Object[] container = getContainer();
     return (T)container[index];
   }
 

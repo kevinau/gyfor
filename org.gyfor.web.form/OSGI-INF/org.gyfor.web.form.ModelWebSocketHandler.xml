@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" deactivate="deactivate" name="org.gyfor.web.form.ModelWebSocketHandler">
+   <service>
+      <provide interface="io.undertow.server.HttpHandler"/>
+   </service>
+   <reference cardinality="1..1" field="modelFactory" interface="org.gyfor.object.model.IModelFactory" name="modelFactory"/>
+   <reference cardinality="1..1" field="planFactory" interface="org.gyfor.object.plan.IPlanFactory" name="planFactory"/>
+   <reference cardinality="1..1" field="templateEngineFactory" interface="org.gyfor.template.ITemplateEngineFactory" name="templateEngineFactory"/>
+   <implementation class="org.gyfor.web.form.ModelWebSocketHandler"/>
+</scr:component>

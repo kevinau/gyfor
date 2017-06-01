@@ -1,6 +1,5 @@
 package org.gyfor.object.test;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import org.gyfor.object.Entity;
@@ -9,8 +8,9 @@ import org.gyfor.object.UniqueConstraint;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.impl.PlanContext;
+import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.value.EntityLife;
+import org.gyfor.object.value.VersionTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class EntityKeyDataTest {
 
     private int id;
     
-    private Timestamp version;
+    private VersionTime version;
     
     private String code;
     
@@ -43,18 +43,18 @@ public class EntityKeyDataTest {
   }
 
 
-  private PlanContext context;
+  private PlanFactory factory;
   
   
   @Before
   public void before () {
-    context = new PlanContext();
+    factory = new PlanFactory();
   }
   
   
   @Test
   public void testKeys () {
-    IEntityPlan<SimpleEntity> plan = EntityPlanFactory.getEntityPlan(context, SimpleEntity.class);
+    IEntityPlan<SimpleEntity> plan = EntityPlanFactory.getEntityPlan(factory, SimpleEntity.class);
     
     IItemPlan<?>[] keyItems = plan.getKeyItems(0);
     Assert.assertEquals(1, keyItems.length);
@@ -64,11 +64,12 @@ public class EntityKeyDataTest {
   
   @Test
   public void testData () {
-    IEntityPlan<SimpleEntity> plan = EntityPlanFactory.getEntityPlan(context, SimpleEntity.class);
+    IEntityPlan<SimpleEntity> plan = EntityPlanFactory.getEntityPlan(factory, SimpleEntity.class);
     
-    List<INodePlan> dataNodes = plan.getDataNodes(0);
-    Assert.assertEquals(2, dataNodes.size());
-    Assert.assertEquals("name", dataNodes.get(0).getName());
-    Assert.assertEquals("location", dataNodes.get(1).getName());
+    List<INodePlan> dataPlans = plan.getDataPlans();
+    Assert.assertEquals(3, dataPlans.size());
+    Assert.assertEquals("code", dataPlans.get(0).getName());
+    Assert.assertEquals("name", dataPlans.get(1).getName());
+    Assert.assertEquals("location", dataPlans.get(2).getName());
   }
 }

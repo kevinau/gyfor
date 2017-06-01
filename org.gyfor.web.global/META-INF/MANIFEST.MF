@@ -9,7 +9,4 @@ Export-Package: org.gyfor.web.global
 Service-Component: OSGI-INF/org.gyfor.web.global.GlobalResources.xml
 Import-Package: io.undertow.server,
  org.gyfor.http,
- org.gyfor.osgi,
- org.gyfor.value,
- org.osgi.service.component;version="1.2.0",
- org.slf4j;version="1.7.21"
+ org.osgi.service.component;version="1.2.0"

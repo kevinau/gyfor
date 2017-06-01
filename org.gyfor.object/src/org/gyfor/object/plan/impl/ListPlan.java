@@ -6,13 +6,15 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.gyfor.object.EntryMode;
-import org.gyfor.object.plan.IPlanContext;
+import org.gyfor.object.plan.IListPlan;
+import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.object.plan.PlanStructure;
 
-public class ListPlan extends RepeatingPlan {
+public class ListPlan extends RepeatingPlan implements IListPlan {
 
-  public ListPlan (IPlanContext context, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
-    super (context, field, elemClass, name, entryMode, dimension);
+  public ListPlan (IPlanFactory context, INodePlan parent, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
+    super (context, parent, field, elemClass, name, entryMode, dimension);
   }
   
 

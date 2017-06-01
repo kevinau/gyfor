@@ -3,9 +3,7 @@ package org.gyfor.object.model;
 import java.util.List;
 
 import org.gyfor.object.EntryMode;
-import org.gyfor.object.model.ref.IValueReference;
 import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.type.IType;
 
 
 public interface INodeModel {
@@ -24,12 +22,6 @@ public interface INodeModel {
 
   public <X> X getValue ();
   
-  public IValueReference getValueRef ();
-
-  public void dump(int level);
-
-  public IType<?> getType();
-
   public void setEntryMode(EntryMode entryMode);
 
   public void updateEffectiveEntryMode(EffectiveEntryMode parent);
@@ -37,6 +29,8 @@ public interface INodeModel {
   public EffectiveEntryMode getEffectiveEntryMode();
 
   public EntryMode getEntryMode();
+  
+  public String getName();
 
   public void addEffectiveEntryModeListener(EffectiveEntryModeListener x);
 
@@ -44,4 +38,6 @@ public interface INodeModel {
 
   public void syncEventsWithNode();
 
+  public void dump(int level);
+  
 }

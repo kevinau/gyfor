@@ -4,8 +4,8 @@ import org.gyfor.doc.IDocumentContents;
 
 public interface IDocumentClassifier {
 
-  public int classify(IDocumentContents docContents);
+  public String classify(IDocumentContents docContents);
 
-  public void train(IDocumentContents docContents, int category);
+  public void train(IDocumentContents docContents, String category);
 
 }

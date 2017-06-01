@@ -2,9 +2,9 @@ package org.gyfor.object.model.path;
 
 import java.util.function.Consumer;
 
-import org.gyfor.object.model.INameMappedModel;
-import org.gyfor.object.model.INodeModel;
-import org.gyfor.object.model.impl.NameMappedModel;
+import org.gyfor.object.model.impl2.INameMappedModel;
+import org.gyfor.object.model.impl2.INodeModel;
+import org.gyfor.object.model.impl2.NameMappedModel;
 import org.gyfor.object.plan.INameMappedPlan;
 import org.gyfor.object.plan.INodePlan;
 

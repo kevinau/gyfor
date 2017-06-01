@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" configuration-policy="optional" deactivate="deactivate" immediate="true" name="org.gyfor.web.form.EntityEditPage">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" deactivate="deactivate" name="org.gyfor.web.form.EntityEditPage">
    <service>
       <provide interface="io.undertow.server.HttpHandler"/>
    </service>
+   <reference cardinality="1..1" field="templateEngineFactory" interface="org.gyfor.template.ITemplateEngineFactory" name="templateEngineFactory"/>
    <implementation class="org.gyfor.web.form.EntityEditPage"/>
 </scr:component>

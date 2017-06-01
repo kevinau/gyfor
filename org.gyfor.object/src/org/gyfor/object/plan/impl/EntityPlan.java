@@ -14,14 +14,14 @@ import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INameMappedPlan;
 import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.IPlanContext;
+import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.object.plan.PlanStructure;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.EntityLifeType;
 import org.gyfor.object.type.builtin.StringType;
 import org.gyfor.object.type.builtin.VersionType;
 import org.gyfor.object.value.EntityLife;
-import org.gyfor.object.value.VersionValue;
+import org.gyfor.object.value.VersionTime;
 
 
 public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClassPlan<T>, INameMappedPlan, INodePlan {
@@ -31,16 +31,16 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   private final EntityLabelGroup labels;
 
   private IItemPlan<Integer> idPlan;
-  private IItemPlan<VersionValue> versionPlan;
+  private IItemPlan<VersionTime> versionPlan;
   private IItemPlan<EntityLife> entityLifePlan;
-  private List<IItemPlan<?>> dataPlans;
+  private List<INodePlan> dataPlans;
   private List<IItemPlan<?>> descriptionPlans;
   
   private List<IItemPlan<?>[]> uniqueConstraints;
 
   
-  public EntityPlan (IPlanContext context, Class<T> entityClass) {
-    super (context, null, entityClass, entityClass.getSimpleName(), entityEntryMode(entityClass));
+  public EntityPlan (IPlanFactory factory, Class<T> entityClass) {
+    super (factory, null, null, entityClass, entityClass.getSimpleName(), entityEntryMode(entityClass));
     this.entityClass = entityClass;
     this.entityName = entityClass.getSimpleName();
     this.labels = new EntityLabelGroup(entityClass);
@@ -57,6 +57,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   }
 
 
+  @SuppressWarnings("unchecked")
   @Override
   public EntityLabelGroup getLabels () {
     return labels;
@@ -76,16 +77,16 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   
   @Override
   public int getId (Object instance) {
-    return idPlan.getValue(instance);
+    return idPlan.getFieldValue(instance);
   }
   
   @Override
   public void setId (Object instance, int id) {
-    idPlan.setValue(instance, id);
+    idPlan.setFieldValue(instance, id);
   }
   
   @Override
-  public IItemPlan<VersionValue> getVersionPlan () {
+  public IItemPlan<VersionTime> getVersionPlan () {
     return versionPlan;
   }
   
@@ -96,13 +97,13 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   
   @Override
   public Timestamp getVersion (Object instance) {
-    return versionPlan.getValue(instance);
+    return versionPlan.getFieldValue(instance);
   }
   
   @Override
   public void setVersion (Object instance, Timestamp version) {
     if (versionPlan != null) {
-      versionPlan.setValue(instance, version);
+      versionPlan.setFieldValue(instance, version);
     }
   }
   
@@ -124,14 +125,14 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
     if (entityLifePlan == null) {
       return null;
     } else {
-      return entityLifePlan.getValue(instance);
+      return entityLifePlan.getFieldValue(instance);
     }
   }
   
   @Override
   public void setEntityLife (Object instance, EntityLife life) {
     if (entityLifePlan != null) {
-      entityLifePlan.setValue(instance, life);
+      entityLifePlan.setFieldValue(instance, life);
     }
   }
   
@@ -235,7 +236,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   @SuppressWarnings("unchecked")
   private void findEntityItems () {
     IItemPlan<Integer> idPlan2 = null;
-    IItemPlan<VersionValue> versionPlan2 = null;
+    IItemPlan<VersionTime> versionPlan2 = null;
     dataPlans = new ArrayList<>();
     
     INodePlan[] memberPlans = getMemberPlans();
@@ -258,12 +259,12 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
 
         Version vann = itemPlan.getAnnotation(Version.class);
         if (vann != null) {
-          versionPlan = (IItemPlan<VersionValue>)itemPlan;
+          versionPlan = (IItemPlan<VersionTime>)itemPlan;
           // Version fields are not key or data columns
           continue;
         }
         if (VersionType.class.isInstance(type)) {
-          versionPlan2 = (IItemPlan<VersionValue>)itemPlan;
+          versionPlan2 = (IItemPlan<VersionTime>)itemPlan;
           continue;
         }
         
@@ -272,9 +273,8 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
           entityLifePlan = (IItemPlan<EntityLife>)itemPlan;
           continue;
         }
-        
-        dataPlans.add(itemPlan);
       }
+      dataPlans.add(member);
     }
     if (idPlan == null) {
       idPlan = idPlan2;
@@ -292,7 +292,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   
   
   @Override
-  public List<IItemPlan<?>> getDataPlans() {
+  public List<INodePlan> getDataPlans() {
     return dataPlans;
   }
   
@@ -382,7 +382,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
     for (INodePlan nodePlan : getMemberPlans()) {
       if  (nodePlan.getStructure() == PlanStructure.ITEM) {
         if (((IItemPlan<?>)nodePlan).isDescribing()) {
-          String part = nodePlan.getValue(instance).toString();
+          String part = nodePlan.getFieldValue(instance).toString();
           if (i == 0) {
             description = part;
           } else {
@@ -401,7 +401,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
       if  (nodePlan.getStructure() == PlanStructure.ITEM) {
         IType<?> type = ((IItemPlan<?>)nodePlan).getType();
         if (type instanceof StringType) {
-          return nodePlan.getValue(instance).toString();
+          return nodePlan.getFieldValue(instance).toString();
         }
       }
     }

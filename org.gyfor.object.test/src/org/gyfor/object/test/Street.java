@@ -1,0 +1,19 @@
+package org.gyfor.object.test;
+
+import org.gyfor.object.Embeddable;
+
+@Embeddable
+public class Street {
+
+  @SuppressWarnings("unused")
+  private String number;
+
+  @SuppressWarnings("unused")
+  private String streetName;
+
+  public Street(String number, String streetName) {
+    this.number = number;
+    this.streetName = streetName;
+  }
+}
+

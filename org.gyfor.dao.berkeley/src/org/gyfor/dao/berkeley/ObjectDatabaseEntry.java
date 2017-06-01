@@ -64,7 +64,7 @@ public class ObjectDatabaseEntry extends DatabaseEntry {
       case SET :
         throw new NotYetImplementedException();
       }
-      nodePlan.setValue(instance, value);
+      nodePlan.setFieldValue(instance, value);
     }
   }
 
@@ -74,7 +74,7 @@ public class ObjectDatabaseEntry extends DatabaseEntry {
 
     INodePlan[] nodePlans = entityPlan.getMemberPlans();
     for (INodePlan nodePlan : nodePlans) {
-      Object value = nodePlan.getValue(instance);
+      Object value = nodePlan.getFieldValue(instance);
 
       switch (nodePlan.getStructure()) {
       case ARRAY :

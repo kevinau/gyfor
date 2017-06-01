@@ -1,35 +1,30 @@
 package org.gyfor.dao.sql;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.List;
 
-import org.gyfor.dao.DataAddStatus;
-import org.gyfor.dao.IDataAccessObject;
+import org.gyfor.dao.DescriptionChangeListener;
+import org.gyfor.dao.EntityChangeListener;
 //import org.gyfor.dao.IDataEventRegistry;
 import org.gyfor.dao.EntityDescription;
+import org.gyfor.dao.IDataAccessObject;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
-import org.gyfor.object.plan.IPlanContext;
+import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.object.value.EntityLife;
-import org.gyfor.object.value.VersionValue;
+import org.gyfor.object.value.VersionTime;
 import org.gyfor.osgi.ComponentConfiguration;
 import org.gyfor.osgi.Configurable;
 import org.gyfor.sql.IConnection;
 import org.gyfor.sql.IConnectionFactory;
 import org.gyfor.sql.IPreparedStatement;
 import org.gyfor.sql.IResultSet;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 
 
 @Component (configurationPolicy=ConfigurationPolicy.REQUIRE)
@@ -37,13 +32,12 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
 
   //private IDataEventRegistry dataEventRegistry;
   
+  @Reference(name="connFactory")
   private IConnectionFactory connFactory;
   
-  private IPlanContext planContext;
-  
-  private BundleContext bundleContext;
-  
-  
+  @Reference
+  private IPlanFactory planFactory;
+    
   @Configurable(name="class", required=true)
   private String className;
   
@@ -62,44 +56,46 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
 //  }
   
   
-  @Reference(name="connFactory")
-  void setConnFactory (IConnectionFactory connFactory) {
-    this.connFactory = connFactory;
-  }
-  
-  
-  void unsetConnFactory (IConnectionFactory connFactory) {
-    this.connFactory = null;
-  }
-  
-  
-  @Reference
-  void setPlanContext (IPlanContext planContext) {
-    this.planContext = planContext;
-  }
-  
-  
-  void unsetPlanContext (IPlanContext planContext) {
-    this.planContext = null;
-  }
+//  @Reference(name="connFactory")
+//  void setConnFactory (IConnectionFactory connFactory) {
+//    this.connFactory = connFactory;
+//  }
+//  
+//  
+//  void unsetConnFactory (IConnectionFactory connFactory) {
+//    this.connFactory = null;
+//  }
+//  
+//  
+//  
+//  @Reference
+//  void setPlanFactory (IPlanFactory planFactory) {
+//    this.planFactory = planFactory;
+//  }
+//  
+//  
+//  void unsetPlanFactory (IPlanFactory planFactory) {
+//    this.planFactory = null;
+//  }
   
   private IEntityPlan<T> entityPlan;
   
   private SQLBuilder<T> sqlBuilder;
   
   private IItemPlan<Integer> idPlan;
-  private IItemPlan<VersionValue> versionPlan;
+  private IItemPlan<VersionTime> versionPlan;
   private List<IItemPlan<?>> dataPlans;
   private IItemPlan<EntityLife> entityLifePlan;
 
+  private List<EntityChangeListener<T>> entityChangeListenerList = new ArrayList<>(10);
+  private List<DescriptionChangeListener> descriptionChangeListenerList = new ArrayList<>(10);
+  
   
   @Activate 
   public void activate (ComponentContext componentContext) {
     ComponentConfiguration.load(this, componentContext);
     
-    bundleContext = componentContext.getBundleContext();
-
-    entityPlan = planContext.getEntityPlan(className);
+    entityPlan = planFactory.getEntityPlan(className);
     idPlan = entityPlan.getIdPlan();
     versionPlan = entityPlan.getVersionPlan();
     dataPlans = entityPlan.getDataPlans();
@@ -114,15 +110,16 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
   }
   
   
-  private void sendEvent (String eventName, Dictionary<String, ?> props) {
-    @SuppressWarnings("unchecked")
-    ServiceReference<EventAdmin> ref = (ServiceReference<EventAdmin>)bundleContext.getServiceReference(EventAdmin.class.getName());
-    if (ref != null) {
-      EventAdmin eventAdmin = bundleContext.getService(ref);
-      Event event = new Event("org/gyfor/data/DataAccessObject/" + eventName, props);
-      eventAdmin.sendEvent(event);
-    }
-  }
+//  private void sendEvent (String eventName, Dictionary<String, ?> props) {
+//    @SuppressWarnings("unchecked")
+//    ServiceReference<EventAdmin> ref = (ServiceReference<EventAdmin>)bundleContext.getServiceReference(EventAdmin.class.getName());
+//    System.out.println("***************** send " + eventName + " event");
+//    if (ref != null) {
+//      EventAdmin eventAdmin = bundleContext.getService(ref);
+//      Event event = new Event(EVENT_BASE + eventName, props);
+//      eventAdmin.sendEvent(event);
+//    }
+//  }
   
 
   private void getAllColumns (T instance, IResultSet rs) {
@@ -140,9 +137,111 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
   
   
   @Override
-  public VersionValue update (T oldInstance, T newInstance) {
-    int id = idPlan.getValue(newInstance);
-    VersionValue version = VersionValue.now();
+  public void addEntityChangeListener (EntityChangeListener<T> x) {
+    entityChangeListenerList.add(x);
+  }
+  
+  
+  @Override
+  public void removeEntityChangeListener (EntityChangeListener<T> x) {
+    entityChangeListenerList.remove(x);
+  }
+  
+  
+  @Override
+  public void addDescriptionChangeListener (DescriptionChangeListener x) {
+    descriptionChangeListenerList.add(x);
+  }
+  
+  
+  @Override
+  public void removeDescriptionChangeListener (DescriptionChangeListener x) {
+    descriptionChangeListenerList.remove(x);
+  }
+  
+  
+  private void fireEntityAddedEvent (T entity) {
+    for (EntityChangeListener<T> x : entityChangeListenerList) {
+      x.entityAdded(entity);
+    }
+  }
+  
+  
+  private void fireEntityRetiredEvent (T entity) {
+    for (EntityChangeListener<T> x : entityChangeListenerList) {
+      x.entityRetired(entity);
+    }
+  }
+  
+  
+  private void fireEntityUnretiredEvent (T entity) {
+    for (EntityChangeListener<T> x : entityChangeListenerList) {
+      x.entityUnretired(entity);
+    }
+  }
+  
+  
+  private void fireEntityChangedEvent (T fromEntity, T toEntity) {
+    for (EntityChangeListener<T> x : entityChangeListenerList) {
+      x.entityChanged(fromEntity, toEntity);
+    }
+  }
+  
+  
+  private void fireEntityRemovedEvent (T entity) {
+    for (EntityChangeListener<T> x : entityChangeListenerList) {
+      x.entityRemoved(entity);
+    }
+  }
+  
+  
+  private void fireDescriptionAddedEvent (int id, T instance, EntityLife entityLife) {
+    EntityDescription description = null;
+    for (DescriptionChangeListener x : descriptionChangeListenerList) {
+      if (description == null) {
+        String text = entityPlan.getDescription(instance);
+        description = new EntityDescription(id, text, entityLife);
+      }
+      x.descriptionAdded(description);
+    }
+  }
+  
+  
+  private void fireDescriptionChangedEvent (int id, String text, T instance) {
+    EntityDescription description = null;
+    for (DescriptionChangeListener x : descriptionChangeListenerList) {
+      if (description == null) {
+        EntityLife entityLife = entityPlan.getEntityLife(instance);
+        description = new EntityDescription(id, text, entityLife);
+      }
+      x.descriptionChanged(description);
+    }
+  }
+  
+  
+  private void fireDescriptionChangedEvent (int id, T instance, EntityLife entityLife) {
+    EntityDescription description = null;
+    for (DescriptionChangeListener x : descriptionChangeListenerList) {
+      if (description == null) {
+        String text = entityPlan.getDescription(instance);
+        description = new EntityDescription(id, text, entityLife);
+      }
+      x.descriptionChanged(description);
+    }
+  }
+  
+  
+  private void fireDescriptionRemovedEvent (int id) {
+    for (DescriptionChangeListener x : descriptionChangeListenerList) {
+      x.descriptionRemoved(id);
+    }
+  }
+  
+  
+  @Override
+  public void change (T oldInstance, T newInstance) {
+    int id = idPlan.getFieldValue(newInstance);
+    VersionTime version = VersionTime.now();
 
     try (
       IConnection conn = connFactory.getIConnection();
@@ -159,21 +258,17 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
       stmt.executeUpdate();
 
       if (versionPlan != null) {
-        versionPlan.setValue(newInstance, version);
+        versionPlan.setFieldValue(newInstance, version);
       }
+      fireEntityChangedEvent(oldInstance, newInstance);
       
       String oldDesc = entityPlan.getDescription(oldInstance);
       String newDesc = entityPlan.getDescription(newInstance);
       if (!oldDesc.equals(newDesc)) {
         // Notify any listeners that the entity description has changed
-        Dictionary<String, Object> props = new Hashtable<>();
-        props.put("entity", entityPlan.getEntityName());
-        props.put("id", id);
-        props.put("description", newDesc);
-        sendEvent("SEARCHCHANGE", props);
+        fireDescriptionChangedEvent(id, newDesc, newInstance);
       }
     }
-    return version;
   }
   
   
@@ -190,7 +285,7 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
 
   @Override
   public void remove (T oldInstance) {
-    int id = idPlan.getValue(oldInstance);
+    int id = idPlan.getFieldValue(oldInstance);
     
     try (
       IConnection conn = connFactory.getIConnection();
@@ -201,29 +296,33 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
       stmt.executeUpdate();
       
       // Notify any listeners that the entity has been removed
-      Dictionary<String, Object> props = new Hashtable<>();
-      props.put("entity", entityPlan.getEntityName());
-      props.put("id", id);
-      sendEvent("REMOVED", props);
+      fireEntityRemovedEvent(oldInstance);
+      fireDescriptionRemovedEvent(id);
     }
   }
   
   
   @Override
-  public DataAddStatus add (T instance) {
-    VersionValue version = null;
+  public void add (T instance) {
+    int oldId = idPlan.getFieldValue(instance);
+    if (oldId != -1) {
+      throw new IllegalArgumentException("instance value appears to be complete (ie it already has a data store id value)");
+    }
+
+    VersionTime version = null;
     int id;
     
     try (
         IConnection conn = connFactory.getIConnection();
         IPreparedStatement stmt1 = conn.prepareStatement(sqlBuilder.getNextValSql());
-        IPreparedStatement stmt2 = conn.prepareStatement(sqlBuilder.getInsertSql())) {
+        IPreparedStatement stmt2 = conn.prepareStatement(sqlBuilder.getInsertSql())) 
+    {
+      conn.setAutoCommit(false);
       
-      // TODO wrap the two statement executions in a transaction
       IResultSet rs = stmt1.executeQuery();
       rs.next();
       id = rs.getInt();
-      version = VersionValue.now();
+      version = VersionTime.now();
       
       idPlan.setStatementFromValue(stmt2, id);
       if (versionPlan != null) {
@@ -237,63 +336,69 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
       }
       stmt2.executeUpdate();
 
-      idPlan.setValue(instance, id);
+      // Complete instance with id, version and entity life
+      idPlan.setFieldValue(instance, id);
       if (versionPlan != null) {
-        versionPlan.setValue(instance, version);
+        versionPlan.setFieldValue(instance, version);
       }
       if (entityLifePlan != null) {
-        entityLifePlan.setValue(instance, EntityLife.ACTIVE);
+        entityLifePlan.setFieldValue(instance, EntityLife.ACTIVE);
       }
+      conn.commit();
       
       // Notify any listeners that a new entity has been added to the database
-      Dictionary<String, Object> props = new Hashtable<>();
-      props.put("entity", entityPlan.getEntityName());
-      props.put("id", id);
-      props.put("description", entityPlan.getDescription(instance));
-      sendEvent("ADDED", props);
+      fireEntityAddedEvent (instance);
+      fireDescriptionAddedEvent (id, instance, EntityLife.ACTIVE);
     } catch (IllegalArgumentException ex) {
       throw new RuntimeException(ex);
     }
-    return new DataAddStatus(id, version);
   }
   
   
-  private VersionValue updateEntityLife (int id, EntityLife entityLife) {
-    VersionValue version = null;
+  private void updateEntityLife (T instance, EntityLife entityLife) {
+    VersionTime version = null;
     
     try (
       IConnection conn = connFactory.getIConnection();
       IPreparedStatement stmt = conn.prepareStatement(sqlBuilder.getLifeUpdateSql()))
     {
       // TODO verify that the version has not changed (as part of the update)
-      version = VersionValue.now();
+      version = VersionTime.now();
       if (versionPlan != null) {
         versionPlan.setStatementFromValue(stmt, version);
       }
       entityLifePlan.setStatementFromValue(stmt, entityLife);
-      idPlan.setStatementFromValue(stmt, id);
+      idPlan.setStatementFromInstance(stmt, instance);
       stmt.executeUpdate();
       
       // Notify any listeners that the entity life has changed
-      Dictionary<String, Object> props = new Hashtable<>();
-      props.put("entity", entityPlan.getEntityName());
-      props.put("id", id);
-      props.put("entityLife", entityLife);
-      sendEvent("SEARCHCHANGE", props);
+//      Dictionary<String, Object> props = new Hashtable<>();
+//      props.put("entity", entityPlan.getEntityName());
+//      props.put("id", id);
+//      props.put("entityLife", entityLife);
+//      sendEvent("SEARCHCHANGE", props);
     }
-    return version;
+//    return version;
   }
   
   
   @Override
-  public VersionValue retire (int id) {
-    return updateEntityLife (id, EntityLife.RETIRED);
+  public void retire (T instance) {
+    updateEntityLife (instance, EntityLife.RETIRED);
+    fireEntityRetiredEvent(instance);
+    
+    int id = entityPlan.getId(instance);
+    fireDescriptionChangedEvent(id, instance, EntityLife.RETIRED);
   }
   
   
   @Override
-  public VersionValue unretire(int id) {
-    return updateEntityLife (id, EntityLife.ACTIVE);
+  public void unretire(T instance) {
+    updateEntityLife (instance, EntityLife.ACTIVE);
+    fireEntityUnretiredEvent (instance);
+    
+    int id = entityPlan.getId(instance);
+    fireDescriptionChangedEvent(id, instance, EntityLife.ACTIVE);
   }
 
 

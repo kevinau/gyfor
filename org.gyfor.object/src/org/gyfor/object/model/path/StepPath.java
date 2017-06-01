@@ -2,7 +2,7 @@ package org.gyfor.object.model.path;
 
 import java.util.function.Consumer;
 
-import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.model.impl2.INodeModel;
 import org.gyfor.object.plan.INodePlan;
 
 public class StepPath implements IPathExpression {
@@ -22,7 +22,7 @@ public class StepPath implements IPathExpression {
   @Override
   public void dump (int level) {
     indent(level);
-    System.out.println("/  (step path)");
+    System.out.println(".  (step path)");
     if (next != null) {
       next.dump(level + 1);
     }
@@ -47,17 +47,5 @@ public class StepPath implements IPathExpression {
       trail.visitAll(x);
     }
   }
-
-//  @Override
-//  public boolean matches(NodeModel model, IItemVisitable x) {
-//    if (next != null) {
-//      return next.matches(model, x);
-//    } else {
-//      if (model.isItem()) {
-//        x.visit((ItemModel)model);
-//      }
-//      return true;
-//    }
-//  }
 
 }

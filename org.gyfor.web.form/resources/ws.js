@@ -1,8 +1,8 @@
 var websocket;
 
-function websocketStart(hostAndPort, entityClassName) {
+function websocketStart(baseURL, entityClassName) {
 	if (window.WebSocket) {
-		websocket = new WebSocket("ws:" + hostAndPort + "/ws");
+		websocket = new WebSocket("ws:" + baseURL + "/" + entityClassName);
 		websocket.onmessage = function(event) {
 			//alert("On message: " + event.data);
 			var n1 = event.data.indexOf("|");
@@ -27,16 +27,16 @@ function websocketStart(hostAndPort, entityClassName) {
 			
 			switch (action) {
 			case 'A': // Adding a new element to a container
-				//alert ("adding node " + nodeId + ": " + htmlSource);
+				console.log ("adding node " + nodeId + ": " + htmlSource);
 				var node = document.getElementById("node-" + nodeId);
 				if (node && node.parentNode) {
-					//alert ("found node-" + nodeId + " for replacement");
+					console.log ("found node-" + nodeId + " for replacement");
   				    var dx = document.createElement('div');
   				    dx.innerHTML = htmlSource;
   				    var html = dx.firstChild;
 					node.replaceWith(html);
 				} else {
-					//alert ("adding node to end of socket-" + containerId);
+					console.log ("adding node to end of socket-" + containerId);
   				    var container = document.getElementById("socket-" + containerId);
   				    var dx = document.createElement('div');
   				    dx.innerHTML = htmlSource;
@@ -67,7 +67,7 @@ function websocketStart(hostAndPort, entityClassName) {
 			}
 		};
 		websocket.onopen = function(event) {
-			send("N" + entityClassName);
+			send("new" + "|" + entityClassName);
 			// alert("Web Socket opened!");
 		};
 		websocket.onclose = function(event) {

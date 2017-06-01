@@ -21,17 +21,7 @@ import java.util.Map;
 public class Dictionary {
 
   private Map<String, Integer> map = new HashMap<>(100);
-  ////private int[] dictWordCounts = new int[0];
-  ////private transient ArrayList<Integer> docWordCounts = new ArrayList<>(100);
-  private transient boolean isReadOnly = false;
-
-  public void setReadOnly(boolean isReadOnly) {
-    this.isReadOnly = isReadOnly;
-  }
-
-  public boolean isReadOnly() {
-    return isReadOnly;
-  }
+  
 
   public int get(String key) {
     Integer value = map.get(key);
@@ -42,10 +32,12 @@ public class Dictionary {
     }
   }
 
+  
   public int size() {
     return map.size();
   }
 
+  
   public int getWordIndex(String key) {
     Integer value = map.get(key);
     if (value == null) {
@@ -68,30 +60,27 @@ public class Dictionary {
  
   
   public int resolve(String word) {
-    if (isReadOnly) {
-      throw new IllegalStateException("Cannot resolve a word for a read-only dictionary");
-    }
     Integer value = map.get(word);
-    //if (isReadOnly) {
-    //  if (value == null) {
-    //    value = -1;
-    //  }
-    //} else {
-      if (value == null) {
-        value = map.size();
-        map.put(word, value);
-        ////docWordCounts.add(1);
-      ////} else {
-        ////docWordCounts.set(value, docWordCounts.get(value) + 1);
-      }
-    //}
+    if (value == null) {
+      value = map.size();
+      map.put(word, value);
+    }
     return value;
   }
 
-  public void update(String word) {
-    if (isReadOnly) {
-      throw new IllegalStateException("Cannot update a read-only dictionary");
+  
+  public int query(String word) {
+    Integer value = map.get(word);
+
+    if (value == null) {
+      return -1;
+    } else {
+      return value;
     }
+  }
+
+  
+  public void update(String word) {
     resolve(word);
   }
 

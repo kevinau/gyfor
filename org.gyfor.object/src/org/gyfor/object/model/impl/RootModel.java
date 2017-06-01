@@ -1,12 +1,16 @@
 package org.gyfor.object.model.impl;
 
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.model.ContainerChangeListener;
 import org.gyfor.object.model.EffectiveEntryModeListener;
+import org.gyfor.object.model.IContainerModel;
+import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ItemEventListener;
+import org.gyfor.object.model.ref.EntityValueReference;
 import org.gyfor.object.model.ref.IValueReference;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
@@ -59,9 +63,9 @@ public class RootModel {
   }
   
   
-  void fireChildAdded(ContainerModel parent, INodeModel node) {
+  void fireChildAdded(ContainerModel parent, INodeModel node, Map<String, Object> context) {
     for (ContainerChangeListener listener : containerChangeListenerList) {
-      listener.childAdded(parent, node);
+      listener.childAdded(parent, node, context);
     }
   }
 
@@ -73,16 +77,16 @@ public class RootModel {
   }
 
   
-  void fireCompareEqualityChange(ItemModel model) {
+  void fireValueEqualityChange(ItemModel model) {
     for (ItemEventListener listener : itemEventListenerList) {
-      listener.compareEqualityChange(model);
+      listener.valueEqualityChange(model);
     }
   }
 
 
-  void fireCompareSourceChange(ItemModel model, boolean isDataTrigger) {
+  void fireSourceEqualityChange(ItemModel model) {
     for (ItemEventListener listener : itemEventListenerList) {
-      listener.compareSourceChange(model, isDataTrigger);
+      listener.sourceEqualityChange(model);
     }
   }
 
@@ -108,9 +112,9 @@ public class RootModel {
   }
 
 
-  void fireErrorCleared(INodeModel model) {
+  void fireEffectiveModeChanged(INodeModel model) {
     for (EffectiveEntryModeListener listener : effectiveModeListenerList) {
-      listener.modeChange(model);
+      listener.effectiveModeChanged(model);
     }
   }
 
@@ -120,16 +124,16 @@ public class RootModel {
   }
   
   
-  protected NodeModel buildNodeModel (ContainerModel parent, IValueReference valueRef, INodePlan plan) {
-    return buildNodeModel (parent, nextId(), valueRef, plan);
+  protected NodeModel buildNodeModel (IEntityModel entityModel, IContainerModel parent, IValueReference valueRef, INodePlan plan) {
+    return buildNodeModel (idSource, entityModel, parent, valueRef, plan);
   }
   
   
-  protected NodeModel buildNodeModel (ContainerModel parent, int id, IValueReference valueRef, INodePlan plan) {
+  protected NodeModel buildNodeModel (AtomicInteger idSource, IEntityModel entityModel, IContainerModel parent, IValueReference valueRef, INodePlan plan) {
     if (plan instanceof IItemPlan) {
-      return new ItemModel(this, parent, id, valueRef, (IItemPlan<?>)plan);
+      return new ItemModel(idSource, entityModel, parent, valueRef, (IItemPlan<?>)plan);
     } else if (plan instanceof IEntityPlan) {
-      return new EntityModel2(this, null, id, valueRef, (IEntityPlan<?>)plan);
+      return new EntityModel(idSource, entityModel, parent, valueRef, (IEntityPlan<?>)plan);
     } else {
       throw new RuntimeException("Unsupported plan: " + plan.getClass());
     }
@@ -225,25 +229,17 @@ public class RootModel {
 //  }
   
 
-  public EntityModel2 buildEntityModel (int id, IEntityPlan<?> entityPlan) {
-    EntityModel2 entityModel = new EntityModel2(this, null, id, entityPlan);
+  public EntityModel buildEntityModel (IEntityPlan<?> entityPlan) {
+    EntityValueReference valueRef = new EntityValueReference();
+    EntityModel entityModel = new EntityModel(idSource, entityPlan);
     return entityModel;
   }
   
 
-  public EntityModel2 buildEntityModel (int id, IEntityPlan<?> entityPlan, Object instance) {
-    EntityModel2 entityModel = new EntityModel2(this, null, id, entityPlan, instance);
+  public EntityModel buildEntityModel (IEntityPlan<?> entityPlan, Object instance) {
+    EntityValueReference valueRef = new EntityValueReference();
+    EntityModel entityModel = new EntityModel(idSource, entityPlan, instance);
     return entityModel;
-  }
-  
-
-  public EntityModel2 buildEntityModel (IEntityPlan<?> entityPlan) {
-    return buildEntityModel (nextId(), entityPlan);
-  }
-  
-
-  public EntityModel2 buildEntityModel (IEntityPlan<?> entityPlan, Object instance) {
-    return buildEntityModel (nextId(), entityPlan, instance);
   }
   
 

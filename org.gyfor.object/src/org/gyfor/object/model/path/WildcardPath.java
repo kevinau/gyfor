@@ -2,10 +2,10 @@ package org.gyfor.object.model.path;
 
 import java.util.function.Consumer;
 
-import org.gyfor.object.model.INodeModel;
-import org.gyfor.object.model.impl.ContainerModel;
-import org.gyfor.object.model.impl.ItemModel;
-import org.gyfor.object.model.impl.RepeatingModel;
+import org.gyfor.object.model.impl2.INodeModel;
+import org.gyfor.object.model.impl2.ContainerModel;
+import org.gyfor.object.model.impl2.ItemModel;
+import org.gyfor.object.model.impl2.RepeatingModel;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INameMappedPlan;
 import org.gyfor.object.plan.INodePlan;

@@ -33,17 +33,17 @@ public interface IItemPlan<T> extends INodePlan {
   public boolean isNullable();
 
   @Override
-  public <X> X getValue(Object instance);
+  public <X> X getFieldValue(Object instance);
 
   @Override
-  public void setValue(Object instance, Object value);
+  public void setFieldValue(Object instance, Object value);
 
   public boolean isDescribing();
   
   public T getResultValue(IResultSet rs);
 
   public default void setStatementFromInstance (IPreparedStatement stmt, Object instance) {
-    T value = getValue(instance);
+    T value = getFieldValue(instance);
     setStatementFromValue (stmt, value);
   }
   
@@ -51,7 +51,7 @@ public interface IItemPlan<T> extends INodePlan {
 
   public default void setInstanceFromResult (Object instance, IResultSet rs) {
     T value = getType().getResultValue(rs);
-    setValue (instance, value);
+    setFieldValue (instance, value);
   }
 
 //  public default void setInstanceFromResult (Object instance, IResultSet rs, int[] i) {

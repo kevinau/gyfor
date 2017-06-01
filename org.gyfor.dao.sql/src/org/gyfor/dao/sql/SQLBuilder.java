@@ -65,49 +65,77 @@ public class SQLBuilder<T> {
 
   private static String toSQLName (String name) {
     StringBuffer buffer = new StringBuffer();
-    boolean insertUnderscore = false;
     int n = name.length();
     
-    // Find the first uppercase character (no counting the first character), if any
-    int i = 1;
+    int i = 0;
+    boolean lastUppercase = false;
     while (i < n) {
       char c = name.charAt(i);
-      if (Character.isUpperCase(c)) {
-        insertUnderscore = true;
-        break;
-      }
-      i++;
-    }
-    if (i == n) {
-      // No upper case character found, so return the name as the SQL name
-      return name;
-    }
-    
-    // Start again, and build the SQL name
-    buffer.append(name, 0, i);
-
-    while (i < n) {
-      char c = name.charAt(i);
-      if (i == 0) {
-        // First character is assumed to be lower case
-        buffer.append(c);
-         //buffer.append(Character.toLowerCase(c));
-      } else {
-        if (insertUnderscore && Character.isUpperCase(c)) {
-          buffer.append('_');
-          insertUnderscore = false;
-          buffer.append(Character.toLowerCase(c));
-        } else {
-          buffer.append(c);
-        }
-        if (!Character.isUpperCase(c)) {
-          insertUnderscore = true;
+      if (lastUppercase && !Character.isUpperCase(c)) {
+        if (i > 1) {
+          buffer.insert(i - 1, '_');
         }
       }
+      buffer.append(c);
+      lastUppercase = Character.isUpperCase(c);
       i++;
     }
     return buffer.toString();
   }
+
+  
+//  private static String toSQLName2 (String name) {
+//    StringBuffer buffer = new StringBuffer();
+//    boolean insertUnderscore = false;
+//    int n = name.length();
+//    int i = 0;
+//    
+//    char c = name.charAt(0);
+//    if (Character.isUpperCase(c)) {
+//      insertUnderscore = false;
+//    } else {
+//      // Find the first uppercase character (not counting the first character), if any
+//      i = 1;
+//      while (i < n) {
+//        c = name.charAt(i);
+//        if (Character.isUpperCase(c)) {
+//          insertUnderscore = true;
+//          break;
+//        }
+//        i++;
+//      }
+//    }
+//    
+//    if (i == n) {
+//      // No upper case character found, so return the name as the SQL name
+//      return name;
+//    }
+//    
+//    // Start again, and build the SQL name
+//    buffer.append(name, 0, i);
+//
+//    while (i < n) {
+//      c = name.charAt(i);
+//      if (i == 0) {
+//        // First character is assumed to be lower case
+//        buffer.append(c);
+//         //buffer.append(Character.toLowerCase(c));
+//      } else {
+//        if (insertUnderscore && Character.isUpperCase(c)) {
+//          buffer.append('_');
+//          insertUnderscore = false;
+//          buffer.append(Character.toLowerCase(c));
+//        } else {
+//          buffer.append(c);
+//        }
+//        if (!Character.isUpperCase(c)) {
+//          insertUnderscore = true;
+//        }
+//      }
+//      i++;
+//    }
+//    return buffer.toString();
+//  }
   
 
 //  private void buildKeyFields () {

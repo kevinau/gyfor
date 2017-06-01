@@ -1,8 +1,9 @@
 package org.gyfor.object.model.ref;
 
+
 public class EntityValueReference implements IValueReference {
 
-  private Object instance;
+  private Object value;
   
   @Override
   public String toString() {
@@ -11,15 +12,15 @@ public class EntityValueReference implements IValueReference {
 
   
   @Override
-  public <T> void setValue(T instance) {
-    this.instance = instance;
+  public <T> void setValue(T value) {
+    this.value = value;
   }
-
+  
   
   @SuppressWarnings("unchecked")
   @Override
   public <T> T getValue() {
-    return (T)instance;
+    return (T)value;
   }
-
+ 
 }

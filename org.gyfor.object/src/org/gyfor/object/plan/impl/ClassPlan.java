@@ -7,7 +7,7 @@ import java.util.Set;
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.plan.IClassPlan;
 import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.IPlanContext;
+import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.object.plan.IRuntimeDefaultProvider;
 import org.gyfor.object.plan.IRuntimeFactoryProvider;
 import org.gyfor.object.plan.IRuntimeImplementationProvider;
@@ -17,14 +17,16 @@ import org.gyfor.object.plan.IRuntimeOccursProvider;
 import org.gyfor.object.plan.IRuntimeTypeProvider;
 import org.gyfor.object.plan.IValidationMethod;
 
-public abstract class ClassPlan<T> extends NodePlan implements IClassPlan<T> {
+public abstract class ClassPlan<T> extends ContainerPlan implements IClassPlan<T> {
 
+  private final Class<T> nodeClass;
   private final AugmentedClass<T> augmented;
   
   
-  public ClassPlan(IPlanContext context, Field field, Class<T> nodeClass, String name, EntryMode entryMode) {
-    super(field, name, entryMode);
-    augmented = context.getClassPlan(nodeClass);
+  public ClassPlan(IPlanFactory context, INodePlan parent, Field field, Class<T> nodeClass, String name, EntryMode entryMode) {
+    super(parent, field, name, entryMode);
+    this.nodeClass = nodeClass;
+    augmented = context.getClassPlan(this, nodeClass);
   }
 
   
@@ -116,7 +118,7 @@ public abstract class ClassPlan<T> extends NodePlan implements IClassPlan<T> {
 
   @Override
   public String getClassName() {
-    return augmented.getClassName();
+    return nodeClass.getName();
   }
 
   

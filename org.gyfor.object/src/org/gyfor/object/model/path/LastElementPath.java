@@ -1,11 +1,9 @@
 package org.gyfor.object.model.path;
 
-import java.util.List;
 import java.util.function.Consumer;
 
-import org.gyfor.object.model.INodeModel;
-import org.gyfor.object.model.impl.NodeModel;
-import org.gyfor.object.model.impl.RepeatingModel;
+import org.gyfor.object.model.impl2.INodeModel;
+import org.gyfor.object.model.impl2.RepeatingModel;
 import org.gyfor.object.plan.INodePlan;
 
 
@@ -32,10 +30,10 @@ public class LastElementPath extends StepPath implements IPathExpression {
   public void matches(INodeModel model, Trail<INodeModel> trail, Consumer<INodeModel> x) {
     if (model instanceof RepeatingModel) {
       RepeatingModel repeating = (RepeatingModel)model;
-      List<NodeModel> members = repeating.getMembers();
-      int n = members.size();
+      INodeModel[] children = repeating.getChildNodes();
+      int n = children.length;
       if (n > 0) {
-        INodeModel member = members.get(n - 1);
+        INodeModel member = children[n - 1];
         super.matches(member, new Trail<>(trail, member), x);
       }
     } else {

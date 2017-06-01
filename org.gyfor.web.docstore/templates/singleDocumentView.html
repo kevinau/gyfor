@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>{{title}}</title>
+  <title>Document</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" href="/global/favicon.ico" />
@@ -49,24 +49,29 @@ div span {
 #main {
   background-color: rgb(183, 183, 183);
 }
-#origin {
+#pagelinks {
   position: fixed;
   top: 0;
   right: 0;
   z-index: 20;
 }
-#party {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 20;
-  color: #ffffff;
+#pagelinks div {
+  xxxborder-bottom: 4pt solid red;
+  margin-top: 2pt;
   background-color: rgba(255, 140, 0, 1);
+  padding: .25em 0.5em 0.25em 0.5em;
+}
+#pagelinks div:first-child {
+  margin-top: 0;
+}
+
+#pagelinks div a {
   font-family: Helvetica, sans-serif;
   font-size: 14px;
+  color: #ffffff;
   text-decoration: none;
-  padding: .25em 0.75em .25em 0.75em;
 }
+
 .unselectable {
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -197,10 +202,14 @@ var docFields = [
 </head>
 <body>
   <div id="main">
-    <div id="origin"><a href="/docstore{{sourcePath}}">{{document.originExtension | upper}}</a></div>
-    {% if party is not empty %}
-    <a id="party" href="http://{{party.webPage}}" target="_blank" rel="noopener noreferrer">{{party.formalName}}</a>
-    {% endif %}
+    <div id="pagelinks">
+      <div>
+        <a href="/a/{{document.hashCode}}" target="Accounting data" title="Accounting data">$...&nbsp;&nbsp;&nbsp;</a>
+      </div>
+      <div>
+        <a href="/docstore{{sourcePath}}" title="Source document">{{document.originExtension | upper | slice(1)}}</a>
+      </div>
+    </div>
     <div class="docPages">
       {% for p in imagePaths %}
       {% set i = loop.index %}

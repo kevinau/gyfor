@@ -1,13 +1,8 @@
 package org.gyfor.web.form;
 
 import java.io.Writer;
-import java.lang.reflect.Field;
 import java.util.Map;
 
-import org.gyfor.object.model.INameMappedModel;
-import org.gyfor.object.model.INodeModel;
-
-import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.extension.NodeVisitor;
 import com.mitchellbosecke.pebble.node.AbstractRenderableNode;
@@ -31,18 +26,18 @@ public class FieldNode extends AbstractRenderableNode {
   }
 
   
-  private static PebbleEngine getPebbleEngine (PebbleTemplateImpl self) {
-    PebbleEngine pebbleEngine;
-    try {
-      Class<?> selfClass = self.getClass();
-      Field engineField = selfClass.getDeclaredField("engine");
-      engineField.setAccessible(true);
-      pebbleEngine = (PebbleEngine)engineField.get(self);
-    } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-      throw new RuntimeException(ex);
-    }
-    return pebbleEngine;
-  }
+//  private static PebbleEngine getPebbleEngine (PebbleTemplateImpl self) {
+//    PebbleEngine pebbleEngine;
+//    try {
+//      Class<?> selfClass = self.getClass();
+//      Field engineField = selfClass.getDeclaredField("engine");
+//      engineField.setAccessible(true);
+//      pebbleEngine = (PebbleEngine)engineField.get(self);
+//    } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+//      throw new RuntimeException(ex);
+//    }
+//    return pebbleEngine;
+//  }
   
   
   @SuppressWarnings("unchecked")
@@ -52,27 +47,32 @@ public class FieldNode extends AbstractRenderableNode {
     if (fieldRef == null) {
       throw new PebbleException(null, "field tag: field reference evaluates to null", getLineNumber(), self.getName());
     }
-    
-    INodeModel model = (INodeModel)context.getScopeChain().get("model");
-    if (!model.isNameMapped()) {
-      throw new PebbleException(null, "field tag: no 'name mapped' model in scope", getLineNumber(), self.getName());
-    }
-    
-    INodeModel fieldModel = ((INameMappedModel)model).getMember(fieldRef);
-    if (fieldModel == null) {
-      throw new PebbleException(null, "field tag: no member named '" + fieldRef + "' in name mapped model " + model.getCanonicalName());
-    }
+        
+//    INodeModel model = (INodeModel)context.getScopeChain().get("model");
+//    if (!(model instanceof INameMappedModel)) {
+//      throw new PebbleException(null, "field tag: no 'name mapped' model in scope", getLineNumber(), self.getName());
+//    }
+//    
+//    INodeModel fieldModel = ((INameMappedModel)model).getMember(fieldRef);
+//    if (fieldModel == null) {
+//      throw new PebbleException(null, "field tag: no member named '" + fieldRef + "' in name mapped model " + model.getCanonicalName());
+//    }
 
     // Get any withValues
     Map<String, Object> withValues = null;
     if (withExpression != null) {
       withValues = (Map<String, Object>)withExpression.evaluate(self, context);
     }
-
-    // The following nastiness is because PebbleTemplateImpl does not expose its template engine
-    PebbleEngine pebbleEngine = getPebbleEngine(self);
     
-    ModelHtmlBuilder.buildHtml(pebbleEngine, writer, fieldModel, withValues);
+    Map<String, Map<String, Object>> fieldSet = (Map<String, Map<String, Object>>)context.getScopeChain().get("fieldSet");
+    if (fieldSet != null) {
+      fieldSet.put(fieldRef, withValues);
+    }
+
+
+//    ITemplateEngine templateEngine = (ITemplateEngine)context.getScopeChain().get("engine");
+//    
+//    ModelHtmlBuilder.buildHtml(templateEngine, writer, fieldModel, withValues);
   }
 
 

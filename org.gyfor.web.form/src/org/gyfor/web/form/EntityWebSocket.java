@@ -4,31 +4,42 @@ import java.lang.reflect.Field;
 
 import org.gyfor.http.Context;
 import org.gyfor.http.Resource;
-import org.gyfor.object.plan.impl.PlanContext;
+import org.gyfor.object.model.IModelFactory;
+import org.gyfor.object.plan.IPlanFactory;
+import org.gyfor.template.ITemplateEngine;
+import org.gyfor.template.ITemplateEngineFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.mitchellbosecke.pebble.tokenParser.TokenParser;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
 
 
-@Context("/ws")
+@Context("/eexxx")
 @Resource(path="/resources", location="resources")
 @Component(service=HttpHandler.class)
 public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
 
   private Logger logger = LoggerFactory.getLogger(EntityWebSocket.class);
   
-  private BundleContext defaultContext;
-  private BundleContext globalContext;
+  @Reference
+  private ITemplateEngineFactory templateEngineFactory;
+
+  @Reference
+  private IPlanFactory planFactory;
   
-  private PlanContext objectContext;
+  @Reference
+  private IModelFactory modelFactory;
+  
+  
+  private ITemplateEngine templateEngine;
   
   
   public EntityWebSocket() {
@@ -36,22 +47,16 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
   }
 
 
-  @Reference (cardinality = ReferenceCardinality.OPTIONAL)
-  public void setGlobalTemplateLocation (IGlobalTemplateLocation globalTemplateLocation) {
-    this.globalContext = globalTemplateLocation.getBundleContext();
-  }
-  
-  
-  public void unsetGlobalTemplateLocation (IGlobalTemplateLocation globalTemplateLocation) {
-    this.globalContext = null;
-  }
-  
-  
   @Activate
   public void activate (BundleContext bundleContext) {
-    this.defaultContext = bundleContext;
+    logger.info("Activating");
+    templateEngine = templateEngineFactory.buildTemplateEngine(bundleContext);
     
-    objectContext = new PlanContext();
+    TokenParser entityTokenParser = new EntityTokenParser();
+    templateEngine.addTokenParser(entityTokenParser);
+    
+    TokenParser fieldTokenParser = new FieldTokenParser();
+    templateEngine.addTokenParser(fieldTokenParser);
     
     // The following nastiness is required because the WebSocketConnectionCallback 
     // can only be initialized in the constructor, but we need to provide configuration
@@ -63,7 +68,7 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
       callbackField.setAccessible(true);
       logger.info("Setting websocket call backto: {}", this);
       ProxyWebSocketConnectionCallback callback = (ProxyWebSocketConnectionCallback)callbackField.get(this);
-      callback.setup(defaultContext, globalContext, objectContext);
+      callback.setup(templateEngine, planFactory, modelFactory);
     } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
       throw new RuntimeException(ex);
     }

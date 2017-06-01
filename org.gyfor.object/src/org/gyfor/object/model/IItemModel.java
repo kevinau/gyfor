@@ -2,6 +2,7 @@ package org.gyfor.object.model;
 
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.UserEntryException.Type;
+import org.gyfor.object.type.IType;
 
 public interface IItemModel extends INodeModel {
 
@@ -12,6 +13,8 @@ public interface IItemModel extends INodeModel {
   public boolean isInError();
 
   public Type getStatus();
+  
+  public IType<?> getType();
 
   public Type getStatus(int order);
 

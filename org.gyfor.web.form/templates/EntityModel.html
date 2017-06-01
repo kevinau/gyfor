@@ -1,7 +1,11 @@
+<div id="node-{{parentId}}">
 <h1 class="title">{{title}}</h1>
 {% if description is not empty %}
 <p>{{description}}</p>
 {% endif %}
-<form method="post" action="" class="form" id="node={{id}}">
-{% block entityContent %}{% endblock %}
-</form>
+<div class="entity" id="socket-{{id}}">
+{% block entityContent %}
+{% entity * %}{% endentity %}
+{% endblock %}
+</div>
+</div>

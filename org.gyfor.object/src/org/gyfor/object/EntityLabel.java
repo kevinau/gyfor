@@ -27,18 +27,9 @@ public @interface EntityLabel {
 
   /**
    * A shortish title that describes the entity. If not supplied it is
-   * calculated from the class name using camel case conventions. This is hint
-   * adds to the label.
+   * calculated from the class name using camel case conventions.
    */
   String title() default "";
-
-
-  /**
-   * A short title that briefly describes the entity. If not supplied, a default
-   * short title is calculated from the class name using camel case conventions
-   * to break the name into words.
-   */
-  String shortTitle() default "";
 
 
   /**

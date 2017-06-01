@@ -74,14 +74,16 @@ public class PartialSegment {
   }
 
 
-  public PartialSegment(int page, String title) {
+  public PartialSegment(int page, String title, String word) {
     String[] x = titlePattern.split(title);
     x0 = Float.parseFloat(x[1]);
     y0 = Float.parseFloat(x[2]);
     x1 = Float.parseFloat(x[3]);
     y1 = Float.parseFloat(x[4]);
     fontSize = 0;
-    this.word = null;
+    this.word = word;
+    this.nibbles = new ArrayList<>();
+    this.nibbles.add(new Nibble(0, x1 - x0, word));
   }
 
   
@@ -117,7 +119,8 @@ public class PartialSegment {
   public boolean almostAdjacent(PartialSegment arg, String word) {
     double aveCharWidth = aveCharWidth(arg, word);
     //return x1 + aveCharWidth * 0.3 >= arg.x0;
-    return x1 + aveCharWidth * 0.5 >= arg.x0;
+    //return x1 + aveCharWidth * 0.5 >= arg.x0;
+    return x1 + aveCharWidth * 0.8 >= arg.x0;
   }
 
   void resolveWordIndex(Dictionary dictionary) {

@@ -8,6 +8,7 @@ import org.gyfor.object.EntryMode;
 import org.gyfor.object.Optional;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.plan.ItemLabelGroup;
 import org.gyfor.object.plan.PlanStructure;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.Type;
@@ -25,8 +26,8 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
   //private final Object staticDefaultValue;
   
   
-  public ItemPlan (Field field, String name, EntryMode entryMode, IType<T> type) {
-    super (field, name, entryMode);
+  public ItemPlan (INodePlan parent, Field field, String name, EntryMode entryMode, IType<T> type) {
+    super (parent, field, name, entryMode);
     if (type == null) { 
       throw new IllegalArgumentException("Type argument cannot be null");
     }
@@ -63,6 +64,7 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
   }
   
   
+  @SuppressWarnings("unchecked")
   @Override
   public ItemLabelGroup getLabels () {
     return labels;

@@ -3,6 +3,5 @@
    <service>
       <provide interface="org.gyfor.object.test.ITestClass"/>
    </service>
-   <reference bind="setPlanContext" cardinality="1..1" interface="org.gyfor.object.plan.IPlanContext" name="PlanContext" policy="static" unbind="unsetPlanContext"/>
    <implementation class="org.gyfor.object.test.EntityPlanTest"/>
 </scr:component>

@@ -17,12 +17,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.value.VersionValue;
+import org.gyfor.object.value.VersionTime;
 import org.gyfor.sql.IPreparedStatement;
 import org.gyfor.sql.IResultSet;
 
 
-public class VersionType extends StringBasedType<VersionValue> {
+public class VersionType extends StringBasedType<VersionTime> {
 
   private static final String REQUIRED_MESSAGE = "a date/time is required";
   
@@ -41,11 +41,11 @@ public class VersionType extends StringBasedType<VersionValue> {
   
   
   @Override
-  public VersionValue createFromString (String source) throws UserEntryException {
+  public VersionTime createFromString (String source) throws UserEntryException {
     try {
       long x = format.parse(source).getTime();
       Timestamp t = new Timestamp(x);
-      return new VersionValue(t);
+      return new VersionTime(t);
     } catch (ParseException ex) {
       throw new UserEntryException("invalid date/time");
     }
@@ -59,17 +59,17 @@ public class VersionType extends StringBasedType<VersionValue> {
   
   
   @Override
-  public VersionValue primalValue () {
-    return new VersionValue(new Timestamp(0L));
+  public VersionTime primalValue () {
+    return new VersionTime(new Timestamp(0L));
   }
   
   
   @Override
-  public VersionValue newInstance (String source) {
+  public VersionTime newInstance (String source) {
     try {
       long x = format.parse(source).getTime();
       Timestamp t = new Timestamp(x);
-      return new VersionValue(t);
+      return new VersionTime(t);
     } catch (ParseException ex) {
       throw new RuntimeException(ex);
     }
@@ -77,7 +77,7 @@ public class VersionType extends StringBasedType<VersionValue> {
 
 
   @Override
-  protected void validate(VersionValue value) throws UserEntryException {
+  protected void validate(VersionTime value) throws UserEntryException {
     // Nothing more to do
   }
 
@@ -89,15 +89,15 @@ public class VersionType extends StringBasedType<VersionValue> {
 
 
   @Override
-  public void setStatementFromValue(IPreparedStatement stmt, VersionValue value) {
+  public void setStatementFromValue(IPreparedStatement stmt, VersionTime value) {
     stmt.setTimestamp(value.timestampValue());
   }
 
 
   @Override
-  public VersionValue getResultValue(IResultSet resultSet) {
+  public VersionTime getResultValue(IResultSet resultSet) {
     Timestamp t = resultSet.getTimestamp();
-    return new VersionValue(t);
+    return new VersionTime(t);
   }
 
 }

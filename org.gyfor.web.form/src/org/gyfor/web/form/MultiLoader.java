@@ -71,8 +71,8 @@ public class MultiLoader implements Loader<String> {
   private static final Pattern simplePattern = Pattern.compile(simpleRegex);
   private static final Pattern templatePattern = Pattern.compile(templateRegex);
 
+  private final BundleContext localBundleContext;
   private final BundleContext globalBundleContext;
-  private final BundleContext defaultBundleContext;
 
   private final String prefixDir = "/templates";
   private final String suffix = ".html";
@@ -80,8 +80,8 @@ public class MultiLoader implements Loader<String> {
   private String charset = StandardCharsets.UTF_8.name();
 
 
-  public MultiLoader(BundleContext defaultBundleContext, BundleContext globalBundleContext) {
-    this.defaultBundleContext = defaultBundleContext;
+  public MultiLoader(BundleContext localBundleContext, BundleContext globalBundleContext) {
+    this.localBundleContext = localBundleContext;
     this.globalBundleContext = globalBundleContext;
   }
 
@@ -106,8 +106,16 @@ public class MultiLoader implements Loader<String> {
     
     Matcher matcher = simplePattern.matcher(templateName);
     if (matcher.matches()) {
-      bundle = defaultBundleContext.getBundle();
-      templateURL = findTemplate(bundle, templateName, tried);
+      if (localBundleContext != null) {
+        // Look for templates in the local bundle
+        bundle = localBundleContext.getBundle();
+        templateURL = findTemplate(bundle, templateName, tried);
+      }
+      if (templateURL == null) {
+        // Look for templates in the global bundle
+        bundle = globalBundleContext.getBundle();
+        templateURL = findTemplate(bundle, templateName, tried);
+      }
     } else {
       matcher = templatePattern.matcher(templateName);
       if (!matcher.matches()) {
@@ -138,17 +146,22 @@ public class MultiLoader implements Loader<String> {
         templateURL = findTemplate(bundle, className, fieldName, tried);
       }
 
+      if (templateURL == null && localBundleContext != null) {
+        // Look for templates in the local bundle
+        bundle = localBundleContext.getBundle();
+        templateURL = findTemplate(bundle, className, fieldName, tried);
+        if (templateURL == null) {
+          // Look for default template in the local bundle
+          templateURL = findTemplate(bundle, defaultName, tried);
+        }
+      }
+
       if (templateURL == null && globalBundleContext != null) {
         // Look for templates in the global bundle
         bundle = globalBundleContext.getBundle();
-        templateURL = findTemplate(bundle, className, fieldName, tried);
-      }
-    
-      if (templateURL == null) {
-        // Look for default template in the default bundle
-        bundle = defaultBundleContext.getBundle();
         templateURL = findTemplate(bundle, defaultName, tried);
       }
+    
     }
     
     if (templateURL == null) {
