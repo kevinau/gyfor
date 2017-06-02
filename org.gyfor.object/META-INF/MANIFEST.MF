@@ -13,3 +13,10 @@ Import-Package: org.gyfor.math,
  org.gyfor.util
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/org.gyfor.object.plan.PlanFactory.xml
+Export-Package: org.gyfor.object,
+ org.gyfor.object.model,
+ org.gyfor.object.model.path,
+ org.gyfor.object.plan,
+ org.gyfor.object.type,
+ org.gyfor.object.type.builtin,
+ org.gyfor.object.value
