@@ -2,12 +2,12 @@ package org.gyfor.object.model.path;
 
 import java.util.function.Consumer;
 
-import org.gyfor.object.model.impl2.INodeModel;
-import org.gyfor.object.model.impl2.ContainerModel;
-import org.gyfor.object.model.impl2.ItemModel;
-import org.gyfor.object.model.impl2.RepeatingModel;
+import org.gyfor.object.model.IContainerModel;
+import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.model.IRepeatingModel;
+import org.gyfor.object.model.impl.ItemModel;
+import org.gyfor.object.plan.IClassPlan;
 import org.gyfor.object.plan.IItemPlan;
-import org.gyfor.object.plan.INameMappedPlan;
 import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.IReferencePlan;
 import org.gyfor.object.plan.IRepeatingPlan;
@@ -29,9 +29,9 @@ public class WildcardPath extends StepPath implements IPathExpression {
 
   @Override
   public void matches(INodePlan plan, Trail<INodePlan> trail, Consumer<INodePlan> x) {
-    if (plan instanceof INameMappedPlan) {
-      INameMappedPlan mapped = (INameMappedPlan)plan;
-      for (INodePlan member : mapped.getMemberPlans()) {
+    if (plan instanceof IClassPlan) {
+      IClassPlan<?> mapped = (IClassPlan<?>)plan;
+      for (INodePlan member : mapped.getMembers()) {
         super.matches(member, new Trail<>(trail, member), x);
       }
     } else if (plan instanceof IRepeatingPlan) {
@@ -48,13 +48,13 @@ public class WildcardPath extends StepPath implements IPathExpression {
   
   @Override
   public void matches(INodeModel model, Trail<INodeModel> trail, Consumer<INodeModel> x) {
-    if (model instanceof ContainerModel) {
-      ContainerModel container = (ContainerModel)model;
+    if (model instanceof IContainerModel) {
+      IContainerModel container = (IContainerModel)model;
       for (INodeModel member : container.getMembers()) {
         super.matches(member, new Trail<>(trail, member), x);
       }
-    } else if (model instanceof RepeatingModel) {
-      RepeatingModel repeating = (RepeatingModel)model;
+    } else if (model instanceof IRepeatingModel) {
+      IRepeatingModel repeating = (IRepeatingModel)model;
       for (INodeModel member : repeating.getMembers()) {
         super.matches(member, new Trail<>(trail, member), x);
       }

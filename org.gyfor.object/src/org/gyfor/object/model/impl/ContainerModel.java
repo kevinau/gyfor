@@ -7,40 +7,41 @@ import java.util.function.Consumer;
 
 import org.gyfor.object.model.ContainerChangeListener;
 import org.gyfor.object.model.IContainerModel;
-import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
-import org.gyfor.object.model.IModelFactory;
 import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.model.IValueReference;
+import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.model.path.IPathExpression;
 import org.gyfor.object.model.path.ParseException;
 import org.gyfor.object.model.path.PathParser;
+import org.gyfor.object.plan.IContainerPlan;
+
 
 public abstract class ContainerModel extends NodeModel implements IContainerModel {
 
-  private List<ContainerChangeListener> containerChangeListeners = new ArrayList<>();
-  
-  
-  protected ContainerModel(IModelFactory modelFactory, IEntityModel entityModel, IContainerModel parent) {
-    super(modelFactory, entityModel, parent);
+  protected final IValueReference valueRef;
+  private final List<ContainerChangeListener> containerChangeListeners = new ArrayList<>();
+
+  public ContainerModel(ModelFactory modelFactory, IValueReference valueRef, IContainerPlan containerPlan) {
+    super(modelFactory, containerPlan);
+    this.valueRef = valueRef;
   }
 
   @Override
-  public String toString () {
-    return "ContainerModel(" + getNodeId() + ")";
+  public <T> T getValue() {
+    return valueRef.getValue();
   }
 
-  
   @Override
-  public void addContainerChangeListener (ContainerChangeListener x) {
+  public void addContainerChangeListener(ContainerChangeListener x) {
     containerChangeListeners.add(x);
   }
-  
+
   @Override
   public void removeContainerChangeListener(ContainerChangeListener x) {
     containerChangeListeners.remove(x);
   }
-  
-  
+
   @Override
   public void fireChildAdded(IContainerModel parent, INodeModel node, Map<String, Object> context) {
     for (ContainerChangeListener x : containerChangeListeners) {
@@ -55,9 +56,8 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
     }
   }
 
-  
   @Override
-  public List<INodeModel> selectNodeModels (String expr) {
+  public List<INodeModel> selectNodeModels(String expr) {
     IPathExpression pathExpr;
     try {
       pathExpr = PathParser.parse(expr);
@@ -66,6 +66,7 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
     }
     List<INodeModel> found = new ArrayList<>();
     pathExpr.matches(this, null, new Consumer<INodeModel>() {
+
       @Override
       public void accept(INodeModel model) {
         found.add(model);
@@ -75,7 +76,7 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
   }
 
   @Override
-  public List<IItemModel> selectItemModels (String expr) {
+  public List<IItemModel> selectItemModels(String expr) {
     IPathExpression pathExpr;
     try {
       pathExpr = PathParser.parse(expr);
@@ -85,6 +86,7 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
     pathExpr.dump();
     List<IItemModel> found = new ArrayList<>();
     pathExpr.matches(this, null, new Consumer<INodeModel>() {
+
       @Override
       public void accept(INodeModel model) {
         if (model instanceof IItemModel) {
@@ -96,7 +98,7 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
   }
 
   @Override
-  public INodeModel selectNodeModel (String expr) {
+  public INodeModel selectNodeModel(String expr) {
     List<INodeModel> found = selectNodeModels(expr);
     switch (found.size()) {
     case 0 :
@@ -108,9 +110,8 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
     }
   }
 
-
   @Override
-  public IItemModel selectItemModel (String expr) {
+  public IItemModel selectItemModel(String expr) {
     List<IItemModel> found = selectItemModels(expr);
     switch (found.size()) {
     case 0 :

@@ -247,7 +247,7 @@ public class AugmentedClass<T> {
         Type type = field.getGenericType();
         String name = field.getName();
         
-        INodePlan nodePlan = NodePlanFactory.getNodePlan(factory, parent, type, field, name, entryMode, -1, optional);
+        INodePlan nodePlan = NodePlanFactory.getNodePlan(factory, type, field, name, entryMode, -1, optional);
         memberPlans.put(name, nodePlan);
         memberFields.put(name, field);
       }

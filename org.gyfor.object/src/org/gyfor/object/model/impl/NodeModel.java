@@ -7,97 +7,53 @@ import org.gyfor.object.EntryMode;
 import org.gyfor.object.model.EffectiveEntryMode;
 import org.gyfor.object.model.EffectiveEntryModeListener;
 import org.gyfor.object.model.IContainerModel;
-import org.gyfor.object.model.IEntityModel;
-import org.gyfor.object.model.IModelFactory;
 import org.gyfor.object.model.INodeModel;
-import org.gyfor.object.plan.IEntityPlan;
+import org.gyfor.object.model.IValueReference;
+import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.INodePlan;
 
 public abstract class NodeModel implements INodeModel {
 
-  @SuppressWarnings("unused")
-  private final IEntityModel entityModel;
-  private final IContainerModel parent;
+  private final ModelFactory modelFactory;
   private final int nodeId;
+
+  private IContainerModel parent;
+  private INodePlan nodePlan;
   
   private EntryMode entryMode = EntryMode.ENABLED;
   private EffectiveEntryMode effectiveEntryMode = EffectiveEntryMode.ENABLED;
   
   private List<EffectiveEntryModeListener> effectiveEntryModeListeners = new ArrayList<>();
   
-  
-  public NodeModel (IModelFactory modelFactory, IEntityModel entityModel, IContainerModel parent) {
-    this.entityModel = entityModel;
+  @Override
+  public abstract void syncValue(IContainerModel parent, Object value);
+ 
+  @Override
+  public void setParent (IContainerModel parent) {
     this.parent = parent;
-    this.nodeId = modelFactory.getNodeId();
   }
-  
-  
-  protected IEntityModel getEntity() {
-    INodeModel node = this;
-    while (!(node instanceof IEntityModel)) {
-      node = node.getParent();
-    }
-    return (IEntityModel)node;
-  }
-  
   
   @Override
-  public IContainerModel getParent() {
-    return parent;
+  public abstract <T> T getValue();
+  
+  
+  public NodeModel (ModelFactory modelFactory, INodePlan nodePlan) {
+    this.modelFactory = modelFactory;
+    this.nodeId = modelFactory.getNodeId();
+    this.nodePlan = nodePlan;
   }
   
+
+  protected INodeModel buildNodeModel (IValueReference valueRef, INodePlan nodePlan) {
+    return modelFactory.buildNodeModel(valueRef, nodePlan);
+  }
+
   
   @Override
   public int getNodeId() {
     return nodeId;
   }
   
-  
-  @Override
-  public abstract List<INodeModel> getChildNodes();
-  
-  
-  private static void buildCanonicalName (INodeModel nodeModel, StringBuilder builder, boolean[] isTop) {
-    if (nodeModel.getParent() == null) {
-      if (nodeModel instanceof IEntityModel) {
-        builder.append(((IEntityPlan<?>)nodeModel.getPlan()).getClassName());
-      } else {
-        throw new RuntimeException("Parent of " + nodeModel + " is null, but it is not an entity model");
-      }
-      isTop[0] = true;
-    } else {
-      buildCanonicalName(nodeModel.getParent(), builder, isTop);
-      if (isTop[0]) {
-        builder.append('#');
-      } else {
-        builder.append('.');
-      }
-      builder.append(nodeModel.getPlan().getName());
-    }
-  }
-  
-  
-  @Override
-  public String getCanonicalName() {
-    StringBuilder builder = new StringBuilder();
-    boolean[] isTop = new boolean[1];
-    buildCanonicalName(this, builder, isTop);
-    return builder.toString();
-  }
-
-  
-  @Override
-  public abstract <X extends INodePlan> X getPlan();
-  
-  
-  @Override
-  public abstract void setValue (Object value);
-  
-  
-  @Override
-  public abstract <X> X getValue ();
-
   
   @Override
   public void addEffectiveEntryModeListener (EffectiveEntryModeListener x) {
@@ -109,13 +65,6 @@ public abstract class NodeModel implements INodeModel {
   public void removeEffectiveEntryModeListener (EffectiveEntryModeListener x) {
     effectiveEntryModeListeners.remove(x);
   }
-  
-
-  @Override
-  public void syncEventsWithNode () {
-    fireEffectiveModeChange();
-  }
-  
   
   @Override
   public void setEntryMode (EntryMode entryMode) {
@@ -138,8 +87,9 @@ public abstract class NodeModel implements INodeModel {
   public void updateEffectiveEntryMode (EffectiveEntryMode parentMode) {
     EffectiveEntryMode newEffectiveEntryMode = EffectiveEntryMode.getEffective(parentMode, entryMode);
     if (newEffectiveEntryMode != effectiveEntryMode) {
+      EffectiveEntryMode priorMode = effectiveEntryMode;
       effectiveEntryMode = newEffectiveEntryMode;
-      fireEffectiveModeChange();
+      fireEffectiveModeChange(priorMode);
       
       for (INodeModel child : getChildNodes()) {
         child.updateEffectiveEntryMode (effectiveEntryMode);
@@ -160,32 +110,32 @@ public abstract class NodeModel implements INodeModel {
   }
   
   
-  private void fireEffectiveModeChange () {
+  private void fireEffectiveModeChange (EffectiveEntryMode priorMode) {
     for (EffectiveEntryModeListener x : effectiveEntryModeListeners) {
-      x.effectiveModeChanged(this);
+      x.effectiveModeChanged(this, priorMode);
+    }
+  }
+
+  @Override
+  public abstract void dump(int level);
+ 
+  
+  protected void indent (int level) {
+    for (int i = 0; i < level; i++) {
+      System.out.print("  ");
     }
   }
   
+  @SuppressWarnings("unchecked")
+  @Override
+  public <X extends INodePlan> X getPlan() {
+    return (X)nodePlan;
+  }
   
-//  @Override
-//  public int hashCode() {
-//    return id;
-//  }
-//
-//
-//  @Override
-//  public boolean equals(Object obj) {
-//    if (this == obj) {
-//      return true;
-//    }
-//    if (obj == null) {
-//      return false;
-//    }
-//    if (!(obj instanceof NodeModel)) {
-//      return false;
-//    }
-//    NodeModel other = (NodeModel)obj;
-//    return id == other.id;
-//  }
-
+  
+  @Override
+  public String getName() {
+    return nodePlan.getName();
+  }
+  
 }

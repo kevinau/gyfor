@@ -1,26 +1,21 @@
 package org.gyfor.object.model;
 
-import java.util.List;
-
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.plan.INodePlan;
 
-
 public interface INodeModel {
 
-  public IContainerModel getParent();
+  public INodeModel[] getChildNodes();
   
-  public List<INodeModel> getChildNodes ();
-
   public int getNodeId();
+  
+  public void syncValue(IContainerModel parent, Object value);
 
-  public String getCanonicalName ();
+  public void setParent(IContainerModel parent);
 
   public <X extends INodePlan> X getPlan ();
 
-  public void setValue (Object value);
-
-  public <X> X getValue ();
+  public <X> X getValue();
   
   public void setEntryMode(EntryMode entryMode);
 
@@ -29,15 +24,17 @@ public interface INodeModel {
   public EffectiveEntryMode getEffectiveEntryMode();
 
   public EntryMode getEntryMode();
-  
+
   public String getName();
 
   public void addEffectiveEntryModeListener(EffectiveEntryModeListener x);
 
   public void removeEffectiveEntryModeListener(EffectiveEntryModeListener x);
 
-  public void syncEventsWithNode();
+  public default void dump() {
+    dump(0);
+  }
 
   public void dump(int level);
-  
+
 }

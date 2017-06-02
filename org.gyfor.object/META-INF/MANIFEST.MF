@@ -1,19 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: gyfor - API for data entry objects
+Bundle-Name: gyfor - Object plans and models used in form data entry
 Bundle-SymbolicName: org.gyfor.object
 Bundle-Version: 1.0.0
 Bundle-Vendor: Kevin Holloway
-Export-Package: org.apache.regexp,
- org.gyfor.object,
- org.gyfor.object.model,
- org.gyfor.object.model.impl,
- org.gyfor.object.model.impl2,
- org.gyfor.object.model.path,
- org.gyfor.object.plan,
- org.gyfor.object.type,
- org.gyfor.object.type.builtin,
- org.gyfor.object.value
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-BuddyPolicy: global
 Import-Package: org.gyfor.math,
@@ -21,6 +11,5 @@ Import-Package: org.gyfor.math,
  org.gyfor.time,
  org.gyfor.todo,
  org.gyfor.util
-Service-Component: OSGI-INF/org.gyfor.object.plan.PlanFactory.xml,
- OSGI-INF/org.gyfor.object.model.ModelFactory.xml
 Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/org.gyfor.object.plan.PlanFactory.xml

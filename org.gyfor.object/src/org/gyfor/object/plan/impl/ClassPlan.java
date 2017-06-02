@@ -7,7 +7,6 @@ import java.util.Set;
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.plan.IClassPlan;
 import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.object.plan.IRuntimeDefaultProvider;
 import org.gyfor.object.plan.IRuntimeFactoryProvider;
 import org.gyfor.object.plan.IRuntimeImplementationProvider;
@@ -16,6 +15,7 @@ import org.gyfor.object.plan.IRuntimeModeProvider;
 import org.gyfor.object.plan.IRuntimeOccursProvider;
 import org.gyfor.object.plan.IRuntimeTypeProvider;
 import org.gyfor.object.plan.IValidationMethod;
+import org.gyfor.object.plan.PlanFactory;
 
 public abstract class ClassPlan<T> extends ContainerPlan implements IClassPlan<T> {
 
@@ -23,21 +23,31 @@ public abstract class ClassPlan<T> extends ContainerPlan implements IClassPlan<T
   private final AugmentedClass<T> augmented;
   
   
-  public ClassPlan(IPlanFactory context, INodePlan parent, Field field, Class<T> nodeClass, String name, EntryMode entryMode) {
-    super(parent, field, name, entryMode);
+  public ClassPlan(PlanFactory planFactory, Field field, Class<T> nodeClass, String name, EntryMode entryMode) {
+    super(field, name, entryMode);
     this.nodeClass = nodeClass;
-    augmented = context.getClassPlan(this, nodeClass);
+    augmented = planFactory.getClassPlan(this, nodeClass);
   }
 
   
   @Override
-  public INodePlan[] getMemberPlans() {
+  public void setParent (INodePlan parent) {
+    super.setParent(parent);
+    for (INodePlan child : getMembers()) {
+      child.setParent(this);
+    }
+  }
+  
+  
+  @Override
+  public INodePlan[] getMembers() {
     return augmented.getMemberPlans();
   }
 
   
+  @SuppressWarnings("unchecked")
   @Override
-  public INodePlan getMemberPlan(String name) {
+  public INodePlan getMember(String name) {
     return augmented.getMemberPlan(name);
   }
 

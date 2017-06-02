@@ -10,8 +10,6 @@ import org.gyfor.object.plan.INodePlan;
 
 public abstract class NodePlan implements INodePlan {
 
-  private final INodePlan parent;
-  
   private final Field field;
   
   private final String name;
@@ -20,7 +18,21 @@ public abstract class NodePlan implements INodePlan {
   
   private final boolean nullable;
   
+  private INodePlan parent;
+  
   private String qualifiedName;
+  
+  
+  @Override
+  public void setParent (INodePlan parent) {
+    this.parent = parent;
+  }
+  
+  
+  @Override
+  public INodePlan getParent() {
+    return parent;
+  }
   
   
   protected static String entityName (Class<?> entityClass) {
@@ -53,11 +65,7 @@ public abstract class NodePlan implements INodePlan {
   }
   
   
-  public NodePlan (INodePlan parent, Field field, String name, EntryMode entryMode) {
-    if (parent == null && !(this instanceof IEntityPlan)) {
-      throw new IllegalArgumentException("Parent cannot be null (except for IEntityPlan)");
-    }
-    this.parent = parent;
+  public NodePlan (Field field, String name, EntryMode entryMode) {
     this.field = field;
     if (field != null) {
       field.setAccessible(true);
@@ -68,12 +76,6 @@ public abstract class NodePlan implements INodePlan {
     this.nullable = isNullable(field);
   }
   
-  
-  @Override
-  public INodePlan getParent() {
-    return parent;
-  }
-
   
   @SuppressWarnings("unchecked")
   @Override

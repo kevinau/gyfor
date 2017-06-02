@@ -6,12 +6,15 @@ import org.gyfor.object.type.IType;
 
 public interface IItemModel extends INodeModel {
 
+  public void setValue (Object value);
+
   public String toEntryString(Object value);
 
   public void setComparisonBasis(ComparisonBasis comparisonBasis);
 
   public boolean isInError();
 
+  @Deprecated
   public Type getStatus();
   
   public IType<?> getType();

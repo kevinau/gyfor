@@ -2,28 +2,24 @@ package org.gyfor.object.model.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.model.ComparisonBasis;
 import org.gyfor.object.model.EffectiveEntryMode;
 import org.gyfor.object.model.EffectiveEntryModeListener;
 import org.gyfor.object.model.IContainerModel;
-import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
-import org.gyfor.object.model.IModelFactory;
 import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.model.IValueReference;
 import org.gyfor.object.model.ItemEventListener;
-import org.gyfor.object.model.ref.IValueReference;
+import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.IValidationMethod;
 import org.gyfor.object.type.IType;
-
 
 public class ItemModel extends NodeModel implements EffectiveEntryModeListener, IItemModel {
 
@@ -39,7 +35,6 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
 
   private final Map<Object, ErrorInstance> validationErrors = new HashMap<Object, ErrorInstance>();
 
-  private final IEntityModel entityModel;
   private final IItemPlan<?> itemPlan;
   private final IValueReference valueRef;
   private final IType<Object> type;
@@ -60,34 +55,43 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   private boolean currentValueInError = true;
   
   private List<ItemEventListener> itemEventListeners = new ArrayList<>();
-  
-  
+
   @SuppressWarnings("unchecked")
-  public ItemModel (IModelFactory modelFactory, IEntityModel entityModel, IContainerModel parent, IValueReference valueRef, IItemPlan<?> itemPlan) {
-//  public ItemModel (IContainerModel parentModel, IContainerObject container, IItemPlan<?> itemPlan) {
-    super (modelFactory, entityModel, parent);
-    this.entityModel = entityModel;
+  public ItemModel (ModelFactory modelFactory, IValueReference valueRef, IItemPlan<?> itemPlan) {
+    super (modelFactory, itemPlan);
     this.itemPlan = itemPlan;
     this.valueRef = valueRef;
     this.type = (IType<Object>)itemPlan.getType();
     // Add event listener so this field can react to effective mode changes
-//    addEffectiveModeListener(this);
+    // addEffectiveModeListener(this);
     setInitialDefaultValue();
   }
 
-  
-  public ItemModel (IModelFactory modelFactory, IEntityModel entityModel, IContainerModel parent, IValueReference valueRef, IItemPlan<?> itemPlan, Object value) {
-    this (modelFactory, entityModel, parent, valueRef, itemPlan);
-    setValue(value);
+
+  @Override
+  public void syncValue(IContainerModel parent, Object value) {
   }
 
   
   @Override
-  public List<INodeModel> getChildNodes () {
-    return Collections.emptyList();
+  public INodeModel[] getChildNodes() {
+    return new INodeModel[0];
+  }
+
+
+  @Override
+  public <T> T getValue() {
+    return valueRef.getValue();
   }
   
   
+  @Override
+  public void dump(int level) {
+    indent (level);
+    System.out.println("ItemModel[" + itemPlan.getName() + " = " + getValue() + " (" + super.getEffectiveEntryMode() + " " + itemPlan + ")]");
+  }
+  
+
   @SuppressWarnings("unchecked")
   @Override
   public <X extends INodePlan> X getPlan () {
@@ -165,6 +169,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   }
   
   
+  @SuppressWarnings("unused")
   private void fireComparisonBasisChange (IItemModel model) {
     for (ItemEventListener x : itemEventListeners) {
       x.comparisonBasisChange(model);
@@ -271,12 +276,6 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   }
 
 
-  @Override
-  public <T> T getValue () {
-    return valueRef.getValue();
-  }
-  
-  
   public boolean isComparedValueEqual() {
     return isComparedValueEqual;
   }
@@ -598,11 +597,14 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   
   
   @Override
-  public void effectiveModeChanged (INodeModel model) {
-    boolean aee = getEffectiveMode().allowEntryEvents();
-    if (allowEntryEvents != aee) {
-      allowEntryEvents = aee;
-      if (allowEntryEvents) {
+  public void effectiveModeChanged (INodeModel model, EffectiveEntryMode priorMode) {
+    EffectiveEntryMode newMode = model.getEffectiveEntryMode();
+
+    boolean priorAllowEntryEvents = (priorMode != EffectiveEntryMode.HIDDEN);
+    boolean newAllowEntryEvents = (newMode != EffectiveEntryMode.HIDDEN);
+        
+    if (priorAllowEntryEvents != newAllowEntryEvents) {
+      if (newAllowEntryEvents) {
         // Fire all initial events
         testAndFireSourceEqualityChange(false);
         testAndFireValueEqualityChange();
@@ -657,39 +659,39 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   }
   
 
-  @Override
-  protected void setEffectiveEntryMode (EffectiveEntryMode newEffectiveMode) {
-    EffectiveEntryMode oldEffectiveMode = getEffectiveEntryMode();
-    boolean postProcess = false;
-    if (newEffectiveMode != oldEffectiveMode) {
-      if (newEffectiveMode == EffectiveEntryMode.HIDDEN) {
-        // We are changing to HIDDEN, and we want to ignore any errors (we still capture them,
-        // but we do not report them).  Ditto default showing and reference showing.
-        
-        // Clear errors
-        if (!validationErrors.isEmpty()) {
-          fireErrorCleared(this);
-        }
-//        if (isCompareShowing) {
-//          fireCompareShowingChange(false, false);
+//  @Override
+//  protected void setEffectiveEntryMode (EffectiveEntryMode newEffectiveMode) {
+//    EffectiveEntryMode oldEffectiveMode = getEffectiveEntryMode();
+//    boolean postProcess = false;
+//    if (newEffectiveMode != oldEffectiveMode) {
+//      if (newEffectiveMode == EffectiveEntryMode.HIDDEN) {
+//        // We are changing to HIDDEN, and we want to ignore any errors (we still capture them,
+//        // but we do not report them).  Ditto default showing and reference showing.
+//        
+//        // Clear errors
+//        if (!validationErrors.isEmpty()) {
+//          fireErrorCleared(this);
 //        }
-      }
-      if (oldEffectiveMode == EffectiveEntryMode.HIDDEN) {
-        postProcess = true;
-      }
-    }
-    super.setEffectiveEntryMode(newEffectiveMode);
-    if (postProcess) {
-      // We are changing from NA to something else, so report any errors.
-      Collection<ErrorInstance> errors = validationErrors.values();
-      for (ErrorInstance error : errors) {
-        fireErrorNoted(this, error.exception);
-      }
-//      if (isCompareShowing) {
-//        fireCompareShowingChange(true, false);
+////        if (isCompareShowing) {
+////          fireCompareShowingChange(false, false);
+////        }
 //      }
-    }
-  }
+//      if (oldEffectiveMode == EffectiveEntryMode.HIDDEN) {
+//        postProcess = true;
+//      }
+//    }
+//    super.setEffectiveEntryMode(newEffectiveMode);
+//    if (postProcess) {
+//      // We are changing from NA to something else, so report any errors.
+//      Collection<ErrorInstance> errors = validationErrors.values();
+//      for (ErrorInstance error : errors) {
+//        fireErrorNoted(this, error.exception);
+//      }
+////      if (isCompareShowing) {
+////        fireCompareShowingChange(true, false);
+////      }
+//    }
+//  }
   
   
   @Override
@@ -754,24 +756,24 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   }  
   
   
-  @Override
-  public void syncEventsWithNode () {
-    super.syncEventsWithNode();
-    
-    fireSourceChange(this);
-    fireValueChange(this);
-
-    fireComparisonBasisChange(this);
-    fireSourceEqualityChange(this);
-    fireValueEqualityChange(this);
-    if (validationErrors.isEmpty()) {
-      fireErrorCleared(this);
-    } else {
-      for (ErrorInstance ei : validationErrors.values()) {
-        fireErrorNoted(this, ei.exception);
-      }
-    }
-  }
+//  @Override
+//  public void syncEventsWithNode () {
+//    super.syncEventsWithNode();
+//    
+//    fireSourceChange(this);
+//    fireValueChange(this);
+//
+//    fireComparisonBasisChange(this);
+//    fireSourceEqualityChange(this);
+//    fireValueEqualityChange(this);
+//    if (validationErrors.isEmpty()) {
+//      fireErrorCleared(this);
+//    } else {
+//      for (ErrorInstance ei : validationErrors.values()) {
+//        fireErrorNoted(this, ei.exception);
+//      }
+//    }
+//  }
 
   
   @Override
@@ -880,15 +882,6 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
 //  }
 
 
-  @Override
-  public void dump(int level) {
-    for (int i = 0; i < level; i++) {
-      System.out.print("  ");
-    }
-    System.out.println(itemPlan.getName() + " = " + getValue() + " [" + super.getEffectiveEntryMode() + " " + itemPlan + "]");
-  }
-
-
   protected void accumulateItemModels (List<IItemModel> list) {
     list.add(this);
   }
@@ -900,35 +893,30 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   }
   
   
-  @Override
-  public void revalidate () {
-    fireValueChange(this, null);
-  }
-  
-  
-  @Override
-  public void setEventsActive (boolean fireEvents) {
-    super.setEventsActive(fireEvents);
-    if (fireEvents) {
-      fireSourceChange(this);
-
-      if (allowEntryEvents) {
-        fireComparisonBasisChange(this);
-        fireSourceChange(this);
-        fireCompareEqualityChange(this);
-        if (validationErrors.isEmpty()) {
-          fireValueChange(this, null);
-          fireErrorCleared(this);
-        } else {
-          for (ErrorInstance ei : validationErrors.values()) {
-            fireErrorNoted(this, ei.exception);
-          }
-        }
-      } else {
-        fireValueChange(this, null);
-      }
-
-    }
-  }
+//  @Override
+//  public void setEventsActive (boolean fireEvents) {
+//    super.setEventsActive(fireEvents);
+//    if (fireEvents) {
+//      fireSourceChange(this);
+//
+//      if (allowEntryEvents) {
+//        fireComparisonBasisChange(this);
+//        fireSourceEqualityChange(this);
+//        fireValueEqualityChange(this);
+//        if (validationErrors.isEmpty()) {
+//          fireValueChange(this);
+//          fireErrorCleared(this);
+//        } else {
+//          for (ErrorInstance ei : validationErrors.values()) {
+//            fireErrorNoted(this, ei.exception);
+//          }
+//        }
+//      } else {
+//        fireValueChange(this);
+//      }
+//
+//    }
+//  }
+//
 
 }

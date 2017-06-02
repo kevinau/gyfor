@@ -6,16 +6,15 @@ import java.util.Iterator;
 
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.plan.IArrayPlan;
-import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.IPlanFactory;
+import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.plan.PlanStructure;
 import org.gyfor.util.ArrayIterator;
 
 
 public class ArrayPlan extends RepeatingPlan implements IArrayPlan {
 
-  public ArrayPlan (IPlanFactory context, INodePlan parent, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
-    super (context, parent, field, elemClass, name, entryMode, dimension);
+  public ArrayPlan (PlanFactory planFactory, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
+    super (planFactory, field, elemClass, name, entryMode, dimension);
   }
   
 

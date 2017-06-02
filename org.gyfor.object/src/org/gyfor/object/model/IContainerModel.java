@@ -6,7 +6,7 @@ import java.util.Map;
 
 public interface IContainerModel extends INodeModel {
 
-  public List<INodeModel> getMembers();
+  public INodeModel[] getMembers();
 
   public void addContainerChangeListener(ContainerChangeListener x);
 

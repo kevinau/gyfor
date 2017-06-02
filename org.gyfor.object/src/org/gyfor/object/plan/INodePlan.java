@@ -55,5 +55,7 @@ public interface INodePlan {
   public Field getField();
 
   public INodePlan getParent();
+  
+  public void setParent (INodePlan parent);
 
 }

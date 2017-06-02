@@ -2,8 +2,8 @@ package org.gyfor.object.model.path;
 
 import java.util.function.Consumer;
 
-import org.gyfor.object.model.impl2.INodeModel;
-import org.gyfor.object.model.impl2.RepeatingModel;
+import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.model.IRepeatingModel;
 import org.gyfor.object.plan.INodePlan;
 
 
@@ -38,8 +38,8 @@ public class IndexedElementPath extends StepPath implements IPathExpression {
   
   @Override
   public void matches(INodeModel model, Trail<INodeModel> trail, Consumer<INodeModel> x) {
-    if (model instanceof RepeatingModel) {
-      RepeatingModel repeating = (RepeatingModel)model;
+    if (model instanceof IRepeatingModel) {
+      IRepeatingModel repeating = (IRepeatingModel)model;
       INodeModel[] children = repeating.getChildNodes();
       int n = children.length;
       if (index < n) {

@@ -5,9 +5,9 @@ import java.lang.reflect.Field;
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.Occurs;
 import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.object.plan.IRepeatingPlan;
 import org.gyfor.object.plan.NodePlanFactory;
+import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.plan.RepeatingLabelGroup;
 
 
@@ -22,9 +22,9 @@ public abstract class RepeatingPlan extends ContainerPlan implements IRepeatingP
   private final int minOccurs;
   private final int maxOccurs;  
   
-  public RepeatingPlan (IPlanFactory context, INodePlan parent, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
-    super (parent, field, name, entryMode);
-    elemPlan = NodePlanFactory.getNodePlan(context, parent, elemClass, field, name + "[]", entryMode, dimension + 1, false);
+  public RepeatingPlan (PlanFactory planFactory, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
+    super (field, name, entryMode);
+    elemPlan = NodePlanFactory.getNodePlan(planFactory, elemClass, field, name + "[]", entryMode, dimension + 1, false);
     this.dimension = dimension;
     
     Occurs occursAnn = field.getAnnotation(Occurs.class);
@@ -47,6 +47,13 @@ public abstract class RepeatingPlan extends ContainerPlan implements IRepeatingP
     }
     
     this.labels = new RepeatingLabelGroup(field, name);
+  }
+  
+  
+  @Override 
+  public void setParent (INodePlan parent) {
+    super.setParent(parent);
+    elemPlan.setParent(this);
   }
   
 

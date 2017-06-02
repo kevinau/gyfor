@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 
-public interface IClassPlan<T> extends INameMappedPlan {
-
-  public Field getNodeField(String memberName);
+public interface IClassPlan<T> extends IContainerPlan {
 
   public List<IRuntimeDefaultProvider> getRuntimeDefaultProviders();
 
@@ -36,5 +34,11 @@ public interface IClassPlan<T> extends INameMappedPlan {
   public void dump (int level);
 
   public String getClassName();
+
+  public INodePlan[] getMembers();
+
+  public <X extends INodePlan> X getMember(String name);
+
+  public Field getNodeField(String memberName);
 
 }

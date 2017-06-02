@@ -26,8 +26,8 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
   //private final Object staticDefaultValue;
   
   
-  public ItemPlan (INodePlan parent, Field field, String name, EntryMode entryMode, IType<T> type) {
-    super (parent, field, name, entryMode);
+  public ItemPlan (Field field, String name, EntryMode entryMode, IType<T> type) {
+    super (field, name, entryMode);
     if (type == null) { 
       throw new IllegalArgumentException("Type argument cannot be null");
     }

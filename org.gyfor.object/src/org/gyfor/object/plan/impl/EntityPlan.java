@@ -9,12 +9,10 @@ import org.gyfor.object.SelfDescribing;
 import org.gyfor.object.UniqueConstraint;
 import org.gyfor.object.Version;
 import org.gyfor.object.plan.EntityLabelGroup;
-import org.gyfor.object.plan.IClassPlan;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
-import org.gyfor.object.plan.INameMappedPlan;
 import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.IPlanFactory;
+import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.plan.PlanStructure;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.EntityLifeType;
@@ -24,7 +22,7 @@ import org.gyfor.object.value.EntityLife;
 import org.gyfor.object.value.VersionTime;
 
 
-public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClassPlan<T>, INameMappedPlan, INodePlan {
+public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T> {
 
   private final Class<T> entityClass;
   private final String entityName;
@@ -39,8 +37,8 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
   private List<IItemPlan<?>[]> uniqueConstraints;
 
   
-  public EntityPlan (IPlanFactory factory, Class<T> entityClass) {
-    super (factory, null, null, entityClass, entityClass.getSimpleName(), entityEntryMode(entityClass));
+  public EntityPlan (PlanFactory planFactory, Class<T> entityClass) {
+    super (planFactory, null, entityClass, entityClass.getSimpleName(), entityEntryMode(entityClass));
     this.entityClass = entityClass;
     this.entityName = entityClass.getSimpleName();
     this.labels = new EntityLabelGroup(entityClass);
@@ -239,7 +237,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
     IItemPlan<VersionTime> versionPlan2 = null;
     dataPlans = new ArrayList<>();
     
-    INodePlan[] memberPlans = getMemberPlans();
+    INodePlan[] memberPlans = getMembers();
     for (INodePlan member : memberPlans) {
       if (member.isItem()) {
         IItemPlan<?> itemPlan = (IItemPlan<?>)member;
@@ -304,7 +302,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
       IItemPlan<?>[] fields = new IItemPlan[ucAnn.value().length];
       int i = 0;
       for (String name : ucAnn.value()) {
-        INodePlan keyNode = getMemberPlan(name);
+        INodePlan keyNode = getMember(name);
         if (keyNode == null) {
           throw new IllegalArgumentException("Item '" + name + "' in unique constraint on class '" + entityClass.getName() + "' does not exist");
         }
@@ -334,14 +332,14 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
       fieldDependency.parseClass(entityClass);
       List<String> fieldNames = fieldDependency.getDependencies(entityClass.getName(), "getDescription");
       for (String fieldName : fieldNames) {
-        IItemPlan<?> itemPlan = (IItemPlan<?>)getMemberPlan(fieldName);
+        IItemPlan<?> itemPlan = (IItemPlan<?>)getMember(fieldName);
         descriptionPlans.add(itemPlan);
       }
       return;
     }
     
     // Otherwise, concatenate all top level nodes that are marked as describing.
-    for (INodePlan nodePlan : getMemberPlans()) {
+    for (INodePlan nodePlan : getMembers()) {
       if  (nodePlan.getStructure() == PlanStructure.ITEM) {
         IItemPlan<?> itemPlan = (IItemPlan<?>)nodePlan;
         if (itemPlan.isDescribing()) {
@@ -354,7 +352,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
     }
     
     // Otherwise, use the first top level String node
-    for (INodePlan nodePlan : getMemberPlans()) {
+    for (INodePlan nodePlan : getMembers()) {
       if  (nodePlan.getStructure() == PlanStructure.ITEM) {
         IItemPlan<?> itemPlan = (IItemPlan<?>)nodePlan;
         IType<?> type = itemPlan.getType();
@@ -379,7 +377,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
     // Otherwise, concatenate all top level nodes that are marked as describing.
     String description = null;
     int i = 0;
-    for (INodePlan nodePlan : getMemberPlans()) {
+    for (INodePlan nodePlan : getMembers()) {
       if  (nodePlan.getStructure() == PlanStructure.ITEM) {
         if (((IItemPlan<?>)nodePlan).isDescribing()) {
           String part = nodePlan.getFieldValue(instance).toString();
@@ -397,7 +395,7 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T>, IClas
     }
     
     // Otherwise, use the first top level String node
-    for (INodePlan nodePlan : getMemberPlans()) {
+    for (INodePlan nodePlan : getMembers()) {
       if  (nodePlan.getStructure() == PlanStructure.ITEM) {
         IType<?> type = ((IItemPlan<?>)nodePlan).getType();
         if (type instanceof StringType) {

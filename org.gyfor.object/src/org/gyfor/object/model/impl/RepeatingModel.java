@@ -3,76 +3,46 @@ package org.gyfor.object.model.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gyfor.object.model.ref.ArrayValueReference;
-import org.gyfor.object.model.ref.IValueReference;
-import org.gyfor.object.model.ref.ListValueReference;
-import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.model.IRepeatingModel;
+import org.gyfor.object.model.IValueReference;
+import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.IRepeatingPlan;
 
-public class RepeatingModel extends ContainerModel {
+public abstract class RepeatingModel extends ContainerModel implements IRepeatingModel {
 
-  private final IValueReference valueRef;
-  private final IRepeatingPlan repeatingPlan;
+  protected List<INodeModel> elements = new ArrayList<>();
   
-  private List<NodeModel> modelElems = new ArrayList<>();
-  
-  
-  protected RepeatingModel(RootModel rootModel, ContainerModel parent, int id, IValueReference valueRef, IRepeatingPlan repeatingPlan) {
-    super(rootModel, parent, id);
-    this.valueRef = valueRef;
-    this.repeatingPlan = repeatingPlan;
+  public RepeatingModel (ModelFactory modelFactory, IValueReference valueRef, IRepeatingPlan repeatingPlan) {
+    super (modelFactory, valueRef, repeatingPlan);
   }
-  
-  
+
   @Override
-  public void setValue(Object instance) {
-    valueRef.setValue(instance);
-    
-    if (instance instanceof Object[]) {
-      modelElems = new ArrayList<>();
-      Object[] array = (Object[])instance;
-      for (int i = 0; i < array.length; i++) {
-        NodeModel elemModel = getRoot().buildNodeModel(getParent(), new ArrayValueReference(array, i), repeatingPlan.getElementPlan());
-        modelElems.add(elemModel);
-      }
-    } else if (instance instanceof List) {
-      modelElems = new ArrayList<>();
-      @SuppressWarnings("unchecked")
-      List<Object> list = (List<Object>)instance;
-      for (int i = 0; i < list.size(); i++) {
-        NodeModel elemModel = getRoot().buildNodeModel(getParent(), new ListValueReference(list, i), repeatingPlan.getElementPlan());
-        modelElems.add(elemModel);
-        i++;
-      }
-    } else {
-      throw new IllegalArgumentException("An array or list is required for a repeating model");
+  public void dump(int level) {
+    indent (level);
+    System.out.println(this.getClass().getSimpleName() + " " + elements.size() + " elements [");
+    int i = 0;
+    for (INodeModel element : elements) {
+      indent (level);
+      System.out.println(i + ":");
+      element.dump(level + 1);
+      i++;
     }
+    indent (level);
+    System.out.println("]");
+  }
+  
+
+  @Override
+  public INodeModel[] getMembers() {
+    INodeModel[] result = new INodeModel[elements.size()];
+    return elements.toArray(result);
   }
 
 
   @Override
-  public INodePlan getPlan() {
-    return repeatingPlan;
-  }
-  
-  
-  @Override
-  public String toString () {
-    return "RepeatingModel(" + getId() + "," + repeatingPlan.getName() + ")";
+  public INodeModel[] getChildNodes() {
+    return getMembers();
   }
 
-
-  @Override
-  public Object getValue() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-
-  @Override
-  public List<NodeModel> getMembers() {
-    return modelElems;
-  }
-  
-  
 }

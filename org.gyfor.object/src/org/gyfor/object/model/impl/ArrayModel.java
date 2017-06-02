@@ -1,67 +1,44 @@
 package org.gyfor.object.model.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.gyfor.object.model.IContainerModel;
+import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.model.IValueReference;
+import org.gyfor.object.model.ModelFactory;
+import org.gyfor.object.plan.IArrayPlan;
 
-import org.gyfor.object.model.ref.ArrayValueReference;
-import org.gyfor.object.model.ref.IValueReference;
-import org.gyfor.object.model.ref.ListValueReference;
-import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.IRepeatingPlan;
+public class ArrayModel extends RepeatingModel {
 
-public class ArrayModel extends ContainerModel {
-
-  private final IValueReference valueRef;
-  private final IRepeatingPlan repeatingPlan;
+  private final IArrayPlan arrayPlan;
   
-  private List<NodeModel> modelElems = new ArrayList<>();
-  
-  
-  protected ArrayModel(RootModel rootModel, ContainerModel parent, int id, IValueReference valueRef, IRepeatingPlan repeatingPlan) {
-    super(rootModel, parent, id);
-    this.valueRef = valueRef;
-    this.repeatingPlan = repeatingPlan;
-  }
-  
-  
-  @Override
-  public List<NodeModel> getMembers() {
-    return modelElems;
+  public ArrayModel (ModelFactory modelFactory, IValueReference valueRef, IArrayPlan arrayPlan) {
+    super (modelFactory, valueRef, arrayPlan);
+    this.arrayPlan = arrayPlan;
   }
 
-
-  @Override
-  public INodePlan getPlan() {
-    return repeatingPlan;
-  }
-  
   
   @Override
-  public Object getValue() {
-    return valueRef.getValue();
-  }
-
-
-  @Override
-  public void setValue(Object instance) {
-    valueRef.setValue(instance);
-    
-    if (instance instanceof Object[]) {
-      modelElems = new ArrayList<>();
-      Object[] array = (Object[])instance;
-      for (int i = 0; i < array.length; i++) {
-        NodeModel elemModel = getRoot().buildNodeModel(getParent(), new ArrayValueReference(array, i), repeatingPlan.getElementPlan());
-        modelElems.add(elemModel);
+  public void syncValue(IContainerModel parent, Object value) {
+    setParent(parent);
+    if (value == null) {
+      for (INodeModel element : elements) {
+        elements.remove(element);
       }
     } else {
-      throw new IllegalArgumentException("An array is required for an array model");
+      Object[] arrayValues = (Object[])value;
+      int i = 0;
+      for (Object arrayValue : arrayValues) {
+        INodeModel element;
+        if (i < elements.size()) {
+          element = elements.get(i);
+        } else {
+          IValueReference elementValueRef = new ArrayValueReference(valueRef, i);
+          element = buildNodeModel(elementValueRef, arrayPlan.getElementPlan());
+          elements.add(element);
+        }
+        element.syncValue(this, arrayValue);
+        i++;
+      }
     }
   }
 
-
-  @Override
-  public String toString () {
-    return "ArrayModel(" + getId() + "," + repeatingPlan.getName() + ")";
-  }
-  
 }

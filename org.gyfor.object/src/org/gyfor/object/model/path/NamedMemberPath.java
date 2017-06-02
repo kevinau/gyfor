@@ -2,10 +2,9 @@ package org.gyfor.object.model.path;
 
 import java.util.function.Consumer;
 
-import org.gyfor.object.model.impl2.INameMappedModel;
-import org.gyfor.object.model.impl2.INodeModel;
-import org.gyfor.object.model.impl2.NameMappedModel;
-import org.gyfor.object.plan.INameMappedPlan;
+import org.gyfor.object.model.INameMappedModel;
+import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.plan.IClassPlan;
 import org.gyfor.object.plan.INodePlan;
 
 
@@ -27,9 +26,9 @@ public class NamedMemberPath extends StepPath implements IPathExpression {
 
   @Override
   public void matches(INodePlan plan, Trail<INodePlan> trail, Consumer<INodePlan> x) {
-    if (plan instanceof INameMappedPlan) {
-      INameMappedPlan mapped = (INameMappedPlan)plan;
-      INodePlan member = mapped.getMemberPlan(name);
+    if (plan instanceof IClassPlan) {
+      IClassPlan<?> mapped = (IClassPlan<?>)plan;
+      INodePlan member = mapped.getMember(name);
       if (member == null) {
         // Do nothing
       } else {
@@ -43,7 +42,7 @@ public class NamedMemberPath extends StepPath implements IPathExpression {
   
   @Override
   public void matches(INodeModel model, Trail<INodeModel> trail, Consumer<INodeModel> x) {
-    if (model instanceof NameMappedModel) {
+    if (model instanceof INameMappedModel) {
       INameMappedModel mapped = (INameMappedModel)model;
       INodeModel member = mapped.getMember(name);
       if (member == null) {
