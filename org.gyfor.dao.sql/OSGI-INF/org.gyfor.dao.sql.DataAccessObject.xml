@@ -4,6 +4,6 @@
       <provide interface="org.gyfor.dao.IDataAccessObject"/>
    </service>
    <reference cardinality="1..1" field="connFactory" interface="org.gyfor.sql.IConnectionFactory" name="connFactory"/>
-   <reference cardinality="1..1" field="planFactory" interface="org.gyfor.object.plan.IPlanFactory" name="planFactory"/>
+   <reference cardinality="1..1" field="planFactory" interface="IPlanFactory" name="planFactory"/>
    <implementation class="org.gyfor.dao.sql.DataAccessObject"/>
 </scr:component>

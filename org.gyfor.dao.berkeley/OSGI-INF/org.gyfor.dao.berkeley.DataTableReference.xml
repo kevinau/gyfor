@@ -5,6 +5,6 @@
    </service>
    <reference bind="setDataEnvironment" cardinality="1..1" interface="org.gyfor.dao.berkeley.DataEnvironment" name="DataEnvironment" policy="static" unbind="unsetDataEnvironment"/>
    <reference bind="setDataTableRegistry" cardinality="1..1" interface="IDataTableReferenceRegistry" name="DataTableRegistry" policy="static" unbind="unsetDataTableRegistry"/>
-   <reference bind="setPlanFactory" interface="org.gyfor.object.plan.IPlanFactory" name="PlanFactory" unbind="unsetPlanFactory"/>
+   <reference bind="setPlanFactory" interface="IPlanFactory" name="PlanFactory" unbind="unsetPlanFactory"/>
    <implementation class="org.gyfor.dao.berkeley.DataTableReference"/>
 </scr:component>

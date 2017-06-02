@@ -2,9 +2,9 @@ package org.gyfor.object.test;
 
 import org.gyfor.object.Embedded;
 import org.gyfor.object.Entity;
-import org.gyfor.object.model.impl2.IEntityModel;
-import org.gyfor.object.model.impl2.IItemModel;
-import org.gyfor.object.model.impl2.ModelFactory;
+import org.gyfor.object.model.IEntityModel;
+import org.gyfor.object.model.IItemModel;
+import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.PlanFactory;
@@ -89,7 +89,7 @@ public class EntityEmbeddedModelTest {
     // No entity life plan on this entity
     Assert.assertNull(entityLifePlan);
     
-    INodePlan[] members = plan.getMemberPlans();
+    INodePlan[] members = plan.getMembers();
     // 4 members: id, version, name, location
     Assert.assertEquals(4, members.length);
   }

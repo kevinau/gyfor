@@ -1,15 +1,11 @@
 package org.gyfor.object.test;
 
-import java.util.List;
-
 import org.gyfor.object.Entity;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
-import org.gyfor.object.model.IModelFactory;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.type.builtin.EntityLifeType;
 import org.gyfor.object.value.EntityLife;
@@ -46,31 +42,31 @@ public class BuiltinTypeTest {
   }
   
   
-  private IPlanFactory planContext = new PlanFactory();
+  private PlanFactory planFactory = new PlanFactory();
   
   
   //@Test
   public void primitivesEntityModel () {
-    IEntityPlan<PrimitivesEntity> plan = planContext.getEntityPlan(PrimitivesEntity.class);
+    IEntityPlan<PrimitivesEntity> plan = planFactory.getEntityPlan(PrimitivesEntity.class);
     Assert.assertNotNull("Entity plan must not be null", plan);
 
-    IModelFactory modelFactory = new ModelFactory();
+    ModelFactory modelFactory = new ModelFactory();
     IEntityModel model = modelFactory.buildEntityModel(plan);
     
     PrimitivesEntity instance = new PrimitivesEntity(true, 'A', (byte)123, (short)1234, 12345, 123456L, 12.34F, 1234.5678);
     model.setValue(instance);
     
-    List<INodeModel> items = model.getMembers();
-    Assert.assertEquals(8,  items.size());
+    INodeModel[] items = model.getMembers();
+    Assert.assertEquals(8,  items.length);
     for (int i = 0; i < 8; i++) {
-      Assert.assertTrue(items.get(i) instanceof IItemModel);
-      IItemModel itemModel = (IItemModel)items.get(i);
+      Assert.assertTrue(items[i] instanceof IItemModel);
+      IItemModel itemModel = (IItemModel)items[i];
       Assert.assertEquals(true, itemModel.getType().isPrimitive());
       Assert.assertEquals(false, itemModel.getType().isNullable());
     }
     Object[] values = new Object[8];
     for (int i = 0; i < 8; i++) {
-      values[i] = items.get(i).getValue();
+      values[i] = items[i].getValue();
     }
     Assert.assertEquals(true, values[0]);
     Assert.assertEquals('A', values[1]);
@@ -96,27 +92,27 @@ public class BuiltinTypeTest {
   
   @Test
   public void entityLifeEntityModel () {
-    IEntityPlan<EntityLifeEntity> plan = planContext.getEntityPlan(EntityLifeEntity.class);
+    IEntityPlan<EntityLifeEntity> plan = planFactory.getEntityPlan(EntityLifeEntity.class);
     Assert.assertNotNull("Entity plan must not be null", plan);
 
-    IModelFactory modelFactory = new ModelFactory();
+    ModelFactory modelFactory = new ModelFactory();
     IEntityModel model = modelFactory.buildEntityModel(plan);
     
     EntityLifeEntity instance = new EntityLifeEntity(EntityLife.ACTIVE);
     model.setValue(instance);
     
-    List<INodeModel> items = model.getMembers();
-    Assert.assertEquals(1,  items.size());
-    for (int i = 0; i < items.size(); i++) {
-      Assert.assertTrue(items.get(i) instanceof IItemModel);
-      IItemModel itemModel = (IItemModel)items.get(i);
+    INodeModel[] items = model.getMembers();
+    Assert.assertEquals(1,  items.length);
+    for (int i = 0; i < items.length; i++) {
+      Assert.assertTrue(items[i] instanceof IItemModel);
+      IItemModel itemModel = (IItemModel)items[i];
       Assert.assertEquals(false, itemModel.getType().isPrimitive());
       Assert.assertEquals(false, itemModel.getType().isNullable());
       Assert.assertEquals(true, itemModel.getType() instanceof EntityLifeType);
     }
     Object[] values = new Object[1];
     for (int i = 0; i < values.length; i++) {
-      IItemModel itemModel = (IItemModel)items.get(i);
+      IItemModel itemModel = (IItemModel)items[i];
       values[i] = itemModel.getValue();
     }
     Assert.assertEquals(EntityLife.ACTIVE, values[0]);

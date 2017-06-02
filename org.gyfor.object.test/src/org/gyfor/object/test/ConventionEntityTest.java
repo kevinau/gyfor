@@ -1,7 +1,6 @@
 package org.gyfor.object.test;
 
 import org.gyfor.object.Entity;
-import org.gyfor.object.EntityPlanFactory;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
@@ -37,18 +36,18 @@ public class ConventionEntityTest {
   }
 
 
-  private PlanFactory context;
+  private PlanFactory planFactory;
   
   
   @Before
   public void before () {
-    context = new PlanFactory();
+    planFactory = new PlanFactory();
   }
   
   
   @Test
   public void entityPlanByConvention () {
-    IEntityPlan<SimpleEntity> plan = EntityPlanFactory.getEntityPlan(context, SimpleEntity.class);
+    IEntityPlan<SimpleEntity> plan = planFactory.getEntityPlan(SimpleEntity.class);
     
     INodePlan idPlan = plan.getIdPlan();
     Assert.assertNotNull(idPlan);

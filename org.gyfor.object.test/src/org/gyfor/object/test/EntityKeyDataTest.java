@@ -3,7 +3,6 @@ package org.gyfor.object.test;
 import java.util.List;
 
 import org.gyfor.object.Entity;
-import org.gyfor.object.EntityPlanFactory;
 import org.gyfor.object.UniqueConstraint;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
@@ -43,18 +42,18 @@ public class EntityKeyDataTest {
   }
 
 
-  private PlanFactory factory;
+  private PlanFactory planFactory;
   
   
   @Before
   public void before () {
-    factory = new PlanFactory();
+    planFactory = new PlanFactory();
   }
   
   
   @Test
   public void testKeys () {
-    IEntityPlan<SimpleEntity> plan = EntityPlanFactory.getEntityPlan(factory, SimpleEntity.class);
+    IEntityPlan<SimpleEntity> plan = planFactory.getEntityPlan(SimpleEntity.class);
     
     IItemPlan<?>[] keyItems = plan.getKeyItems(0);
     Assert.assertEquals(1, keyItems.length);
@@ -64,7 +63,7 @@ public class EntityKeyDataTest {
   
   @Test
   public void testData () {
-    IEntityPlan<SimpleEntity> plan = EntityPlanFactory.getEntityPlan(factory, SimpleEntity.class);
+    IEntityPlan<SimpleEntity> plan = planFactory.getEntityPlan(SimpleEntity.class);
     
     List<INodePlan> dataPlans = plan.getDataPlans();
     Assert.assertEquals(3, dataPlans.size());

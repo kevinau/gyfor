@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gyfor.object.Embeddable;
-import org.gyfor.object.model.impl2.IEntityModel;
-import org.gyfor.object.model.impl2.IItemModel;
-import org.gyfor.object.model.impl2.ModelFactory;
+import org.gyfor.object.model.IEntityModel;
+import org.gyfor.object.model.IItemModel;
+import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.PlanFactory;
 import org.junit.Assert;
 import org.junit.Test;

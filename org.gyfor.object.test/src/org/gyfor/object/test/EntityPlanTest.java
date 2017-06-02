@@ -1,6 +1,5 @@
 package org.gyfor.object.test;
 
-import java.util.List;
 import java.util.Map;
 
 import org.gyfor.object.Entity;
@@ -9,7 +8,6 @@ import org.gyfor.object.model.ContainerChangeListener;
 import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
-import org.gyfor.object.model.IModelFactory;
 import org.gyfor.object.model.INameMappedModel;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ModelFactory;
@@ -17,7 +15,6 @@ import org.gyfor.object.plan.EntityLabelGroup;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.StringType;
@@ -57,8 +54,8 @@ public class EntityPlanTest implements ITestClass {
   }
 
 
-  private IPlanFactory planFactory = new PlanFactory();
-  private IModelFactory modelFactory = new ModelFactory();
+  private PlanFactory planFactory = new PlanFactory();
+  private ModelFactory modelFactory = new ModelFactory();
   
   private IEntityPlan<?> plan;
   
@@ -87,7 +84,7 @@ public class EntityPlanTest implements ITestClass {
     // No entity life plan on this entity
     Assert.assertNull(entityLifePlan);
     
-    INodePlan[] members = plan.getMemberPlans();
+    INodePlan[] members = plan.getMembers();
     Assert.assertEquals(2, members.length);
   }
   
@@ -136,8 +133,8 @@ public class EntityPlanTest implements ITestClass {
     model.setValue(instance);
 
     Assert.assertEquals(1, model.getNodeId());
-    List<INodeModel> members = model.getMembers();
-    Assert.assertEquals(2, members.size());
+    INodeModel[] members = model.getMembers();
+    Assert.assertEquals(2, members.length);
     Assert.assertTrue(model instanceof INameMappedModel);
     Assert.assertEquals(plan, model.getPlan());
     Assert.assertEquals(instance, model.getValue());

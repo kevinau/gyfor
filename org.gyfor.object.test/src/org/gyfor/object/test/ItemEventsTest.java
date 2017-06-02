@@ -4,11 +4,9 @@ import org.gyfor.object.Entity;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
-import org.gyfor.object.model.IModelFactory;
 import org.gyfor.object.model.ItemEventListener;
 import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.object.plan.PlanFactory;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,8 +30,8 @@ public class ItemEventsTest {
   }
 
   
-  private IPlanFactory planFactory = new PlanFactory();
-  private IModelFactory modelFactory = new ModelFactory();
+  private PlanFactory planFactory = new PlanFactory();
+  private ModelFactory modelFactory = new ModelFactory();
   
   private class EventCounter implements ItemEventListener {
 

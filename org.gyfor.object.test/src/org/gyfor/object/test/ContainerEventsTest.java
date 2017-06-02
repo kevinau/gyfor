@@ -7,11 +7,9 @@ import org.gyfor.object.Optional;
 import org.gyfor.object.model.ContainerChangeListener;
 import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.IEntityModel;
-import org.gyfor.object.model.IModelFactory;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.value.EntityLife;
 import org.gyfor.object.value.VersionTime;
@@ -65,8 +63,8 @@ public class ContainerEventsTest {
   }
 
   
-  private IPlanFactory planFactory = new PlanFactory();
-  private IModelFactory modelFactory = new ModelFactory();
+  private PlanFactory planFactory = new PlanFactory();
+  private ModelFactory modelFactory = new ModelFactory();
   
   private class EventCounter implements ContainerChangeListener {
 

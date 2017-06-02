@@ -3,12 +3,10 @@ package org.gyfor.object.test;
 import java.util.function.Consumer;
 
 import org.gyfor.object.Entity;
-import org.gyfor.object.EntityPlanFactory;
 import org.gyfor.object.model.path.IPathExpression;
 import org.gyfor.object.model.path.PathParser;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.object.plan.PlanFactory;
 
 
@@ -22,11 +20,9 @@ public class PathTests {
   }
   
   public static void main (String[] args) throws Exception {
-    IPlanFactory factory = new PlanFactory();
+    PlanFactory planFactory = new PlanFactory();
     
-    Test1 entity1 = new Test1();
-    
-    IEntityPlan<Test1> plan1 = EntityPlanFactory.getEntityPlan(factory, entity1);
+    IEntityPlan<Test1> plan1 = planFactory.getEntityPlan(Test1.class);
 
     String[] tests = {
         "field1",
