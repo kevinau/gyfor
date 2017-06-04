@@ -22,14 +22,21 @@ public class EntityModel extends NameMappedModel implements IEntityModel {
   @Override
   public void setValue (Object value) {
     valueRef.setValue(value);
-    setParent(null);
-    syncValue(this, value);
+    syncValue(null, value);
   }
   
   
   @Override
   public <T> T getValue () {
     return valueRef.getValue();
+  }
+  
+  
+  @Override
+  public void buildQualifiedNamePart (StringBuilder builder, boolean[] isFirst) {
+    builder.append(((IEntityPlan<?>)getPlan()).getClassName());
+    builder.append('#');
+    isFirst[0] = true;
   }
   
   

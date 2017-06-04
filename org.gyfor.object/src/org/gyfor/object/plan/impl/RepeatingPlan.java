@@ -22,6 +22,7 @@ public abstract class RepeatingPlan extends ContainerPlan implements IRepeatingP
   private final int minOccurs;
   private final int maxOccurs;  
   
+  
   public RepeatingPlan (PlanFactory planFactory, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
     super (field, name, entryMode);
     elemPlan = NodePlanFactory.getNodePlan(planFactory, elemClass, field, name + "[]", entryMode, dimension + 1, false);
@@ -50,13 +51,6 @@ public abstract class RepeatingPlan extends ContainerPlan implements IRepeatingP
   }
   
   
-  @Override 
-  public void setParent (INodePlan parent) {
-    super.setParent(parent);
-    elemPlan.setParent(this);
-  }
-  
-
   @Override
   public INodePlan[] getChildNodes () {
     return new INodePlan[] {
@@ -107,6 +101,7 @@ public abstract class RepeatingPlan extends ContainerPlan implements IRepeatingP
   public <X> X newInstance (X fromInstance) {
     return elemPlan.newInstance(fromInstance);
   }
+  
   
 //  @Override
 //  public void accumulateTopItemPlans(List<IItemPlan<?>> fieldPlans) {

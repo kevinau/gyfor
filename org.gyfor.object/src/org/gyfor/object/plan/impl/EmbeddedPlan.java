@@ -12,10 +12,10 @@ public class EmbeddedPlan<T> extends ClassPlan<T> implements IEmbeddedPlan<T> {
 
   private EmbeddedLabelGroup labels;
   
+  
   public EmbeddedPlan (PlanFactory planFactory, Field field, Class<T> embeddedClass, String name, EntryMode entryMode) {
     super (planFactory, field, embeddedClass, name, entryMode);
     this.labels = new EmbeddedLabelGroup(field, name);
-    System.out.println("EmbeddedPlan... " + super.toString());
   }
   
 

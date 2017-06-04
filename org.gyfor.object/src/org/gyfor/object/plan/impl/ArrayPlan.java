@@ -55,5 +55,5 @@ public class ArrayPlan extends RepeatingPlan implements IArrayPlan {
     }
     return (X)toArray;
   }
-  
+
 }

@@ -7,6 +7,7 @@ import org.gyfor.object.EntryMode;
 import org.gyfor.object.model.EffectiveEntryMode;
 import org.gyfor.object.model.EffectiveEntryModeListener;
 import org.gyfor.object.model.IContainerModel;
+import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.IValueReference;
 import org.gyfor.object.model.ModelFactory;
@@ -25,13 +26,26 @@ public abstract class NodeModel implements INodeModel {
   
   private List<EffectiveEntryModeListener> effectiveEntryModeListeners = new ArrayList<>();
   
+  private String qualifiedName;
+  
+  
   @Override
   public abstract void syncValue(IContainerModel parent, Object value);
  
   @Override
   public void setParent (IContainerModel parent) {
+    if (parent == null && !(this instanceof IEntityModel)) {
+      throw new IllegalArgumentException("Parent is null and node is not an IEntityModel");
+    }
     this.parent = parent;
   }
+  
+  
+  @Override
+  public IContainerModel getParent() {
+    return parent;
+  }
+  
   
   @Override
   public abstract <T> T getValue();
@@ -138,4 +152,33 @@ public abstract class NodeModel implements INodeModel {
     return nodePlan.getName();
   }
   
+  
+  protected static void buildModelTrail (INodeModel model, List<INodeModel> trail) {
+    IContainerModel parent = model.getParent();
+    if (parent != null) {
+      buildModelTrail(parent, trail);
+    }
+    trail.add(model);
+  }
+  
+
+  private String buildQualifiedName () {
+    List<INodeModel> trail = new ArrayList<>();
+    buildModelTrail (this, trail);
+    StringBuilder builder1 = new StringBuilder();
+    boolean[] isFirst = new boolean[1];
+    for (INodeModel x : trail) {
+      x.buildQualifiedNamePart(builder1, isFirst);
+    }
+    return builder1.toString();
+  }
+  
+  
+  @Override
+  public String getQualifiedName () {
+    if (qualifiedName == null) {
+      qualifiedName = buildQualifiedName();
+    }
+    return qualifiedName;
+  }
 }

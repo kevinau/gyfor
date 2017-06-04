@@ -83,7 +83,6 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
     } catch (ParseException ex) {
       throw new IllegalArgumentException(ex);
     }
-    pathExpr.dump();
     List<IItemModel> found = new ArrayList<>();
     pathExpr.matches(this, null, new Consumer<INodeModel>() {
 

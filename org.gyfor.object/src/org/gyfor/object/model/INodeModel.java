@@ -26,6 +26,8 @@ public interface INodeModel {
   public EntryMode getEntryMode();
 
   public String getName();
+  
+  public void buildQualifiedNamePart(StringBuilder builder, boolean[] isFirst);
 
   public void addEffectiveEntryModeListener(EffectiveEntryModeListener x);
 
@@ -36,5 +38,9 @@ public interface INodeModel {
   }
 
   public void dump(int level);
+
+  public IContainerModel getParent();
+
+  public String getQualifiedName();
 
 }

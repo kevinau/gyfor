@@ -28,8 +28,6 @@ public interface INodePlan {
 
   public String getName();
   
-  public String getQualifiedName();
-  
   public <X> X getFieldValue (Object instance);
   
   public void setFieldValue (Object instance, Object value);
@@ -53,9 +51,5 @@ public interface INodePlan {
   public PlanStructure getStructure();
 
   public Field getField();
-
-  public INodePlan getParent();
-  
-  public void setParent (INodePlan parent);
 
 }

@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.Mode;
 import org.gyfor.object.Optional;
-import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.INodePlan;
 
 public abstract class NodePlan implements INodePlan {
@@ -17,22 +16,6 @@ public abstract class NodePlan implements INodePlan {
   private EntryMode staticMode = EntryMode.UNSPECIFIED;
   
   private final boolean nullable;
-  
-  private INodePlan parent;
-  
-  private String qualifiedName;
-  
-  
-  @Override
-  public void setParent (INodePlan parent) {
-    this.parent = parent;
-  }
-  
-  
-  @Override
-  public INodePlan getParent() {
-    return parent;
-  }
   
   
   protected static String entityName (Class<?> entityClass) {
@@ -110,44 +93,6 @@ public abstract class NodePlan implements INodePlan {
   }
   
   
-  private static void buildQualifiedName (INodePlan nodePlan, StringBuilder builder, boolean[] isTop) {
-    INodePlan parent = nodePlan.getParent();
-    if (parent == null) {
-      if (nodePlan instanceof IEntityPlan) {
-        builder.append(((IEntityPlan<?>)nodePlan).getClassName());
-      } else {
-        throw new RuntimeException("Parent of " + nodePlan + " is null, but this is not an IEntityPlan");
-      }
-      isTop[0] = true;
-    } else {
-      buildQualifiedName(parent, builder, isTop);
-      if (isTop[0]) {
-        builder.append('#');
-      } else {
-        builder.append('.');
-      }
-      builder.append(nodePlan.getName());
-    }
-  }
-  
-
-  private String buildQualifiedName () {
-    StringBuilder builder = new StringBuilder();
-    boolean[] isTop = new boolean[1];
-    buildQualifiedName(this, builder, isTop);
-    return builder.toString();
-  }
-  
-  
-  @Override
-  public String getQualifiedName() {
-    if (qualifiedName == null) {
-      qualifiedName = buildQualifiedName();
-    }
-    return qualifiedName;
-  }
-
-  
   @Override
   public EntryMode getEntryMode () {
     return staticMode;
@@ -186,7 +131,7 @@ public abstract class NodePlan implements INodePlan {
   
   @Override
   public String toString () {
-    return "NodePlan(" + name + "'," + staticMode + ")";
+    return "NodePlan('" + name + "'," + staticMode + ")";
   }
 
 }

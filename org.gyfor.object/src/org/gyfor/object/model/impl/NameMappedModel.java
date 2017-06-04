@@ -30,7 +30,8 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
     setParent(parent);
     if (nameMappedValue == null) {
       for (String memberName : members.keySet()) {
-        members.remove(memberName);
+        INodeModel member = members.remove(memberName);
+        fireChildRemoved(this, member);
       }
     } else {
       INodePlan[] memberPlans = classPlan.getMembers();
@@ -41,6 +42,7 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
           IValueReference memberValueRef = new ClassValueReference(valueRef, memberPlan);
           member = buildNodeModel(memberValueRef, memberPlan);
           members.put(fieldName, member);
+          fireChildAdded(this, member, null);
         }
         Object memberValue = memberPlan.getFieldValue(nameMappedValue);
         member.syncValue(this, memberValue);

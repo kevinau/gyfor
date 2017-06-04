@@ -31,15 +31,6 @@ public abstract class ClassPlan<T> extends ContainerPlan implements IClassPlan<T
 
   
   @Override
-  public void setParent (INodePlan parent) {
-    super.setParent(parent);
-    for (INodePlan child : getMembers()) {
-      child.setParent(this);
-    }
-  }
-  
-  
-  @Override
   public INodePlan[] getMembers() {
     return augmented.getMemberPlans();
   }

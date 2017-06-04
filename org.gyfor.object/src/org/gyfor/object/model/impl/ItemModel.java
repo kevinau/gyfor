@@ -70,6 +70,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
 
   @Override
   public void syncValue(IContainerModel parent, Object value) {
+    setParent(parent);
   }
 
   
@@ -102,6 +103,15 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   @Override
   public String getName () {
     return itemPlan.getName();
+  }
+  
+  
+  @Override
+  public void buildQualifiedNamePart (StringBuilder builder, boolean[] isFirst) {
+    if (isFirst[0] == false) {
+      builder.append('.');
+    }
+    builder.append(getName());
   }
   
   

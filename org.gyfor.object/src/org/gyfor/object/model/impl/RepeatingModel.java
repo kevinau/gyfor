@@ -45,4 +45,9 @@ public abstract class RepeatingModel extends ContainerModel implements IRepeatin
     return getMembers();
   }
 
+  
+  @Override
+  public void buildQualifiedNamePart (StringBuilder builder, boolean[] isFirst) {
+  }
+  
 }

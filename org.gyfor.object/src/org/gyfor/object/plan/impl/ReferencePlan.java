@@ -17,7 +17,7 @@ public class ReferencePlan<T> extends NodePlan implements IReferencePlan<T> {
   private final IEntityPlan<T> referencedPlan;
   private final ReferenceLabelGroup labels;
 
-
+  
   public ReferencePlan(PlanFactory planFactory, Field field, Class<T> referencedClass, String pathName, EntryMode entryMode) {
     super(field, pathName, entryMode);
     if (!referencedClass.isAnnotationPresent(Entity.class)) {
