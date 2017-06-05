@@ -9,7 +9,7 @@ public interface INodeModel {
   
   public int getNodeId();
   
-  public void syncValue(IContainerModel parent, Object value);
+  public void syncValue(Object value);
 
   public void setParent(IContainerModel parent);
 
@@ -23,11 +23,9 @@ public interface INodeModel {
 
   public EffectiveEntryMode getEffectiveEntryMode();
 
-  public EntryMode getEntryMode();
-
   public String getName();
   
-  public void buildQualifiedNamePart(StringBuilder builder, boolean[] isFirst);
+  public void buildQualifiedNamePart(StringBuilder builder, boolean[] isFirst, int[] repeatCount);
 
   public void addEffectiveEntryModeListener(EffectiveEntryModeListener x);
 

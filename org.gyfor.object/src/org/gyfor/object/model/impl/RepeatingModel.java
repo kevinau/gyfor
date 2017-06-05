@@ -47,7 +47,8 @@ public abstract class RepeatingModel extends ContainerModel implements IRepeatin
 
   
   @Override
-  public void buildQualifiedNamePart (StringBuilder builder, boolean[] isFirst) {
+  public void buildQualifiedNamePart (StringBuilder builder, boolean[] isFirst, int[] repeatCount) {
+    //repeatCount[0]++;
   }
   
 }

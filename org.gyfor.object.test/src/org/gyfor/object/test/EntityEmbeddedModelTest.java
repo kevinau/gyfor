@@ -98,15 +98,9 @@ public class EntityEmbeddedModelTest {
   public void createEntityModel () {
     IEntityPlan<Party> plan = planFactory.getEntityPlan(Party.class);
     IEntityModel model = modelFactory.buildEntityModel(plan);
-    System.out.println("1-------------------");
-    model.dump(0);
-    System.out.println("-------------------");
     
     Party instance = new Party("Kevin Holloway", "Burwood Avenue", "Nailsworth");
     model.setValue(instance);
-    System.out.println("2-------------------");
-    model.dump(0);
-    System.out.println("-------------------");
     
     Party instance2 = model.getValue();
     

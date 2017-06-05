@@ -60,7 +60,6 @@ public class ValueSettingTest {
     
     Party party = new Party("Kevin Holloway", "17", "Burwood Avenue", "Nailsworth");
     entity.setValue(party);
-    entity.dump();
   }
 
   

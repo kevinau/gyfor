@@ -3,7 +3,6 @@ package org.gyfor.object.model.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.INameMappedModel;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.IValueReference;
@@ -26,8 +25,7 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
   
   
   @Override
-  public void syncValue (IContainerModel parent, Object nameMappedValue) {
-    setParent(parent);
+  public void syncValue (Object nameMappedValue) {
     if (nameMappedValue == null) {
       for (String memberName : members.keySet()) {
         INodeModel member = members.remove(memberName);
@@ -40,12 +38,12 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
         INodeModel member = members.get(fieldName);
         if (member == null) {
           IValueReference memberValueRef = new ClassValueReference(valueRef, memberPlan);
-          member = buildNodeModel(memberValueRef, memberPlan);
+          member = buildNodeModel(this, memberValueRef, memberPlan);
           members.put(fieldName, member);
           fireChildAdded(this, member, null);
         }
         Object memberValue = memberPlan.getFieldValue(nameMappedValue);
-        member.syncValue(this, memberValue);
+        member.syncValue(memberValue);
       }
     }
   }

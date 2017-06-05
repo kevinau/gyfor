@@ -22,7 +22,7 @@ public class EntityModel extends NameMappedModel implements IEntityModel {
   @Override
   public void setValue (Object value) {
     valueRef.setValue(value);
-    syncValue(null, value);
+    syncValue(value);
   }
   
   
@@ -33,7 +33,7 @@ public class EntityModel extends NameMappedModel implements IEntityModel {
   
   
   @Override
-  public void buildQualifiedNamePart (StringBuilder builder, boolean[] isFirst) {
+  public void buildQualifiedNamePart (StringBuilder builder, boolean[] isFirst, int[] repeatCount) {
     builder.append(((IEntityPlan<?>)getPlan()).getClassName());
     builder.append('#');
     isFirst[0] = true;

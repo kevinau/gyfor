@@ -10,7 +10,6 @@ import org.gyfor.object.UserEntryException;
 import org.gyfor.object.model.ComparisonBasis;
 import org.gyfor.object.model.EffectiveEntryMode;
 import org.gyfor.object.model.EffectiveEntryModeListener;
-import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.IValueReference;
@@ -69,8 +68,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
 
 
   @Override
-  public void syncValue(IContainerModel parent, Object value) {
-    setParent(parent);
+  public void syncValue(Object value) {
   }
 
   
@@ -107,11 +105,16 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   
   
   @Override
-  public void buildQualifiedNamePart (StringBuilder builder, boolean[] isFirst) {
+  public void buildQualifiedNamePart (StringBuilder builder, boolean[] isFirst, int[] repeatCount) {
     if (isFirst[0] == false) {
       builder.append('.');
     }
+    isFirst[0] = false;
     builder.append(getName());
+    for (int i = 0; i < repeatCount[0]; i++) {
+      builder.append("[]");
+    }
+    repeatCount[0] = 0;
   }
   
   

@@ -21,7 +21,7 @@ public abstract class NodeModel implements INodeModel {
   private IContainerModel parent;
   private INodePlan nodePlan;
   
-  private EntryMode entryMode = EntryMode.ENABLED;
+  private EntryMode entryMode = EntryMode.UNSPECIFIED;
   private EffectiveEntryMode effectiveEntryMode = EffectiveEntryMode.ENABLED;
   
   private List<EffectiveEntryModeListener> effectiveEntryModeListeners = new ArrayList<>();
@@ -30,8 +30,9 @@ public abstract class NodeModel implements INodeModel {
   
   
   @Override
-  public abstract void syncValue(IContainerModel parent, Object value);
+  public abstract void syncValue(Object value);
  
+  
   @Override
   public void setParent (IContainerModel parent) {
     if (parent == null && !(this instanceof IEntityModel)) {
@@ -58,8 +59,11 @@ public abstract class NodeModel implements INodeModel {
   }
   
 
-  protected INodeModel buildNodeModel (IValueReference valueRef, INodePlan nodePlan) {
-    return modelFactory.buildNodeModel(valueRef, nodePlan);
+  protected INodeModel buildNodeModel (IContainerModel parent, IValueReference valueRef, INodePlan nodePlan) {
+    INodeModel node = modelFactory.buildNodeModel(valueRef, nodePlan);
+    node.setParent(parent);
+    node.setEntryMode(nodePlan.getEntryMode());
+    return node;
   }
 
   
@@ -82,18 +86,16 @@ public abstract class NodeModel implements INodeModel {
   
   @Override
   public void setEntryMode (EntryMode entryMode) {
-    if (this.entryMode != entryMode) {
-      this.entryMode = entryMode;
+    this.entryMode = entryMode;
 
-      EffectiveEntryMode parentMode;
-      if (parent == null) {
-        // Top level node (IEntity node)
-        parentMode = EffectiveEntryMode.toEffective(getEntryMode());
-      } else {
-        parentMode = parent.getEffectiveEntryMode();
-      }
-      updateEffectiveEntryMode (parentMode);
+    EffectiveEntryMode parentMode;
+    if (parent == null) {
+      // Top level node (IEntity node)
+      parentMode = EffectiveEntryMode.toEffective(entryMode);
+    } else {
+      parentMode = parent.getEffectiveEntryMode();
     }
+    updateEffectiveEntryMode (parentMode);
   }
 
   
@@ -115,12 +117,6 @@ public abstract class NodeModel implements INodeModel {
   @Override
   public EffectiveEntryMode getEffectiveEntryMode() {
     return effectiveEntryMode;
-  }
-  
-  
-  @Override
-  public EntryMode getEntryMode() {
-    return entryMode;
   }
   
   
@@ -167,8 +163,9 @@ public abstract class NodeModel implements INodeModel {
     buildModelTrail (this, trail);
     StringBuilder builder1 = new StringBuilder();
     boolean[] isFirst = new boolean[1];
+    int[] repeatCount = new int[1];
     for (INodeModel x : trail) {
-      x.buildQualifiedNamePart(builder1, isFirst);
+      x.buildQualifiedNamePart(builder1, isFirst, repeatCount);
     }
     return builder1.toString();
   }

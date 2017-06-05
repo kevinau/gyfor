@@ -1,4 +1,4 @@
-package org.gyfor.object.test;
+package org.gyfor.object.test.data;
 
 
 import java.util.ArrayList;
