@@ -14,8 +14,7 @@ public interface IItemModel extends INodeModel {
 
   public boolean isInError();
 
-  @Deprecated
-  public Type getStatus();
+  public UserEntryException.Type getStatus();
   
   public IType<?> getType();
 

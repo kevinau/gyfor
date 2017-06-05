@@ -1,8 +1,6 @@
 package org.gyfor.object.test;
 
 import org.gyfor.object.Entity;
-import org.gyfor.object.Id;
-import org.gyfor.object.Version;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
@@ -14,22 +12,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class AnnotatedEntityTest {
+public class SpecialEntityFieldsByConvention {
 
   @Entity
+  @SuppressWarnings("unused")
   public static class SimpleEntity {
 
-    @Id
-    private int identity;
+    private int id;
     
-    @Version 
-    private VersionTime versionField;
+    private VersionTime version;
     
     private String name;
 
     private String location;
 
-    @SuppressWarnings("unused")
     private EntityLife entityLife;
     
     @Override
@@ -50,18 +46,18 @@ public class AnnotatedEntityTest {
   
   
   @Test
-  public void testBasicPlan () {
+  public void entityPlanByConvention () {
     IEntityPlan<SimpleEntity> plan = planFactory.getEntityPlan(SimpleEntity.class);
     
     INodePlan idPlan = plan.getIdPlan();
     Assert.assertNotNull(idPlan);
     Assert.assertTrue(idPlan instanceof IItemPlan);
-    Assert.assertEquals("identity", idPlan.getName());
+    Assert.assertEquals("id", idPlan.getName());
     
     INodePlan versionPlan = plan.getVersionPlan();
     Assert.assertNotNull(versionPlan);
     Assert.assertTrue(versionPlan instanceof IItemPlan);
-    Assert.assertEquals("versionField", versionPlan.getName());
+    Assert.assertEquals("version", versionPlan.getName());
     
     INodePlan entityLifePlan = plan.getEntityLifePlan();
     Assert.assertNotNull(entityLifePlan);

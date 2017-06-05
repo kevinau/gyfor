@@ -2,7 +2,6 @@ package org.gyfor.object.plan.impl;
 
 import java.lang.reflect.Field;
 
-import org.gyfor.object.Entity;
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.INodePlan;
@@ -10,19 +9,17 @@ import org.gyfor.object.plan.IReferencePlan;
 import org.gyfor.object.plan.ItemLabelGroup;
 import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.plan.PlanStructure;
+import org.gyfor.object.type.builtin.IntegerType;
 
 
-public class ReferencePlan<T> extends NodePlan implements IReferencePlan<T> {
+public class ReferencePlan<T> extends ItemPlan<Integer> implements IReferencePlan<T> {
 
   private final IEntityPlan<T> referencedPlan;
   private final ReferenceLabelGroup labels;
 
   
   public ReferencePlan(PlanFactory planFactory, Field field, Class<T> referencedClass, String pathName, EntryMode entryMode) {
-    super(field, pathName, entryMode);
-    if (!referencedClass.isAnnotationPresent(Entity.class)) {
-      throw new IllegalArgumentException("Referenced class is not annotated with @Entity");
-    }
+    super(field, pathName, entryMode, new IntegerType());
     this.referencedPlan = planFactory.getEntityPlan(referencedClass);
     this.labels = new ReferenceLabelGroup(field, pathName);
   }
