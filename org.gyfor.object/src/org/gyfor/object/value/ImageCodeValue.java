@@ -12,7 +12,7 @@ package org.gyfor.object.value;
 
 
 
-public class ImageCodeValue extends CodeValue {
+public class ImageCodeValue extends Code {
 
   private static final long serialVersionUID = 2216265814652748937L;
 

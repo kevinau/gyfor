@@ -62,4 +62,14 @@ public interface IDialect {
   
   public Connection getConnection (Object connectionFactory);
   
+  
+  public default String dropTableTemplate() {
+    return "DROP TABLE {0};";
+  }
+  
+  
+  public default String noTableState() {
+    return "42X05";
+  }
+  
 }

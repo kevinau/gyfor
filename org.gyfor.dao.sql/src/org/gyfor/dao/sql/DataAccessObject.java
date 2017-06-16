@@ -8,6 +8,7 @@ import org.gyfor.dao.EntityChangeListener;
 //import org.gyfor.dao.IDataEventRegistry;
 import org.gyfor.dao.EntityDescription;
 import org.gyfor.dao.IDataAccessObject;
+import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.IPlanFactory;
@@ -27,7 +28,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 
-@Component (configurationPolicy=ConfigurationPolicy.REQUIRE)
+//////@Component (configurationPolicy=ConfigurationPolicy.REQUIRE)
 public class DataAccessObject<T> implements IDataAccessObject<T> {
 
   //private IDataEventRegistry dataEventRegistry;
@@ -316,6 +317,59 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
         IConnection conn = connFactory.getIConnection();
         IPreparedStatement stmt1 = conn.prepareStatement(sqlBuilder.getNextValSql());
         IPreparedStatement stmt2 = conn.prepareStatement(sqlBuilder.getInsertSql())) 
+    {
+      conn.setAutoCommit(false);
+      
+      IResultSet rs = stmt1.executeQuery();
+      rs.next();
+      id = rs.getInt();
+      version = VersionTime.now();
+      
+      idPlan.setStatementFromValue(stmt2, id);
+      if (versionPlan != null) {
+        versionPlan.setStatementFromValue(stmt2, version);
+      }
+      for (IItemPlan<?> plan : dataPlans) {
+        plan.setStatementFromInstance(stmt2, instance);
+      }
+      if (entityLifePlan != null) {
+        entityLifePlan.setStatementFromValue(stmt2, EntityLife.ACTIVE);
+      }
+      stmt2.executeUpdate();
+
+      // Complete instance with id, version and entity life
+      idPlan.setFieldValue(instance, id);
+      if (versionPlan != null) {
+        versionPlan.setFieldValue(instance, version);
+      }
+      if (entityLifePlan != null) {
+        entityLifePlan.setFieldValue(instance, EntityLife.ACTIVE);
+      }
+      conn.commit();
+      
+      // Notify any listeners that a new entity has been added to the database
+      fireEntityAddedEvent (instance);
+      fireDescriptionAddedEvent (id, instance, EntityLife.ACTIVE);
+    } catch (IllegalArgumentException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
+  
+  
+  @Override
+  public void add (IEntityModel model, T instance) {
+    int oldId = idPlan.getFieldValue(instance);
+    if (oldId != -1) {
+      throw new IllegalArgumentException("instance value appears to be complete (ie it already has a data store id value)");
+    }
+
+    model.walkModel((m)-> {}, (m)-> {});
+    
+    VersionTime version = null;
+    int id;
+    
+    try (
+        IConnection conn = connFactory.getIConnection();
     {
       conn.setAutoCommit(false);
       

@@ -29,5 +29,13 @@ public interface IItemModel extends INodeModel {
   public void removeItemEventListener(ItemEventListener x);
 
   public void setValueFromSource(String source);
+  
+  public default boolean isId() {
+    return false;
+  }
+  
+  public default boolean isVersion() {
+    return false;
+  }
 
 }

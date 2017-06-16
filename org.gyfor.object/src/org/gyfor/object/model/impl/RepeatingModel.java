@@ -2,6 +2,7 @@ package org.gyfor.object.model.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.IRepeatingModel;
@@ -50,5 +51,16 @@ public abstract class RepeatingModel extends ContainerModel implements IRepeatin
   public void buildQualifiedNamePart (StringBuilder builder, boolean[] isFirst, int[] repeatCount) {
     //repeatCount[0]++;
   }
+  
+
+  @Override
+  public void walkModel(Consumer<INodeModel> before, Consumer<INodeModel> after) {
+    before.accept(this);
+    for (INodeModel element : elements) {
+      element.walkModel(before, after);
+    }
+    after.accept(this);
+  }
+
   
 }

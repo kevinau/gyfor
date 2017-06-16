@@ -25,7 +25,7 @@ public abstract class RepeatingPlan extends ContainerPlan implements IRepeatingP
   
   public RepeatingPlan (PlanFactory planFactory, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
     super (field, name, entryMode);
-    elemPlan = NodePlanFactory.getNodePlan(planFactory, elemClass, field, name + "[]", entryMode, dimension + 1, false);
+    elemPlan = NodePlanFactory.getNodePlan(planFactory, elemClass, field, name, entryMode, dimension + 1, false);
     this.dimension = dimension;
     
     Occurs occursAnn = field.getAnnotation(Occurs.class);
@@ -86,7 +86,7 @@ public abstract class RepeatingPlan extends ContainerPlan implements IRepeatingP
   @Override
   public void dump (int level) {
     indent(level);
-    System.out.println("Repeating: " + " [" + minOccurs + "," + maxOccurs + "]");
+    System.out.println("Repeating: " + " [" + minOccurs + "," + maxOccurs + "] dimension " + dimension);
     elemPlan.dump(level + 1);
   }
 

@@ -65,7 +65,7 @@ public @interface ItemField {
   
   
   /**
-   * Optional text that is displayed if data entry does not match the pattern.  This is only use if a pattern
+   * Optional text that is displayed if data entry does not match the pattern.  This is only used if a pattern
    * is specified.  If data entry is incomplete, this message is displayed as an incomplete message.  If the
    * data entry does not match the pattern at all, this message is displayed as an error message.  If not 
    * specified, the error/incomplete message is derived from the pattern.

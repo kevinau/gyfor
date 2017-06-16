@@ -17,6 +17,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 @Component(configurationPolicy=ConfigurationPolicy.REQUIRE)
 public class ConnectionFactory implements IConnectionFactory {
 
+  @Reference(name="dialect", cardinality=ReferenceCardinality.MANDATORY)
   private IDialect dialect;
   
   @Configurable(required=true)
@@ -35,17 +36,6 @@ public class ConnectionFactory implements IConnectionFactory {
   private Object connectionFactory;
   
   
-  @Reference(name="dialect", cardinality=ReferenceCardinality.MANDATORY)
-  public void setDialect(IDialect dialect) {
-    this.dialect = dialect;
-  }
-
-
-  public void unsetDialect(IDialect dialect) {
-    this.dialect = null;
-  }
-
-
   @Activate
   public void activate (ComponentContext componentContext) {
     ComponentConfiguration.load(this, componentContext);
@@ -58,6 +48,7 @@ public class ConnectionFactory implements IConnectionFactory {
 //        throw new RuntimeException(ex);
 //      }
 //    }
+    
     Properties props2 = new Properties();
     if (userName != null) {
       props2.put("user", userName);
@@ -69,7 +60,6 @@ public class ConnectionFactory implements IConnectionFactory {
   
   @Deactivate
   void deactivate () {
-    
   }
   
   
@@ -87,7 +77,7 @@ public class ConnectionFactory implements IConnectionFactory {
   @Override
   public IConnection getIConnection() {
     java.sql.Connection conn = getConnection();
-    return new org.gyfor.sql.Connection(conn);
+    return new org.gyfor.sql.Connection(conn, dialect);
   }
   
   

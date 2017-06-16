@@ -13,19 +13,19 @@ package org.gyfor.object.type.builtin;
 
 import java.util.List;
 
-import org.gyfor.object.type.builtin.CodeBasedType;
-import org.gyfor.object.value.ICodeValue;
+import org.gyfor.object.ICodeSource;
+import org.gyfor.object.value.ICode;
 
 
-public class CodeType extends CodeBasedType<ICodeValue> {
+public class CodeType extends CodeBasedType<ICode> {
 
-  public CodeType (List<ICodeValue> valueList) {
-    this (valueList, null, null);
+  public CodeType (ICodeSource valueSource) {
+    super (valueSource.values(), null, null);
   }
   
   
-  public CodeType (List<ICodeValue> valueList, String shortName, String longName) {
-    super (valueList, shortName, longName);
+  public CodeType (ICodeSource valueSource, String shortName, String longName) {
+    super (valueSource.values(), shortName, longName);
   }
 
 }

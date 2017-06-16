@@ -1,9 +1,15 @@
 package org.gyfor.object.model.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.gyfor.object.model.IEntityModel;
+import org.gyfor.object.model.IModelVisitor;
+import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.IValueReference;
 import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.IEntityPlan;
+import org.gyfor.object.plan.INodePlan;
 
 public class EntityModel extends NameMappedModel implements IEntityModel {
   
@@ -53,5 +59,18 @@ public class EntityModel extends NameMappedModel implements IEntityModel {
     super.dump(level + 1);
     indent (level);
     System.out.println("}");
+  }
+
+
+  @Override
+  public List<INodeModel> getDataModels() {
+    List<INodePlan> dataPlans = entityPlan.getDataPlans();
+    List<INodeModel> dataModels = new ArrayList<>(dataPlans.size());
+    
+    for (INodePlan dataPlan : dataPlans) {
+      INodeModel dataModel = getMember(dataPlan.getName());
+      dataModels.add(dataModel);  
+    }
+    return dataModels;
   }
 }

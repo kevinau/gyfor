@@ -17,5 +17,5 @@ Import-Package: org.gyfor.dao,
  org.gyfor.osgi,
  org.gyfor.todo,
  org.gyfor.util,
- org.osgi.service.component;version="1.2.0",
+ org.osgi.service.component;version="1.3.0",
  org.slf4j

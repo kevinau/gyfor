@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.model.ComparisonBasis;
@@ -903,6 +904,13 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   @Override
   public IType<?> getType() {
     return itemPlan.getType();
+  }
+
+
+  @Override
+  public void walkModel(Consumer<INodeModel> before, Consumer<INodeModel> after) {
+    before.accept(this);
+    after.accept(this);
   }
   
   

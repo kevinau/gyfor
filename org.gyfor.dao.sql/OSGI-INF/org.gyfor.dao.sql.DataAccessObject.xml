@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" configuration-policy="require" deactivate="deactivate" name="org.gyfor.dao.sql.DataAccessObject">
-   <service>
-      <provide interface="org.gyfor.dao.IDataAccessObject"/>
-   </service>
-   <reference cardinality="1..1" field="connFactory" interface="org.gyfor.sql.IConnectionFactory" name="connFactory"/>
-   <reference cardinality="1..1" field="planFactory" interface="IPlanFactory" name="planFactory"/>
-   <implementation class="org.gyfor.dao.sql.DataAccessObject"/>
-</scr:component>

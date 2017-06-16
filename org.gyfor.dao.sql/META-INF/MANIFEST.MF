@@ -5,16 +5,20 @@ Bundle-SymbolicName: org.gyfor.dao.sql
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.gyfor.dao,
+ org.gyfor.object,
+ org.gyfor.object.model,
  org.gyfor.object.plan,
  org.gyfor.object.type,
  org.gyfor.object.value,
  org.gyfor.osgi,
  org.gyfor.sql,
+ org.gyfor.sql.dialect,
+ org.gyfor.todo,
  org.gyfor.util,
  org.gyfor.value,
  org.osgi.framework;version="1.8.0",
- org.osgi.service.component;version="1.2.0",
+ org.osgi.service.component;version="1.3.0",
  org.osgi.service.event;version="1.3.0",
  org.slf4j;version="1.7.21"
-Service-Component: OSGI-INF/org.gyfor.dao.sql.DataAccessObject.xml
 Bundle-ActivationPolicy: lazy
+Export-Package: org.gyfor.dao.mapping

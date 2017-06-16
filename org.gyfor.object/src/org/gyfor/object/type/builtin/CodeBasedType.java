@@ -15,13 +15,13 @@ import java.util.List;
 
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.type.IType;
-import org.gyfor.object.value.ICodeValue;
+import org.gyfor.object.value.ICode;
 import org.gyfor.sql.IPreparedStatement;
 import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
 
 
-public abstract class CodeBasedType<T extends ICodeValue> implements IType<T> {
+public abstract class CodeBasedType<T extends ICode> implements IType<T> {
 
   private final String shortName;
   private final String longName;
@@ -178,7 +178,7 @@ public abstract class CodeBasedType<T extends ICodeValue> implements IType<T> {
   public int getFieldSize () {
     lazyValueListUpdate(valueList);
     int n = 0;
-    for (ICodeValue cv : valueList) {
+    for (ICode cv : valueList) {
       String code = cv.getCode();
       n = Integer.max(n, code.length());
     }

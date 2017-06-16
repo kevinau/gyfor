@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test SQL data access
+Bundle-SymbolicName: org.gyfor.dao.test
+Bundle-Version: 1.0.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ClassPath: lib/junit-4.12.jar,
+ .
+Import-Package: org.gyfor.dao.mapping,
+ org.gyfor.object.model,
+ org.gyfor.object.plan,
+ org.gyfor.object.value,
+ org.gyfor.sql,
+ org.gyfor.sql.dialect,
+ org.slf4j;version="1.7.21"
+Service-Component: OSGI-INF/org.gyfor.dao.test.TableDropCreate.xml
+Bundle-ActivationPolicy: lazy
+Export-Package: org.gyfor.dao.test.data

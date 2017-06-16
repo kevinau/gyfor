@@ -1,10 +1,15 @@
 package org.gyfor.sql;
 
-
+import org.gyfor.sql.dialect.IDialect;
 
 public interface IConnection extends AutoCloseable {
 
   public IPreparedStatement prepareStatement (String sql);
+  
+  public default IPreparedStatement prepareStatement (StringBuilder sql) {
+    return prepareStatement(sql.toString());
+  }
+ 
   
   @Override
   public void close ();
@@ -20,5 +25,7 @@ public interface IConnection extends AutoCloseable {
   public void executeCommand (String sql);
   
   public IDatabaseMetaData getMetaData();
+
+  public IDialect getDialect();
   
 }

@@ -62,8 +62,7 @@ public class EntityEditPage implements HttpHandler {
       exchange.dispatch(this);
       return;
     }
-    logger.info("handleRequest: {}", exchange.getRequestURL()
-        );
+    logger.info("handleRequest: {}", exchange.getRequestURL());
     String entityName = exchange.getRelativePath();
     if (entityName == null || entityName.length() == 0) {
       HttpUtility.endWithStatus(exchange, 400, "Entity name not specified as part of request");

@@ -11,7 +11,7 @@
 package org.gyfor.object.value;
 
 
-public interface IImageCodeValue extends ICodeValue {
+public interface IImageCodeValue extends ICode {
 
   public Class<?> getImageClass();
   

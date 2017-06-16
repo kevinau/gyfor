@@ -1,7 +1,6 @@
 package org.gyfor.osgi;
 
 import java.util.Dictionary;
-import java.util.Hashtable;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

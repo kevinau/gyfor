@@ -16,16 +16,20 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 import org.gyfor.math.Decimal;
+import org.gyfor.sql.dialect.IDialect;
 
 
 public class Connection implements IConnection {
 
   private final java.sql.Connection conn;
-  private boolean withinTransaction = false;
+  private final IDialect dialect;
+  
+  private boolean active = false;
  
   
-  public Connection (java.sql.Connection conn) {
+  public Connection (java.sql.Connection conn, IDialect dialect) {
     this.conn = conn;
+    this.dialect = dialect;
   }
   
   
@@ -84,7 +88,7 @@ public class Connection implements IConnection {
   public void beginTransaction () {
     try {
       conn.setAutoCommit(false);
-      withinTransaction = true;
+      active = true;
     } catch (SQLException ex) {
       throw new RuntimeException(ex);
     }
@@ -92,7 +96,7 @@ public class Connection implements IConnection {
 
   
   public void endTransaction () {
-    if (withinTransaction) {
+    if (active) {
       rollback();
     }
   }
@@ -103,7 +107,7 @@ public class Connection implements IConnection {
     try {
       conn.rollback();
       conn.setAutoCommit(true);
-      withinTransaction = false;
+      active = false;
     } catch (SQLException ex) {
       throw new RuntimeException(ex);
     }
@@ -125,7 +129,7 @@ public class Connection implements IConnection {
     try {
       conn.commit();
       conn.setAutoCommit(true);
-      withinTransaction = false;
+      active = false;
     } catch (SQLException ex) {
       throw new RuntimeException(ex);
     }
@@ -134,10 +138,13 @@ public class Connection implements IConnection {
   
   @Override
   public void close () {
-    try {
-      conn.close();
-    } catch (SQLException ex) {
-      throw new RuntimeException(ex);
+    if (active) {
+      active = false;
+      try {
+        conn.rollback();
+      } catch (SQLException ex) {
+        throw new RuntimeException(ex);
+      }
     }
   }
   
@@ -147,7 +154,13 @@ public class Connection implements IConnection {
     return conn;
   }
   
+
+  @Override
+  public IDialect getDialect () {
+    return dialect;
+  }
   
+
   @Override
   public void executeCommand (String sql) {
     try {

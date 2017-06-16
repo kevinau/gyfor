@@ -612,6 +612,12 @@ public class PreparedStatement implements IPreparedStatement {
   
   
   @Override
+  public int executeUpdateAllowingException () throws SQLException {
+    return stmt.executeUpdate();
+  }
+  
+  
+  @Override
   public Timestamp executeQueryForTimestamp (Object... values) {
     try {
       java.sql.ResultSet rs = executeQueryFor(values);

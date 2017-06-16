@@ -13,7 +13,7 @@ package org.gyfor.object.type.builtin;
 
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.type.IType;
-import org.gyfor.object.value.ICodeValue;
+import org.gyfor.object.value.ICode;
 import org.gyfor.sql.IPreparedStatement;
 import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
@@ -32,7 +32,7 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
     if (values.length == 0) {
       throw new IllegalArgumentException("No values in enum class");
     }
-    this.isCodeValues = (values[0] instanceof ICodeValue);
+    this.isCodeValues = (values[0] instanceof ICode);
     this.enumClass = enumClass;
   }
   
@@ -45,9 +45,9 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
   public String[] getCodes () {
     Object[] values = enumClass.getEnumConstants();
     String[] codes = new String[values.length];
-    if (ICodeValue.class.isAssignableFrom(enumClass)) {
+    if (ICode.class.isAssignableFrom(enumClass)) {
       for (int i = 0; i < values.length; i++) {
-        ICodeValue ev = (ICodeValue)values[i];
+        ICode ev = (ICode)values[i];
         codes[i] = ev.getCode();
       }
     } else {
@@ -76,9 +76,9 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
   public String[] getDescriptions () {
     Object[] values = enumClass.getEnumConstants();
     String[] descs = new String[values.length];
-    if (ICodeValue.class.isAssignableFrom(enumClass)) {
+    if (ICode.class.isAssignableFrom(enumClass)) {
       for (int i = 0; i < values.length; i++) {
-        ICodeValue ev = (ICodeValue)values[i];
+        ICode ev = (ICode)values[i];
         descs[i] = ev.getDescription();
       }
     }
@@ -89,9 +89,9 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
   public int getViewSize () {
     int n = 0;
     Object[] values = enumClass.getEnumConstants();
-    if (ICodeValue.class.isAssignableFrom(enumClass)) {
+    if (ICode.class.isAssignableFrom(enumClass)) {
       for (int i = 0; i < values.length; i++) {
-        ICodeValue ev = (ICodeValue)values[i];
+        ICode ev = (ICode)values[i];
         int n1 = ev.getCode().length();
         if (n1 > n) {
           n = n1;
@@ -118,9 +118,9 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
   public E create (Object source) {
     if (source instanceof String) {
       E[] values = enumClass.getEnumConstants();
-      if (ICodeValue.class.isAssignableFrom(enumClass)) {
+      if (ICode.class.isAssignableFrom(enumClass)) {
         for (int i = 0; i < values.length; i++) {
-          ICodeValue cv = (ICodeValue)values[i];
+          ICode cv = (ICode)values[i];
           if (cv.getCode().equals(source)) {
             return values[i];
           } else if (Integer.toString(i).equals(source)) {
@@ -164,9 +164,9 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
     Object[] values = enumClass.getEnumConstants();
 
     int n = 0;
-    if (ICodeValue.class.isAssignableFrom(enumClass)) {
+    if (ICode.class.isAssignableFrom(enumClass)) {
       for (int i = 0; i < values.length; i++) {
-        ICodeValue ev = (ICodeValue)values[i];
+        ICode ev = (ICode)values[i];
         String code = ev.getCode();
         n = Integer.max(n, code.length());
       }
@@ -183,9 +183,9 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
   @Override
   public E createFromString (String source) throws UserEntryException {
     E[] values = enumClass.getEnumConstants();
-    if (ICodeValue.class.isAssignableFrom(enumClass)) {
+    if (ICode.class.isAssignableFrom(enumClass)) {
       for (int i = 0; i < values.length; i++) {
-        ICodeValue cv = (ICodeValue)values[i];
+        ICode cv = (ICode)values[i];
         if (cv.getCode().equals(source)) {
           validate (values[i]);
           return values[i];
@@ -193,7 +193,7 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
       }
       boolean isIncomplete = false;
       for (int i = 0; i < values.length; i++) {
-        ICodeValue cv = (ICodeValue)values[i];
+        ICode cv = (ICode)values[i];
         if (cv.getCode().startsWith(source)) {
           isIncomplete = true;
           break;
@@ -222,7 +222,7 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
   }
 
   
-  protected String getErrorMessage (ICodeValue[] values) {
+  protected String getErrorMessage (ICode[] values) {
     StringBuilder msg = new StringBuilder();
     if (values.length == 0) {
       msg.append("no values to select from");
@@ -275,8 +275,8 @@ public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {
     if (value == null) {
       return "";
     }
-    if (value instanceof ICodeValue) {
-      ICodeValue cv = (ICodeValue)value;
+    if (value instanceof ICode) {
+      ICode cv = (ICode)value;
       return cv.getCode();
     } else {
       return Integer.toString(((Enum<?>)value).ordinal());

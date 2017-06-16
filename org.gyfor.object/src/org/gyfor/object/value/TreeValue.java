@@ -12,7 +12,7 @@ package org.gyfor.object.value;
 
 
 
-public class TreeValue extends CodeValue {
+public class TreeValue extends Code {
 
   private static final long serialVersionUID = -3679834723224689234L;
 

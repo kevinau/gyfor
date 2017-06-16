@@ -2,6 +2,7 @@ package org.gyfor.object.model.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.gyfor.object.model.INameMappedModel;
 import org.gyfor.object.model.INodeModel;
@@ -84,4 +85,15 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
   public INodeModel[] getChildNodes() {
     return getMembers();
   }
+  
+
+  @Override
+  public void walkModel(Consumer<INodeModel> before, Consumer<INodeModel> after) {
+    before.accept(this);
+    for (INodeModel member : members.values()) {
+      member.walkModel(before, after);
+    }
+    after.accept(this);
+  }
+  
 }

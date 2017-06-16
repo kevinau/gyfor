@@ -40,5 +40,7 @@ public interface INodeModel {
   public IContainerModel getParent();
 
   public String getQualifiedName();
+  
+  public void walkModel (IModelVisitor visitor);
 
 }

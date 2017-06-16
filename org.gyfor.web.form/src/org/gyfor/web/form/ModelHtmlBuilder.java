@@ -36,7 +36,7 @@ public class ModelHtmlBuilder {
   
   public static void buildHtml (ITemplateEngine templateEngine, Writer writer, INodeModel nodeModel, Map<String, Object> withValues) {
     // Build template name
-    String templateName = nodeModel.getCanonicalName();
+    String templateName = nodeModel.getQualifiedName();
     String defaultName;
     if (nodeModel instanceof IItemModel) {
       IType<?> type = ((IItemPlan<?>)nodeModel.getPlan()).getType();

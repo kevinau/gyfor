@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" configuration-policy="require" deactivate="deactivate" name="org.gyfor.sql.ConnectionFactory">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" configuration-policy="require" deactivate="deactivate" name="org.gyfor.sql.ConnectionFactory">
    <service>
       <provide interface="org.gyfor.sql.IConnectionFactory"/>
    </service>
-   <reference bind="setDialect" cardinality="1..1" interface="org.gyfor.sql.dialect.IDialect" name="dialect" policy="static" unbind="unsetDialect"/>
+   <reference cardinality="1..1" field="dialect" interface="org.gyfor.sql.dialect.IDialect" name="dialect"/>
    <implementation class="org.gyfor.sql.ConnectionFactory"/>
 </scr:component>

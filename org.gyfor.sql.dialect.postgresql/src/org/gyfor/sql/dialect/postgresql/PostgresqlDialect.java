@@ -87,5 +87,19 @@ public class PostgresqlDialect implements IDialect {
       throw new RuntimeException(ex);
     }
   }
+  
+  
+  @Override
+  public String dropTableTemplate() {
+    return "DROP TABLE IF EXISTS {0};";
+  }
+  
+  
+  @Override
+  public String noTableState() {
+    return null;
+  }
+  
+
 
 }

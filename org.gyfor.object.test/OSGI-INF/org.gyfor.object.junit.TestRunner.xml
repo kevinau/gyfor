@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.gyfor.object.junit.TestRunner">
-   <service>
-      <provide interface="org.gyfor.object.junit.TestRunner"/>
-   </service>
-   <reference bind="setTestClass" cardinality="1..n" interface="org.gyfor.object.test.ITestClass" name="TestClass" policy="dynamic" unbind="unsetTestClass"/>
-   <implementation class="org.gyfor.object.junit.TestRunner"/>
-</scr:component>

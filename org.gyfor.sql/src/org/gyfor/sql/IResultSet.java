@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 import org.gyfor.math.Decimal;
 
-public interface IResultSet {
+public interface IResultSet extends AutoCloseable {
 
   //public Object getObject(int i, int[] colTypes);
 

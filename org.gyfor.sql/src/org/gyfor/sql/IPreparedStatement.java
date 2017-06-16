@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
 import java.sql.Blob;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
@@ -95,6 +96,8 @@ public interface IPreparedStatement extends AutoCloseable {
   public void setFetchSize(int n);
 
   public IResultSet executeQuery(Object... parameters);
+
+  public int executeUpdateAllowingException() throws SQLException;
 
   public int executeUpdate();
 
