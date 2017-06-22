@@ -1,25 +1,24 @@
-package org.gyfor.object.test;
+package org.gyfor.object.model.test;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.function.Supplier;
 
+import org.gyfor.math.Decimal;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.PlanFactory;
-import org.gyfor.object.test.data.DateBased;
+import org.gyfor.object.test.data.DecimalBased;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 
-public class DateBasedModels {
+public class DecimalBasedModels {
 
   private IEntityModel model;
-  private DateBased instance;
+  private DecimalBased instance;
   
 
   private void getSetTest (String fieldName, Object value, String okSource, Supplier<?> supplier) {
@@ -37,27 +36,30 @@ public class DateBasedModels {
   @Before
   public void setup () {
     ModelFactory modelFactory = new ModelFactory(new PlanFactory());
-    model = modelFactory.buildEntityModel(DateBased.class);
-    instance = new DateBased();
+    model = modelFactory.buildEntityModel(DecimalBased.class);
+    instance = new DecimalBased();
     model.setValue(instance);
   }
   
   
   @Test
-  public void dateTest () throws ParseException {
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    getSetTest("date", dateFormat.parse("2011-05-31"), "2011-05-31", () -> instance.date);
+  public void floatTest () {
+    getSetTest("float1", (Float)123.45F, "123.45", () -> instance.float1);
   }
   
   @Test
-  public void sqlDateTest () throws ParseException {
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    getSetTest("sqlDate", new java.sql.Date(dateFormat.parse("2012-05-31").getTime()), "2012-05-31", () -> instance.sqlDate);
+  public void doubleTest () {
+    getSetTest("double1", (Double)1234.56, "1234.56", () -> instance.double1);
   }
   
   @Test
-  public void localDateTest () {
-    getSetTest("localDate", LocalDate.of(2013, 5, 31), "2013-05-31", () -> instance.localDate);
+  public void bidDecimalTest () {
+    getSetTest("bigDecimal", new BigDecimal(1234.56), "1234.56", () -> instance.bigDecimal);
+  }
+  
+  @Test
+  public void decimalTest () {
+    getSetTest("decimal", new Decimal(1234.56), "1234.56", () -> instance.decimal);
   }
   
 }

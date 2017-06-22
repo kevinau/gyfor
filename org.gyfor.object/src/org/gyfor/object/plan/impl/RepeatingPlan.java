@@ -60,6 +60,12 @@ public abstract class RepeatingPlan extends ContainerPlan implements IRepeatingP
   }
   
   
+  @Override
+  public INode getElementNode () {
+    return elemPlan;
+  }
+  
+  
   @SuppressWarnings("unchecked")
   @Override
   public <X extends INode> Iterator<X> getChildNodes() {
@@ -102,6 +108,12 @@ public abstract class RepeatingPlan extends ContainerPlan implements IRepeatingP
   @Override
   public <X> X newInstance (X fromInstance) {
     return elemPlan.newInstance(fromInstance);
+  }
+  
+  
+  @Override
+  public String toString() {
+    return "RepeatingPlan[" + super.toString() + "," + elemPlan + "]";
   }
   
   

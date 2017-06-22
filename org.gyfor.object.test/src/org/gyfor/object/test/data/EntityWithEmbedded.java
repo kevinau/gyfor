@@ -3,6 +3,7 @@ package org.gyfor.object.test.data;
 import org.gyfor.math.Decimal;
 import org.gyfor.object.Embeddable;
 
+@SuppressWarnings("unused")
 public class EntityWithEmbedded {
 
   @Embeddable

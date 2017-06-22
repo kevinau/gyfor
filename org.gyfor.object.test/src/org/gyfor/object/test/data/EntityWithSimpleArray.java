@@ -1,6 +1,7 @@
 package org.gyfor.object.test.data;
 
 
+@SuppressWarnings("unused")
 public class EntityWithSimpleArray {
 
   private int id;

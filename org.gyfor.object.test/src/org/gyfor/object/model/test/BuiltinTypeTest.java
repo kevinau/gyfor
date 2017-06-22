@@ -1,4 +1,4 @@
-package org.gyfor.object.test;
+package org.gyfor.object.model.test;
 
 import org.gyfor.object.Entity;
 import org.gyfor.object.model.IEntityModel;

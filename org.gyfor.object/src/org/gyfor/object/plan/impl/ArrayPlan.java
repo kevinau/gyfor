@@ -56,4 +56,10 @@ public class ArrayPlan extends RepeatingPlan implements IArrayPlan {
     return (X)toArray;
   }
 
+  
+  @Override
+  public String toString() {
+    return "ArrayPlan[" + super.toString() + "]";  
+  }
+  
 }

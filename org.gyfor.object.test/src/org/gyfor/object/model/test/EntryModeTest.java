@@ -1,4 +1,4 @@
-package org.gyfor.object.test;
+package org.gyfor.object.model.test;
 
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.model.EffectiveEntryMode;

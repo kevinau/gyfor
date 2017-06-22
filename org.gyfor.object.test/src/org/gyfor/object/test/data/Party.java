@@ -7,10 +7,10 @@ import java.util.List;
 import org.gyfor.object.Embeddable;
 
 
+@SuppressWarnings("unused")
 @Embeddable
 public class Party {
 
-  @SuppressWarnings("unused")
   private String name;
 
   private Location home;

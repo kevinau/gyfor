@@ -1,16 +1,13 @@
 package org.gyfor.object.test.data;
 
-import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.file.Path;
-import java.time.LocalDate;
 
 import org.apache.tools.ant.taskdefs.email.EmailAddress;
-import org.gyfor.math.Decimal;
 import org.gyfor.object.Version;
-import org.gyfor.object.value.EntityLife;
 import org.gyfor.object.value.FileContent;
 
+@SuppressWarnings("unused")
 public class AllBuiltins {
 
   // TODO

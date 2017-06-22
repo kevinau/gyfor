@@ -4,6 +4,7 @@ import org.gyfor.math.Decimal;
 import org.gyfor.object.value.EntityLife;
 import org.gyfor.object.value.VersionTime;
 
+@SuppressWarnings("unused")
 public class SimpleEntity {
 
   private int id;

@@ -1,12 +1,12 @@
-package org.gyfor.object.test.path;
+package org.gyfor.object.path.test;
 
 import java.util.function.Consumer;
 
 import org.gyfor.object.Entity;
+import org.gyfor.object.INode;
 import org.gyfor.object.path.IPathExpression;
 import org.gyfor.object.path.PathParser;
 import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.PlanFactory;
 
 
@@ -33,11 +33,11 @@ public class PathTests {
     for (String test : tests) {
       IPathExpression pathExpr1 = PathParser.parse(test);
       pathExpr1.dump();
-      pathExpr1.matches(plan1, null, new Consumer<INodePlan>() {
+      pathExpr1.matches(plan1, null, new Consumer<INode>() {
  
         @Override
-        public void accept(INodePlan plan) {
-          System.out.println("Visiting: " + plan);
+        public void accept(INode node) {
+          System.out.println("Visiting: " + node);
         }
       
       });

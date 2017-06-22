@@ -1,4 +1,4 @@
-package org.gyfor.object.test;
+package org.gyfor.object.model.test;
 
 import java.math.BigInteger;
 import java.util.function.Supplier;
