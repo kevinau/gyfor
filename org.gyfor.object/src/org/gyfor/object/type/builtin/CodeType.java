@@ -11,8 +11,6 @@
 package org.gyfor.object.type.builtin;
 
 
-import java.util.List;
-
 import org.gyfor.object.ICodeSource;
 import org.gyfor.object.value.ICode;
 

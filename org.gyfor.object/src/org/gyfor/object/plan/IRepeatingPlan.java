@@ -2,7 +2,9 @@ package org.gyfor.object.plan;
 
 import java.util.Iterator;
 
-public interface IRepeatingPlan extends IContainerPlan {
+import org.gyfor.object.IRepeatingMarkerNode;
+
+public interface IRepeatingPlan extends IContainerPlan, IRepeatingMarkerNode {
 
   public int getDimension();
   

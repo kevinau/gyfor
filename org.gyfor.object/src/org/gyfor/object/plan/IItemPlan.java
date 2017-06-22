@@ -2,11 +2,13 @@ package org.gyfor.object.plan;
 
 import java.lang.annotation.Annotation;
 
+import org.gyfor.object.INode;
 import org.gyfor.object.type.IType;
 import org.gyfor.sql.IPreparedStatement;
 import org.gyfor.sql.IResultSet;
 
-public interface IItemPlan<T> extends INodePlan {
+
+public interface IItemPlan<T> extends INodePlan, INode {
 
   /** 
    * The type of this input field.

@@ -2,8 +2,10 @@ package org.gyfor.object.plan;
 
 import java.util.List;
 
+import org.gyfor.object.IContainerNode;
 
-public interface IContainerPlan extends INodePlan {
+
+public interface IContainerPlan extends INodePlan, IContainerNode {
 
   public List<INodePlan> selectNodePlans(String expr);
 

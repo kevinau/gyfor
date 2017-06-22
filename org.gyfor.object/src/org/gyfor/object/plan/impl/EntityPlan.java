@@ -22,7 +22,7 @@ import org.gyfor.object.value.EntityLife;
 import org.gyfor.object.value.VersionTime;
 
 
-public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T> {
+public class EntityPlan<T> extends NameMappedPlan<T> implements IEntityPlan<T> {
 
   private final Class<T> entityClass;
   private final String entityName;
@@ -37,17 +37,23 @@ public class EntityPlan<T> extends ClassPlan<T> implements IEntityPlan<T> {
   private List<IItemPlan<?>[]> uniqueConstraints;
 
   
-  public EntityPlan (PlanFactory planFactory, Class<T> entityClass) {
-    super (planFactory, null, entityClass, entityClass.getSimpleName(), entityEntryMode(entityClass));
+  public EntityPlan (Class<T> entityClass) {
+    super (null, entityClass, entityClass.getSimpleName(), entityEntryMode(entityClass));
     this.entityClass = entityClass;
     this.entityName = entityClass.getSimpleName();
     this.labels = new EntityLabelGroup(entityClass);
+    
+  }
+
+  
+  @Override
+  public void complete (PlanFactory planFactory) {
+    super.complete(planFactory);
     
     findEntityItems();
     findDescriptionItems();
     findUniqueConstraints();
   }
-
 
   @Override
   public String getEntityName() {

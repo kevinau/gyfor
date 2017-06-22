@@ -21,7 +21,7 @@ public class TableCreator extends TableManipulation {
 
   private final IConnection conn;
   
-  private final Set<IEntityPlan<?>> existingTables = new HashSet<>();
+  private final Set<String> createdTables = new HashSet<>();
   
   
   private class ElementTable {
@@ -41,9 +41,6 @@ public class TableCreator extends TableManipulation {
     }
     
     public void createElementTable (Stack<ElementTable> queuedElementTables) {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("CREATE TABLE ");
-   
       String tableName;
       switch (dimension) {
       case 0 :
@@ -57,48 +54,50 @@ public class TableCreator extends TableManipulation {
         tableName = parentTableName.substring(0, n) + '_' + dimension;
         break;
       }
-      buffer.append(tableName);
-      buffer.append(" (" + NL);
-      
-      buffer.append("id SERIAL PRIMARY KEY");
-      buffer.append("," + NL + "parent_id INTEGER REFERENCES ");
-      buffer.append(parentTableName);
-      buffer.append("(id)");
-      
-      int[] index = new int[1];
-      index[0] = 1;
 
-      switch (elementPlan.getStructure()) {
-      case ARRAY :
-      case LIST :
-        IRepeatingPlan elementPlan2 = (IRepeatingPlan)elementPlan;
-        ElementTable elementTable = new ElementTable(elementPlan2.getElementPlan(), schema, tableName, elementPlan2.getDimension());
-        queuedElementTables.add(elementTable);
-        break;
-      case EMBEDDED :
-        addMemberNodes(buffer, schema, tableName, null, index, (IEmbeddedPlan<?>)elementPlan, "", queuedElementTables);
-        break;
-      case ENTITY :
-        throw new IllegalArgumentException("IEntityPlan cannot be a child of a element");
-      case INTERFACE :
-        throw new NotYetImplementedException();
-      case ITEM :
-        buildItemSQL (buffer, null, index, (IItemPlan<?>)elementPlan, "");
-        break;
-      case MAP :
-        throw new NotYetImplementedException();
-      case REFERENCE :
-        buildReferenceSQL (buffer, schema, index, (IReferencePlan<?>)elementPlan, "");
-        break;
-      case SET :
-        throw new NotYetImplementedException();
-      }
-      buffer.append(");" + NL);
+      if (!createdTables.contains(tableName)) {
+        createdTables.add(tableName);
+
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("CREATE TABLE ");
+        buffer.append(tableName);
+        buffer.append(" (" + NL);
       
-      System.out.println(buffer);
-      IPreparedStatement stmt = conn.prepareStatement(buffer);
-      stmt.executeUpdate();
-//    existingTables.add(entityPlan);
+        buffer.append("id SERIAL PRIMARY KEY");
+        buffer.append("," + NL + "parent_id INTEGER REFERENCES ");
+        buffer.append(parentTableName);
+        buffer.append("(id)");
+      
+        int[] index = new int[1];
+        index[0] = 1;
+
+        switch (elementPlan.getStructure()) {
+        case ARRAY :
+        case LIST :
+          IRepeatingPlan elementPlan2 = (IRepeatingPlan)elementPlan;
+          ElementTable elementTable = new ElementTable(elementPlan2.getElementPlan(), schema, tableName, elementPlan2.getDimension());
+          queuedElementTables.add(elementTable);
+          break;
+        case EMBEDDED :
+          addMemberNodes(buffer, schema, tableName, null, index, (IEmbeddedPlan<?>)elementPlan, "", queuedElementTables);
+          break;
+        case ENTITY :
+          throw new IllegalArgumentException("IEntityPlan cannot be a child of a element");
+        case ITEM :
+          buildItemSQL (buffer, null, index, (IItemPlan<?>)elementPlan, "");
+          break;
+        case REFERENCE :
+          buildReferenceSQL (buffer, schema, index, (IReferencePlan<?>)elementPlan, "");
+          break;
+        default :
+          throw new NotYetImplementedException();
+        }
+        buffer.append(");" + NL);
+      
+        System.out.println(buffer);
+        IPreparedStatement stmt = conn.prepareStatement(buffer);
+        stmt.executeUpdate();
+      }
     }
 
     
@@ -247,26 +246,30 @@ public class TableCreator extends TableManipulation {
 
   
   public void createEntityTable (String schema, IEntityPlan<?> entityPlan) {
-    StringBuilder buffer = new StringBuilder();
-    buffer.append("CREATE TABLE ");
     String tableName = getTableName(schema, entityPlan);
-    buffer.append(tableName);
-    buffer.append(" (" + NL);
+
+    if (!createdTables.contains(tableName)) {
+      createdTables.add(tableName);
+
+      StringBuilder buffer = new StringBuilder();
+      buffer.append("CREATE TABLE ");
+      buffer.append(tableName);
+      buffer.append(" (" + NL);
     
-    int[] index = new int[1];
-    IItemPlan<?> entityIdPlan = entityPlan.getIdPlan();
-    Stack<ElementTable> queuedElementTables = new Stack<>();
-    addMemberNodes (buffer, schema, tableName, entityIdPlan, index, entityPlan, "", queuedElementTables);
-    buffer.append(");" + NL);
+      int[] index = new int[1];
+      IItemPlan<?> entityIdPlan = entityPlan.getIdPlan();
+      Stack<ElementTable> queuedElementTables = new Stack<>();
+      addMemberNodes (buffer, schema, tableName, entityIdPlan, index, entityPlan, "", queuedElementTables);
+      buffer.append(");" + NL);
     
-    System.out.println(buffer);
-    IPreparedStatement stmt = conn.prepareStatement(buffer);
-    stmt.executeUpdate();
-//  existingTables.add(entityPlan);
+      System.out.println(buffer);
+      IPreparedStatement stmt = conn.prepareStatement(buffer);
+      stmt.executeUpdate();
     
-    while (queuedElementTables.size() > 0) {
-      ElementTable elementTable = queuedElementTables.pop();
-      elementTable.createElementTable(queuedElementTables);
+      while (queuedElementTables.size() > 0) {
+        ElementTable elementTable = queuedElementTables.pop();
+        elementTable.createElementTable(queuedElementTables);
+      }
     }
   }
 

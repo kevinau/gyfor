@@ -5,16 +5,16 @@ import java.lang.reflect.Field;
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.plan.EmbeddedLabelGroup;
 import org.gyfor.object.plan.IEmbeddedPlan;
-import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.plan.PlanStructure;
 
-public class EmbeddedPlan<T> extends ClassPlan<T> implements IEmbeddedPlan<T> {
+
+public class EmbeddedPlan<T> extends NameMappedPlan<T> implements IEmbeddedPlan<T> {
 
   private EmbeddedLabelGroup labels;
   
   
-  public EmbeddedPlan (PlanFactory planFactory, Field field, Class<T> embeddedClass, String name, EntryMode entryMode) {
-    super (planFactory, field, embeddedClass, name, entryMode);
+  public EmbeddedPlan (Field field, Class<T> embeddedClass, String name, EntryMode entryMode) {
+    super (field, embeddedClass, name, entryMode);
     this.labels = new EmbeddedLabelGroup(field, name);
   }
   

@@ -3,6 +3,7 @@ package org.gyfor.object.plan;
 import java.lang.reflect.Field;
 
 import org.gyfor.object.EntryMode;
+import org.gyfor.object.INode;
 
 /**
  * The detail of a class field. The plan contains sufficient detail about a
@@ -16,7 +17,7 @@ import org.gyfor.object.EntryMode;
  * @author Kevin Holloway
  * 
  */
-public interface INodePlan {
+public interface INodePlan extends INode {
 
   public default void dump () {
     dump (0);
@@ -40,8 +41,6 @@ public interface INodePlan {
 
   public <X> X newInstance(X fromValue);
 
-  public INodePlan[] getChildNodes();
-  
   public <X extends ILabelGroup> X getLabels();
   
   public boolean isNullable();

@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.IReferencePlan;
 import org.gyfor.object.plan.ItemLabelGroup;
 import org.gyfor.object.plan.PlanFactory;
@@ -31,14 +30,6 @@ public class ReferencePlan<T> extends ItemPlan<Integer> implements IReferencePla
   }
 
 
-  @Override
-  public INodePlan[] getChildNodes () {
-    return new INodePlan[] {
-        referencedPlan,
-    };
-  }
-  
-    
   @SuppressWarnings("unchecked")
   @Override
   public ItemLabelGroup getLabels () {
