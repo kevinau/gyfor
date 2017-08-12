@@ -14,6 +14,10 @@ public interface IDocumentStore {
   public static final int IMAGE_RESOLUTION = 360;
   public static final double IMAGE_SCALE = 0.3;
   
+  public void addDocumentStoreListener(DocumentStoreListener x);
+  
+  public void removeDocumentStoreListener(DocumentStoreListener x);
+  
   public String importDocument (File file);
   
   public String importDocument (Path path);

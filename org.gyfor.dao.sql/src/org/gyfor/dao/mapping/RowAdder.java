@@ -3,10 +3,6 @@ package org.gyfor.dao.mapping;
 import java.util.List;
 import java.util.Stack;
 
-import org.gyfor.object.model.IItemModel;
-import org.gyfor.object.model.INodeModel;
-import org.gyfor.object.model.IReferenceModel;
-import org.gyfor.object.model.IRepeatingModel;
 import org.gyfor.object.plan.IEmbeddedPlan;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
@@ -18,12 +14,18 @@ import org.gyfor.sql.IConnection;
 import org.gyfor.sql.IPreparedStatement;
 import org.gyfor.todo.NotYetImplementedException;
 
-public class RowAdder extends TableManipulation {
+public class RowAdder<T> extends TableManipulation {
 
   private final IConnection conn;
   
+  private final String schema;
+  
+  private final IEntityPlan<T> entityPlan;
+  
   private class ElementRow {
     private final String parentTableName;
+    
+    private final PlanStructure parentStructure;
     
     private final INodePlan elementPlan; 
     
@@ -32,8 +34,9 @@ public class RowAdder extends TableManipulation {
     private final Object value;
     
     
-    private ElementRow (String parentTableName, INodePlan elementPlan, int dimension, Object value) {
+    private ElementRow (String parentTableName, PlanStructure parentStructure, INodePlan elementPlan, int dimension, Object value) {
       this.parentTableName = parentTableName;
+      this.parentStructure = parentStructure;
       this.dimension = dimension;
       this.elementPlan = elementPlan;
       this.value = value;
@@ -45,19 +48,24 @@ public class RowAdder extends TableManipulation {
       
       try (IPreparedStatement stmt = conn.prepareStatement(insertElementSql)) 
       {
-        if (elementPlan.getStructure() == PlanStructure.ARRAY) {
+        switch (parentStructure) {
+        case ARRAY :
           Object[] array = (Object[])value;
           for (Object elementValue : array) {
             setNodeValue(stmt, tableName, elementPlan, elementValue, queuedElementRows);
             stmt.executeUpdate();          
           }
-        } else {
+          break;
+        case LIST :
           @SuppressWarnings("unchecked")
           List<Object> list = (List<Object>)value;
           for (Object elementValue : list) {
             setNodeValue(stmt, tableName, elementPlan, elementValue, queuedElementRows);
             stmt.executeUpdate();          
           }
+          break;
+        default :
+          throw new RuntimeException("This should not happen");
         }
       }
     }
@@ -65,8 +73,10 @@ public class RowAdder extends TableManipulation {
   }
   
   
-  public RowAdder (IConnection conn) {
+  public RowAdder (IConnection conn, String schema, IEntityPlan<T> entityPlan) {
     this.conn = conn;
+    this.schema = schema;
+    this.entityPlan = entityPlan;
   }
   
   
@@ -75,7 +85,7 @@ public class RowAdder extends TableManipulation {
     case ARRAY :
     case LIST :
       IRepeatingPlan repeatingPlan = (IRepeatingPlan)nodePlan;
-      ElementRow elementRow = new ElementRow(parentTableName, repeatingPlan.getElementPlan(), repeatingPlan.getDimension(), value);
+      ElementRow elementRow = new ElementRow(parentTableName, nodePlan.getStructure(), repeatingPlan.getElementPlan(), repeatingPlan.getDimension(), value);
       queuedRepeatingModels.add(elementRow);
       break;
     case EMBEDDED :
@@ -120,7 +130,7 @@ public class RowAdder extends TableManipulation {
   }
 
   
-  public void addEntityRow (String schema, IEntityPlan<?> entityPlan, Object value) {
+  public void addEntityRow (T value) {
     String addRowSql = SQLBuilder.getInsertEntitySql(schema, entityPlan);
     System.out.println(addRowSql);
     

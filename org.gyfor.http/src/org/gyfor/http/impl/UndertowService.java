@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.gyfor.http.Context;
 import org.gyfor.http.IDynamicResourceLocation;
+import org.gyfor.http.PageNotFoundHandler;
 import org.gyfor.http.Resource;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

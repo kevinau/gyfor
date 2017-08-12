@@ -1,13 +1,8 @@
 package org.gyfor.dao.test;
 
-import org.gyfor.dao.mapping.RowAdder;
-import org.gyfor.dao.mapping.TableCreator;
-import org.gyfor.dao.mapping.TableDropper;
 import org.gyfor.dao.test.data.GLTransaction;
-import org.gyfor.dao.test.data.SimpleEntity;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.PlanFactory;
-import org.gyfor.sql.IConnection;
 import org.gyfor.sql.IConnectionFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -27,8 +22,6 @@ public class GLTransactionTest {
 
   @Activate
   public void activate() {
-    String schema = "public";
-
     PlanFactory planFactory = new PlanFactory();
     IEntityPlan<?> entityPlan = planFactory.getEntityPlan(GLTransaction.class);
 

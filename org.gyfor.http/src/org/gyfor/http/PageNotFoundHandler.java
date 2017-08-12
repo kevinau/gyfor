@@ -1,4 +1,4 @@
-package org.gyfor.http.impl;
+package org.gyfor.http;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;

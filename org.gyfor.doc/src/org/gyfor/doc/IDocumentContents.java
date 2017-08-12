@@ -7,15 +7,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface IDocumentContents {
 
   public List<? extends ISegment> getSegments();
-
   
   public int size();
-
 
   public void updateDictionary(Dictionary dictionary);
 

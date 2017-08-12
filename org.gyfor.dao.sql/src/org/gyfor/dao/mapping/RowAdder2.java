@@ -3,13 +3,6 @@ package org.gyfor.dao.mapping;
 import java.util.List;
 import java.util.Stack;
 
-import org.gyfor.object.model.IEntityModel;
-import org.gyfor.object.model.IItemModel;
-import org.gyfor.object.model.INameMappedModel;
-import org.gyfor.object.model.INodeModel;
-import org.gyfor.object.model.IReferenceModel;
-import org.gyfor.object.model.IRepeatingModel;
-import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.IReferencePlan;

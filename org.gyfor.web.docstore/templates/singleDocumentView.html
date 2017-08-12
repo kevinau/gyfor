@@ -20,8 +20,10 @@ html, body {
   background: transparent;
 }
 
-.TEXT,
-.COMPANY_NUMBER {
+.TEXT span,
+.COMPANY_NUMBER span {
+  position: absolute;
+  background: transparent;
   white-space: pre;
 }
 .DATE {
@@ -139,6 +141,7 @@ div.docPage img {
 .dropdown {
     position: relative;
     color: black;
+    outline: none;
 }
 
 .dropdown-content {
@@ -146,7 +149,7 @@ div.docPage img {
     background-color: #ffffff;
     overflow: auto;
     margin-left: -4px;
-    border: 1px solid rgba(255, 140, 0, 1);
+    border: 0.5px solid rgba(255, 140, 0, 1);
     z-index: 100;
 }
 
@@ -217,14 +220,16 @@ var docFields = [
       <div class="docPage" style="background-image: url(/docstore{{p}}); background-size: {{pageImage.width * imageScale}}px {{pageImage.height * imageScale}}px; width:{{pageImage.width * imageScale}}px; height:{{pageImage.height * imageScale}}px;">
         {% for seg in segments %}
           {% if i == seg.pageIndex %}
-          <div style="left:{{seg.x0}}px; top:{{seg.y0}}px; width:{{seg.width}}px; height:{{seg.height}}px; font-size:{{seg.fontSize}}pt"
-            {% if seg.type.isRawText %}
-             title="{{seg.text}}" class="{{seg.type}}">{{seg.text}}</div>
-            {% elseif seg.type.isSingular %}
-             title="{{seg.text}}({{seg.type}})" class="{{seg.type}}">{{seg.text}}</div>
+            {% if seg.type.isSingular %}
+              <div style="width:{{seg.width}}px; height:{{seg.height}}px"
+                   title="{{seg.text}}({{seg.type}})" class="{{seg.type}}"><span style="left:{{seg.x0}}px; top:{{seg.y0}}px; height:{{seg.height}}px; font-size:{{seg.fontSize}}pt">{{seg.text}}</span></div>
+            {% elseif seg.type.isRawText %}
+              <div style="width:{{seg.width}}px; height:{{seg.height}}px"
+                   title="{{seg.text}}" class="{{seg.type}}"><span style="left:{{seg.x0}}px; top:{{seg.y0}}px; height:{{seg.height}}px; font-size:{{seg.fontSize}}pt">{{seg.text}}</span></div>
             {% else %}
-             onclick="myFunction(this)" 
-             title="{{seg.text}}({{seg.type}})" class="{{seg.type}} dropbtn"></div>
+              <div style="left:{{seg.x0}}px; top:{{seg.y0}}px; width:{{seg.width}}px; height:{{seg.height}}px; font-size:{{seg.fontSize}}pt"
+                   onclick="myFunction(this)" 
+                   title="{{seg.text}}({{seg.type}})" class="{{seg.type}} dropbtn"></div>
             {% endif %}
           {% endif %}
        {% endfor %}
@@ -241,87 +246,113 @@ function myFunction(elem) {
     var fieldNameSelect = document.getElementById("field-name-select");
     if (fieldNameSelect) {
       fieldNameSelect.remove();
-    } else {
-      fieldNameSelect = document.createElement("div");
-      fieldNameSelect.classList.add("dropdown");
-      fieldNameSelect.id = "field-name-select";
-      fieldNameSelect.setAttribute("tabindex", "0");
-      var computedStyle = window.getComputedStyle(elem);
-      var marginTop = parseInt(computedStyle.marginTop);
-      fieldNameSelect.setAttribute("style", "position:relative; top:" + (elem.offsetHeight + marginTop) + "px;");
-    
-      var newDropContent = document.createElement("div");
-      newDropContent.classList.add("dropdown-content");
-      fieldNameSelect.appendChild(newDropContent);
-      for (i = 0; i < docFields.length; i++) {
-        var docField = docFields[i];
-        var newDropItem = document.createElement("a");
-        newDropItem.setAttribute("href", "javascript:void(0)");
-        var newDropTitle = document.createTextNode(docField.title);
-        newDropItem.appendChild(newDropTitle);
-        newDropItem.onmouseover = function (e) {
-          var fieldNameSelect = document.getElementById("field-name-select");
-          var newDropComponent = fieldNameSelect.firstChild;
-          var itemElems = newDropComponent.children;
-          
-          for (var i = 0; i < itemElems.length; i++) {
-            var itemElem = itemElems[i];
-            if (itemElem.classList.contains("covet")) {
-              itemElem.classList.remove("covet");
-              break;
-            }
-          }
-          e.target.classList.add("covet"); 
-        };
-        newDropContent.appendChild(newDropItem);
+      //console.log("-----------");
+      //console.log(elem);
+      //console.log(fieldNameSelect.triggeringElement);
+      //console.log(elem == fieldNameSelect.triggeringElement);
+      if (elem == fieldNameSelect.triggeringElement) {
+        return;
       }
-      elem.appendChild(fieldNameSelect);
-      fieldNameSelect.focus();
-      fieldNameSelect.onkeydown = function (e) {
-        var code = e.keyCode ? e.keyCode : e.which;
-        if (code === 38 || code == 40) { // Up or down key
-          var fieldNameSelect = document.getElementById("field-name-select");
-          var newDropComponent = fieldNameSelect.firstChild;
-          var itemElems = newDropComponent.children;
-          var found = false;
+    }
+    fieldNameSelect = document.createElement("div");
+    fieldNameSelect.classList.add("dropdown");
+    fieldNameSelect.id = "field-name-select";
+    fieldNameSelect.setAttribute("tabindex", "0");
+    fieldNameSelect.triggeringElement = elem;
+    var computedStyle = window.getComputedStyle(elem);
+    var marginTop = parseInt(computedStyle.marginTop);
+    fieldNameSelect.setAttribute("style", "position:relative; top:" + (elem.offsetHeight + marginTop) + "px;");
+    
+    var newDropContent = document.createElement("div");
+    newDropContent.classList.add("dropdown-content");
+    fieldNameSelect.appendChild(newDropContent);
+    for (i = 0; i < docFields.length; i++) {
+      var docField = docFields[i];
+      var newDropItem = document.createElement("a");
+      newDropItem.setAttribute("href", "javascript:void(0)");
+      var newDropTitle = document.createTextNode(docField.title);
+      newDropItem.appendChild(newDropTitle);
+      newDropItem.onmouseover = function (e) {
+        var fieldNameSelect = document.getElementById("field-name-select");
+        var newDropComponent = fieldNameSelect.firstChild;
+        var itemElems = newDropComponent.children;
           
-          for (var i = 0; i < itemElems.length; i++) {
-            var itemElem = itemElems[i];
-             if (itemElem.classList.contains("covet")) {
-              itemElem.classList.remove("covet");
-              if (code == 38) {
-                // Up key         
-                if (i == 0) {
-                  i = itemElems.length - 1;
-                } else {
-                  i = i - 1;
-                }
-              } else {
-                // Up key         
-                if (i == itemElems.length - 1) {
-                  i = 0;
-                } else {
-                  i = i + 1;
-                }
-              }
-              itemElems[i].classList.add("covet");
-              found = true;
-              break;
-            }
+        for (var i = 0; i < itemElems.length; i++) {
+          var itemElem = itemElems[i];
+          if (itemElem.classList.contains("covet")) {
+            itemElem.classList.remove("covet");
+            break;
           }
-          if (!found) {
+        }
+        e.target.classList.add("covet"); 
+      };
+      newDropContent.appendChild(newDropItem);
+    }
+    elem.appendChild(fieldNameSelect);
+    fieldNameSelect.focus();
+    fieldNameSelect.onkeydown = function (e) {
+      var code = e.keyCode ? e.keyCode : e.which;
+      if (code === 38 || code == 40) { // Up or down key
+        var fieldNameSelect = document.getElementById("field-name-select");
+        var newDropComponent = fieldNameSelect.firstChild;
+        var itemElems = newDropComponent.children;
+        var found = false;
+        
+        for (var i = 0; i < itemElems.length; i++) {
+          var itemElem = itemElems[i];
+          if (itemElem.classList.contains("covet")) {
+            itemElem.classList.remove("covet");
             if (code == 38) {
-              i = itemElems.length - 1;
+              // Up key         
+              if (i == 0) {
+                i = itemElems.length - 1;
+              } else {
+                i = i - 1;
+              }
             } else {
-              i = 0;
+              // Up key         
+              if (i == itemElems.length - 1) {
+                i = 0;
+              } else {
+                i = i + 1;
+              }
             }
             itemElems[i].classList.add("covet");
+            found = true;
+            break;
           }
-          e.stopPropagation();
-          return false;
         }
-        //
-      };
+        if (!found) {
+          if (code == 38) {
+            i = itemElems.length - 1;
+          } else {
+            i = 0;
+          }
+          itemElems[i].classList.add("covet");
+        }
+        e.stopPropagation();
+        return false;
+      }
+      //
+    };
+}
+
+window.onload = function(event) {
+    var elems = document.getElementsByClassName('TEXT');
+    for (i = 0; i < elems.length; i++) {
+      var elem = elems[i];
+      var elem2= elem.children[0];
+      var letterSpacing = (elem.offsetWidth - elem2.offsetWidth) / elem2.innerText.length;
+      elem2.style.letterSpacing = letterSpacing + "px";
+      //console.log(".... " + elem2.innerText + " ... " + elem2.innerText.length + " .... " + elem.offsetWidth + " ..... " + elem2.offsetWidth + " = " + letterSpacing);
+    }
+    elems = document.getElementsByClassName('COMPANY_NUMBER');
+    for (i = 0; i < elems.length; i++) {
+      var elem = elems[i];
+      var elem2= elem.children[0];
+      var letterSpacing = (elem.offsetWidth - elem2.offsetWidth) / elem2.innerText.length;
+      elem2.style.letterSpacing = letterSpacing + "px";
+      //console.log(".... " + elem2.innerText + " ... " + elem2.innerText.length + " .... " + elem.offsetWidth + " ..... " + elem2.offsetWidth + " = " + letterSpacing);
     }
 }
 
@@ -333,6 +364,7 @@ window.onclick = function(event) {
       } else {
         var fieldNameSelect = document.getElementById("field-name-select");
         if (fieldNameSelect) {
+          console.log("1111 " + fieldNameSelect);
           fieldNameSelect.remove();
         }
       }

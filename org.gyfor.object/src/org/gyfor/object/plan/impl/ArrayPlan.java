@@ -46,6 +46,14 @@ public class ArrayPlan extends RepeatingPlan implements IArrayPlan {
 
   @SuppressWarnings("unchecked")
   @Override
+  public <X> X newInstance() {
+    Object[] instance = (Object[])Array.newInstance(getElemClass(), 0);
+    return (X)instance;
+  }
+
+  
+  @SuppressWarnings("unchecked")
+  @Override
   public <X> X newInstance(X fromValue) {
     Object[] fromArray = (Object[])fromValue;
     Object[] toArray = (Object[])Array.newInstance(Object.class, fromArray.length);

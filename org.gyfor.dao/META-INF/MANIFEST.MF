@@ -6,8 +6,7 @@ Bundle-Version: 1.0.0
 Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.gyfor.dao
-Import-Package: org.gyfor.object.model,
- org.gyfor.object.plan,
+Import-Package: org.gyfor.object.plan,
  org.gyfor.object.value,
  org.gyfor.todo,
  org.gyfor.util,

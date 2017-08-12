@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-//@Component(immediate=true)
+@Component(immediate=true)
 public class TableDropCreate {
 
   private final Logger logger = LoggerFactory.getLogger(TableDropCreate.class);
@@ -56,32 +56,32 @@ public class TableDropCreate {
     };
 
     try (IConnection conn = connFactory.getIConnection()) {
-      RowAdder rowAdder = new RowAdder(conn);
+      RowAdder rowAdder = new RowAdder(conn, schema, entityPlan);
 
       for (SimpleEntity entityValue : testData) {
         conn.setAutoCommit(false);
-        rowAdder.addEntityRow(schema, entityPlan, entityValue);
+        rowAdder.addEntityRow(entityValue);
         conn.commit();
         logger.info("Entity row added to table: {}", entityValue);
       }
     }
     
-//    try (IConnection conn = connFactory.getIConnection()) {
-//      RowFetcher rowFetcher = new RowFetcher(conn, modelFactory);
-//
-//      conn.setAutoCommit(false);
-//      try {
-//        IEntityModel model = rowFetcher.fetchRowById("public", 2, entityPlan);
-//        logger.info("Fetched object with id: " + 2);
-//        Object value = model.getValue();
-//        logger.info("Fetched object has " + value.getClass());
-//        SimpleEntity value2 = (SimpleEntity)value;
-//        logger.info("Fetched object is: " + value2.toString());
-//        conn.commit();
-//      } catch (RowNotFoundException ex) {
-//        logger.info(ex.toString());
-//      }
-//    }
+    try (IConnection conn = connFactory.getIConnection()) {
+      RowFetcher rowFetcher = new RowFetcher(conn, schema, entityPlan);
+
+      conn.setAutoCommit(false);
+      try {
+        IEntityModel model = rowFetcher.fetchRowById("public", 2, entityPlan);
+        logger.info("Fetched object with id: " + 2);
+        Object value = model.getValue();
+        logger.info("Fetched object has " + value.getClass());
+        SimpleEntity value2 = (SimpleEntity)value;
+        logger.info("Fetched object is: " + value2.toString());
+        conn.commit();
+      } catch (RowNotFoundException ex) {
+        logger.info(ex.toString());
+      }
+    }
 
   }
 

@@ -1,6 +1,7 @@
 package org.gyfor.doc;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +19,6 @@ public class DocumentContents implements IDocumentContents, Serializable {
   public DocumentContents () {
     segments = new ArrayList<>();
     pageImages = new ArrayList<>();
-    
   }
   
   
@@ -27,7 +27,7 @@ public class DocumentContents implements IDocumentContents, Serializable {
     pageImages = new ArrayList<>(n);
   }
   
-  
+
   public void add(ISegmentMatcher[] matchers, PartialSegment partialSegment) {
     if (partialSegment == null) {
       throw new IllegalArgumentException("Segment argument cannot be null");

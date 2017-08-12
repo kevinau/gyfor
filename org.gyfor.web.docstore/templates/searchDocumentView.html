@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Search</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/global/favicon.ico" />
+  <link href="{{context}}/resources/searchDocumentView.css" rel="stylesheet">
+</head>
+<body>
+  <form class="query" action="/d/search" method="get">
+    <input id="q" name="q" value="{{qValue}}" autofocus><button type="submit" tabindex="-1"><img src="/global/ic_search_black_18px.svg"></button>
+  </form>
+  <div id='thumbGroupSet'>
+    {% if noQuery %}{% else %}
+    <div>
+      {% for resultGroup in resultGroups %}{% set thumbs = resultGroup.thumbs %}
+      <div id='{{resultGroup.targetId}}' class='thumbGroup' data-levels='{{resultGroup.levelsx}}' data-labels='{{resultGroup.labelsx}}'>
+        <div class='date'>{{resultGroup.dateLabel}}</div>
+        <div class='thumbs'>{% for thumb in resultGroup.thumbs %}{% set hashCode = thumb.hashCode %}<a href="/d/{{hashCode}}"><img src="/docstore{{docStore.webThumbsImagePath(hashCode)}}"></a>{% endfor %}</div>
+      </div>
+      {% else %}<span class="noDocuments">No documents match your search</span>{% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>

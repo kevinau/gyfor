@@ -9,6 +9,8 @@ import java.util.Map;
 
 import org.gyfor.doc.Document;
 import org.gyfor.doc.IDocumentStore;
+import org.gyfor.doc.ISegment;
+import org.gyfor.doc.SegmentType;
 import org.gyfor.http.Context;
 import org.gyfor.http.HttpUtility;
 import org.gyfor.template.ITemplate;
@@ -117,6 +119,12 @@ public class SingleDocumentView implements HttpHandler {
     context.put("sourcePath", docStore.webSourcePath(doc));
     context.put("document", doc);
     context.put("segments", doc.getContents().getSegments());
+    
+    for (ISegment seg : doc.getContents().getSegments()) {
+      if (seg.getType() == SegmentType.COMPANY_NUMBER) {
+        System.out.println("bbbbbbbbbbbb " + seg);
+      }
+    }
     
     exchange.startBlocking();
     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");    

@@ -1,0 +1,108 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #EEE;
+  overflow-y: scroll;
+}
+img {
+  height: 200px;
+  padding: 0;
+  margin: 0;
+  border: 2px solid transparent;
+  z-index: 20;
+}
+form.query input {
+  margin-top: 8px;
+  margin-left: 8px;
+  margin-right: 0;
+  padding: 2px 4px 2px 4px;
+  width: calc(100% - 52px);
+  border: #aaa solid 0.5px;
+} 
+form.query button {
+  padding: 2px 4px 2px 4px;
+  border: none;
+  z-index: 0;
+  vertical-align: -4px;
+  height: 21px;
+}
+
+form.query button:hover {
+  cursor: pointer;
+  background: #DDD;
+} 
+
+form.query button img {
+  height: 18px;
+  width: 18px;
+  border: none;
+  z-index: 0;
+} 
+#thumbGroupSet {
+  height: 100%;
+  width: 96%;
+}
+.thumbGroup {
+  float: left;
+}
+.thumbGroup .date {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 24px;
+  font-family: Helvetica, Arial, sans-serif;
+  padding-top: 10px;
+  padding-left: 12px;
+}
+.thumbGroup .thumbs {
+  padding: 0 10px;
+}
+
+span.noDocuments {
+  margin-top: 8px;
+  margin-left: 12px;
+}
+#markers {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 4%;
+  height: 100%;
+  opacity: 0.0;
+  transition: opacity 1000ms linear;
+  z-index: 20;
+}
+
+#markers:hover {
+  opacity: 1.0;
+  transition: opacity 500ms linear;
+}
+#markers div {
+  position: absolute;
+  top: 0;
+  right: 0;
+  overflow-x: hidden;
+  display: inline-block; 
+  text-align: right;
+  background: inherit;
+}
+
+.marker0,
+.marker1,
+.marker2 {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  text-decoration: none;
+  text-align: right;
+  white-space: nowrap;
+  color: #000;
+  background: #FFF;
+  padding: 0 5px;
+  border-radius: 5px 0 0 5px;
+}
+.marker0:visited,
+.marker1:visited,
+.marker2:visited {
+  text-decoration: none;
+}
+
+ 

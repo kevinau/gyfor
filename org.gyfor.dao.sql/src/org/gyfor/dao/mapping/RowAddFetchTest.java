@@ -48,8 +48,6 @@ public class RowAddFetchTest {
       logger.info("Created table: {}", entityPlan.getName());
     }
     
-    ModelFactory modelFactory = new ModelFactory(planFactory);
-    IEntityModel entityModel = modelFactory.buildEntityModel(entityPlan);
     logger.info("Model created and value set");
     
     SimpleEntity[] testData = new SimpleEntity[] {
@@ -60,12 +58,11 @@ public class RowAddFetchTest {
     
     try (IConnection conn = connFactory.getIConnection()) 
     {
-      RowAdder rowAdder = new RowAdder(conn);
+      RowAdder rowAdder = new RowAdder(conn, schema, entityPlan);
     
       for (SimpleEntity entityValue : testData) {
         conn.setAutoCommit(false);
-        entityModel.setValue(entityValue);
-        rowAdder.addEntityRow(schema, entityModel);
+        rowAdder.addEntityRow(entityValue);
         conn.commit();
         logger.info("Entity row added to table: {}", entityValue);
       }

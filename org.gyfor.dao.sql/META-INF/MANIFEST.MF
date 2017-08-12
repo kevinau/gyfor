@@ -6,7 +6,6 @@ Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.gyfor.dao,
  org.gyfor.object,
- org.gyfor.object.model,
  org.gyfor.object.plan,
  org.gyfor.object.type,
  org.gyfor.object.value,
