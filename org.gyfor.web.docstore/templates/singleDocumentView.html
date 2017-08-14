@@ -45,6 +45,24 @@ html, body {
   border: 2px dashed #888; 
   white-space: pre;
 }
+.DATE span,
+.CURRENCY span {
+  color: #FFF;
+  background: rgba(255, 140, 0, 1);
+  padding: 0 2px;
+  font-size: 9pt;
+  position: absolute;
+  top: -2px;
+  opacity: 1;
+  transition: opacity .5s ease-in-out;
+  cursor: default;
+}
+.DATE span:hover,
+.CURRENCY span:hover {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+  
 div span { 
  font-family: sans-serif; font-size: 6pt; background: white; 
 }
@@ -65,6 +83,25 @@ div span {
 }
 #pagelinks div:first-child {
   margin-top: 0;
+}
+#accountingData input {
+  position: absolute;
+  left: -99999px;
+}
+#accountingData button {
+  font-family: Helvetica, sans-serif;
+  font-size: 14px;
+  color: #FFF;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+#accountingData button:disabled {
+  color: rgba(255, 255, 255, 0.5);
+  cursor: default;
 }
 
 #pagelinks div a {
@@ -171,43 +208,45 @@ div.docPage img {
 .show {display:block;}
   </style>
   <script>
-var docFields = [
-  {
-    name : "declaredDate",
+var docFields = new Map();
+docFields.set("declaredDate", {
     title : "Declared date",
     isDate : true,
     isCurrency : false,
-    inputId : ""
-  },
-  {
-    name : "paymentDate",
+    targetId : ""
+  });
+docFields.set("paymentDate", {
     title : "Payment date",
     isDate : true,
     isCurrency : false,
-    inputId : ""
-  },
-  {
-    name : "dividendAmount",
+    targetId : ""
+  });
+docFields.set("dividendAmount", {
     title : "Dividend amount",
     isDate : false,
     isCurrency : true,
-    inputId : ""
-  },
-  {
-    name : "imputationCredit",
+    targetId : ""
+  });
+docFields.set("imputationCredit", {
     title : "Imputation credit",
     isDate : false,
     isCurrency : true,
-    inputId : ""
-  }
-];
+    targetId : ""
+  });
+
   </script>
 </head>
 <body>
   <div id="main">
     <div id="pagelinks">
       <div>
-        <a href="/a/{{document.hashCode}}" target="Accounting data" title="Accounting data">$...&nbsp;&nbsp;&nbsp;</a>
+        <form id="accountingData" action="/my-handling-form-page" method="post">
+          <input type="text" id="declaredDate" name="declaredDate">
+          <input type="text" id="paymentDate" name="paymentDate">
+          <input type="text" id="dividendAmount" name="dividendAmount">
+          <input type="text" id="imputationCredit" name="imputationCredit">
+          <button type="submit" disabled="true">Save</button>
+        </form>
       </div>
       <div>
         <a href="/docstore{{sourcePath}}" title="Source document">{{document.originExtension | upper | slice(1)}}</a>
@@ -227,8 +266,8 @@ var docFields = [
               <div style="width:{{seg.width}}px; height:{{seg.height}}px"
                    title="{{seg.text}}" class="{{seg.type}}"><span style="left:{{seg.x0}}px; top:{{seg.y0}}px; height:{{seg.height}}px; font-size:{{seg.fontSize}}pt">{{seg.text}}</span></div>
             {% else %}
-              <div style="left:{{seg.x0}}px; top:{{seg.y0}}px; width:{{seg.width}}px; height:{{seg.height}}px; font-size:{{seg.fontSize}}pt"
-                   onclick="myFunction(this)" 
+              <div id="segment{{loop.index}}" style="left:{{seg.x0}}px; top:{{seg.y0}}px; width:{{seg.width}}px; height:{{seg.height}}px; font-size:{{seg.fontSize}}pt"
+                   onclick="myFunction(this)" data-value="{{seg.value}}" 
                    title="{{seg.text}}({{seg.type}})" class="{{seg.type}} dropbtn"></div>
             {% endif %}
           {% endif %}
@@ -240,6 +279,20 @@ var docFields = [
   </div>
   
 <script>
+function isApplicableDocField(docField, classList) {
+    if (docField.isCurrency) {
+      if (classList.contains("CURRENCY")) {
+        return true;
+      }
+    }
+    if (docField.isDate) {
+      if (classList.contains("DATE")) {
+        return true;
+      }
+    }
+    return false;
+}
+
 /* When the user clicks on the button, 
 toggle between hiding and showing the dropdown content */
 function myFunction(elem) {
@@ -266,27 +319,66 @@ function myFunction(elem) {
     var newDropContent = document.createElement("div");
     newDropContent.classList.add("dropdown-content");
     fieldNameSelect.appendChild(newDropContent);
-    for (i = 0; i < docFields.length; i++) {
-      var docField = docFields[i];
-      var newDropItem = document.createElement("a");
-      newDropItem.setAttribute("href", "javascript:void(0)");
-      var newDropTitle = document.createTextNode(docField.title);
-      newDropItem.appendChild(newDropTitle);
-      newDropItem.onmouseover = function (e) {
-        var fieldNameSelect = document.getElementById("field-name-select");
-        var newDropComponent = fieldNameSelect.firstChild;
-        var itemElems = newDropComponent.children;
-          
-        for (var i = 0; i < itemElems.length; i++) {
-          var itemElem = itemElems[i];
-          if (itemElem.classList.contains("covet")) {
-            itemElem.classList.remove("covet");
-            break;
+    
+    for (var [key, docField] of docFields) {
+      if (isApplicableDocField(docField, elem.classList)) {
+        var newDropItem = document.createElement("a");
+        newDropItem.id = key;
+        newDropItem.setAttribute("href", "javascript:void(0)");
+        var newDropLabel = document.createTextNode(docField.title);
+        newDropItem.appendChild(newDropLabel);
+        newDropItem.onclick = function (e) {
+          var segmentLabelId = "SegmentLabel_" + e.target.id;
+
+          // Remove any existing segment label defined elsewhere
+          var oldSegmentLabel = document.getElementById(segmentLabelId);
+          if (oldSegmentLabel && oldSegmentLabel.id != segmentLabelId) {
+            var parentSegment = oldSegmentLabel.parentNode;
+            parentSegment.targetId = null;
+            parentSegment.removeChild(oldSegmentLabel);
           }
-        }
-        e.target.classList.add("covet"); 
-      };
-      newDropContent.appendChild(newDropItem);
+          
+          var docField1 = docFields.get(e.target.id);
+          docField1.targetId = elem.id;
+
+          var segmentLabel = elem.querySelector("span");
+          if (segmentLabel == null) {
+            // Create a new segement label
+            segmentLabel = document.createElement("span");
+            segmentLabel.setAttribute("title", "");
+            segmentLabel.style.right = (elem.offsetWidth - 2) + "px";
+            segmentLabel.innerText = docField1.title;
+            segmentLabel.id = segmentLabelId;
+            elem.appendChild(segmentLabel);
+          } else {
+            if (segmentLabel.id == segmentLabelId) {
+              // We're selecting the same segment label, so remove it
+              var parentSegment = oldSegmentLabel.parentNode;
+              parentSegment.targetId = null;
+              parentSegment.removeChild(oldSegmentLabel);
+            } else {
+              // Upate the segment label
+              segmentLabel.innerText = docField1.title;
+              segmentLabel.id = segmentLabelId;
+            }
+          }
+        };
+        newDropItem.onmouseover = function (e) {
+          var fieldNameSelect = document.getElementById("field-name-select");
+          var newDropComponent = fieldNameSelect.firstChild;
+          var itemElems = newDropComponent.children;
+          
+          for (var i = 0; i < itemElems.length; i++) {
+            var itemElem = itemElems[i];
+            if (itemElem.classList.contains("covet")) {
+              itemElem.classList.remove("covet");
+              break;
+            }
+          }
+          e.target.classList.add("covet"); 
+        };
+        newDropContent.appendChild(newDropItem);
+      }
     }
     elem.appendChild(fieldNameSelect);
     fieldNameSelect.focus();
@@ -364,7 +456,6 @@ window.onclick = function(event) {
       } else {
         var fieldNameSelect = document.getElementById("field-name-select");
         if (fieldNameSelect) {
-          console.log("1111 " + fieldNameSelect);
           fieldNameSelect.remove();
         }
       }

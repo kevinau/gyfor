@@ -120,12 +120,6 @@ public class SingleDocumentView implements HttpHandler {
     context.put("document", doc);
     context.put("segments", doc.getContents().getSegments());
     
-    for (ISegment seg : doc.getContents().getSegments()) {
-      if (seg.getType() == SegmentType.COMPANY_NUMBER) {
-        System.out.println("bbbbbbbbbbbb " + seg);
-      }
-    }
-    
     exchange.startBlocking();
     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");    
     Writer responseWriter = new OutputStreamWriter(exchange.getOutputStream());
