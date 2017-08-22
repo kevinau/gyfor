@@ -233,6 +233,12 @@ docFields.set("imputationCredit", {
     isCurrency : true,
     targetId : ""
   });
+docFields.set("otherAmount", {
+    title : "Other amount",
+    isDate : false,
+    isCurrency : true,
+    targetId : ""
+  });
 
   </script>
 </head>
@@ -330,19 +336,23 @@ function myFunction(elem) {
         newDropItem.onclick = function (e) {
           var segmentLabelId = "SegmentLabel_" + e.target.id;
 
-          // Remove any existing segment label defined elsewhere
-          var oldSegmentLabel = document.getElementById(segmentLabelId);
-          if (oldSegmentLabel && oldSegmentLabel.id != segmentLabelId) {
-            var parentSegment = oldSegmentLabel.parentNode;
-            parentSegment.targetId = null;
-            parentSegment.removeChild(oldSegmentLabel);
-          }
-          
           var docField1 = docFields.get(e.target.id);
           docField1.targetId = elem.id;
 
+		  // Get any segment label before checking for existing elements
           var segmentLabel = elem.querySelector("span");
+          
+          var oldSegmentLabel = document.getElementById(segmentLabelId);
+          
           if (segmentLabel == null) {
+            console.log("add new span ");
+            // Remove any existing segment label defined elsewhere
+            if (oldSegmentLabel) {
+              var parentSegment = oldSegmentLabel.parentNode;
+              parentSegment.targetId = null;
+              parentSegment.removeChild(oldSegmentLabel);
+            }
+            
             // Create a new segement label
             segmentLabel = document.createElement("span");
             segmentLabel.setAttribute("title", "");
@@ -351,12 +361,21 @@ function myFunction(elem) {
             segmentLabel.id = segmentLabelId;
             elem.appendChild(segmentLabel);
           } else {
-            if (segmentLabel.id == segmentLabelId) {
+            if (segmentLabel.parentNode.id == elem.id && segmentLabel.id == segmentLabelId) {
+              console.log("toggle off element");
               // We're selecting the same segment label, so remove it
-              var parentSegment = oldSegmentLabel.parentNode;
+              var parentSegment = segmentLabel.parentNode;
               parentSegment.targetId = null;
-              parentSegment.removeChild(oldSegmentLabel);
+              parentSegment.removeChild(segmentLabel);
             } else {
+              console.log("update segement label");
+              // Remove any existing segment label defined elsewhere
+              if (oldSegmentLabel) {
+                var parentSegment = oldSegmentLabel.parentNode;
+                parentSegment.targetId = null;
+                parentSegment.removeChild(oldSegmentLabel);
+              }
+              
               // Upate the segment label
               segmentLabel.innerText = docField1.title;
               segmentLabel.id = segmentLabelId;
