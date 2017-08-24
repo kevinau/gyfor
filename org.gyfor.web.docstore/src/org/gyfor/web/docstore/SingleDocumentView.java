@@ -13,6 +13,7 @@ import org.gyfor.doc.ISegment;
 import org.gyfor.doc.SegmentType;
 import org.gyfor.http.Context;
 import org.gyfor.http.HttpUtility;
+import org.gyfor.http.Resource;
 import org.gyfor.template.ITemplate;
 import org.gyfor.template.ITemplateEngine;
 import org.gyfor.template.ITemplateEngineFactory;
@@ -31,6 +32,7 @@ import io.undertow.util.Headers;
 
 
 @Context("/d")
+@Resource(path = "/resources", location = "resources")
 @Component(service = HttpHandler.class, immediate = true, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class SingleDocumentView implements HttpHandler {
 
