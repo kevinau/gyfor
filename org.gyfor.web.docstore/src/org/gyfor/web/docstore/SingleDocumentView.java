@@ -9,8 +9,6 @@ import java.util.Map;
 
 import org.gyfor.doc.Document;
 import org.gyfor.doc.IDocumentStore;
-import org.gyfor.doc.ISegment;
-import org.gyfor.doc.SegmentType;
 import org.gyfor.http.Context;
 import org.gyfor.http.HttpUtility;
 import org.gyfor.http.Resource;

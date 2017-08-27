@@ -5,7 +5,11 @@ Bundle-SymbolicName: org.gyfor.web.docstore
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: io.undertow.server,
+ io.undertow.server.protocol.framed,
  io.undertow.util,
+ io.undertow.websockets,
+ io.undertow.websockets.core,
+ io.undertow.websockets.spi,
  org.apache.lucene,
  org.apache.lucene.document,
  org.gyfor.doc,
@@ -15,11 +19,11 @@ Import-Package: io.undertow.server,
  org.gyfor.template,
  org.gyfor.util,
  org.osgi.framework;version="1.8.0",
+ org.osgi.service.component;version="1.2.0",
  org.pennyledger.party,
- org.slf4j;version="1.7.21"
+ org.slf4j;version="1.7.21",
+ org.xnio
 Service-Component: OSGI-INF/org.gyfor.web.docstore.SingleDocumentView.xml,
- OSGI-INF/org.gyfor.web.docstore.DocstoreResources.xml,
  OSGI-INF/org.gyfor.web.docstore.ListThumbsView.xml,
- OSGI-INF/org.gyfor.web.docstore.AccountingEdit.xml,
  OSGI-INF/org.gyfor.web.docstore.SearchDocumentView.xml
 Bundle-ActivationPolicy: lazy

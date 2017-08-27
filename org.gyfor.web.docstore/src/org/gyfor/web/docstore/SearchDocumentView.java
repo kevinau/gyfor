@@ -12,7 +12,6 @@ import org.gyfor.doc.IDocumentStore;
 import org.gyfor.docstore.search.DocumentReference;
 import org.gyfor.docstore.search.ISearchEngine;
 import org.gyfor.http.Context;
-import org.gyfor.http.PageNotFoundHandler;
 import org.gyfor.http.Resource;
 import org.gyfor.template.ITemplate;
 import org.gyfor.template.ITemplateEngine;

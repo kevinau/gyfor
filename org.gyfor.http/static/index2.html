@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Websocket Test</title>
+<script type="text/javascript" src="/global/ws.js"></script>
+</head>
+<body>
+<h2>Tic tock</h2>
+
+<button onclick="resetClock()">Reset clock</button>
+
+<h3>Add children</h3>
+<div id="history"></div>
+
+<h3>Replace node</h3>
+<div id="latest"></div>
+
+<script type="text/javascript">
+
+var websocket;
+
+window.addEventListener("load", function() {
+  console.log(window.location.host + "/ticktoc");
+  websocket = websocketStart(window.location.host + "/ticktoc", "");
+}, false);
+
+function resetClock() {
+  sendMessage(websocket, "reset");
+}
+
+</script>
+
+</body>
+</html>

@@ -30,10 +30,21 @@ function findOverlappingFields(label) {
 		                rect1.bottom < rect2.top || 
 		                rect1.top > rect2.bottom);
 		if (overlap) {
-			label.classList.add("overlapped");
-			break;
+			//label.classList.add("overlapped");
+			return true;
 		}
 	}
+	return false;
+}
+
+
+function placeSegmentLabel(elem, label) {
+    label.style.right = (elem.offsetWidth - 2) + "px";
+    label.style.top = null;
+    if (findOverlappingFields(label)) {
+    	label.style.right = "-2px";
+    	label.style.top = -(elem.offsetHeight + 2) + "px";
+    };
 }
 
 function removeOverlappingFields(label) {
@@ -43,21 +54,21 @@ function removeOverlappingFields(label) {
 function makeShowThrough(elem) {
 	console.log("setting show through on " + elem.target);
 	var label = elem.target;
-	if (label.classList.contains("overlapped")) {
-		targetLabel = label;
-		targetLabelRect = label.getBoundingClientRect();
-		console.log(".. " + targetLabelRect);
-		label.removeEventListener("mouseenter", makeShowThrough, false);
-		document.body.addEventListener("mousemove", unmakeShowThrough, false);
+	//if (label.classList.contains("overlapped")) {
+	//	targetLabel = label;
+	//	targetLabelRect = label.getBoundingClientRect();
+	//	console.log(".. " + targetLabelRect);
+	//	label.removeEventListener("mouseenter", makeShowThrough, false);
+	//	document.body.addEventListener("mousemove", unmakeShowThrough, false);
+	//	label.style.opacity = "0";
+	//	label.style.transition = "opacity 1s ease-in-out";
+	//	setTimeout(function() {
+	//		label.style.display = "none";
+	//	}, 1000);
+	//} else {
 		label.style.opacity = "0";
 		label.style.transition = "opacity 1s ease-in-out";
-		setTimeout(function() {
-			label.style.display = "none";
-		}, 1000);
-	} else {
-		label.style.opacity = "0";
-		label.style.transition = "opacity 1s ease-in-out";
-	}
+	//}
 	//elem.target.classList.add("showThrough");
 }
 
@@ -76,7 +87,7 @@ function unmakeShowThrough(elem) {
 			targetLabelRect = null;
 			console.log("unmake " + elem.clientX + "  " + elem.clientY);
 			// Mouse move co-ordinates are outside the label bounds
-			document.body.removeEventListener("mousemove", unmakeShowThrough, false);
+			//document.body.removeEventListener("mousemove", unmakeShowThrough, false);
 			targetLabelx.style.display = null;
 			targetLabelx.style.opacity = "1";
 			targetLabelx.style.transition = "opacity 0.5s ease-in-out";
@@ -89,10 +100,10 @@ function clearShowThrough(elem) {
 	//elem.target.style.width = null;
 	//elem.target.classList.remove("showThrough");
 	var label = elem.target;
-	if (!label.classList.contains("overlapped")) {
+	//if (!label.classList.contains("overlapped")) {
 		label.style.opacity = "1";
     	label.style.transition = "opacity 0.5s ease-in-out";
-	}
+	//}
 }
 
 function myFunction(elem) {
@@ -155,13 +166,14 @@ function myFunction(elem) {
             // Create a new segement label
             segmentLabel = document.createElement("span");
             segmentLabel.setAttribute("title", "");
-            segmentLabel.style.right = (elem.offsetWidth - 2) + "px";
             segmentLabel.innerText = docField1.title;
             segmentLabel.id = segmentLabelId;
             segmentLabel.addEventListener("mouseenter", makeShowThrough, false);
             segmentLabel.addEventListener("mouseleave", clearShowThrough, false);
+            segmentLabel.style.opacity = 0;
             elem.appendChild(segmentLabel);
-            findOverlappingFields(segmentLabel);
+            placeSegmentLabel(elem, segmentLabel);
+            segmentLabel.style.opacity = 1;
           } else {
             if (segmentLabel.parentNode.id == elem.id && segmentLabel.id == segmentLabelId) {
               console.log("toggle off element");
@@ -184,7 +196,7 @@ function myFunction(elem) {
               segmentLabel.innerText = docField1.title;
               segmentLabel.id = segmentLabelId;
               removeOverlappingFields(segmentLabel);
-              findOverlappingFields(segmentLabel);
+              placeSegmentLabel(elem, segmentLabel);
             }
           }
         };
