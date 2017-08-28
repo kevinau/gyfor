@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Lucerne search engine indexing Docstore documents
+Bundle-SymbolicName: org.gyfor.docstore.lucerne
+Bundle-Version: 1.0.0
+Bundle-Vendor: Kevin Holloway
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.gyfor.doc,
+ org.gyfor.osgi,
+ org.osgi.service.component;version="1.2.0",
+ org.slf4j;version="1.7.21"
+Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/org.gyfor.docstore.search.LuceneSearchEngine.xml
+Bundle-ClassPath: lib/lucene-core-6.6.0.jar,
+ lib/lucene-queryparser-6.6.0.jar,
+ .
+Export-Package: org.apache.lucene,
+ org.apache.lucene.document,
+ org.gyfor.docstore.search

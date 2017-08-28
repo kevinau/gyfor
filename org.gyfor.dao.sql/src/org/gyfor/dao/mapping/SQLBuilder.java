@@ -221,6 +221,31 @@ public class SQLBuilder {
   }
   
   
+  public String getUpdateFieldSql (String fieldName) {
+    StringBuilder buffer = new StringBuilder();
+    buffer.append("update ");
+    buffer.append(tableName);
+    
+    String separator = " set ";
+    if (versionPlan != null) {
+      buffer.append(separator);
+      String columnName = toSQLName(versionPlan.getName());
+      buffer.append(columnName);
+      buffer.append("=?");
+      separator = ",";
+    }
+    buffer.append(separator);
+    String columnName = toSQLName(fieldName);
+    buffer.append(columnName);
+    buffer.append("=?");
+    
+    buffer.append(" where ");
+    buffer.append(idPlan.getName());
+    buffer.append("=?");
+    return buffer.toString();
+  }
+  
+  
   private int appendAllColumns (StringBuilder buffer) {
     buffer.append(toSQLName(idPlan.getName()));
     int n = 1;

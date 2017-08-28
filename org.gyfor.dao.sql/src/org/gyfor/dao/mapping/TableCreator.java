@@ -99,9 +99,6 @@ public class TableCreator extends TableManipulation {
         stmt.executeUpdate();
       }
     }
-
-    
-
   }
   
   

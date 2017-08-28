@@ -8,6 +8,7 @@ import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.sql.IConnection;
 import org.gyfor.sql.IConnectionFactory;
+import org.gyfor.sql.RowNotFoundException;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
