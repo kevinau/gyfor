@@ -1,0 +1,7 @@
+<h1 class="title">{{title}}</h1>
+{% if description is not empty %}
+<p>{{description}}</p>
+{% endif %}
+<form method="post" action="" class="form" id="node={{model.nodeId}}">
+{% block entityContent %}{% endblock %}
+</form>

@@ -1,0 +1,15 @@
+<div class="form-item" id="outer-{{model.nodeId}}">
+{% if labels.label is not empty %}
+<label for="input-{{model.nodeId}}">{{labels.label}}
+{% if labels.hint is not empty %}
+<span class="desc">{{labels.hint}}</span>
+{% endif %}
+</label>
+{% else %}
+<label>&nbsp;</label>
+{% endif %}
+{% block itemContent %}<p>No item content specified</p>{% endblock %}
+{% if labels.description is not empty %}
+<div class="desc">{{labels.description}}</div>
+{% endif %}
+</div>

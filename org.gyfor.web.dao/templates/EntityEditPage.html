@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block htmlTitle %}{{labels.shortTitle}}{% endblock %}</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/global/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="{{context}}/resources/gyfor.css">
+  <link rel="stylesheet" type="text/css" href="{{context}}/resources/searchInput.css">
+  <link rel="stylesheet" type="text/css" href="{{context}}/resources/menuButton.css">
+  <script src="{{context}}/resources/ws.js"></script>
+  <script>
+	//var wsUri = "ws://localhost:8123/ws/entity/party";
+	var wsUri = "ws://" + window.location.host + "/ws/entity/party";
+
+	function init() {
+		setupWebSocket();
+	}
+
+	function setupWebSocket() {
+		websocket = new WebSocket(wsUri);
+		websocket.onopen = function(evt) {
+			onOpen(evt)
+		};
+		websocket.onclose = function(evt) {
+			onClose(evt)
+		};
+		websocket.onmessage = function(evt) {
+			onMessage(evt)
+		};
+		websocket.onerror = function(evt) {
+			onError(evt)
+		};
+	}
+
+	function onOpen(evt) {
+		console.log("ws CONNECTED");
+		//doSend("WebSocket rocks");
+		doSend("init");
+		onSearchInputLoad();
+	}
+
+	function onClose(evt) {
+		console.log("ws DISCONNECTED");
+	}
+
+	function onMessage(evt) {
+		//console.log(">>>> " + evt.data);
+		console.log('ws RESPONSE: ' + evt.data); //evt.data.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
+		// Split on the middot character
+		let args = evt.data.split('|');
+		switch (args[0]) {
+		case "update" :
+			let parentId = args[1];
+			let nodeId = args[2];
+			let node = document.getElementById("outer-" + nodeId);
+			console.log("node " + nodeId + " " + node);
+			if (node) {
+				let content = args[3];
+				if (content) {
+				    let template = document.createElement('template');
+				    template.innerHTML = content;
+				    console.log("replace... " + template.content.firstChild);
+					node.parentNode.replaceChild(template.content.firstChild, node);
+				} else {
+					node.parentNode.remove(node);
+				}
+			} else {
+				let parent = document.getElementById("inner-" + parentId);
+				console.log("parent " + parentId + " " + parent);
+				if (parent) {
+				    let template = document.createElement('template');
+				    template.innerHTML = args[3];
+				    console.log("add... " + template.content.firstChild);
+					parent.appendChild(template.content.firstChild);
+				} else {
+					console.log("Cannot update: " + parentId + " " + nodeId);
+				}
+			}
+			break;
+		case "replace" :
+			let nodeId1 = args[1];
+			let content1 = args[2];
+			let node1 = document.getElementById(nodeId1);
+			console.log("Replacing node: " + nodeId1 + ": " + content1);
+			if (node1) {
+				if (content1) {
+				    let template = document.createElement('template');
+				    template.innerHTML = content1;
+				    console.log("replace... " + template.content.firstChild);
+					node1.parentNode.replaceChild(template.content.firstChild, node1);
+				} else {
+					node1.parentNode.remove(node1);
+				}
+				if (node1.onload) {
+					node1.onload(node1);
+				}
+			} else {
+				console.log("Node: id='" + nodeId1 + "' not found");
+			}
+			break;
+		case "replaceContents" :
+			let nodeId2 = args[1];
+			let content2 = args[2];
+			let node2 = document.getElementById(nodeId2);
+			console.log("Replacing contents of node: " + nodeId2 + ": " + content2);
+			if (node2) {
+				while (node2.firstChild) node2.removeChild(node2.firstChild);
+				if (content2) {
+				    let template = document.createElement('template');
+				    template.innerHTML = "<div>" + content2 + "</div>";
+				    console.log("replace content... " + template.content.firstChild);
+				    console.log("replace content... " + template.content.firstChild.children);
+				    console.log("replace content... " + template.content.firstChild.children.length);
+				    let newNodes = template.content.firstChild;
+				    while (newNodes.firstChild) {
+				    	//console.log("appending " + j + ": " + newNodes[0].innerText);
+				    	node2.appendChild(newNodes.firstChild);
+				    	console.log("appending " + node2.children.length);
+				    }
+				}
+				if (node2.onload) {
+					node2.onload(node2);
+				}
+			} else {
+				console.log("Node: id='" + nodeId1 + "' not found");
+			}
+			break;
+		default :
+	    	alert ("Un-recognised message name: " + args[0]);
+			break;
+		}
+	}
+
+	function onError(evt) {
+		writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+	}
+
+	function doSend(message) {
+		console.log("ws SENT: " + message);
+		websocket.send(message);
+	}
+
+	function writeToScreen(message) {
+		var pre = document.createElement("p");
+		pre.style.wordWrap = "break-word";
+		pre.innerHTML = message;
+		output.appendChild(pre);
+	}
+
+	window.addEventListener("load", init, false);
+	
+  </script>
+  <script src="{{context}}/resources/searchInput.js"></script>
+</head>
+<body>
+  <section class="top">
+    {% import "SearchInputMacro" %}
+    {% import "MenuButtonMacro" %}
+    {{ menuButton("startCreating", "Create a new " + labels.shortTitle) }}
+    {{ menuButton("startChanging", "Edit this " + labels.shortTitle) }}
+    {{ searchInput("entitySearchInput", "descriptionList") }}
+    <form class="form" action="javascript:void(0)" >
+      <div id="inner-1"></div>
+    </form>
+  </section>
+</body>
+</html>
