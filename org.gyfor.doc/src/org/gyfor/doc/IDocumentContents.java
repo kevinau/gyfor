@@ -7,7 +7,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.util.List;
 
 public interface IDocumentContents {

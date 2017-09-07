@@ -1,0 +1,23 @@
+{% macro searchInputHeader () %}
+  <link rel="stylesheet" type="text/css" href="/global/searchInput.css" />
+  <script type="text/javascript" src="/global/searchInput.js" charset="utf-8"></script>
+  <script>
+    window.addEventListener("click", SearchInput.outsideClick);
+  </script>
+{% endmacro %}
+{% macro searchInput (id, dropListId) %}<div class="form-item" id="{{id}}">
+	<label for="searchInput-1"><img src="/global/search_18px.svg"></label>
+	<div class="searchInput">
+    	<input id="searchInput-1" class="visible" type="text" oninput="SearchInput.filterItems2(this)" onfocus="SearchInput.activateSearchInput(event)" onblur="SearchInput.deactivateSearchInput(event)" onkeydown="SearchInput.menuKeyHandler(event,this)"><!-- 
+     --><button class="upDownButton" onclick="SearchInput.toggleItemList2(event,this)" tabindex="-1" type="button" title="Show all" onblur="SearchInput.deactivateSearchInput(event)"></button><!-- 
+     --><div class="inputBackground">&nbsp;</div><!-- 
+     --><input class="shadow" type="text"><!-- 
+     --><div id="{{dropListId}}" class="dropList" data-loaded="true">
+       <div data-value="0" class="active" onclick="SearchInput.selectItem(this)">Qantas</div>
+       <div data-value="1" class="active" onclick="SearchInput.selectItem(this)">Australian Foundation Incorporated</div>
+       <div data-value="2" class="active" onclick="SearchInput.selectItem(this)">Telstra</div>
+       <div data-value="3" class="active" onclick="SearchInput.selectItem(this)">Commonwealth Bank of Australia</div>
+     </div>
+	</div>
+</div>
+{% endmacro %}

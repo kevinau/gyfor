@@ -81,21 +81,21 @@ public class EntityEditPage implements HttpHandler {
     // Remove leading slash
     path = path.substring(1);
 
-    IDataAccessObject dao;
-    try {
-      Collection<ServiceReference<IDataAccessObject>> refs = bundleContext.getServiceReferences(IDataAccessObject.class, "(name=" + path + ")");
-      if (refs.size() != 1) {
-        throw new IllegalArgumentException("Expecting one IDataAccessObject with (name=" + path + "), found " + refs.size());
-      }
-      ServiceReference<IDataAccessObject> ref = refs.iterator().next();
-      dao = bundleContext.getService(ref);
-    } catch (InvalidSyntaxException ex) {
-      throw new RuntimeException(ex);
-    }
+    IDataAccessObject dao = null;
+//    try {
+//      Collection<ServiceReference<IDataAccessObject>> refs = bundleContext.getServiceReferences(IDataAccessObject.class, "(name=" + path + ")");
+//      if (refs.size() != 1) {
+//        throw new IllegalArgumentException("Expecting one IDataAccessObject with (name=" + path + "), found " + refs.size());
+//      }
+//      ServiceReference<IDataAccessObject> ref = refs.iterator().next();
+//      dao = bundleContext.getService(ref);
+//    } catch (InvalidSyntaxException ex) {
+//      throw new RuntimeException(ex);
+//    }
 
-    IEntityPlan<?> entityPlan = dao.getEntityPlan();
-    Class<?> entityClass = entityPlan.getSourceClass();
-    ILabelGroup labels = new EntityLabelGroup(entityClass);
+//    IEntityPlan<?> entityPlan = dao.getEntityPlan();
+//    Class<?> entityClass = entityPlan.getSourceClass();
+//    ILabelGroup labels = new EntityLabelGroup(entityClass);
     
     ITemplate template = templateEngine.getTemplate("EntityEditPage");
   
@@ -104,7 +104,7 @@ public class EntityEditPage implements HttpHandler {
     entityEditContext.put("context", exchange.getResolvedPath());
     
     entityEditContext.put("entityName", path);
-    entityEditContext.put("labels", labels);
+//    entityEditContext.put("labels", labels);
     entityEditContext.put("descriptionListId", "descriptionsList");
 
 

@@ -7,4 +7,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Kevin Holloway
 Export-Package: org.gyfor.doc
 Import-Package: org.gyfor.math,
- org.gyfor.util
+ org.gyfor.util,
+ org.osgi.framework;version="1.8.0"
+Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/org.gyfor.doc.DocumentTypeRegistry.xml,
+ OSGI-INF/org.gyfor.doc.NothingDocumentType.xml

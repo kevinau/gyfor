@@ -1,7 +1,6 @@
 package org.gyfor.dao;
 
 import java.util.List;
-import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.plan.IEntityPlan;
 
 public interface IDataAccessObject<T> extends AutoCloseable {
@@ -13,7 +12,6 @@ public interface IDataAccessObject<T> extends AutoCloseable {
    * the id, version and entity life matches the datastore.
    */
   public void add (T instance);
-  public void add (IEntityModel model, T instance);
   
   public void addEntityChangeListener (EntityChangeListener<T> x);
   

@@ -18,20 +18,27 @@ toggle between hiding and showing the dropdown content */
 var targetLabel;
 var targetLabelRect;
 
-function findOverlappingFields(label) {
+function findOverlappingFields(classList, label) {
 	var rect1 = label.getBoundingClientRect();
 	
-	var fields = document.querySelectorAll("div.CURRENCY");
-	for (var i = 0; i < fields.length; i++) {
-		var field = fields[i];
-		var rect2 = field.getBoundingClientRect();
-		var overlap = !(rect1.right < rect2.left + 1 || 
-		                rect1.left + 1 > rect2.right || 
-		                rect1.bottom < rect2.top || 
-		                rect1.top > rect2.bottom);
-		if (overlap) {
-			//label.classList.add("overlapped");
-			return true;
+	var fields = null;
+	if (classList.contains("CURRENCY")) {
+		fields = document.querySelectorAll("div.CURRENCY");
+	} else if (classList.contains("DATE")) {
+		fields = document.querySelectorAll("div.DATE");
+	}
+	if (fields) {
+		for (var i = 0; i < fields.length; i++) {
+			var field = fields[i];
+			var rect2 = field.getBoundingClientRect();
+			var overlap = !(rect1.right < rect2.left + 1 || 
+							rect1.left + 1 > rect2.right || 
+							rect1.bottom < rect2.top || 
+							rect1.top > rect2.bottom);
+			if (overlap) {
+				//label.classList.add("overlapped");
+				return true;
+			}
 		}
 	}
 	return false;
@@ -41,18 +48,14 @@ function findOverlappingFields(label) {
 function placeSegmentLabel(elem, label) {
     label.style.right = (elem.offsetWidth - 2) + "px";
     label.style.top = null;
-    if (findOverlappingFields(label)) {
+    if (findOverlappingFields(elem.classList, label)) {
     	label.style.right = "-2px";
     	label.style.top = -(elem.offsetHeight + 2) + "px";
     };
 }
 
-function removeOverlappingFields(label) {
-    label.classList.remove("overlapped");
-}
-
 function makeShowThrough(elem) {
-	console.log("setting show through on " + elem.target);
+	//console.log("setting show through on " + elem.target);
 	var label = elem.target;
 	//if (label.classList.contains("overlapped")) {
 	//	targetLabel = label;
@@ -72,29 +75,29 @@ function makeShowThrough(elem) {
 	//elem.target.classList.add("showThrough");
 }
 
-function unmakeShowThrough(elem) {
-	if (targetLabel) {
-		var rect = targetLabelRect;
-		console.log("mouse move " + elem.clientX);
-		console.log("    coords " + rect.left + "  " + (rect.left + rect.width));
-		if (elem.clientX < rect.left || 
-				elem.clientX > rect.left + rect.width ||
-				elem.clientY < rect.top ||
-				elem.clientY > rect.top + rect.height) {
-			elem.stopPropagation();
-			var targetLabelx = targetLabel;
-			targetLabel = null;
-			targetLabelRect = null;
-			console.log("unmake " + elem.clientX + "  " + elem.clientY);
-			// Mouse move co-ordinates are outside the label bounds
-			//document.body.removeEventListener("mousemove", unmakeShowThrough, false);
-			targetLabelx.style.display = null;
-			targetLabelx.style.opacity = "1";
-			targetLabelx.style.transition = "opacity 0.5s ease-in-out";
-			targetLabelx.addEventListener("mouseenter", makeShowThrough, false);
-		}
-	}
-}
+//function unmakeShowThrough(elem) {
+//	if (targetLabel) {
+//		var rect = targetLabelRect;
+//		//console.log("mouse move " + elem.clientX);
+//		//console.log("    coords " + rect.left + "  " + (rect.left + rect.width));
+//		if (elem.clientX < rect.left || 
+//				elem.clientX > rect.left + rect.width ||
+//				elem.clientY < rect.top ||
+//				elem.clientY > rect.top + rect.height) {
+//			elem.stopPropagation();
+//			var targetLabelx = targetLabel;
+//			targetLabel = null;
+//			targetLabelRect = null;
+//			//console.log("unmake " + elem.clientX + "  " + elem.clientY);
+//			// Mouse move co-ordinates are outside the label bounds
+//			//document.body.removeEventListener("mousemove", unmakeShowThrough, false);
+//			targetLabelx.style.display = null;
+//			targetLabelx.style.opacity = "1";
+//			targetLabelx.style.transition = "opacity 0.5s ease-in-out";
+//			targetLabelx.addEventListener("mouseenter", makeShowThrough, false);
+//		}
+//	}
+//}
 
 function clearShowThrough(elem) {
 	//elem.target.style.width = null;
@@ -106,7 +109,7 @@ function clearShowThrough(elem) {
 	//}
 }
 
-function myFunction(elem) {
+function myFunction(elem, updateBackend) {
     var fieldNameSelect = document.getElementById("field-name-select");
     if (fieldNameSelect) {
       fieldNameSelect.remove();
@@ -129,10 +132,6 @@ function myFunction(elem) {
     
     var newDropContent = document.createElement("div");
     newDropContent.classList.add("dropdown-content");
-    newDropContent.addEventListener("mousemove", function(ev) {
-    	//ev.preventDefault();
-    	ev.stopPropagation();
-    }, false);
     fieldNameSelect.appendChild(newDropContent);
     
     for (var [key, docField] of docFields) {
@@ -143,7 +142,7 @@ function myFunction(elem) {
         var newDropLabel = document.createTextNode(docField.title);
         newDropItem.appendChild(newDropLabel);
         newDropItem.onclick = function (e) {
-          var segmentLabelId = "SegmentLabel_" + e.target.id;
+          var itemPath = "ItemPath_" + e.target.id;
 
           var docField1 = docFields.get(e.target.id);
           docField1.targetId = elem.id;
@@ -151,52 +150,51 @@ function myFunction(elem) {
 		  // Get any segment label before checking for existing elements
           var segmentLabel = elem.querySelector("span");
           
-          var oldSegmentLabel = document.getElementById(segmentLabelId);
+          var oldSegmentLabel = document.getElementById(itemPath);
           
           if (segmentLabel == null) {
-            console.log("add new span ");
+            //console.log("add new span ");
             // Remove any existing segment label defined elsewhere
             if (oldSegmentLabel) {
               var parentSegment = oldSegmentLabel.parentNode;
               parentSegment.targetId = null;
               parentSegment.removeChild(oldSegmentLabel);
-              removeOverlappingFields(oldSegmentLabel);
             }
             
-            // Create a new segement label
+            // Create a new segment label
             segmentLabel = document.createElement("span");
             segmentLabel.setAttribute("title", "");
             segmentLabel.innerText = docField1.title;
-            segmentLabel.id = segmentLabelId;
+            segmentLabel.id = itemPath;
             segmentLabel.addEventListener("mouseenter", makeShowThrough, false);
             segmentLabel.addEventListener("mouseleave", clearShowThrough, false);
-            segmentLabel.style.opacity = 0;
+            segmentLabel.style.opacity = "0";
             elem.appendChild(segmentLabel);
             placeSegmentLabel(elem, segmentLabel);
-            segmentLabel.style.opacity = 1;
+            segmentLabel.style.opacity = "1";
+            updateBackend(itemPath, elem.getAttribute("data-value"));
           } else {
-            if (segmentLabel.parentNode.id == elem.id && segmentLabel.id == segmentLabelId) {
-              console.log("toggle off element");
+            if (segmentLabel.parentNode.id == elem.id && segmentLabel.id == itemPath) {
+              //console.log("toggle off element");
               // We're selecting the same segment label, so remove it
               var parentSegment = segmentLabel.parentNode;
               parentSegment.targetId = null;
               parentSegment.removeChild(segmentLabel);
-              removeOverlappingFields(segmentLabel);
+              updateBackend(itemPath, null);
             } else {
-              console.log("update segement label");
+              //console.log("update segement label");
               // Remove any existing segment label defined elsewhere
               if (oldSegmentLabel) {
                 var parentSegment = oldSegmentLabel.parentNode;
                 parentSegment.targetId = null;
                 parentSegment.removeChild(oldSegmentLabel);
-                removeOverlappingFields(oldSegmentLabel);
               }
               
               // Upate the segment label
               segmentLabel.innerText = docField1.title;
-              segmentLabel.id = segmentLabelId;
-              removeOverlappingFields(segmentLabel);
+              segmentLabel.id = itemPath;
               placeSegmentLabel(elem, segmentLabel);
+              updateBackend(itemPath, elem.getAttribute("data-value"));
             }
           }
         };

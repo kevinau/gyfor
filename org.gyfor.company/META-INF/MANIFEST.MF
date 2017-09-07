@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Company lookup
-Bundle-SymbolicName: org.gyfor.company
+Bundle-SymbolicName: org.gyfor.party
 Bundle-Version: 1.0.0
 Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.gyfor.company
+Export-Package: org.gyfor.party
+Import-Package: org.gyfor.object

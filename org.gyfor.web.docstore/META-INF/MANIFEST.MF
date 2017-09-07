@@ -25,5 +25,7 @@ Import-Package: io.undertow.server,
  org.xnio
 Service-Component: OSGI-INF/org.gyfor.web.docstore.SingleDocumentView.xml,
  OSGI-INF/org.gyfor.web.docstore.ListThumbsView.xml,
- OSGI-INF/org.gyfor.web.docstore.SearchDocumentView.xml
+ OSGI-INF/org.gyfor.web.docstore.SearchDocumentView.xml,
+ OSGI-INF/org.gyfor.web.docstore.DocstoreFiles.xml,
+ OSGI-INF/org.gyfor.web.docstore.DocumentDataEdit.xml
 Bundle-ActivationPolicy: lazy

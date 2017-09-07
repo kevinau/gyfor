@@ -18,6 +18,7 @@ import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
@@ -54,7 +55,8 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
 
   private Path luceneDir;
   
-  private Analyzer analyzer;
+  private IndexWriterConfig config;
+
 
   private Directory directory;
   
@@ -80,7 +82,8 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
     }
     docStore.addDocumentStoreListener(this);
 
-    analyzer = new StandardAnalyzer();
+    Analyzer analyzer = new StandardAnalyzer();
+    config = new IndexWriterConfig(analyzer);
   }
   
   
@@ -92,20 +95,19 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
-    analyzer = null;
+    config = null;
   }
 
 
   @Override
   public void documentAdded(Document doc) {
-    IndexWriterConfig config = new IndexWriterConfig(analyzer);
-
     try (IndexWriter iwriter = new IndexWriter(directory, config)) {
       org.apache.lucene.document.Document indexedDoc = new org.apache.lucene.document.Document();
       
       IDocumentContents docContents = doc.getContents();
       // Add document id
       indexedDoc.add(new Field("id", doc.getHashCode(), StringField.TYPE_STORED));
+      indexedDoc.add(new Field("source", "doc", StringField.TYPE_STORED));
       // ... and the date of the document
       long dateLong = doc.getOriginTime().getTime();
       indexedDoc.add(new LongPoint("date", dateLong));
@@ -118,8 +120,7 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
         body.append(' ');
       }
       logger.info("Indexing {} ({})", doc.getHashCode(), doc.getOriginName());
-      System.out.println("indexing " + body.toString());
-      indexedDoc.add(new Field("body", body.toString(), TextField.TYPE_NOT_STORED));
+      indexedDoc.add(new Field("text", body.toString(), TextField.TYPE_NOT_STORED));
 
       iwriter.addDocument(indexedDoc);
       iwriter.close();
@@ -128,7 +129,72 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
     }
   }
 
+  
+//  private void addObjectFields (org.apache.lucene.document.Document indexedDoc, Object data) {
+//    // TODO this is not complete.  It does not traverse super classes, and does not handle
+//    // nested and array fields.
+//    java.lang.reflect.Field[] fields = data.getClass().getDeclaredFields();
+//    for (java.lang.reflect.Field field : fields) {
+//      String fieldName = field.getName();
+//      switch (fieldName) {
+//      case "id" :
+//      case "version" :
+//      case "entityLife" :
+//        break;
+//      default :
+//        field.setAccessible(true);
+//        Object value = field.get(data);
+//        indexedDoc.add(new Field(fieldName, value.toString(), StringField.TYPE_STORED));
+//        break;
+//      }
+//    }
+//  }
+//  
+//  
+//  @Override
+//  public void updateData(String documentId, Object data) {
+//    try (IndexWriter iwriter = new IndexWriter(directory, config)) {
+//      // Remove any existing data
+//      TermQuery query1 = new TermQuery(new Term("id", documentId));
+//      TermQuery query2 = new TermQuery(new Term("source", "data"));
+//      BooleanQuery joinedQuery = new BooleanQuery.Builder()
+//          .add(query1, BooleanClause.Occur.MUST)
+//          .add(query2, BooleanClause.Occur.MUST)
+//          .build();
+//      logger.info("Updating document data {}", documentId);
+//      iwriter.deleteDocuments(joinedQuery);
+//      
+//      // Add new data
+//      if (data != null) {
+//        org.apache.lucene.document.Document indexedDoc = new org.apache.lucene.document.Document();
+//        
+//        // Add document id
+//        indexedDoc.add(new Field("id", documentId, StringField.TYPE_STORED));
+//        indexedDoc.add(new Field("source", "data", StringField.TYPE_STORED));
+//        addObjectFields(indexedDoc, data);
+//
+//        iwriter.addDocument(indexedDoc);
+//
+//      }
+//      iwriter.close();
+//    } catch (IOException ex) {
+//      throw new RuntimeException(ex);
+//    }
+//  }
 
+  
+  @Override
+  public void documentRemoved(Document doc) {
+    try (IndexWriter iwriter = new IndexWriter(directory, config)) {
+      logger.info("Updating document data {} ({})", doc.getHashCode(), doc.getOriginName());
+      iwriter.deleteDocuments(new Term("id", doc.getHashCode()));
+      iwriter.close();
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
+
+  
   @Override
   public List<DocumentReference> searchIndex(String queryString) {
     /*
@@ -145,7 +211,7 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
     try (DirectoryReader ireader = DirectoryReader.open(directory)) {
       IndexSearcher isearcher = new IndexSearcher(ireader);
       // Parse a simple query that searches for "text":
-      QueryParser parser = new QueryParser("body", analyzer);
+      QueryParser parser = new QueryParser("body", config.getAnalyzer());
       Query query = parser.parse(queryString);
       ScoreDoc[] hits = isearcher.search(query, 1000).scoreDocs;
       // Iterate through the results:
@@ -164,10 +230,4 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
     return results;
   }
 
-  
-  @Override
-  public void documentRemoved(Document doc) {
-    // TODO Auto-generated method stub
-    
-  }
 }

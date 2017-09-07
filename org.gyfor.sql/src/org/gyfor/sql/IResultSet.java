@@ -89,6 +89,7 @@ public interface IResultSet extends AutoCloseable {
 
   public boolean next();
 
+  @Override
   public void close();
 
   public IResultSetMetaData getMetaData();
