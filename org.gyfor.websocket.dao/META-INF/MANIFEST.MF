@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: gyfor - Data access object
-Bundle-SymbolicName: org.gyfor.websocket.dao
+Bundle-SymbolicName: org.gyfor.web.dao
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: io.undertow.server,
@@ -22,5 +22,5 @@ Import-Package: io.undertow.server,
 Bundle-ActivationPolicy: lazy
 Eclipse-BuddyPolicy: global
 Require-Bundle: slf4j.api
-Service-Component: OSGI-INF/org.gyfor.websocket.dao.EntityWebSocket.xml,
- OSGI-INF/org.gyfor.websocket.dao.EntityEditPage.xml
+Service-Component: OSGI-INF/org.gyfor.web.dao.EntityWebSocket.xml,
+ OSGI-INF/org.gyfor.web.dao.EntityEditPage.xml

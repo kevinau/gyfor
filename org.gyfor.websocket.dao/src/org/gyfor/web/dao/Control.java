@@ -1,4 +1,4 @@
-package org.gyfor.websocket.dao;
+package org.gyfor.web.dao;
 
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;

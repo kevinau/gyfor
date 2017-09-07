@@ -1,4 +1,4 @@
-package org.gyfor.websocket.dao;
+package org.gyfor.web.dao;
 
 import java.util.EventListener;
 
