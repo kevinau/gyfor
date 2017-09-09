@@ -23,7 +23,8 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.xml.sax.SAXException;
 
 
-@Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
+//@Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
+//           property="country=AU")
 public class ABNLookup implements IPartyNameLookup {
 
   private static final Pattern abnDigits = Pattern.compile("[1-9]\\d \\d{3} \\d{3} \\d{3}");
@@ -38,7 +39,7 @@ public class ABNLookup implements IPartyNameLookup {
   }
 
 
-  public boolean inApplicable(String companyNumber) {
+  public boolean isApplicable(String companyNumber) {
     Matcher matcher = abnDigits.matcher(companyNumber);
     return matcher.matches();
   }

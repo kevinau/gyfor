@@ -10,7 +10,7 @@ import org.gyfor.object.value.VersionTime;
 
 @Entity
 @UniqueConstraint({"partyCode", "shortName"})
-@EntityLabel (title="BE")
+@EntityLabel (title="Business Entity")
 public class Party implements SelfDescribing {
 
   private int id;
