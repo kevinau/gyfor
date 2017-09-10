@@ -10,5 +10,7 @@ Import-Package: org.gyfor.object.plan,
  org.gyfor.object.value,
  org.gyfor.todo,
  org.gyfor.util,
+ org.osgi.framework;version="1.8.0",
  org.slf4j;version="1.7.21"
 Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/org.gyfor.dao.EntitySetRegistry.xml

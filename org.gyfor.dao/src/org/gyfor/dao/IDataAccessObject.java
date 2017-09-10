@@ -3,6 +3,7 @@ package org.gyfor.dao;
 import java.util.List;
 import org.gyfor.object.plan.IEntityPlan;
 
+@Deprecated
 public interface IDataAccessObject<T> extends AutoCloseable {
 
   public static final String EVENT_BASE = "org/gyfor/doa/IDataAccessObject/";

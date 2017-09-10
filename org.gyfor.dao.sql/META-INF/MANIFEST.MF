@@ -21,3 +21,4 @@ Import-Package: org.gyfor.dao,
  org.slf4j;version="1.7.21"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.gyfor.dao.mapping
+Service-Component: OSGI-INF/org.gyfor.dao.sql.EntitySet.xml

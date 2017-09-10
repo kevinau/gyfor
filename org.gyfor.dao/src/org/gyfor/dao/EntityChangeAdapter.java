@@ -1,6 +1,7 @@
 package org.gyfor.dao;
 
 
+@Deprecated
 public class EntityChangeAdapter<T> implements EntityChangeListener<T> {
 
   @Override

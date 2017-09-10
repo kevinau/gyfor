@@ -1,6 +1,7 @@
 package org.gyfor.dao;
 
 
+@Deprecated
 public interface EntityChangeListener<T> {
 
   public void entityAdded (T entity);
