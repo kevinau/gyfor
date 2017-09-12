@@ -2,15 +2,19 @@ package org.gyfor.dao.sql;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.gyfor.dao.DescriptionChangeListener;
-import org.gyfor.dao.EntityDescription;
 import org.gyfor.dao.IEntitySet;
+import org.gyfor.object.plan.EntityDescription;
 import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.osgi.ComponentConfiguration;
 import org.gyfor.osgi.Configurable;
+import org.gyfor.sql.IConnection;
+import org.gyfor.sql.IConnectionFactory;
+import org.gyfor.sql.IPreparedStatement;
+import org.gyfor.sql.IResultSet;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -23,25 +27,53 @@ public class EntitySet implements IEntitySet {
   @Configurable(name="class", required=true)
   private String className;
   
-  private IEntityPlan<?> plan;
+  @Configurable
+  private String schema;
   
   @Reference
-  private PlanFactory planFactory;
+  public PlanFactory planFactory;
+  
+  @Reference
+  private IConnectionFactory connFactory;
+
+  
+  private IEntityPlan<?> entityPlan;
+  private SQLBuilder sqlBuilder;
   
   
   protected void activate (ComponentContext context) {
     ComponentConfiguration.load(this, context);
-    plan = planFactory.getEntityPlan(className);  
-    List<IItemPlan<?>> descPlans = plan.getDescriptionPlans();
-    for (IItemPlan<?> descPlan : descPlans) {
-      System.out.println("++++ " + descPlan);
+
+    entityPlan = planFactory.getEntityPlan(className);
+    sqlBuilder = new SQLBuilder(entityPlan, schema);
+  }
+  
+  
+  private <R> List<R> getAll(SQLBuilder.Expression fetchSql, Function<Object, R> function) {
+    List<R> results = new ArrayList<>();
+    
+    try (
+        IConnection conn = connFactory.getIConnection();
+        IPreparedStatement stmt = conn.prepareStatement(fetchSql.sql())) {
+       
+      IResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        Object instance = entityPlan.newInstance(fetchSql.sqlPlans(), rs);
+        R result = function.apply(instance);
+        results.add(result);
+      }
     }
+    return results;
   }
   
   
   @Override
   public List<EntityDescription> getAllDescriptions() {
-    return new ArrayList<>(0);
+    SQLBuilder.Expression sql = sqlBuilder.getFetchDescriptionAllSql();
+    List<EntityDescription> descriptions = getAll(sql, instance -> {
+      return entityPlan.getDescription(instance);
+    });
+    return descriptions;
   }
 
   

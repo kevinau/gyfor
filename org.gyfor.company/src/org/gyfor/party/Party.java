@@ -4,28 +4,46 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.gyfor.object.SelfDescribing;
+import org.gyfor.object.value.EntityLife;
 
 
 public class Party implements SelfDescribing {
 
-  private final String companyNumber;
+  private final int id;
   
-  private final String formalName;
+  private String companyNumber;
   
-  private final String shortName;
+  private String formalName;
+  
+  private String shortName;
+  
+  private EntityLife entityLife;
   
   
-  public Party (String companyNumber, String formalName) {
-    this.companyNumber = companyNumber;
-    this.formalName = formalName;
+  public Party () {
+    this.id = 0;
+    this.companyNumber = null;
+    this.formalName = null;
     this.shortName = null;
+    this.entityLife = EntityLife.ACTIVE;
   }
   
   
-  public Party (String companyNumber, String formalName, String shortName) {
+  public Party (int id, String companyNumber, String formalName) {
+    this.id = id;
+    this.companyNumber = companyNumber;
+    this.formalName = formalName;
+    this.shortName = null;
+    this.entityLife = EntityLife.ACTIVE;
+  }
+  
+  
+  public Party (int id, String companyNumber, String formalName, String shortName) {
+    this.id = id;
     this.companyNumber = companyNumber;
     this.formalName = formalName;
     this.shortName = shortName;
+    this.entityLife = EntityLife.ACTIVE;
   }
   
   

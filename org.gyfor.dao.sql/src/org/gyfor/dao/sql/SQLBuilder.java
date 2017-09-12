@@ -1,17 +1,82 @@
 package org.gyfor.dao.sql;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
+import org.gyfor.object.plan.INodePlan;
 import org.gyfor.util.CamelCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class SQLBuilder<T> {
+public class SQLBuilder {
 
-  private IEntityPlan<T> entityPlan;
+  public static class Expression {
+    private StringBuilder buffer = new StringBuilder();
+    private String sql;
+    private IItemPlan<?>[] sqlPlans = new IItemPlan<?>[0];
+    
+    public void setSql(StringBuilder buffer) {
+      this.sql = sql.toString();
+    }
+    
+    public void append(String x) {
+      buffer.append(x);
+    }
+    
+    public void append(char x) {
+      buffer.append(x);
+    }
+    
+    public void appendParam(int i) {
+      if (i > 0) {
+        buffer.append(',');
+      }
+      buffer.append('?');
+    }
+    
+    public void appendInput(IItemPlan<?> plan) {
+      String columnName = toSQLName(plan.getName());
+      buffer.append(columnName);
+    }
+    
+    public void appendOutput(IItemPlan<?> plan) {
+      String columnName = toSQLName(plan.getName());
+      buffer.append(columnName);
+
+      int n = sqlPlans.length;
+      sqlPlans = Arrays.copyOf(sqlPlans, n + 1);
+      sqlPlans[n] = plan;
+    }
+    
+    public void appendOutput(int i, IItemPlan<?> plan) {
+      if (i > 0) {
+        buffer.append(',');
+      }
+      appendOutput(plan);
+    }
+        
+    public String sql() {
+      if (sql == null) {
+        sql = buffer.toString();
+      }
+      return sql;
+    }
+    
+    public IItemPlan<?>[] sqlPlans() {
+      return sqlPlans;
+    }
+    
+    @Override
+    public String toString() {
+      return sql;
+    }
+  }
+  
+  
+  private IEntityPlan<?> entityPlan;
   
   private String tableName;
   private IItemPlan<?> idPlan;
@@ -20,18 +85,18 @@ public class SQLBuilder<T> {
   private IItemPlan<?>[] dataPlans;
   private IItemPlan<?> entityLifePlan;
   
-  private String nextValSql = null;
-  private String insertSql = null;
-  private String deleteSql = null;
-  private String deleteAllSql = null;
+  private Expression nextValSql = null;
+  private Expression insertSql = null;
+  private Expression deleteSql = null;
+  private Expression deleteAllSql = null;
   //private String keyUpdateSql = null;
-  private String dataUpdateSql = null;
-  private String lifeUpdateSql = null;
-  private String fetchAllSql = null;
-  private String fetchByIdSql = null;
-  private String fetchDescriptionByIdSql = null;
-  private String fetchDescriptionAllSql = null;
-  private String queryUniqueSql[] = null;
+  private Expression dataUpdateSql = null;
+  private Expression lifeUpdateSql = null;
+  private Expression fetchAllSql = null;
+  private Expression fetchByIdSql = null;
+  private Expression fetchDescriptionByIdSql = null;
+  private Expression fetchDescriptionAllSql = null;
+  private Expression[] queryUniqueSql = null;
   //private String fetchByNaturalKeySql = null;
   //private String queryByNaturalKeySql = null;
   
@@ -42,7 +107,7 @@ public class SQLBuilder<T> {
   private Logger logger = LoggerFactory.getLogger(SQLBuilder.class);
   
   
-  public SQLBuilder (IEntityPlan<T> entityPlan, String schemaName) {
+  public SQLBuilder (IEntityPlan<?> entityPlan, String schemaName) {
     this.entityPlan = entityPlan;
 
     tableName = toSQLName(entityPlan.getEntityName());
@@ -54,33 +119,34 @@ public class SQLBuilder<T> {
     
     idPlan = entityPlan.getIdPlan();
     versionPlan = entityPlan.getVersionPlan();
-    List<IItemPlan<?>> dx = entityPlan.getDataPlans();
+    List<INodePlan> dx = entityPlan.getDataPlans();
     dataPlans = dx.toArray(new IItemPlan<?>[0]);
     entityLifePlan = entityPlan.getEntityLifePlan();
     
     int n = entityPlan.getUniqueConstraints().size();
-    queryUniqueSql = new String[n];
+    queryUniqueSql = new Expression[n];
   }
 
 
   private static String toSQLName (String name) {
-    StringBuffer buffer = new StringBuffer();
-    int n = name.length();
-    
-    int i = 0;
-    boolean lastUppercase = false;
-    while (i < n) {
-      char c = name.charAt(i);
-      if (lastUppercase && !Character.isUpperCase(c)) {
-        if (i > 1) {
-          buffer.insert(i - 1, '_');
-        }
-      }
-      buffer.append(c);
-      lastUppercase = Character.isUpperCase(c);
-      i++;
-    }
-    return buffer.toString();
+//    StringBuffer buffer = new StringBuffer();
+//    int n = name.length();
+//    
+//    int i = 0;
+//    boolean lastUppercase = false;
+//    while (i < n) {
+//      char c = name.charAt(i);
+//      if (lastUppercase && !Character.isUpperCase(c)) {
+//        if (i > 1) {
+//          buffer.insert(i - 1, '_');
+//        }
+//      }
+//      buffer.append(c);
+//      lastUppercase = Character.isUpperCase(c);
+//      i++;
+//    }
+//    return buffer.toString();
+    return name;
   }
 
   
@@ -202,55 +268,55 @@ public class SQLBuilder<T> {
 //  }
 
   
-  public String getNextValSql () {
+  public Expression getNextValSql () {
     if (nextValSql == null) {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("select nextval('");
-      buffer.append(tableName);
-      buffer.append('_');
-      buffer.append(idPlan.getName());
-      buffer.append("_seq')");
-      nextValSql = buffer.toString();
+      Expression sql = new Expression();
+      sql.append("select nextval('");
+      sql.append(tableName);
+      sql.append('_');
+      sql.append(idPlan.getName());
+      sql.append("_seq')");
+      nextValSql = sql;
     }
     return nextValSql;
   }
   
   
-  private int appendAllColumns (StringBuilder buffer) {
-    buffer.append(toSQLName(idPlan.getName()));
+  private int appendAllColumns (Expression sql) {
+    sql.appendInput(idPlan);
     int n = 1;
     if (versionPlan != null) {
-      buffer.append(',');
-      buffer.append(toSQLName(versionPlan.getName()));
+      sql.append(',');
+      sql.appendInput(versionPlan);
       n++;
     }
-    n += buildColumnNames(buffer);
+    n += buildColumnNames(sql);
     if (entityLifePlan != null) {
-      buffer.append(',');
-      buffer.append(toSQLName(entityLifePlan.getName()));
+      sql.append(',');
+      sql.appendInput(entityLifePlan);
       n++;
     }
     return n;
   }
   
   
-  public String getInsertSql () {
+  public Expression getInsertSql () {
     if (insertSql == null) {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("insert into ");
-      buffer.append(tableName);
-      buffer.append('(');
-      int n = appendAllColumns (buffer);
-      buffer.append(") values (");
-      appendColumnPlaces (buffer, n);
-      buffer.append(")");
-      insertSql = buffer.toString();
+      Expression sql = new Expression();
+      sql.append("insert into ");
+      sql.append(tableName);
+      sql.append('(');
+      int n = appendAllColumns (sql);
+      sql.append(") values (");
+      appendColumnPlaces(sql, n);
+      sql.append(")");
+      insertSql = sql;
     }
     return insertSql;
   }
   
 
-  private int buildColumnNames (StringBuilder buffer) {
+  private int buildColumnNames (Expression sql) {
     int n = 0;
     for (IItemPlan<?> dataPlan : dataPlans) {
       // TODO support ranges and other fields that require multiple database columns
@@ -258,9 +324,8 @@ public class SQLBuilder<T> {
 //      if (IValueRange.class.isAssignableFrom(type)) {
 //        buildColumnNames (buffer, type.getDeclaredFields());
 //      } else {
-        buffer.append(',');
-        String columnName = toSQLName(dataPlan.getName());
-        buffer.append(columnName);
+        sql.append(',');
+        sql.appendInput(dataPlan);
 //      }
       n++;
     }
@@ -268,138 +333,134 @@ public class SQLBuilder<T> {
   }
   
   
-  private void appendColumnPlaces (StringBuilder buffer, int n) {
-    buffer.append('?');
+  private void appendColumnPlaces (Expression sql, int n) {
+    sql.append('?');
     for (int i = 1; i < n; i++) {
-      buffer.append(',');
-      buffer.append('?');
+      sql.append(',');
+      sql.append('?');
     }
   }
 
   
-  public String getDeleteSql () {
+  public Expression getDeleteSql () {
     if (deleteSql == null) {
       IItemPlan<?> idPlan = entityPlan.getIdPlan();
       
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("delete from ");
-      buffer.append(tableName);
-      buffer.append(" where ");
-      buffer.append(idPlan.getName());
-      buffer.append("=?");
-      deleteSql = buffer.toString();
+      Expression sql = new Expression();
+      sql.append("delete from ");
+      sql.append(tableName);
+      sql.append(" where ");
+      sql.appendInput(idPlan);
+      sql.append("=?");
+      deleteSql = sql;
     }
     return deleteSql;
   }
   
   
-  public String getFetchAllSql () {
+  public Expression getFetchAllSql () {
     if (fetchAllSql == null) {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("select ");
-      appendAllColumns (buffer);
-      buffer.append(" from ");
-      buffer.append(tableName);
+      Expression sql = new Expression();
+      sql.append("select ");
+      appendAllColumns(sql);
+      sql.append(" from ");
+      sql.append(tableName);
 
-      logger.info ("SQL statement {}", buffer);
-      fetchAllSql = buffer.toString();
+      logger.info ("SQL statement {}", sql);
+      fetchAllSql = sql;
     }
     return fetchAllSql;
   }
   
   
-  private void appendWhereId (StringBuilder buffer) {
-    buffer.append(" where ");
-    buffer.append(toSQLName(idPlan.getName()));
-    buffer.append("=?"); 
+  private void appendWhereId (Expression sql) {
+    sql.append(" where ");
+    sql.appendInput(idPlan);
+    sql.append("=?"); 
 }
 
 
-  public String getFetchByIdSql () {
+  public Expression getFetchByIdSql () {
     if (fetchByIdSql == null) {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("select ");
-      appendAllColumns (buffer);
+      Expression sql = new Expression();
+      sql.append("select ");
+      appendAllColumns(sql);
 
-      buffer.append(" from ");
-      buffer.append(tableName);
+      sql.append(" from ");
+      sql.append(tableName);
       
-      appendWhereId (buffer);
-      fetchByIdSql = buffer.toString();
+      appendWhereId (sql);
+      fetchByIdSql = sql;
     }
     return fetchByIdSql;
   }
 
   
-  public String getQueryUniqueSql (int n) {
+  public Expression getQueryUniqueSql (int n) {
     if (queryUniqueSql[n] == null) {
       IItemPlan<?>[] uniquePlans = entityPlan.getUniqueConstraints().get(n);
       
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("select ");
-      buffer.append(toSQLName(idPlan.getName()));
+      Expression sql = new Expression();
+      sql.append("select ");
+      sql.appendOutput(idPlan);
 
-      buffer.append(" from ");
-      buffer.append(tableName);
+      sql.append(" from ");
+      sql.append(tableName);
       
-      buffer.append(" where ");
+      sql.append(" where ");
       for (IItemPlan<?> plan : uniquePlans) {
-        buffer.append(toSQLName(plan.getName()));
-        buffer.append("=? and ");
+        sql.appendInput(plan);
+        sql.append("=? and ");
       }
-      buffer.append(toSQLName(idPlan.getName()));
-      buffer.append("<>?");
+      sql.appendInput(idPlan);
+      sql.append("<>?");
       
-      queryUniqueSql[n] = buffer.toString();
+      queryUniqueSql[n] = sql;
     }
     return queryUniqueSql[n];
   }
 
   
-  private void appendDescriptionNames (StringBuilder buffer) {
-    int i = 0;
-    List<IItemPlan<?>> fieldPlans = entityPlan.getDescriptionPlans();
-    for (IItemPlan<?> fieldPlan : fieldPlans) {
-      if (i > 0) {
-        buffer.append(",");
-      }
-      buffer.append(toSQLName(fieldPlan.getName()));
+  private void appendDescriptionNames (int i, Expression sql) {
+    List<IItemPlan<?>> itemPlans = entityPlan.getDescriptionPlans();
+    for (IItemPlan<?> itemPlan : itemPlans) {
+      sql.appendOutput(i, itemPlan);
       i++;
     }
   }
 
   
-  public String getFetchDescriptionByIdSql () {
+  public Expression getFetchDescriptionByIdSql () {
     if (fetchDescriptionByIdSql == null) {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("select ");
-      appendDescriptionNames(buffer);
+      Expression sql = new Expression();
+      sql.append("select ");
+      appendDescriptionNames(0, sql);
 
-      buffer.append(" from ");
-      buffer.append(tableName);
+      sql.append(" from ");
+      sql.append(tableName);
       
-      appendWhereId (buffer);
-      fetchDescriptionByIdSql = buffer.toString();
+      appendWhereId(sql);
+      fetchDescriptionByIdSql = sql;
     }
     return fetchDescriptionByIdSql;
   }
   
   
-  public String getFetchDescriptionAllSql () {
+  public Expression getFetchDescriptionAllSql () {
     if (fetchDescriptionAllSql == null) {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("select ");
-      buffer.append(toSQLName(idPlan.getName()));
-      buffer.append(",");
-      appendDescriptionNames(buffer);
+      Expression sql = new Expression();
+      sql.append("select");
+      sql.appendOutput(idPlan);
+      sql.append(',');
+      appendDescriptionNames(1, sql);
       if (entityLifePlan != null) {
-        buffer.append(",");
-        buffer.append(toSQLName(entityLifePlan.getName()));
+        sql.append(',');
+        sql.appendOutput(entityLifePlan);
       }
-      buffer.append(" from ");
-      buffer.append(tableName);
+      sql.append(" from ");
+      sql.append(tableName);
 
-      fetchDescriptionAllSql = buffer.toString();
+      fetchDescriptionAllSql = sql;
     }
     return fetchDescriptionAllSql;
   }
@@ -571,62 +632,60 @@ public class SQLBuilder<T> {
 //  }
 
   
-  public String getDataUpdateSql () {
+  public Expression getDataUpdateSql () {
     if (dataUpdateSql == null) {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("update ");
-      buffer.append(tableName);
+      Expression sql = new Expression();
+      sql.append("update ");
+      sql.append(tableName);
       
-      buildUpdateSet(buffer, " set ", dataPlans);
-      buffer.append(" where ");
-      buffer.append(idPlan.getName());
-      buffer.append("=?");
-      dataUpdateSql = buffer.toString();
+      buildUpdateSet(sql, " set ", dataPlans);
+      sql.append(" where ");
+      sql.append(idPlan.getName());
+      sql.append("=?");
+      dataUpdateSql = sql;
     }
     return dataUpdateSql;
   }
   
 
-  public String getLifeUpdateSql () {
+  public Expression getLifeUpdateSql () {
     if (lifeUpdateSql == null) {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("update ");
-      buffer.append(tableName);
+      Expression sql = new Expression();
+      sql.append("update ");
+      sql.append(tableName);
       
-      buildUpdateSet(buffer, " set ", new IItemPlan<?>[] {entityLifePlan});
-      buffer.append(" where ");
-      buffer.append(idPlan.getName());
-      buffer.append("=?");
-      lifeUpdateSql = buffer.toString();
+      buildUpdateSet(sql, " set ", new IItemPlan<?>[] {entityLifePlan});
+      sql.append(" where ");
+      sql.appendInput(idPlan);
+      sql.append("=?");
+      lifeUpdateSql = sql;
     }
     return lifeUpdateSql;
   }
   
 
-  private void buildUpdateSet (StringBuilder buffer, String separator, IItemPlan<?>[] plans) {
+  private void buildUpdateSet (Expression sql, String separator, IItemPlan<?>[] plans) {
     if (versionPlan != null) {
-      buffer.append(separator);
-      String columnName = toSQLName(versionPlan.getName());
-      buffer.append(columnName);
-      buffer.append("=?");
+      sql.append(separator);
+      sql.appendInput(versionPlan);
+      sql.append("=?");
       separator = ",";
     }
     for (IItemPlan<?> plan : plans) {
-      buffer.append(separator);
-      String columnName = toSQLName(plan.getName());
-      buffer.append(columnName);
-      buffer.append("=?");
+      sql.append(separator);
+      sql.appendInput(plan);
+      sql.append("=?");
       separator = ",";
     }
   }
 
   
-  public String getDeleteAllSql () {
+  public Expression getDeleteAllSql () {
     if (deleteAllSql == null) {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("delete from ");
-      buffer.append(tableName);
-      deleteAllSql = buffer.toString();
+      Expression sql = new Expression();
+      sql.append("delete from ");
+      sql.append(tableName);
+      deleteAllSql = sql;
     }
     return deleteAllSql;
   }

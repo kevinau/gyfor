@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.gyfor.object.value.EntityLife;
 import org.gyfor.object.value.VersionTime;
+import org.gyfor.sql.IResultSet;
 
 
 public interface IEntityPlan<T> extends IClassPlan<T> {
@@ -21,7 +22,7 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
 
   public List<IItemPlan<?>[]> getUniqueConstraints();
 
-  public String getDescription (Object instance);
+  public EntityDescription getDescription (Object instance);
   
   public IItemPlan<EntityLife> getEntityLifePlan();
   
@@ -45,10 +46,13 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
 
   public IItemPlan<?>[] getKeyItems(int index);
   
-  public T newInstance();
+  @Override
+  public <X> X newInstance();
+  
+  public T newInstance(IItemPlan<?>[] sqlPlans, IResultSet rs);
   
   public List<INodePlan> getDataPlans();
 
   public List<IItemPlan<?>> getDescriptionPlans();
-  
+
 }
