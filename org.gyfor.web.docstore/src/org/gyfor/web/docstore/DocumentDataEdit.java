@@ -1,12 +1,10 @@
 package org.gyfor.web.docstore;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.gyfor.http.AbstractWebSocketConnectionCallback;
 import org.gyfor.http.CallbackAccessor;
 import org.gyfor.http.Context;
 import org.gyfor.http.Resource;
+import org.gyfor.http.WebSocketSession;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -36,7 +34,7 @@ public class DocumentDataEdit extends WebSocketProtocolHandshakeHandler {
     private Logger logger = LoggerFactory.getLogger(DocumentDataEdit.class);
     
     @Override
-    protected void handleTextMessage(String command, String data) {
+    protected void handleTextMessage(WebSocketSession session, String command, String data) {
       logger.info("handleTextMessage: {}: {}", command, data);
       switch (command) {
       case "setType" :

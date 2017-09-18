@@ -105,6 +105,15 @@ div.docPage div span {
   cursor: default;
 }
 
+.form-item label {
+  	font-family: sans-serif;
+  	font-size: 9pt;
+  	color: #FFF;
+	background: rgba(255, 140, 0, 1);
+	padding: 0 6px;
+	cursor: default;
+}
+  
 #pagelinks div a {
   font-family: Helvetica, sans-serif;
   font-size: 14px;
@@ -180,6 +189,7 @@ div.docPage img {
     position: relative;
     color: black;
     outline: none;
+    font-size: 9pt;
 }
 
 .dropdown-content {
@@ -253,12 +263,23 @@ function updateBackend(itemPath, value) {
  }
  
 var websocket;
+var websocket1;
+var websocket2;
 
-window.addEventListener("load", function() {
+window.addEventListener("DOMContentLoaded", function() {
   console.log(window.location.host + "/d/edit");
   websocket = websocketStart(window.location.host + "/d/edit", "");
+  websocket1 = websocketStart(window.location.host + "/ws/entitySet", "", function(ws) {
+    console.log("/ws/entitySet " + websocket1.url);
+  	SearchInput.init(websocket1, "entitySearchInput");
+  });
+  websocket2 = websocketStart(window.location.host + "/ws/documentType", "", function(ws) {
+    console.log("/ws/documentType " + websocket2.url);
+  	SearchInput.init(websocket2, "doctypeSearchInput");
+  });
 }, false);
  
+
   </script>
 </head>
 <body>
@@ -278,7 +299,8 @@ window.addEventListener("load", function() {
       </div>
     </div>
     <div class="docPages">
-      {{ searchInput("entitySearchInput", "partyListId") }}
+      {{ searchInput("entitySearchInput", "partyListId", "From", "party") }}
+      {{ searchInput("doctypeSearchInput", "doctypeListId", "Document type", "") }}
       {% for p in imagePaths %}
       {% set i = loop.index %}
       {% set pageImage = pageImages[i] %}
@@ -292,7 +314,7 @@ window.addEventListener("load", function() {
               <div style="width:{{seg.width}}px; height:{{seg.height}}px"
                    title="{{seg.text}}" class="{{seg.type}}"><span style="left:{{seg.x0}}px; top:{{seg.y0}}px; height:{{seg.height}}px; font-size:{{seg.fontSize}}pt">{{seg.text}}</span></div>
             {% else %}
-              <div id="segment{{loop.index}}" style="left:{{seg.x0}}px; top:{{seg.y0}}px; width:{{seg.width}}px; height:{{seg.height}}px; font-size:{{seg.fontSize}}pt"
+              <div id="segment{{loop.index}}" style="left:{{seg.x0}}px; top:{{seg.y0}}px; width:{{seg.width}}px; height:{{seg.height}}px"
                    onclick="myFunction(this, updateBackend)" data-value="{{seg.value}}" 
                    title="{{seg.text}}({{seg.type}})" class="{{seg.type}} dropbtn"></div>
             {% endif %}

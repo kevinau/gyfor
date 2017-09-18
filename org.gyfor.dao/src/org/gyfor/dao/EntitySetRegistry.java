@@ -30,7 +30,7 @@ public class EntitySetRegistry {
   
   public IEntitySet getEntitySet (String entityName) {
     try {
-      Collection<ServiceReference<IEntitySet>> serviceRefs = context.getServiceReferences(IEntitySet.class, "(entity=" + entityName + ")");
+      Collection<ServiceReference<IEntitySet>> serviceRefs = context.getServiceReferences(IEntitySet.class, "(name=" + entityName + ")");
       if (serviceRefs.size() == 0) {
         return null;
       }

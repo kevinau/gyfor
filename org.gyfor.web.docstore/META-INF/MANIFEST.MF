@@ -16,8 +16,10 @@ Import-Package: io.undertow.server,
  org.gyfor.docstore.search,
  org.gyfor.http,
  org.gyfor.math,
+ org.gyfor.object.value,
  org.gyfor.template,
  org.gyfor.util,
+ org.gyfor.web.global,
  org.osgi.framework;version="1.8.0",
  org.osgi.service.component;version="1.2.0",
  org.pennyledger.party,
@@ -27,5 +29,6 @@ Service-Component: OSGI-INF/org.gyfor.web.docstore.SingleDocumentView.xml,
  OSGI-INF/org.gyfor.web.docstore.ListThumbsView.xml,
  OSGI-INF/org.gyfor.web.docstore.SearchDocumentView.xml,
  OSGI-INF/org.gyfor.web.docstore.DocstoreFiles.xml,
- OSGI-INF/org.gyfor.web.docstore.DocumentDataEdit.xml
+ OSGI-INF/org.gyfor.web.docstore.DocumentDataEdit.xml,
+ OSGI-INF/org.gyfor.web.docstore.DocumentTypeWebSocket.xml
 Bundle-ActivationPolicy: lazy

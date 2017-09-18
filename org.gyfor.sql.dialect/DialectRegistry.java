@@ -53,7 +53,7 @@ public class DialectRegistry {
         throw new IllegalArgumentException(name);
       }
       ServiceReference<IDialect> serviceRef = serviceRefs.iterator().next();
-      return (IDialect)context.getService(serviceRef);
+      return context.getService(serviceRef);
     } catch (InvalidSyntaxException ex) {
       throw new RuntimeException(ex);
     }

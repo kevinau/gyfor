@@ -2,7 +2,7 @@ package org.gyfor.dao;
 
 import java.util.List;
 
-import org.gyfor.object.plan.EntityDescription;
+import org.gyfor.object.value.EntityDescription;
 
 public interface IEntitySet {
   

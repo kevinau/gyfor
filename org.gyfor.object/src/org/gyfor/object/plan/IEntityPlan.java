@@ -3,6 +3,7 @@ package org.gyfor.object.plan;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.gyfor.object.value.EntityDescription;
 import org.gyfor.object.value.EntityLife;
 import org.gyfor.object.value.VersionTime;
 import org.gyfor.sql.IResultSet;

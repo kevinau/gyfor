@@ -418,12 +418,12 @@ public class SQLBuilder {
 
   public static String getFetchByIdSql (String schema, IEntityPlan<?> entityPlan) {
     StringBuilder buffer = new StringBuilder();
-    buffer.append("SELECT ");
+    buffer.append("select ");
     
     int[] n = new int[1];
     List<INodePlan> dataPlans = entityPlan.getDataPlans();
     addDataColumnNames(buffer, dataPlans, "", n);
-    buffer.append(" FROM ");
+    buffer.append(" from ");
     String tableName = entityPlan.getName();
     if (schema != null) {
       tableName = schema + '.' + tableName;
@@ -437,14 +437,14 @@ public class SQLBuilder {
   
   public static String getFetchElementSql (String tableName, INodePlan nodePlan) {
     StringBuilder buffer = new StringBuilder();
-    buffer.append("SELECT ");
+    buffer.append("select ");
     
     int[] n = new int[1];
 
     buffer.append("id");
     n[0]++;
     addDataColumnName(buffer, nodePlan, "", n);
-    buffer.append(" FROM ");
+    buffer.append(" from ");
     buffer.append(tableName);
     
     appendWhereParentId (buffer);

@@ -8,7 +8,6 @@ import org.gyfor.object.Id;
 import org.gyfor.object.SelfDescribing;
 import org.gyfor.object.UniqueConstraint;
 import org.gyfor.object.Version;
-import org.gyfor.object.plan.EntityDescription;
 import org.gyfor.object.plan.EntityLabelGroup;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
@@ -19,6 +18,7 @@ import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.EntityLifeType;
 import org.gyfor.object.type.builtin.StringType;
 import org.gyfor.object.type.builtin.VersionType;
+import org.gyfor.object.value.EntityDescription;
 import org.gyfor.object.value.EntityLife;
 import org.gyfor.object.value.VersionTime;
 import org.gyfor.sql.IResultSet;
@@ -377,6 +377,7 @@ public class EntityPlan<T> extends NameMappedPlan<T> implements IEntityPlan<T> {
   @Override
   public EntityDescription getDescription (Object instance) {
     int id = idPlan.getFieldValue(instance);
+    String idx = Integer.toString(id);
     
     EntityLife entityLife = EntityLife.ACTIVE;
     if (entityLifePlan != null) {
@@ -388,7 +389,7 @@ public class EntityPlan<T> extends NameMappedPlan<T> implements IEntityPlan<T> {
     if (instance instanceof SelfDescribing) {
       SelfDescribing describing = (SelfDescribing)instance;
       description = describing.getDescription();
-      return new EntityDescription(id, description, entityLife);
+      return new EntityDescription(idx, description, entityLife);
     }
     
     // Otherwise, concatenate all top level nodes that are marked as describing.
@@ -407,7 +408,7 @@ public class EntityPlan<T> extends NameMappedPlan<T> implements IEntityPlan<T> {
       }
     }
     if (description != null) {
-      return new EntityDescription(id, description, entityLife);
+      return new EntityDescription(idx, description, entityLife);
     }
     
     // Otherwise, use the first top level String node
@@ -416,13 +417,13 @@ public class EntityPlan<T> extends NameMappedPlan<T> implements IEntityPlan<T> {
         IType<?> type = ((IItemPlan<?>)nodePlan).getType();
         if (type instanceof StringType) {
           description =  nodePlan.getFieldValue(instance).toString();
-          return new EntityDescription(id, description, entityLife);
+          return new EntityDescription(idx, description, entityLife);
         }
       }
     }
 
     // Otherwise, return an empty description
-    return new EntityDescription(id, "", entityLife);
+    return new EntityDescription(idx, "", entityLife);
   }
 
   

@@ -18,7 +18,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
   private final List<WebSocketChannel> channels = new ArrayList<WebSocketChannel>();
   
 
-  protected abstract void handleTextMessage(String command, String data);
+  protected abstract void handleTextMessage(WebSocketSession session, String command, String data);
   
   @Override
   public void onConnect(WebSocketHttpExchange exchange, WebSocketChannel channel) {
@@ -62,8 +62,8 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
           }
           break;
         default :
-          System.out.println("Handle message: " + command + " " + data + ": " + channel);
-          handleTextMessage(command, data);
+          WebSocketSession session = new WebSocketSession(channel);
+          handleTextMessage(session, command, data);
           break;
         }
         ////WebSockets.sendText(message.getData(), channel, null);

@@ -12,6 +12,7 @@ import org.gyfor.dao.IDataAccessObject;
 import org.gyfor.http.CallbackAccessor;
 import org.gyfor.http.Context;
 import org.gyfor.http.Resource;
+import org.gyfor.http.Response;
 import org.gyfor.object.model.ContainerChangeListener;
 import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.IEntityModel;
@@ -67,9 +68,9 @@ import io.undertow.websockets.core.WebSockets;
  * <p>
  * All commands and responses are tab delimited fields, with the first field the command or response name.
  */
-@Context("/ws/entity")
-@Resource(path = "/resources", location = "resources")
-@Component(service = HttpHandler.class, immediate=true)
+//@Context("/ws/entity")
+//@Resource(path = "/resources", location = "resources")
+//@Component(service = HttpHandler.class, immediate=true)
 public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
 
   private final EntityWebSocketConnectionCallback callback;

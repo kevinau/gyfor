@@ -2,6 +2,7 @@ package org.gyfor.dao;
 
 import java.util.List;
 import org.gyfor.object.plan.IEntityPlan;
+import org.gyfor.object.value.EntityDescription;
 
 @Deprecated
 public interface IDataAccessObject<T> extends AutoCloseable {

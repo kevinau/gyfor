@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>EntitySet: getAllDescriptions Test</title>
+<script type="text/javascript" src="/global/ws.js"></script>
+</head>
+<body>
+<h2>EntitySet: getAllDescriptions test</h2>
+
+<button onclick="getDescriptions()">Get descriptions</button>
+
+<h3>Descriptions</h3>
+<div id="descList"></div>
+
+<script type="text/javascript">
+
+var websocket;
+
+window.addEventListener("load", function() {
+  var url = window.location.host + "/ws/entitySet";
+  console.log(url);
+  websocket = websocketStart(url);
+}, false);
+
+function getDescriptions() {
+  sendMessage(websocket, "getAllDescriptions|party|#descList");
+}
+
+</script>
+
+</body>
+</html>

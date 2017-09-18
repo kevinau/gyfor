@@ -449,15 +449,14 @@ public class SQLBuilder {
   public Expression getFetchDescriptionAllSql () {
     if (fetchDescriptionAllSql == null) {
       Expression sql = new Expression();
-      sql.append("select");
+      sql.append("SELECT ");
       sql.appendOutput(idPlan);
-      sql.append(',');
       appendDescriptionNames(1, sql);
       if (entityLifePlan != null) {
         sql.append(',');
         sql.appendOutput(entityLifePlan);
       }
-      sql.append(" from ");
+      sql.append(" FROM ");
       sql.append(tableName);
 
       fetchDescriptionAllSql = sql;

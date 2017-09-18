@@ -6,31 +6,31 @@ class SearchInput {
 	static getDropListChildren (dropList, s, callback) {
 		//console.log("::::::::::::::: " + dropList.getAttribute("data-loaded") + "  " + dropList.classList.contains("data-loaded") + " " + dropList + "  " + s);
 
-		if (dropList.getAttribute("data-loaded") != "true") {
-			//console.log("Data loaded is not true");
-			let priorOnload = dropList.onload;
-			if (priorOnload) {
-				dropList.onload = function(node) {
-					callback(node.children);
-					priorOnload(node.children);
-				};
-			} else {
-				dropList.onload = function(node) {
-					//console.log(".............. droplist onload called");
-					dropList.setAttribute("data-loaded", "true");
-					//console.log("............... " + dropList.getAttribute("data-loaded"));
-					dropList.classList.add("data-loaded");
-					SearchInput.setSizeOfSearchInput(node.parentElement);
-					callback(node.children);
-				};
-				// Get a list of descriptions (but from what channel?)
-				doSend ("getDescriptions");
-			}
-		} else {
+//		if (dropList.getAttribute("data-loaded") != "true") {
+//			//console.log("Data loaded is not true");
+//			let priorOnload = dropList.onload;
+//			if (priorOnload) {
+//				dropList.onload = function(node) {
+//					callback(node.children);
+//					priorOnload(node.children);
+//				};
+//			} else {
+//				dropList.onload = function(node) {
+//					//console.log(".............. droplist onload called");
+//					dropList.setAttribute("data-loaded", "true");
+//					//console.log("............... " + dropList.getAttribute("data-loaded"));
+//					dropList.classList.add("data-loaded");
+//					SearchInput.setSizeOfSearchInput(node.parentElement);
+//					callback(node.children);
+//				};
+//				// Get a list of descriptions (but from what channel?)
+//				doSend ("getDescriptions");
+//			}
+//		} else {
 			console.log("Call back using existing dropList: " + dropList.children.length);
-			SearchInput.setSizeOfSearchInput(dropList.parentElement);
+//			SearchInput.setSizeOfSearchInput(dropList.parentElement);
 			callback(dropList.children);
-		}
+//		}
 	}
 
 	static setShadowValue (shadowElem, value) {
@@ -83,7 +83,7 @@ class SearchInput {
 	static countShowing (dropList) {
 		let dropListItems = dropList.children;
 		let n = 0;
-		for (var i = 0; i < dropListItems.length; i++) {
+		for (let i = 0; i < dropListItems.length; i++) {
 			if (dropListItems[i].classList.contains("show")) {
 				n++;
 			}
@@ -141,7 +141,7 @@ class SearchInput {
 	}
 
 	static exactMatch (target, list) {
-		for (var i = 0; i < list.length; i++) {
+		for (let i = 0; i < list.length; i++) {
 			if (target == list[i].innerText) {
 				return list[i].getAttribute("data-value");
 			}
@@ -153,14 +153,15 @@ class SearchInput {
 	//	All calls to clearDropList should be protected, and only called
 	//	within a callback from getDropListChildren
 	static clearDropList (inputElem, inputBackground, dropList) {
-		var elem = inputBackground;
+		let elem = inputBackground;
 		while (elem.firstChild) elem.removeChild(elem.firstChild);
 		console.log("padding left " + inputElem.paddingLeft);
-		inputElem.style.paddingLeft = "0px"; //inputElem.paddingLeft;
-		inputElem.style.width = inputElem.elemWidth + "px";
+		
+		inputElem.style.paddingLeft = "6px"; //null; //inputElem.paddingLeft;
+		inputElem.style.width = (inputElem.elemWidth - 6) + "px";
 
 		let dropListItems = dropList.children;
-		for (var i = 0; i < dropListItems.length; i++) {
+		for (let i = 0; i < dropListItems.length; i++) {
 			dropListItems[i].classList.remove("show", "highlight");
 		}
 		dropList.classList.remove("allShowing", "someShowing");
@@ -205,7 +206,7 @@ class SearchInput {
 		let n = 0;
 		let x0 = 0;
 		let i0 = 0;
-		for (var i = 0; i < dropListItems.length; i++) {
+		for (let i = 0; i < dropListItems.length; i++) {
 			let t = dropListItems[i].innerText.toLowerCase();
 			let x = t.indexOf(partial);
 			if (x != -1) {
@@ -226,27 +227,27 @@ class SearchInput {
 			break;
 		case 1 :
 			// Single value found
-			var elem = inputBackground;
+			let elem = inputBackground;
 			while (elem.firstChild) elem.removeChild(elem.firstChild);
 
-			var s0 = document.createTextNode(singleValue.substring(0, x0));
-			var span0 = document.createElement("span");
+			let s0 = document.createTextNode(singleValue.substring(0, x0));
+			let span0 = document.createElement("span");
 			span0.appendChild(s0);
 
-			var s1 = document.createTextNode(inputElem.value);
-			var span1 = document.createElement("span");
+			let s1 = document.createTextNode(inputElem.value);
+			let span1 = document.createElement("span");
 			span1.style.visibility = "hidden";
 			span1.appendChild(s1);
 
-			var s2 = document.createTextNode(singleValue.substring(x0 + inputElem.value.length));
-			var span2 = document.createElement("span");
+			let s2 = document.createTextNode(singleValue.substring(x0 + inputElem.value.length));
+			let span2 = document.createElement("span");
 			span2.appendChild(s2);
 
 			elem.appendChild(span0);
 			elem.appendChild(span1);
 			elem.appendChild(span2);
 
-			for (var i = 0; i < dropListItems.length; i++) {
+			for (let i = 0; i < dropListItems.length; i++) {
 				if (i == i0) {
 					dropListItems[i].classList.add("show");
 				} else {
@@ -255,20 +256,20 @@ class SearchInput {
 			}
 			let offsetLeft = span1.offsetLeft - inputElem.offsetLeft;
 			inputElem.style.paddingLeft = offsetLeft + "px";
-			inputElem.style.width = (inputElem.elemWidth - offsetLeft + 10) + "px";
+			inputElem.style.width = (inputElem.elemWidth - offsetLeft) + "px";
 			inputElem.classList.remove("error", "incomplete", "required");
 			SearchInput.setShadowValue(inputShadow, dataValue);
 			break;
 		default :
 			// Multiple values found
-			var elem = inputBackground;
-			while (elem.firstChild) elem.removeChild(elem.firstChild);
-			inputElem.style.paddingLeft = "0px"; //inputElem.paddingLeft;
-			inputElem.style.width = inputElem.elemWidth + "px";
+			let elem2 = inputBackground;
+			while (elem2.firstChild) elem2.removeChild(elem2.firstChild);
+			inputElem.style.paddingLeft = "6px"; //null; //inputElem.paddingLeft;
+			inputElem.style.width = (inputElem.elemWidth - 6) + "px";
 			inputElem.classList.remove("error", "required");
 			inputElem.classList.add("incomplete");
 
-			for (var i = 0; i < dropListItems.length; i++) {
+			for (let i = 0; i < dropListItems.length; i++) {
 				let t = dropListItems[i].innerText.toLowerCase();
 				let x = t.indexOf(partial);
 				if (x == -1) {
@@ -294,13 +295,15 @@ class SearchInput {
 
 	static menuKeyHandler (ev, e) {
 		console.log(">>> menuKeyHandler " + ev + "  " + e);
-		var dropList = e.parentElement.querySelector("div.dropList");
+		let dropList = e.parentElement.querySelector("div.dropList");
 		SearchInput.getDropListChildren(dropList, 6, function(dropListItems) {
-			var code = ev.keyCode ? ev.keyCode : ev.which;
+			let code = ev.keyCode ? ev.keyCode : ev.which;
+			let toggleButton = 0;
+			
 			switch (code) {
 			case 27 :			// ESC
 			case 37 :			// Left arrow
-				var toggleButton = e.parentElement.querySelector("button.upDownButton");
+				toggleButton = e.parentElement.querySelector("button.upDownButton");
 				if (toggleButton.checked) {
 					// If drop list is showing, hide it
 					SearchInput.toggleItemList(ev, e);
@@ -309,7 +312,7 @@ class SearchInput {
 				}
 				break;
 			case 39 :			// Right arrow
-				var toggleButton = e.parentElement.querySelector("button.upDownButton");
+				toggleButton = e.parentElement.querySelector("button.upDownButton");
 				if (!toggleButton.checked) {
 					// If drop list is not showing, show it
 					SearchInput.toggleItemList(ev, e);
@@ -320,7 +323,7 @@ class SearchInput {
 				// DROP THROUGH
 			case 38 :			// Up arrow
 			case 40 :			// Down arrow
-				var i = 0;
+				let i = 0;
 				while (i < dropListItems.length) {
 					let dropListItem = dropListItems[i];
 					if (dropListItem.classList.contains("highlight")) {
@@ -329,8 +332,8 @@ class SearchInput {
 					}
 					i++;
 				}
-				var dropList = e.parentElement.querySelector("div.dropList");
-				var allShowing = dropList.classList.contains("allShowing");
+				let dropList = e.parentElement.querySelector("div.dropList");
+				let allShowing = dropList.classList.contains("allShowing");
 				if (i < dropListItems.length) {
 					// We found a highlight item
 					(code == 38) ? i-- : i++;
@@ -359,11 +362,11 @@ class SearchInput {
 			case 9 :			// Tab
 			case 13 :			// Enter
 				if (!ev.shiftKey) {
-					var inputElem = e.parentElement.querySelector("input.visible");
-					var inputShadow = e.parentElement.querySelector("input.shadow");
-					var inputBackground = e.parentElement.querySelector("div.inputBackground");
-					var dropList = e.parentElement.querySelector("div.dropList");
-					var i = 0;
+					let inputElem = e.parentElement.querySelector("input.visible");
+					let inputShadow = e.parentElement.querySelector("input.shadow");
+					let inputBackground = e.parentElement.querySelector("div.inputBackground");
+					let dropList = e.parentElement.querySelector("div.dropList");
+					let i = 0;
 					while (i < dropListItems.length) {
 						let dropListItem = dropListItems[i];
 						if (dropListItem.classList.contains("highlight")) {
@@ -383,7 +386,7 @@ class SearchInput {
 						let singleValue;
 						let n = 0;
 						let i0 = 0;
-						for (var i = 0; i < dropListItems.length; i++) {
+						for (let i = 0; i < dropListItems.length; i++) {
 							let t = dropListItems[i].innerText.toLowerCase();
 							let x = t.indexOf(partial);
 							if (x != -1) {
@@ -428,7 +431,8 @@ class SearchInput {
 		elemWidth -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
 		console.log("Without padding:" + elemWidth);
 
-		inputElem.style.width = elemWidth + "px";
+		inputElem.style.paddingLeft = "6px"; //null; //inputElem.paddingLeft;
+		inputElem.style.width = (elemWidth - 6) + "px";
 		inputBackground.style.width = elemWidth + "px";
 		inputElem.elemWidth = elemWidth;
 		// The padding left includes the "px" suffix.
@@ -442,19 +446,6 @@ class SearchInput {
 		dropList.classList.remove("calcSize");
 
 		// searchInput.style.height = inputHeight + "px";
-	}
-
-	static onSearchInputLoad () {
-		let searchInputs = document.querySelectorAll(".searchInput");
-		for (var i = 0; i < searchInputs.length; i++) {
-			let searchInput = searchInputs[i];
-			let dropList = searchInput.querySelector("div.dropList");
-			SearchInput.getDropListChildren(dropList, 12, function(dropListItems) {
-				// Drop list items are not used, but the above preloads the search
-				// input list
-				// and sizes the input fields
-			});
-		}
 	}
 
 	static selectItem (e) {
@@ -490,7 +481,7 @@ class SearchInput {
 		});
 	}
 
-
+	
 	//	Close the drop down if the user clicks outside of it
 	static outsideClick (event) {
 		//console.log("click event handler");
@@ -519,4 +510,19 @@ class SearchInput {
 			searchInput.classList.remove("active");
 		}
 	}
+
+	
+	static init (websocket, searchInputId) {
+		let searchInput = document.getElementById(searchInputId);
+		console.log("Init search input by sending message via websockets");
+		console.log("Search input: " + searchInput.getAttribute("data-args"));
+		let dropList = searchInput.querySelector("div.dropList");
+		dropList.addEventListener('wschange', function (e) {
+			SearchInput.setSizeOfSearchInput(searchInput);
+		}, false);
+		let args = searchInput.getAttribute("data-args");
+	    console.log("getAllDescriptions|#" + dropList.id + "|" + args);
+	    sendMessage(websocket, "getAllDescriptions|#" + dropList.id + "|" + args);
+	}
+
 }

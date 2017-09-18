@@ -55,7 +55,7 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
 
   private Path luceneDir;
   
-  private IndexWriterConfig config;
+  private Analyzer analyzer;
 
 
   private Directory directory;
@@ -82,8 +82,7 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
     }
     docStore.addDocumentStoreListener(this);
 
-    Analyzer analyzer = new StandardAnalyzer();
-    config = new IndexWriterConfig(analyzer);
+    analyzer = new StandardAnalyzer();
   }
   
   
@@ -95,12 +94,13 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
-    config = null;
+    analyzer = null;
   }
 
 
   @Override
   public void documentAdded(Document doc) {
+    IndexWriterConfig config = new IndexWriterConfig(analyzer);
     try (IndexWriter iwriter = new IndexWriter(directory, config)) {
       org.apache.lucene.document.Document indexedDoc = new org.apache.lucene.document.Document();
       
@@ -185,6 +185,7 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
   
   @Override
   public void documentRemoved(Document doc) {
+    IndexWriterConfig config = new IndexWriterConfig(analyzer);
     try (IndexWriter iwriter = new IndexWriter(directory, config)) {
       logger.info("Updating document data {} ({})", doc.getHashCode(), doc.getOriginName());
       iwriter.deleteDocuments(new Term("id", doc.getHashCode()));
@@ -211,7 +212,7 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
     try (DirectoryReader ireader = DirectoryReader.open(directory)) {
       IndexSearcher isearcher = new IndexSearcher(ireader);
       // Parse a simple query that searches for "text":
-      QueryParser parser = new QueryParser("body", config.getAnalyzer());
+      QueryParser parser = new QueryParser("body", analyzer);
       Query query = parser.parse(queryString);
       ScoreDoc[] hits = isearcher.search(query, 1000).scoreDocs;
       // Iterate through the results:

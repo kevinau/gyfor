@@ -6,9 +6,9 @@ import java.util.function.Function;
 
 import org.gyfor.dao.DescriptionChangeListener;
 import org.gyfor.dao.IEntitySet;
-import org.gyfor.object.plan.EntityDescription;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.PlanFactory;
+import org.gyfor.object.value.EntityDescription;
 import org.gyfor.osgi.ComponentConfiguration;
 import org.gyfor.osgi.Configurable;
 import org.gyfor.sql.IConnection;
@@ -46,6 +46,14 @@ public class EntitySet implements IEntitySet {
 
     entityPlan = planFactory.getEntityPlan(className);
     sqlBuilder = new SQLBuilder(entityPlan, schema);
+    
+    // Testing
+    List<EntityDescription> descriptions = getAllDescriptions();
+    System.out.println("+++++++++ " + className);
+    for (EntityDescription desc : descriptions) {
+      System.out.println("+++++++++ " + desc);
+    }
+    System.out.println("+++++++++ ");
   }
   
   

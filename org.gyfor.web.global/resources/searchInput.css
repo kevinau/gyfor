@@ -1,16 +1,18 @@
-#entitySearchInput {
-  padding-bottom: 1em; }
-
 .searchInput {
-  background-color: transparent;
-  z-index: 10;
-}
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  position: relative;
+  display: inline-block;
+  height: 26px;
+  background-color: transparent; }
 
 .searchInput input {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  height: 24px;
+  padding: 0 6px;
   border: 1px solid #000;
-  position: relative;
-  z-index: 10;
-}
+  position: relative; }
 
 .searchInput input.error {
   border: 1px solid red; }
@@ -22,18 +24,6 @@
 .searchInput input:focus {
   border-style: dashed; }
 
-.searchInput {
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  position: relative;
-  display: inline-block;
-  height: 24px; }
-
-.searchInput input {
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  height: 24px;
-}
 .searchInput input.visible {
   background: transparent;
   display: inline;
@@ -47,47 +37,44 @@
   left: -9999px; }
 
 .searchInput div.inputBackground {
-  height: 26px;
+  height: 24px;
   font-size: 16px;
   position: absolute;
   top: 0;
-  line-height: 24px;
+  /* line-height: $height; */
   /* height (26) less top and bottom border (2 x 1) */
-  z-index: 5;
-  border: 1px solid transparent;
+  border: 1px solid #ffffff;
   padding: 0;
   margin: 0;
   text-overflow: ellipsis;
   overflow: hidden;
-  white-space: nowrap; 
+  white-space: nowrap;
   padding-left: 6px;
-}
+  background-color: #fff; }
 
 .searchInput div.inputBackground span {
   font-size: 16px;
-  color: #AAAAAA;
-  line-height: 26px;
-  z-index: 5;
-  background-color: cyan;
-}
+  color: #aaa;
+  line-height: 24px;
+  background-color: #fff; }
 
 .searchInput div.dropList {
   display: none;
   font-size: 16px;
-  border: 1px solid green;
-  background: #ffffff;
+  border: 0.5px solid darkorange;
+  background: #fff;
   margin: 0;
   position: absolute;
-  top: 26px;
+  top: 25px;
   line-height: 24px;
   /* some figure yet to be determined */
-  z-index: 20;
+  z-index: 200;
   cursor: pointer; }
 
 .searchInput div.dropList div {
   white-space: nowrap;
   padding: 0 6px;
-  z-index: 20; }
+  z-index: 200; }
 
 .searchInput div.dropList.calcSize div {
   display: block !IMPORTANT; }
@@ -129,7 +116,10 @@
 .searchInput button.upDownButton {
   display: none;
   line-height: 24px;
-  /* height (26) less top and bottom border (2 x 1) */ }
+  /* height (26) less top and bottom border (2 x 1) */
+  padding: 0;
+  margin: 0;
+  border: none; }
 
 .searchInput.active button.upDownButton {
   font-size: 16px;
@@ -150,8 +140,8 @@
 .searchInput.active button.upDownButton:before {
   position: relative;
   display: block;
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   content: url(downArrow.svg); }
 
 .searchInput.active button.upDownButton:disabled:before {
@@ -165,3 +155,5 @@
 
 .searchInput img {
   margin-left: -26px; }
+
+/*# sourceMappingURL=searchInput.css.map */
