@@ -10,6 +10,7 @@ import org.gyfor.object.plan.IListPlan;
 import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.plan.PlanStructure;
 
+
 public class ListPlan extends RepeatingPlan implements IListPlan {
 
   public ListPlan (PlanFactory planFactory, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
@@ -55,6 +56,14 @@ public class ListPlan extends RepeatingPlan implements IListPlan {
       toList.add(v1);
     }
     return (X)toList;
+  }
+
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <X> X newInstance() {
+    List<Object> instance = new ArrayList<>();
+    return (X)instance;
   }
   
 }

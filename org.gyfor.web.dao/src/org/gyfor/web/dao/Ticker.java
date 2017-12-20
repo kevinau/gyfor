@@ -163,7 +163,6 @@ public class Ticker extends WebSocketProtocolHandshakeHandler {
   @Activate
   public void activate(ComponentContext componentContext) {
     callback = CallbackAccessor.getCallback(this);
-    callback.setContext(context);
     callback.startTicking();
   }
 

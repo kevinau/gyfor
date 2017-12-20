@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Object model that supports IO
+Bundle-SymbolicName: org.gyfor.object.model
+Bundle-Version: 1.0.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.gyfor.object,
+ org.gyfor.object.path,
+ org.gyfor.object.plan,
+ org.gyfor.object.type,
+ org.gyfor.sql,
+ org.gyfor.todo
+Export-Package: org.gyfor.object.model

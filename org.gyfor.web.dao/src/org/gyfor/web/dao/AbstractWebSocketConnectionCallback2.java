@@ -21,7 +21,7 @@ import io.undertow.websockets.core.WebSockets;
 import io.undertow.websockets.spi.WebSocketHttpExchange;
 
 
-public abstract class AbstractWebSocketConnectionCallback implements WebSocketConnectionCallback {
+public abstract class AbstractWebSocketConnectionCallback2 implements WebSocketConnectionCallback {
 
   private final Logger logger = LoggerFactory.getLogger(AbstractWebSocketConnectionCallback.class);
   
@@ -115,9 +115,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
   }
   
   
-  protected Object buildSessionData (String path, Map<String, String> queryMap, WebSocketChannel channel) {
-    return null;
-  }
+  protected abstract Object buildSessionData (String path, Map<String, String> queryMap, WebSocketChannel channel);
   
   
   protected abstract void doRequest (Request request, Object sessionData, WebSocketChannel channel);

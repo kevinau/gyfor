@@ -1,14 +1,13 @@
 package org.gyfor.object.path;
 
-import java.util.Iterator;
 import java.util.function.Consumer;
 
 import org.gyfor.object.IContainerNode;
 import org.gyfor.object.INode;
 
-public class DescendentPath extends StepPath implements IPathExpression {
+public class DescendentPath<T extends INode> extends StepPath<T> implements IPathExpression<T> {
 
-  public DescendentPath (StepPath parent) {
+  public DescendentPath (StepPath<T> parent) {
     super(parent);
   }
 
@@ -20,21 +19,20 @@ public class DescendentPath extends StepPath implements IPathExpression {
   }
 
   @Override
-  public void matches(INode node, Trail<INode> trail, Consumer<INode> x) {
-    matchDeep(node, trail, x);
+  public void matches(T node, Trail<T> trail, Consumer<T> consumer) {
+    matchDeep(node, trail, consumer);
   }
   
   
-  private boolean matchDeep(INode node, Trail<INode> trail, Consumer<INode> x) {
-    Trail<INode> trail2 = new Trail<>(trail, node);
-    super.matches(node, trail2, x);
+  @SuppressWarnings("unchecked")
+  private boolean matchDeep(T node, Trail<T> trail, Consumer<T> consumer) {
+    Trail<T> trail2 = new Trail<T>(trail, node);
+    super.matches(node, trail2, consumer);
     
     if (node instanceof IContainerNode) {
-      IContainerNode container = (IContainerNode)node;
-      Iterator<INode> i = container.getChildNodes();
-      while (i.hasNext()) {
-        INode child = i.next();
-        matchDeep(child, trail, x);
+      IContainerNode<T> container = (IContainerNode<T>)node;
+      for (T child : container.getContainerNodes()) {
+        matchDeep(child, trail, consumer);
       }
     }
     return true;

@@ -6,11 +6,11 @@ import org.gyfor.object.INameMappedNode;
 import org.gyfor.object.INode;
 
 
-public class NamedMemberPath extends StepPath implements IPathExpression {
+public class NamedMemberPath<T extends INode> extends StepPath<T> implements IPathExpression<T> {
 
   private final String name;
   
-  public NamedMemberPath (StepPath parent, String name) {
+  public NamedMemberPath (StepPath<T> parent, String name) {
     super(parent);
     this.name = name;
   }
@@ -22,11 +22,12 @@ public class NamedMemberPath extends StepPath implements IPathExpression {
     super.dump(level + 1);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
-  public void matches(INode node, Trail<INode> trail, Consumer<INode> x) {
+  public void matches(T node, Trail<T> trail, Consumer<T> x) {
     if (node instanceof INameMappedNode) {
-      INameMappedNode mapped = (INameMappedNode)node;
-      INode member = mapped.getChildNode(name);
+      INameMappedNode<T> mapped = (INameMappedNode<T>)node;
+      T member = mapped.getNameMappedNode(name);
       if (member == null) {
         // Do nothing
       } else {

@@ -163,6 +163,7 @@ public class EntityModelTest {
     
     for (INodeModel child : children) {
       Assert.assertTrue(child instanceof IItemModel);
+      System.out.println("zzzzzzzzzzz " + child.getName());
     }
  
     IItemModel idModel = (IItemModel)children[0];

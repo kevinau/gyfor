@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import org.gyfor.object.INode;
 
 
-public interface IPathExpression {
+public interface IPathExpression<T extends INode> {
 
   public void dump(int level);
 
@@ -19,6 +19,6 @@ public interface IPathExpression {
     }
   }
 
-  public void matches(INode node, Trail<INode> trail, Consumer<INode> x);
+  public void matches(T node, Trail<T> trail, Consumer<T> consumer);
 
 }

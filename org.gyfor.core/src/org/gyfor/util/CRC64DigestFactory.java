@@ -118,6 +118,22 @@ public class CRC64DigestFactory implements DigestFactory {
   }
 
 
+  private static long getCRCValue (byte[] dataBytes, int n, long checksum) {
+    for (int i = 0; i < n; i++) {
+      int bx = dataBytes[i];
+      int lookupidx = ((int) checksum ^ bx) & 0xff;
+      checksum = (checksum >>> 8) ^ LOOKUPTABLE[lookupidx];
+    }
+    return checksum;
+  }
+
+
+  public static long getCRCValue (String s) {
+    byte[] dataBytes = s.getBytes();
+    return getCRCValue(dataBytes, dataBytes.length, 0L);
+  }
+  
+  
   @Override
   public Digest getObjectDigest(Object obj) {
     throw new RuntimeException("Method not implemented");

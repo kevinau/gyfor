@@ -273,8 +273,8 @@ window.addEventListener("DOMContentLoaded", function() {
     console.log("/ws/entitySet " + websocket1.url);
   	SearchInput.init(websocket1, "entitySearchInput");
   });
-  websocket2 = websocketStart(window.location.host + "/ws/documentType", "", function(ws) {
-    console.log("/ws/documentType " + websocket2.url);
+  websocket2 = websocketStart(window.location.host + "/ws/documentTypes", "", function(ws) {
+    console.log("/ws/documentTypes " + websocket2.url);
   	SearchInput.init(websocket2, "doctypeSearchInput");
   });
 }, false);

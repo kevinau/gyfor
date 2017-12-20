@@ -7,7 +7,8 @@ Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/org.gyfor.web.form.EntityEditPage.xml,
  OSGI-INF/org.gyfor.web.form.EntityWebSocket.xml,
- OSGI-INF/org.gyfor.web.form.ModelWebSocketHandler.xml
+ OSGI-INF/org.gyfor.web.form.ModelWebSocketHandler.xml,
+ OSGI-INF/org.gyfor.web.form.RoundtripWebSocket.xml
 Import-Package: com.mitchellbosecke.pebble,
  com.mitchellbosecke.pebble.error,
  com.mitchellbosecke.pebble.extension,
@@ -19,16 +20,17 @@ Import-Package: com.mitchellbosecke.pebble,
  com.mitchellbosecke.pebble.template,
  com.mitchellbosecke.pebble.tokenParser,
  io.undertow.server,
- io.undertow.server.protocol.framed,
  io.undertow.util,
  io.undertow.websockets,
  io.undertow.websockets.core,
  io.undertow.websockets.spi,
  org.gyfor.http,
  org.gyfor.object.plan,
+ org.gyfor.object.ref,
  org.gyfor.object.type,
  org.gyfor.template,
  org.osgi.framework;version="1.8.0",
+ org.osgi.service.component;version="1.3.0",
  org.osgi.service.component.annotations,
  org.slf4j;version="1.7.21",
  org.xnio

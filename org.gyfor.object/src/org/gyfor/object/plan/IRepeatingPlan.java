@@ -4,11 +4,13 @@ import java.util.Iterator;
 
 import org.gyfor.object.IRepeatingMarkerNode;
 
-public interface IRepeatingPlan extends IContainerPlan, IRepeatingMarkerNode {
+public interface IRepeatingPlan extends IContainerPlan, IRepeatingMarkerNode<INodePlan> {
 
   public int getDimension();
   
-  public INodePlan getElementPlan ();
+  public INodePlan getElementPlan();
+  
+  public Class<?> getElementClass();
 
   public int getMaxOccurs();
 

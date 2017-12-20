@@ -12,6 +12,7 @@ Import-Package: ch.qos.logback.classic;version="1.1.7",
  org.gyfor.docstore.parser,
  org.gyfor.docstore.parser.impl,
  org.gyfor.osgi,
+ org.gyfor.util,
  org.osgi.service.component;version="1.2.0",
  org.slf4j
 Bundle-ActivationPolicy: lazy

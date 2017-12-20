@@ -30,5 +30,6 @@ Service-Component: OSGI-INF/org.gyfor.web.docstore.SingleDocumentView.xml,
  OSGI-INF/org.gyfor.web.docstore.SearchDocumentView.xml,
  OSGI-INF/org.gyfor.web.docstore.DocstoreFiles.xml,
  OSGI-INF/org.gyfor.web.docstore.DocumentDataEdit.xml,
- OSGI-INF/org.gyfor.web.docstore.DocumentTypeWebSocket.xml
+ OSGI-INF/org.gyfor.web.docstore.DocumentTypesWebSocket.xml,
+ OSGI-INF/org.gyfor.web.docstore.DocumentDataWebSocket.xml
 Bundle-ActivationPolicy: lazy

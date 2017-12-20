@@ -74,18 +74,13 @@ import io.undertow.websockets.core.WebSockets;
 public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
 
   private final EntityWebSocketConnectionCallback callback;
-  private final String context;
   
   private ITemplateEngineFactory templateEngineFactory;
   
 
   public EntityWebSocket() {
     super(new EntityWebSocketConnectionCallback());
-    
     callback = CallbackAccessor.getCallback(this);
-
-    Context contextAnn = this.getClass().getAnnotation(Context.class);
-    context = contextAnn.value();
   }
 
   
@@ -102,7 +97,6 @@ public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
   
   @Activate
   public void activate(BundleContext bundleContext) {
-    callback.setContext(context);
     
     callback.setBundleContext(bundleContext);
     

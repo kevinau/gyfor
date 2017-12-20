@@ -1,12 +1,13 @@
 package org.gyfor.object.path;
 
-import org.gyfor.object.path.ParseException;
+import org.gyfor.object.INode;
 import org.gyfor.object.path.parser.ObjectPathParser;
 
 public class PathParser {
 
-  public static IPathExpression parse (String s) throws ParseException {
-    IPathExpression expr;
+  @SuppressWarnings("unchecked")
+  public static <X extends INode> IPathExpression<X> parse (String s) throws ParseException {
+    IPathExpression<X> expr;
     try {
       expr = new ObjectPathParser().parse(s);
     } catch (org.gyfor.object.path.parser.ParseException ex) {

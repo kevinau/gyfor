@@ -47,7 +47,7 @@ public class ArrayPlan extends RepeatingPlan implements IArrayPlan {
   @SuppressWarnings("unchecked")
   @Override
   public <X> X newInstance() {
-    Object[] instance = (Object[])Array.newInstance(getElemClass(), 0);
+    Object[] instance = (Object[])Array.newInstance(getElementClass(), 0);
     return (X)instance;
   }
 

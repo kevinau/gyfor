@@ -1,17 +1,16 @@
 package org.gyfor.object.plan.impl;
 
 import java.lang.reflect.Field;
-import java.util.Iterator;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.gyfor.object.EntryMode;
-import org.gyfor.object.INode;
 import org.gyfor.object.Occurs;
 import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.IRepeatingPlan;
 import org.gyfor.object.plan.NodePlanFactory;
 import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.plan.RepeatingLabelGroup;
-import org.gyfor.util.SingletonIterator;
 
 
 public abstract class RepeatingPlan extends ContainerPlan implements IRepeatingPlan {
@@ -63,15 +62,20 @@ public abstract class RepeatingPlan extends ContainerPlan implements IRepeatingP
   
   
   @Override
-  public INode getElementNode () {
+  public INodePlan getElementNode () {
     return elemPlan;
   }
   
   
-  @SuppressWarnings("unchecked")
+  @Override 
+  public Class<?> getElementClass() {
+    return elemClass;
+  }
+  
+  
   @Override
-  public <X extends INode> Iterator<X> getChildNodes() {
-    return new SingletonIterator<X>((X)elemPlan);
+  public Collection<INodePlan> getContainerNodes() {
+    return Collections.singletonList(elemPlan);
   }
     
   

@@ -6,9 +6,9 @@ import org.gyfor.object.INode;
 import org.gyfor.object.IRepeatingNode;
 
 
-public class LastElementPath extends StepPath implements IPathExpression {
+public class LastElementPath<T extends INode> extends StepPath<T> implements IPathExpression<T> {
 
-  public LastElementPath (StepPath parent) {
+  public LastElementPath (StepPath<T> parent) {
     super(parent);
   }
   
@@ -19,13 +19,14 @@ public class LastElementPath extends StepPath implements IPathExpression {
     super.dump(level + 1);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
-  public void matches(INode node, Trail<INode> trail, Consumer<INode> x) {
+  public void matches(T node, Trail<T> trail, Consumer<T> x) {
     if (node instanceof IRepeatingNode) {
-      IRepeatingNode repeating = (IRepeatingNode)node;
+      IRepeatingNode<T> repeating = (IRepeatingNode<T>)node;
       int n = repeating.size();
       if (n > 0) {
-        INode element = repeating.getElementNode(n - 1);
+        T element = repeating.getIndexedNode(n - 1);
         super.matches(element, new Trail<>(trail, element), x);
       }
     } else {

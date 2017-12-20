@@ -32,7 +32,6 @@ public class PathTests {
     
     for (String test : tests) {
       IPathExpression pathExpr1 = PathParser.parse(test);
-      pathExpr1.dump();
       pathExpr1.matches(plan1, null, new Consumer<INode>() {
  
         @Override

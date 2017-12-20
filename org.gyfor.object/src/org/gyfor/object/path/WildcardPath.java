@@ -1,15 +1,14 @@
 package org.gyfor.object.path;
 
-import java.util.Iterator;
 import java.util.function.Consumer;
 
 import org.gyfor.object.IContainerNode;
 import org.gyfor.object.INode;
 
 
-public class WildcardPath extends StepPath implements IPathExpression {
+public class WildcardPath<T extends INode> extends StepPath<T> implements IPathExpression<T> {
 
-  public WildcardPath (StepPath parent) {
+  public WildcardPath (StepPath<T> parent) {
     super(parent);
   }
   
@@ -20,17 +19,16 @@ public class WildcardPath extends StepPath implements IPathExpression {
     super.dump(level + 1);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
-  public void matches(INode node, Trail<INode> trail, Consumer<INode> x) {
+  public void matches(T node, Trail<T> trail, Consumer<T> consumer) {
     if (node instanceof IContainerNode) {
-      IContainerNode container = (IContainerNode)node;
-      Iterator<INode> i = container.getChildNodes();
-      while (i.hasNext()) {
-        INode child = i.next();
-        super.matches(child, new Trail<>(trail, child), x);
+      IContainerNode<T> container = (IContainerNode<T>)node;
+      for (T child : container.getContainerNodes()) {
+        super.matches(child, new Trail<>(trail, child), consumer);
       }
     } else {
-      x.accept(node);
+      consumer.accept(node);
     }
   }
 

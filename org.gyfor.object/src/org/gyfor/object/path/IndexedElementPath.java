@@ -6,19 +6,19 @@ import org.gyfor.object.INode;
 import org.gyfor.object.IRepeatingNode;
 
 
-public class IndexedElementPath extends StepPath implements IPathExpression {
+public class IndexedElementPath<T extends INode> extends StepPath<T> implements IPathExpression<T> {
 
   /**
    * This index is 1 based, to conform with the xpath specification.
    */
   private int index;
   
-  public IndexedElementPath (StepPath parent, int index) {
+  public IndexedElementPath (StepPath<T> parent, int index) {
     super(parent);
     this.index = index;
   }
   
-  public IndexedElementPath (StepPath parent, String s) {
+  public IndexedElementPath (StepPath<T> parent, String s) {
     this (parent, Integer.parseInt(s));
   }
 
@@ -30,13 +30,14 @@ public class IndexedElementPath extends StepPath implements IPathExpression {
   }
 
  
+  @SuppressWarnings("unchecked")
   @Override
-  public void matches(INode node, Trail<INode> trail, Consumer<INode> x) {
+  public void matches(T node, Trail<T> trail, Consumer<T> x) {
     if (node instanceof IRepeatingNode) {
-      IRepeatingNode repeating = (IRepeatingNode)node;
+      IRepeatingNode<T> repeating = (IRepeatingNode<T>)node;
       int n = repeating.size();
       if (index < n) {
-        INode element = repeating.getElementNode(index);
+        T element = repeating.getIndexedNode(index);
         super.matches(element, new Trail<>(trail, element), x);
       }
     } else {

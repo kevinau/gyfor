@@ -5,12 +5,12 @@ import java.util.function.Consumer;
 import org.gyfor.object.INode;
 
 
-public class StepPath implements IPathExpression {
+public class StepPath<T extends INode> implements IPathExpression<T> {
 
-  private final StepPath parent;
-  protected IPathExpression next = null;
+  private final StepPath<T> parent;
+  protected IPathExpression<T> next = null;
   
-  public StepPath (StepPath parent) {
+  public StepPath (StepPath<T> parent) {
     this.parent = parent;
     this.parent.next = this;
   }
@@ -28,13 +28,14 @@ public class StepPath implements IPathExpression {
     }
   }
   
+
   @Override
-  public void matches(INode node, Trail<INode> trail, Consumer<INode> x) {
+  public void matches(T node, Trail<T> trail, Consumer<T> consumer) {
     if (next != null) {
-      next.matches(node, trail, x);
+      next.matches(node, trail, consumer);
     } else {
       // We've reached the end of the path
-      trail.visitAll(x);
+      trail.visitAll(consumer);
     }
   }
 

@@ -7,12 +7,16 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Kevin Holloway
 Export-Package: org.gyfor.doc
 Import-Package: org.gyfor.math,
+ org.gyfor.nio,
  org.gyfor.object.value,
  org.gyfor.osgi,
  org.gyfor.util,
  org.osgi.framework;version="1.8.0",
- org.osgi.service.component;version="1.2.0"
+ org.osgi.service.component;version="1.2.0",
+ org.slf4j;version="1.7.21"
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/org.gyfor.doc.DocumentTypeRegistry.xml,
- OSGI-INF/org.gyfor.doc.DocumentType.xml
+ OSGI-INF/org.gyfor.doc.DocumentType.xml,
+ OSGI-INF/org.gyfor.doc.DocumentStoreFiles.xml,
+ OSGI-INF/org.gyfor.doc.DocumentDataRegister.xml
 Eclipse-BuddyPolicy: global

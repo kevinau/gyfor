@@ -5,7 +5,7 @@ import java.util.List;
 import org.gyfor.object.IContainerNode;
 
 
-public interface IContainerPlan extends INodePlan, IContainerNode {
+public interface IContainerPlan extends INodePlan, IContainerNode<INodePlan> {
 
   public List<INodePlan> selectNodePlans(String expr);
 

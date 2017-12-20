@@ -1,12 +1,12 @@
 package org.gyfor.web.docstore;
 
 import java.util.List;
+import java.util.Map;
 
 import org.gyfor.doc.DocumentTypeRegistry;
 import org.gyfor.http.AbstractWebSocketConnectionCallback;
 import org.gyfor.http.CallbackAccessor;
 import org.gyfor.http.Context;
-import org.gyfor.http.Resource;
 import org.gyfor.http.Response;
 import org.gyfor.http.WebSocketSession;
 import org.gyfor.object.value.EntityDescription;
@@ -26,10 +26,9 @@ import io.undertow.server.HttpHandler;
 import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
 
 
-@Context("/ws/documentType")
-@Resource(path = "/resources", location = "resources")
+@Context("/ws/documentTypes")
 @Component(service = HttpHandler.class)
-public class DocumentTypeWebSocket extends WebSocketProtocolHandshakeHandler {
+public class DocumentTypesWebSocket extends WebSocketProtocolHandshakeHandler {
 
   @Reference
   private DocumentTypeRegistry docTypeRegistry;
@@ -37,11 +36,11 @@ public class DocumentTypeWebSocket extends WebSocketProtocolHandshakeHandler {
   @Reference
   private ITemplateEngineFactory templateEngineFactory;
 
-  private DocumentTypeWebSocketConnectionCallback callback;
+  private DocumentTypesWebSocketConnectionCallback callback;
   
   
-  public DocumentTypeWebSocket() {
-    super (new DocumentTypeWebSocketConnectionCallback());
+  public DocumentTypesWebSocket() {
+    super (new DocumentTypesWebSocketConnectionCallback());
   }
   
   
@@ -61,9 +60,9 @@ public class DocumentTypeWebSocket extends WebSocketProtocolHandshakeHandler {
   }
   
   
-  private static class DocumentTypeWebSocketConnectionCallback extends AbstractWebSocketConnectionCallback {
+  private static class DocumentTypesWebSocketConnectionCallback extends AbstractWebSocketConnectionCallback {
     
-    private Logger logger = LoggerFactory.getLogger(DocumentTypeWebSocket.class);
+    private Logger logger = LoggerFactory.getLogger(DocumentTypesWebSocket.class);
     
     private DocumentTypeRegistry docTypeRegistry;
     
@@ -98,17 +97,32 @@ public class DocumentTypeWebSocket extends WebSocketProtocolHandshakeHandler {
     
     
     @Override
-    protected void handleTextMessage(WebSocketSession session, String command, String data) {
+    protected Object buildSessionData(String path, Map<String, String> queryMap) {
+      return null;
+    }
+
+    
+    @Override
+    protected void doRequest(String command, String[] args, Object sessionData, WebSocketSession wss) {
       switch (command) {
       case "getAllDescriptions" :
         // Data consists of: target | <nothing>
-        int n = data.indexOf('|');
-        String target = data.substring(0, n);
-        sendAllDescriptions(session, target);
+        String target = args[0];
+        sendAllDescriptions(wss, target);
         break;
       default :
         throw new RuntimeException("Unknown command: '" + command + "'");
       }
+    }
+
+    
+    @Override
+    protected void openResources() {
+    }
+
+    
+    @Override
+    protected void closeResources() {
     }
     
   }

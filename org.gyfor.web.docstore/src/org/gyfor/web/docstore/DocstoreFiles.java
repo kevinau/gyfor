@@ -3,12 +3,10 @@ package org.gyfor.web.docstore;
 import java.nio.file.Path;
 
 import org.gyfor.doc.IDocumentStore;
-import org.gyfor.http.Context;
 import org.gyfor.http.HttpUtility;
 import org.gyfor.http.IDynamicResourceLocation;
 import org.gyfor.http.Resource;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
 import io.undertow.server.HttpHandler;

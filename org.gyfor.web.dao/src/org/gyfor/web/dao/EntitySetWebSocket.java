@@ -1,6 +1,7 @@
 package org.gyfor.web.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.gyfor.dao.EntitySetRegistry;
 import org.gyfor.dao.IEntitySet;
@@ -28,7 +29,6 @@ import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
 
 
 @Context("/ws/entitySet")
-@Resource(path = "/resources", location = "resources")
 @Component(service = HttpHandler.class)
 public class EntitySetWebSocket extends WebSocketProtocolHandshakeHandler {
 
@@ -100,18 +100,32 @@ public class EntitySetWebSocket extends WebSocketProtocolHandshakeHandler {
     
     
     @Override
-    protected void handleTextMessage(WebSocketSession session, String command, String data) {
+    protected Object buildSessionData(String path, Map<String, String> queryMap) {
+      return null;
+    }
+
+    
+    @Override
+    protected void doRequest(String command, String[] args, Object sessionData, WebSocketSession wss) {
       switch (command) {
       case "getAllDescriptions" :
         // Data consists of: target | entityName
-        int n = data.indexOf('|');
-        String target = data.substring(0, n);
-        String entityName = data.substring(n + 1);
-        sendAllDescriptions(session, target, entityName);
+        String target = args[0];
+        String entityName = args[1];
+        sendAllDescriptions(wss, target, entityName);
         break;
       default :
         throw new RuntimeException("Unknown command: '" + command + "'");
       }
+    }
+
+    @Override
+    protected void openResources() {
+    }
+
+    
+    @Override
+    protected void closeResources() {
     }
     
   }

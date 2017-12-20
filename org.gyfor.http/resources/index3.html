@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Websocket round trip test</title>
+<script type="text/javascript" src="/global/ws3.js"></script>
+</head>
+<body>
+<h2>Triggers</h2>
+
+<input id="123" type="text" oninput="respondToInput()">
+
+<script type="text/javascript">
+
+var websocket;
+
+window.addEventListener("load", function() {
+	console.log(window.location.host + "/roundtrip");
+	websocket = new WS(window.location.host, "roundtrip", null);
+}, false);
+
+function respondToInput() {
+	console.log(event.target);
+	console.log(event.target.id);
+	console.log(event.target.value);
+	websocket.sendInput(event.target.id, event.target.value);
+}
+
+</script>
+
+</body>
+</html>

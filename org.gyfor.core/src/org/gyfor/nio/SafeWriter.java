@@ -9,6 +9,24 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+/**
+ * A file writer that cannot create a partly written file.
+ * <p>
+ * This file writer writes all output to a temporary file.  On "commit"
+ * it atomically moves the temporary file to the target file (replacing
+ * any existing target file).
+ * <p>
+ * If the writer does not "commit", the temporary file is removed and 
+ * the target file is left unchanged.  In particular, the modified date
+ * of the target file is not changed.
+ * <p>
+ * Note that for this writer, "close" does not "commit".  Merely closing 
+ * the writer (either explicitly or via auto close), without a commit,
+ * will discard the temporary file and leave the target file unchanged.
+ * 
+ * @author Kevin Holloway
+ *
+ */
 public class SafeWriter extends Writer {
 
   private final Path targetPath;

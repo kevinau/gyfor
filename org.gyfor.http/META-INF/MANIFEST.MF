@@ -22,9 +22,8 @@ Export-Package: io.undertow.io,
  org.gyfor.http,
  org.xnio
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.gyfor.util,
- org.osgi.framework;version="1.8.0",
+Import-Package: org.osgi.framework;version="1.8.0",
  org.osgi.service.component;version="1.3.0",
- org.osgi.util.tracker;version="1.5.1",
  org.slf4j
 Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/org.gyfor.http.impl.RoundtripWebSocket.xml

@@ -19,12 +19,12 @@ public class WebSocketSession {
   }
   
   
-  public void sendText (String command, String... args) {
+  public void sendText (String command, Object... args) {
     StringBuilder buffer = new StringBuilder();
     buffer.append(command);
-    for (String arg : args) {
-      buffer.append('|');
-      buffer.append(arg);
+    for (Object arg : args) {
+      buffer.append('\t');
+      buffer.append(arg.toString());
     }
     sendText(buffer.toString());
   }
