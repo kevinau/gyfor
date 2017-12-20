@@ -27,6 +27,7 @@ public interface INodePlan extends INode {
 
   public EntryMode getEntryMode();
 
+  @Override
   public String getName();
   
   public <X> X getFieldValue (Object instance);

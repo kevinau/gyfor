@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
-import org.gyfor.object.model.INameMappedModel;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.PlanFactory;
