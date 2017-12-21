@@ -10,8 +10,13 @@ class WS {
 	    return obj;
 	};
 	
-	constructor (baseURL, arg, onOpenFunction) {
-		let websocketURL = "ws://" + baseURL + "/" + arg;
+	constructor (url, arg, onOpenFunction) {
+		let ws = this;
+		let domain = location.hostname + (location.port ? ':' + location.port : '');
+		let websocketURL = "ws://" + domain + url;
+		if (arg) {
+			websocketURL += "/" + arg;
+		}
 		let websocket2 = new WebSocket(websocketURL);
 		websocket2.onmessage = function(event) {
 			console.log("websocket " + websocketURL + ": onmessage: " + event.data);
@@ -43,9 +48,10 @@ class WS {
 		};
 		websocket2.onopen = function(event) {
 			console.log("websocket " + websocketURL + ": onopen");
-			if (onOpenFunction) {
-				onOpenFunction(websocket);
-			}
+			ws.sendMessage("hello");
+//			if (onOpenFunction) {
+//				onOpenFunction(ws);
+//			}
 		};
 		websocket2.onclose = function(event) {
 			console.log("websocket " + websocketURL + ": onclose");

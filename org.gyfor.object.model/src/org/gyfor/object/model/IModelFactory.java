@@ -8,4 +8,6 @@ public interface IModelFactory {
 
   public IEntityModel buildEntityModel(IEntityPlan<?> entityPlan);
 
+  public IEntityModel buildEntityModel(String entityClassName) throws ClassNotFoundException;
+
 }

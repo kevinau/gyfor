@@ -39,6 +39,9 @@ public abstract class NodeModel implements INodeModel {
       throw new IllegalArgumentException("Parent is null and node is not an IEntityModel");
     }
     this.parent = parent;
+    if (parent != null) {
+      parent.addById(this);
+    }
   }
   
   
@@ -52,7 +55,7 @@ public abstract class NodeModel implements INodeModel {
   public abstract <T> T getValue();
   
   
-  public NodeModel (ModelFactory modelFactory, INodePlan nodePlan) {
+  protected NodeModel (ModelFactory modelFactory, INodePlan nodePlan) {
     this.modelFactory = modelFactory;
     this.nodeId = modelFactory.getNodeId();
     this.nodePlan = nodePlan;

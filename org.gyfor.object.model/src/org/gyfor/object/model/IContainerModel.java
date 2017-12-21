@@ -22,6 +22,10 @@ public interface IContainerModel extends INodeModel {
 
   public <X extends INodeModel> X selectNodeModel(String expr);
 
-  public IItemModel selectItemModel(String expr);
+  public <X extends INodeModel> X selectNodeModel(int id);
 
+  public IItemModel selectItemModel(String expr);
+  
+  public void addById(INodeModel node);
+  
 }

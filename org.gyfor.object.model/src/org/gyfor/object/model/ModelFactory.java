@@ -19,12 +19,18 @@ import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.IReferencePlan;
 import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.todo.NotYetImplementedException;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 
+@Component
 public class ModelFactory implements IModelFactory {
 
-  private final PlanFactory planFactory;
+  @Reference
+  private PlanFactory planFactory;
+  
   private final AtomicInteger idSource = new AtomicInteger(0);
+  
   
   public ModelFactory (PlanFactory planFactory) {
     this.planFactory = planFactory;
@@ -47,6 +53,16 @@ public class ModelFactory implements IModelFactory {
       throw new IllegalStateException("No PlanFactory supplied to this model factory");
     }
     IEntityPlan<?> entityPlan = planFactory.getEntityPlan(entityClass);
+    return buildEntityModel(entityPlan);
+  }
+  
+  
+  @Override
+  public IEntityModel buildEntityModel(String entityClassName) throws ClassNotFoundException {
+    if (planFactory == null) {
+      throw new IllegalStateException("No PlanFactory supplied to this model factory");
+    }
+    IEntityPlan<?> entityPlan = planFactory.getEntityPlan(entityClassName);
     return buildEntityModel(entityPlan);
   }
   

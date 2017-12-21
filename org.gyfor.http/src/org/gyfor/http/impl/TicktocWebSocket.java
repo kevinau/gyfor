@@ -1,11 +1,13 @@
 package org.gyfor.http.impl;
 
 import java.time.LocalTime;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.gyfor.http.AbstractWebSocketConnectionCallback;
 import org.gyfor.http.CallbackAccessor;
+import org.gyfor.http.WebSocketSession;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Deactivate;
@@ -67,7 +69,6 @@ public class TicktocWebSocket extends WebSocketProtocolHandshakeHandler {
     }
 
 
-    @Override
     protected void handleTextMessage(String command, String data) {
       switch (command) {
       case "reset" :
@@ -77,6 +78,34 @@ public class TicktocWebSocket extends WebSocketProtocolHandshakeHandler {
       default :
         throw new RuntimeException("Unknown command: '" + command + "'");
       }
+    }
+
+
+    @Override
+    protected Object buildSessionData(String path, Map<String, String> queryMap) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+
+    @Override
+    protected void doRequest(String command, String[] args, Object sessionData, WebSocketSession wss) {
+      // TODO Auto-generated method stub
+      
+    }
+
+
+    @Override
+    protected void openResources() {
+      // TODO Auto-generated method stub
+      
+    }
+
+
+    @Override
+    protected void closeResources() {
+      // TODO Auto-generated method stub
+      
     }
     
   }

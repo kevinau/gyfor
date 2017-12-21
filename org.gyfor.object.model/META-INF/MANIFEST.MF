@@ -11,3 +11,5 @@ Import-Package: org.gyfor.object,
  org.gyfor.sql,
  org.gyfor.todo
 Export-Package: org.gyfor.object.model
+Service-Component: OSGI-INF/org.gyfor.object.model.ModelFactory.xml
+Bundle-ActivationPolicy: lazy

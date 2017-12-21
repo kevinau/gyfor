@@ -1,6 +1,7 @@
 package org.gyfor.object.model.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -22,12 +23,15 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
 
   protected final IValueReference valueRef;
   private final List<ContainerChangeListener> containerChangeListeners = new ArrayList<>();
-
+  private final Map<Integer, INodeModel> nodesById = new HashMap<>();
+  
+  
   public ContainerModel(ModelFactory modelFactory, IValueReference valueRef, IContainerPlan containerPlan) {
     super(modelFactory, containerPlan);
     this.valueRef = valueRef;
   }
 
+  
   @Override
   public <T> T getValue() {
     return valueRef.getValue();
@@ -108,7 +112,19 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
       throw new IllegalArgumentException(found.size() + " node models matching: " + expr + ". I.e., more than one");
     }
   }
+  
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  public <X extends INodeModel> X selectNodeModel(int id) {
+    INodeModel found = nodesById.get(id);
+    if (found == null) {
+      throw new IllegalArgumentException("No node model for id: " + id);
+    }
+    return (X)found;
+  }
 
+  
   @Override
   public IItemModel selectItemModel(String expr) {
     List<IItemModel> found = selectItemModels(expr);
@@ -122,6 +138,13 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
     }
   }
 
+  
+  @Override
+  public void addById (INodeModel nodeModel) {
+    int id = nodeModel.getNodeId();
+    nodesById.put(id, nodeModel);
+  }
+  
   
   @Override
   public String getName() {

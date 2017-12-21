@@ -44,7 +44,11 @@ public class EntitySet implements IEntitySet {
   protected void activate (ComponentContext context) {
     ComponentConfiguration.load(this, context);
 
-    entityPlan = planFactory.getEntityPlan(className);
+    try {
+      entityPlan = planFactory.getEntityPlan(className);
+    } catch (ClassNotFoundException ex) {
+      throw new RuntimeException(ex);
+    }
     sqlBuilder = new SQLBuilder(entityPlan, schema);
     
     // Testing

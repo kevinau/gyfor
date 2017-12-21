@@ -9,7 +9,9 @@ import org.gyfor.http.CallbackAccessor;
 import org.gyfor.http.Context;
 import org.gyfor.http.Resource;
 import org.gyfor.http.WebSocketSession;
-import org.gyfor.object.ref.IObjectReference;
+import org.gyfor.object.model.IEntityModel;
+import org.gyfor.object.model.IModelFactory;
+import org.gyfor.object.ref.ObjectReference;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -17,6 +19,7 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
@@ -27,7 +30,8 @@ import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
 @Component(service = HttpHandler.class)
 public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
 
-  private BundleContext context;
+  @Reference
+  private IModelFactory modelFactory;
   
   private RoundtripWebSocketConnectionCallback callback;
   
@@ -39,16 +43,55 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
   
   private static class RoundtripWebSocketConnectionCallback extends AbstractWebSocketConnectionCallback {
     
+    private BundleContext bundleContext;
+    
+    private IModelFactory modelFactory;
+    
+    
+    public void setBundleContext (BundleContext bundleContext) {
+      this.bundleContext = bundleContext;
+    }
+    
+    
+    public void setModelFactory (IModelFactory modelFactory) {
+      this.modelFactory = modelFactory;
+    }
+    
+    
     @Override
     protected Object buildSessionData(String path, Map<String, String> queryMap) {
-      
-      return null;
+      if (path == null || path.length() == 0) {
+        throw new IllegalArgumentException("No object reference specified");
+      }
+      try {
+        Collection<ServiceReference<ObjectReference>> serviceRefs = bundleContext.getServiceReferences(ObjectReference.class, "(name=" + path + ")");
+        if (serviceRefs.size() == 0) {
+          throw new IllegalArgumentException("No object reference named '" + path + "' was found");
+        }
+        ServiceReference<ObjectReference> serviceRef = serviceRefs.iterator().next();
+        ObjectReference objectRef = bundleContext.getService(serviceRef);
+        String objectClassName = objectRef.getClassName();
+        IEntityModel objectModel = modelFactory.buildEntityModel(objectClassName);
+        
+        Object instanceValue = objectModel.newInstance();
+        objectModel.setValue(instanceValue);
+        
+        return objectModel;
+      } catch (ClassNotFoundException ex) {
+        throw new RuntimeException(ex);
+      } catch (InvalidSyntaxException ex) {
+        throw new RuntimeException(ex);
+      }
     }
 
 
     @Override
     protected void doRequest(String command, String[] args, Object sessionData, WebSocketSession wss) {
       switch (command) {
+      case "hello" :
+        IEntityModel objectModel = (IEntityModel)sessionData;
+        objectModel.dump();
+        break;
       case "input" :
         int id = Integer.parseInt(args[0]);
         try {
@@ -79,9 +122,11 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
   
   @Activate
   public void activate (ComponentContext componentContext) {
-    context = componentContext.getBundleContext();
     callback = CallbackAccessor.getCallback(this);
-    //callback.startTicking();
+
+    BundleContext context = componentContext.getBundleContext();
+    callback.setBundleContext(context);
+    callback.setModelFactory(modelFactory);
   }
   
   
@@ -89,7 +134,6 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
   public void deactivate () {
     //callback.stopTicking();
     callback.closeAllSessions();
-    context = null;
   }
   
   
@@ -113,19 +157,5 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
 //        throw new RuntimeException(ex);
 //      }
 //    }
-    
-    
-  public IObjectReference getObjectReference (String name) {
-    try {
-      Collection<ServiceReference<IObjectReference>> serviceRefs = context.getServiceReferences(IObjectReference.class, "(name=" + name + ")");
-      if (serviceRefs.size() != 1) {
-        throw new IllegalArgumentException(name);
-      }
-      ServiceReference<IObjectReference> serviceRef = serviceRefs.iterator().next();
-      return context.getService(serviceRef);
-    } catch (InvalidSyntaxException ex) {
-      throw new RuntimeException(ex);
-    }
-  }
 
 }
