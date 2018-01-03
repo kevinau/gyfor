@@ -1,19 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" /> 
-  <title>Web Socket Test</title>
-  <script type="text/javascript" src="/global/ws3.js"></script>
-  <script>
-  var webSocket;
-  
-  window.addEventListener("load", function() { 
-	  webSocket = new WS("/roundtrip", "person", function(ws) {
-		  console.log(ws);
-		  ws.sendMessage("hello");
-	  });
-  }, false);
-  </script>
+  	<meta charset="utf-8" /> 
+  	<title>Web Socket Test</title>
+    <script src="react.development.js"></script>
+    <script src="react-dom.development.js"></script>
+    <script src="babel.min.js"></script>
+  	<!-- script type="text/javascript" src="objectHandler.js"></script -->
+	<script type="module">
+import {openWebSocket} from "/global/ws.js";
+
+var websocket;
+
+window.addEventListener("load", function() {
+	websocket = openWebSocket("/roundtrip/person", {
+		setEntity: function(props) {
+			console.log("application element: " + appElement);
+			console.log("application element props id: " + props.id);
+			console.log(window.elementMap);
+			let elem = window.elementMap.get(0);
+			elem.setEntity(props);
+		},
+		addChild: function(parentId, props) {
+  	  		console.log("addChild: " + parentId + " " + props.id + " " + props.name);
+			console.log(window.elementMap);
+		let id = parentId;
+    	console.log("Save dom element ***************** " + id);
+    	console.log("Save dom element ***************** " + window.elementMap.size);
+    	console.log("Save dom element ***************** " + window.elementMap.has(id));
+    	console.log("Save dom element ***************** " + window.elementMap.get(id));
+			let elem2 = window.elementMap.get(parentId);
+			console.log("........: " + elem2);
+			elem2.addChild(props);
+		},
+	}, function(ws) {
+		console.log("websocket: onopen method");
+		ws.sendMessage("hello");
+	});
+}, false);
+	</script>
 </head>
 <body>
 <form class="ui form">
@@ -33,5 +58,151 @@
   </div>
   <button class="ui button" type="submit">Submit</button>
 </form>
+
+    <div id="root"></div>
+    <script type="text/javascript">
+    function onChangeHandler(elem) {
+    	console.log("........ " + elem);
+    }
+
+    
+    window.elementMap = new Map();
+    
+    
+    function saveDomElement (x) {
+    	console.log("Save dom element " + x);
+    	console.log("Save dom element " + x.tagName);
+    	console.log("Save dom element " + x.getId);
+    	console.log("Save dom element " + x.id);
+    	let id = 0;
+    	if (x.getId) {
+    		id = x.getId();
+    	} else if (x.id) {
+    		id = x.id;
+    	}
+    	if (typeof id == "string") {
+    		id = parseInt(id, 10);
+    	}
+    	console.log("Save dom element +++++++++++++++++ " + id);
+    	window.elementMap.set(id, x);
+    	console.log("Save dom element +++++++++++++++++ " + window.elementMap.size);
+    	console.log("Save dom element +++++++++++++++++ " + window.elementMap.has(id));
+    	console.log("Save dom element +++++++++++++++++ " + window.elementMap.get(id));
+    	console.log(window.elementMap);
+    }
+    
+
+    class ItemElement extends React.Component {
+    	constructor(props) {
+    		super(props);
+    	}
+    	
+        onChangeHandler2(elem) {
+        	console.log("2........ " + elem);
+        }
+
+        
+    	render() {
+    		return React.createElement('input', {id: this.props.id,
+    											 type: 'text', 
+    											 name: this.props.name,
+    			                                 length: 20, 
+    			                                 value: this.props.name, 
+    			                                 onChange: onChangeHandler2(this)}, null);
+    	}
+    }
+    
+
+    class EntityElement extends React.Component {
+    	constructor(props) {
+    		super(props);
+    		this.state = {
+    			childNodes: [],
+    		};
+    	    this.getId = this.getId.bind(this);
+    	    this.addChild = this.addChild.bind(this);
+    	}
+
+      	render() {
+      		const elems = this.state.childNodes.map((n) => React.createElement(ItemElement, {...n, key: n.id}, null));
+       		return React.createElement('section', {
+       			id: this.props.id, 
+       			className: 'entity',
+       			'data-name': this.props.name,
+    			ref: saveDomElement,
+       		}, elems);
+      	}
+      	
+      	getId() {
+      		return this.props.id;
+      	}
+      	
+       	addChild(elem) {
+      		this.setState((prevState, props) => ({
+      		  childNodes: prevState.childNodes.append(elem),
+      		}));
+      	}
+    }
+
+
+    class Application extends React.Component {
+    	constructor(props) {
+    		super(props);
+    		this.state = {
+    				id: 0,
+    		};
+    	    this.getId = this.getId.bind(this);
+    	    this.setEntity = this.setEntity.bind(this);
+    	}
+
+      	render() {
+      		let onlyChild = null;
+      		if (this.state.id > 0) {
+      			onlyChild = React.createElement(EntityElement, this.state, null);
+      		}
+       		return React.createElement('form', null, onlyChild);
+      	}
+      	
+      	getId() {
+      		return 0;
+      	}
+      	
+      	setEntity(state) {
+      		this.setState(state);
+      	}
+    }
+
+    
+	const appElement = React.createElement(Application,
+			{ref: saveDomElement},
+			null);
+
+	ReactDOM.render(
+  		appElement,
+  		document.getElementById('root')
+	);
+	
+	
+	window.setEntity = function(state) {
+		console.log("set entity: " + state);
+		console.log(".............. " + appElement);
+		console.log(".............. " + appElement.type);
+
+		for (let f in appElement) {
+			console.log(",,,,,,,,,, " + f);
+		}
+		appElement.setEntity.bind(appElement);
+		//appElement.type.setEntity(state);
+	}
+	
+	//	let id = props.id;
+	//	let found = findElement(appElement, id);
+	//	if (found) {
+	//		found.setEntity(props);
+	//	}
+	//}
+	
+    </script>
+
 </body>
 </html>

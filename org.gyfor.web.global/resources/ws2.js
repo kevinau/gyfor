@@ -19,7 +19,7 @@ class WS {
 				console.log("error: " + fnName + " does not name a gloably known function");
 				return;
 			}
-			let argx = envent.data.substring(n1 + 1);
+			let argx = event.data.substring(n1 + 1);
 			var arg;
 			try {
 				arg = JSON.parse(argx);

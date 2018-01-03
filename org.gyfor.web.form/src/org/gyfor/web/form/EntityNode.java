@@ -76,7 +76,7 @@ public class EntityNode extends AbstractRenderableNode {
     addnlContext.put("plan", plan);
 
     ILabelGroup labels = plan.getLabels();
-    labels.loadContext(addnlContext);
+    labels.extractAll(addnlContext);
     
     if (mapExpression != null) {
       Map<String, Object> map = (Map<String, Object>)mapExpression.evaluate(self, context);

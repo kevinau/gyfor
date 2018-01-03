@@ -2,6 +2,7 @@ package org.pennyledger.party;
 
 import org.gyfor.object.Entity;
 import org.gyfor.object.EntityLabel;
+import org.gyfor.object.ItemField;
 import org.gyfor.object.Label;
 
 @Entity
@@ -11,11 +12,14 @@ public class Person {
   @Label(hint = "Typically first name and surname", description = "The full name of the person")
   private String name;
   
+  @ItemField(length = 32)
   @Label(description = "How to address this person")
   private String knownAs;
   
+  @ItemField(length = 20)
   private String phoneNumber;
   
+  @ItemField(length = 20)
   private String phoneNumber2;
   
   private String emailAddress;

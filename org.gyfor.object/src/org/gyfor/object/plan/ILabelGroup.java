@@ -4,6 +4,6 @@ import java.util.Map;
 
 public interface ILabelGroup {
 
-  public void loadContext (Map<String, Object> context);
+  public void extractAll(Map<String, Object> context);
   
 }

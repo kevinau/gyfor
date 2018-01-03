@@ -133,12 +133,6 @@ public abstract class DecimalBasedType<T> extends Type<T> implements IType<T>, I
   
   
   @Override
-  public JsonType getJsonType () {
-    return JsonType.NUMBER;
-  }
-  
-  
-  @Override
   public abstract T newInstance (String source);
 
 

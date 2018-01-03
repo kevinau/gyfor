@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Pebble template engine
-Bundle-SymbolicName: com.mitchellbosecke.pebble
+Bundle-SymbolicName: com.mitchellbosecke.pebble.old
 Bundle-Version: 2.2.2
 Bundle-Vendor: Mitchell Bösecke
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

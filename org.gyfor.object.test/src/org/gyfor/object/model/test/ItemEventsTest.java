@@ -4,6 +4,7 @@ import org.gyfor.object.Entity;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
+import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ItemEventListener;
 import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.IEntityPlan;
@@ -51,38 +52,38 @@ public class ItemEventsTest {
     }
 
     @Override
-    public void valueEqualityChange(IItemModel model) {
+    public void valueEqualityChange(INodeModel node) {
       //valueEqualityChangeCount++;
     }
 
     @Override
-    public void sourceEqualityChange(IItemModel model) {
+    public void sourceEqualityChange(INodeModel node) {
       //sourceEqualityChangeCount++;
     }
 
     @Override
-    public void valueChange(IItemModel model) {
+    public void valueChange(INodeModel node) {
       valueChangeCount++;
     }
 
     @Override
-    public void errorCleared(IItemModel model) {
+    public void errorCleared(INodeModel node) {
       errorCleared++;
     }
 
     @Override
-    public void errorNoted(IItemModel model, UserEntryException ex) {
+    public void errorNoted(INodeModel node, UserEntryException ex) {
       errorNoted++;
       //lastError = ex;
     }
 
     @Override
-    public void sourceChange(IItemModel model) {
+    public void sourceChange(INodeModel node) {
       sourceChangeCount++;
     }
 
     @Override
-    public void comparisonBasisChange(IItemModel model) {
+    public void comparisonBasisChange(INodeModel node) {
       // TODO Auto-generated method stub
     }
     

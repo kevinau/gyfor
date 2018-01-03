@@ -12,4 +12,4 @@ Import-Package: io.undertow.server,
  org.gyfor.http,
  org.gyfor.template,
  org.osgi.framework;version="1.8.0",
- org.osgi.service.component;version="1.3.0"
+ org.osgi.service.component;version="1.3.0";resolution:=optional

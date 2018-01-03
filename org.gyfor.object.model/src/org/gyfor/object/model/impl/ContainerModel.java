@@ -47,20 +47,33 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
     containerChangeListeners.remove(x);
   }
 
+  
   @Override
   public void fireChildAdded(IContainerModel parent, INodeModel node, Map<String, Object> context) {
     for (ContainerChangeListener x : containerChangeListeners) {
       x.childAdded(parent, node, context);
     }
+    // Propagate the event upwards
+    IContainerModel parentNode = getParent();
+    if (parentNode != null) {
+      parentNode.fireChildAdded(parent, node, context);
+    }
   }
 
+  
   @Override
   public void fireChildRemoved(IContainerModel parent, INodeModel node) {
     for (ContainerChangeListener x : containerChangeListeners) {
       x.childRemoved(parent, node);
     }
+    // Propagate the event upwards
+    IContainerModel parentNode = getParent();
+    if (parentNode != null) {
+      parentNode.fireChildRemoved(parent, node);
+    }
   }
 
+  
   @Override
   public List<INodeModel> selectNodeModels(String expr) {
     IPathExpression<INodeModel> pathExpr;
@@ -148,7 +161,7 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
   
   @Override
   public String getName() {
-    return valueRef.getName();
+    return getPlan().getName();
   }
 
 }

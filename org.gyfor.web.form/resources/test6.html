@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	<meta charset="utf-8" /> 
+  	<title>Web Socket Test</title>
+    <script src="react.development.js"></script>
+    <script src="react-dom.development.js"></script>
+    <script src="babel.min.6.26.0.js"></script>
+  	<!-- script type="text/javascript" src="objectHandler.js"></script -->
+	<script type="text/babel">
+
+
+class NameForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {value: ''};
+
+    this.clearValue = this.clearValue.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  clearValue(x) {
+	console.log(".......................clearing value");
+    this.setState({value: x});
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  handleSubmit(event) {
+    alert('A name was submitted: ' + this.state.value);
+    event.preventDefault();
+  }
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          Name:
+          <input type="text" value={this.state.value} onChange={this.handleChange} />
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
+    );
+  }
+
+}
+
+	</script>
+</head>
+<body>
+    <div id="root"></div>
+
+<script type="text/babel">
+
+    function setNameFormRef(ref) {
+		window.clearValueFunction = ref.clearValue;
+		console.log("Setting ref: " + ref);
+		console.log("Setting name form ref: " + ref.clearValue);
+	}
+
+	const rootElement = React.createElement(NameForm, {ref: setNameFormRef}, null);
+
+	console.log("rootElement: " + rootElement.type);
+
+	ReactDOM.render(
+  		rootElement,
+  		document.getElementById('root')
+	);
+	
+    </script>
+<script>
+
+</script>
+    <button onclick="window.clearValueFunction('aaaa')">Clear</button>
+    
+
+</body>
+</html>

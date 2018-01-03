@@ -17,6 +17,10 @@ public class Party {
   
   private List<Location> locations;
 
+  public Party() {
+    this.home = new Location();
+  }
+  
   public Party(String name, String number, String streetName, String suburb) {
     this.name = name;
     this.locations = new ArrayList<>();

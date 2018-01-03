@@ -67,12 +67,6 @@ public class BigDecimalType extends DecimalBasedType<BigDecimal> {
   
   
   @Override
-  public JsonType getJsonType () {
-    return JsonType.PLAIN_STRING;
-  }
-  
-  
-  @Override
   protected void validate(BigDecimal value) throws UserEntryException {
     if (getNumberSign() == NumberSign.UNSIGNED && value.compareTo(BigDecimal.ZERO) < 0) {
       throw new UserEntryException("negative number not allowed");

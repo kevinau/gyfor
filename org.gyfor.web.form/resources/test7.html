@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	<meta charset="utf-8" /> 
+  	<title>Web Socket Test</title>
+  	<script type="text/javascript" src="/global/domEdit.js"></script>
+	<script type="module">
+import {openWebSocket} from "/global/ws.js";
+
+var websocket;
+
+window.addEventListener("load", function() {
+	websocket = openWebSocket("/roundtrip/person", domEditCallback, function(ws) {
+		console.log("websocket: onopen method");
+		ws.sendMessage("hello");
+	});
+}, false);
+	</script>
+</head>
+<body>
+  <form id="contentHere0"></form>
+</body>
+</html>

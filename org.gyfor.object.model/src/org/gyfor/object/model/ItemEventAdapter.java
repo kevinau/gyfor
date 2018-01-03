@@ -6,27 +6,27 @@ import org.gyfor.object.UserEntryException;
 public class ItemEventAdapter extends EffectiveEntryModeAdapter implements ItemEventListener {
 
   @Override
-  public void valueEqualityChange(IItemModel model) {
+  public void valueEqualityChange(INodeModel node) {
   }
 
   @Override
-  public void sourceEqualityChange(IItemModel model) {
+  public void sourceEqualityChange(INodeModel node) {
   }
 
   @Override
-  public void errorCleared(IItemModel model) {
+  public void errorCleared(INodeModel node) {
   }
 
   @Override
-  public void errorNoted(IItemModel model, UserEntryException ex) {
+  public void errorNoted(INodeModel node, UserEntryException ex) {
   }
 
   @Override
-  public void valueChange(IItemModel model) {
+  public void valueChange(INodeModel node) {
   }
 
   @Override
-  public void comparisonBasisChange(IItemModel model) {
+  public void comparisonBasisChange(INodeModel node) {
   }
 
   @Override
@@ -35,7 +35,7 @@ public class ItemEventAdapter extends EffectiveEntryModeAdapter implements ItemE
   }
 
   @Override
-  public void sourceChange(IItemModel model) {
+  public void sourceChange(INodeModel node) {
   }
 
 }

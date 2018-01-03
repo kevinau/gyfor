@@ -4,5 +4,6 @@
       <provide interface="io.undertow.server.HttpHandler"/>
    </service>
    <reference cardinality="1..1" field="modelFactory" interface="org.gyfor.object.model.IModelFactory" name="modelFactory"/>
+   <reference cardinality="1..1" field="templateEngineFactory" interface="org.gyfor.template.ITemplateEngineFactory" name="templateEngineFactory"/>
    <implementation class="org.gyfor.web.form.RoundtripWebSocket"/>
 </scr:component>

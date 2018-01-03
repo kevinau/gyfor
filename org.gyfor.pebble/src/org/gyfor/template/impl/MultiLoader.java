@@ -1,5 +1,7 @@
 package org.gyfor.template.impl;
 
+import com.mitchellbosecke.pebble.error.LoaderException;
+import com.mitchellbosecke.pebble.loader.Loader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -19,9 +21,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.mitchellbosecke.pebble.error.LoaderException;
-import com.mitchellbosecke.pebble.loader.Loader;
 
 
 /**

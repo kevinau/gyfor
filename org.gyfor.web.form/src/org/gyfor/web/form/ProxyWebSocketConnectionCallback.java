@@ -101,7 +101,7 @@ public class ProxyWebSocketConnectionCallback implements WebSocketConnectionCall
           
           Writer writer = new StringWriter();
           NodeChangeMessage.beginMessage(writer, 0, Action.ADD, entityModel.getNodeId());
-          ModelHtmlBuilder.buildHtml(templateEngine, writer, entityModel, context);
+          TemplateHtmlBuilder.buildHtml(templateEngine, writer, entityModel, context);
 
           logger.info("Send text: {}", writer);
           WebSockets.sendText(writer.toString(), channel, null);

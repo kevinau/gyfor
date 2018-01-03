@@ -11,6 +11,10 @@ public class Street {
   @SuppressWarnings("unused")
   private String streetName;
 
+  public Street() {
+  }
+  
+  
   public Street(String number, String streetName) {
     this.number = number;
     this.streetName = streetName;

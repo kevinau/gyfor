@@ -1,118 +1,67 @@
-function websocketStart(baseURL, arg, onOpenFunction) {
-	if (window.WebSocket) {
-		let websocketURL = "ws://" + baseURL + "/" + arg;
+	// Locally called method
+	function deepValue (obj, path) {
+		if (typeof obj === "function" && obj.name === path) {
+			return obj;
+		}
+	    path = path.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+	    //path = path.replace(/^\./, '');           // strip a leading dot
+	    let px = path.split('.');
+	    for (var i = 0; i < px.length; i++){
+	        obj = obj[px[i]];
+	    };
+	    return obj;
+	}
+	
+	function openWebSocket (url, callback, onOpenFunction) {
+		let domain = location.hostname + (location.port ? ':' + location.port : '');
+		let websocketURL = "ws://" + domain + url;
 		let websocket2 = new WebSocket(websocketURL);
-		websocket2.onmessage = function(event) {
-			console.log("websocket " + websocketURL + ": onmessage");
-			//alert("On message: " + event.data);
-			let n1 = event.data.indexOf("|");
-			if (n1 == -1) {
-				// Bad message
-				return;
-			}
-			let action = event.data.substring(0, n1);
-			let n2 = event.data.indexOf("|", n1 + 1);
-			if (n2 == -1) {
-				// Bad message
-				return;
-			}
-			let selector = event.data.substring(n1 + 1, n2);
-			let htmlSource = event.data.substring(n2 + 1);
-			console.log("onmessage " + action + " " + selector + " " + htmlSource);
-			
-			let container;
-			let dx;
-			let children;
-			let event1;
-			
-			switch (action) {
-			case "addChild" : 		
-			case "addChildren" : 		
-				// Add the html to the specified container (identified by containerSelector).
-				// The html can be multiple elements.  A wschange event is fired after all
-				// children have been added.
-				////console.log ("addChildren: " + selector + ": " + htmlSource);
-				container = document.querySelector(selector);
-  				
-				dx = document.createElement('div');
-  				dx.innerHTML = htmlSource;
-  				children = dx.childNodes;
-    			while (children.length > 0) {
-    				container.appendChild(children[0]);
-    			}
-			    event1 = new Event('wschange');
-       	        container.dispatchEvent(event1);
-    			break;
-			case "replaceNode" :
-				// Remove the existing element (identified by node selector), then add the 
-				// html in its place.  The html can be multiple elements.  This action does
-				// NOT fire a wschange event.
-				////console.log ("replaceNode: " + selector + ": " + htmlSource);
-				let node = document.querySelector(selector);
-				
-				if (node && node.parentNode) {
-					container = node.parentNode;
-					container.removeChild(node);
-
-					dx = document.createElement('div');
-	  				dx.innerHTML = htmlSource;
-	  				children = dx.childNodes;
-	    			while (children.length > 0) {
-	    				container.appendChild(children[0]);
-	    			}
-				}
-				break;
-			case "replaceChildren" :
-				// Remove the children of the existing element (identified by container selector), then add the 
-				// html in its place.  The html can be multiple elements. A wschange event is fired after all
-				// children have been replaced.
-				console.log ("replaceChildren: " + selector + ": " + htmlSource);
-				container = document.querySelector(selector);
-				if (container) {
-				    let last;
-				    while (last = container.lastChild) container.removeChild(last);
-
-  				    dx = document.createElement('div');
-  				    dx.innerHTML = htmlSource;  				    
-  				    children = dx.childNodes;
-    				while (children.length > 0) {
-    					container.appendChild(children[0]);
-    				}
-    			    event1 = new Event('wschange');
-           	        container.dispatchEvent(event1);
-				} else {
-					console.log("replaceChildren: cannot locate: " + selector);
-				}
-				break;
-			case "deleteChildren" :
-				// Remove the child nodes of the node that matches the container selector.
-				// A wschange event is fired after child nodes have been removed.
-				container = document.querySelector(selector);
-			    let last;
-			    while (last = container.lastChild) container.removeChild(last);
-			    event1 = new Event('wschange');
-       	        container.dispatchEvent(event1);
-				break;
-			case "deleteNodes" : 
-				// Removing those nodes that match the node selector.  The container
-				// selector is not used.  This action does NOT fire a wschange event.
-				let matches = document.querySelectorAll(selector);
-				for (let i = 0; i < matches.length; i++) {
-					let node = matches[i];
-					if (node.parentNode) {
-						node.parentNode.removeChild(node);
+		let ws = {
+				websocket: websocket2,
+				url: websocketURL,
+				sendMessage: function(message) {
+					if (websocket2.readyState == WebSocket.OPEN) {
+						console.log("websocket " + url + ": send: " + message);
+						websocket2.send(message);
+					} else {
+						console.log("websocket " + url + " is not open.");
 					}
+
 				}
-				break;
-			default :
-				alert("Unknown action: " + action);
-				break;
+		}
+		websocket2.onmessage = function(event) {
+			console.log("websocket " + websocketURL + ": onmessage: " + event.data);
+			let msgParts = event.data.split("\t");
+			if (msgParts.length == 0) {
+				// Bad message
+				console.log("error: empty message");
+				return;
 			}
+			
+			let v = deepValue(callback, msgParts[0]);
+			if (typeof v !== "function") {
+				// Bad message
+				console.log("error: " + msgParts[0] + " does not name a gloably known function");
+				return;
+			}
+			let args = [];
+			for (let i = 1; i < msgParts.length; i++) {
+				let msgPart = msgParts[i];
+//				let arg1;
+//				try {
+//					arg1 = JSON.parse(msgPart);
+//				} catch (e) {
+//					console.log("error: " + e);
+//				}
+				args.push(msgPart);
+			}
+			v(...args);
 		};
 		websocket2.onopen = function(event) {
-			console.log("websocket " + websocketURL + ": onopen");
+			console.log("websocket " + websocketURL + ": onopen: " + onOpenFunction);
+			//sendMessage(ws, "hello");
 			if (onOpenFunction) {
-				onOpenFunction(websocket);
+				onOpenFunction(ws);
 			}
 		};
 		websocket2.onclose = function(event) {
@@ -121,22 +70,30 @@ function websocketStart(baseURL, arg, onOpenFunction) {
 		websocket2.onerror = function(event) {
 			console.log("websocket " + websocketURL + ": onerror " + event);
 		};
-		return websocket2;
-	} else {
-		alert("Your browser does not support Websockets :-(");
-		return null;
+		return ws;
 	}
-}
 
 
-function sendMessage(websocket2, message) {
-	if (!websocket2) {
-		return;
+//	function sendMessage(ws, message) {
+//		let websocket2 = ws.websocket;
+//		if (websocket2.readyState == WebSocket.OPEN) {
+//			console.log("websocket " + ws.url + ": send: " + message);
+//			websocket2.send(message);
+//		} else {
+//			console.log("websocket " + ws.url + " is not open.");
+//		}
+//	}
+	
+	
+	function sendInput(ws, id, value) {
+		let websocket2 = ws.websocket;
+		if (websocket2.readyState == WebSocket.OPEN) {
+			let message = "input\t" + id + "\t" + value;
+			console.log("websocket " + ws.url + ": send: " + message);
+			websocket2.send(message);
+		} else {
+			console.log("websocket " + ws.url + " is not open.");
+		}
 	}
-	if (websocket2.readyState == WebSocket.OPEN) {
-		//alert("Sending message: " + message);
-		websocket2.send(message);
-	} else {
-		// alert("The socket is not open.");
-	}
-}
+
+export { openWebSocket, sendInput};

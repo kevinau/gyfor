@@ -24,7 +24,7 @@ public interface ItemEventListener extends EventListener {
    * the equality of the field and default value).
    * 
    */
-  public void valueEqualityChange(IItemModel model);
+  public void valueEqualityChange(INodeModel node);
 
   /**
    * The field or default <b>source</b> values have changed so they are now equal, or no
@@ -35,7 +35,7 @@ public interface ItemEventListener extends EventListener {
    * than the value itself.
    * 
    */
-  public void sourceEqualityChange(IItemModel model);
+  public void sourceEqualityChange(INodeModel node);
 
   /**
    * The field value has changed, either by user data entry or by the
@@ -44,10 +44,10 @@ public interface ItemEventListener extends EventListener {
    * This method will only be called if there are no errors. If there are
    * errors, this method will be called when the error is cleared.
    * 
-   * @param model
+   * @param node
    * @param value
    */
-  public void valueChange(IItemModel model);
+  public void valueChange(INodeModel node);
 
   /**
    * The control has left the error state--all previously noted errors have been
@@ -64,7 +64,7 @@ public interface ItemEventListener extends EventListener {
    * 
    * @param ev
    */
-  public void errorCleared(IItemModel model);
+  public void errorCleared(INodeModel node);
 
   /**
    * The control has gone into an error state. This is either because the user
@@ -75,7 +75,7 @@ public interface ItemEventListener extends EventListener {
    * Subsequent error notifications will not cause this event to fire again.
    * 
    */
-  public void errorNoted(IItemModel model, UserEntryException ex);
+  public void errorNoted(INodeModel node, UserEntryException ex);
 
   /**
    * An attempt was made to change the field value by the user, but no change
@@ -83,11 +83,11 @@ public interface ItemEventListener extends EventListener {
    * will be fired regardless of error status of the control.
    * 
    */
-  public void sourceChange(IItemModel model);
+  public void sourceChange(INodeModel node);
 
   /**
-   * The comparison basis of the object model has changed.
+   * The comparison basis of the object node has changed.
    */
-  public void comparisonBasisChange (IItemModel model);
+  public void comparisonBasisChange (INodeModel node);
   
 }

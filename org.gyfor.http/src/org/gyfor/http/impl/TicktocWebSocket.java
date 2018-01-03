@@ -7,16 +7,21 @@ import java.util.TimerTask;
 
 import org.gyfor.http.AbstractWebSocketConnectionCallback;
 import org.gyfor.http.CallbackAccessor;
+import org.gyfor.http.Context;
+import org.gyfor.http.Resource;
 import org.gyfor.http.WebSocketSession;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
+import io.undertow.server.HttpHandler;
 import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
+import io.undertow.websockets.core.WebSocketChannel;
 
 
 //@Context("/ticktoc")
-//@Resource(path = "/resources", location = "static")
+//@Resource(path = "/resources", location = "resources")
 //@Component(service = HttpHandler.class)
 public class TicktocWebSocket extends WebSocketProtocolHandshakeHandler {
 
@@ -44,13 +49,9 @@ public class TicktocWebSocket extends WebSocketProtocolHandshakeHandler {
           i++;
           System.out.println("........ ticking " + i);
           TicktocWebSocketConnectionCallback.this.forAllSessions(session -> {
-            System.out.println(".......... sending to " + session + "   " + LocalTime.now());
-            if (i % 10 == 0) {
-              session.sendText("replaceChildren|#history|<div>Tick " + i + "</div>");
-            } else {
-              session.sendText("addChild|#history|<div>Tick " + i + "</div>");
-            }
-            session.sendText("replaceNode|#latest|<div id='latest'>Toc " + i + "</div>");
+            LocalTime now = LocalTime.now();
+            System.out.println("........ sending to " + session + "   " + now);
+            session.send("tick", now.toString());
           });
         }
         
@@ -58,7 +59,7 @@ public class TicktocWebSocket extends WebSocketProtocolHandshakeHandler {
       System.out.println("..... start ticking");
       i = 0;
       timer = new Timer();
-      timer.schedule(updateTask,
+      timer.scheduleAtFixedRate(updateTask,
                      0,          //initial delay
                      5 * 1000);  //subsequent rate
     }
@@ -69,8 +70,29 @@ public class TicktocWebSocket extends WebSocketProtocolHandshakeHandler {
     }
 
 
-    protected void handleTextMessage(String command, String data) {
+//    protected void handleTextMessage(String command, String data) {
+//      switch (command) {
+//      case "reset" :
+//        stopTicking();
+//        startTicking();
+//        break;
+//      default :
+//        throw new RuntimeException("Unknown command: '" + command + "'");
+//      }
+//    }
+
+
+    @Override
+    protected Object buildSessionData(String path, Map<String, String> queryMap, WebSocketChannel channel) {
+      return null;
+    }
+
+
+    @Override
+    protected void doRequest(String command, String[] args, Object sessionData, WebSocketSession wss) {
       switch (command) {
+      case "hello" :
+        break;
       case "reset" :
         stopTicking();
         startTicking();
@@ -82,30 +104,12 @@ public class TicktocWebSocket extends WebSocketProtocolHandshakeHandler {
 
 
     @Override
-    protected Object buildSessionData(String path, Map<String, String> queryMap) {
-      // TODO Auto-generated method stub
-      return null;
-    }
-
-
-    @Override
-    protected void doRequest(String command, String[] args, Object sessionData, WebSocketSession wss) {
-      // TODO Auto-generated method stub
-      
-    }
-
-
-    @Override
     protected void openResources() {
-      // TODO Auto-generated method stub
-      
     }
 
 
     @Override
     protected void closeResources() {
-      // TODO Auto-generated method stub
-      
     }
     
   }

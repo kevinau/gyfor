@@ -118,12 +118,6 @@ public abstract class DateBasedType<T> extends Type<T> implements IType<T> {
   
   
   @Override
-  public JsonType getJsonType () {
-    return JsonType.PLAIN_STRING;
-  }
-  
-  
-  @Override
   public String getRequiredMessage () {
     return REQUIRED_MESSAGE;
   }  

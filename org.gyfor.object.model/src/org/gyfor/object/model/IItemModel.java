@@ -25,10 +25,6 @@ public interface IItemModel extends INodeModel, INode {
 
   public UserEntryException[] getErrors();
 
-  public void addItemEventListener(ItemEventListener x);
-
-  public void removeItemEventListener(ItemEventListener x);
-
   public void setValueFromSource(String source);
   
   public default boolean isId() {

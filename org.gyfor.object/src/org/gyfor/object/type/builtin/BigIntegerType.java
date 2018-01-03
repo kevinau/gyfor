@@ -60,12 +60,6 @@ public class BigIntegerType extends IntegerBasedType<BigInteger> {
 
 
   @Override
-  public JsonType getJsonType () {
-    return JsonType.PLAIN_STRING;
-  }
-  
-  
-  @Override
   protected void validate (BigInteger value) throws UserEntryException {
     checkWithinRange(value.longValue());
   }

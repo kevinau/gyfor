@@ -79,7 +79,7 @@ public class EntityEditPage implements HttpHandler {
     entityEditContext.put("context", exchange.getResolvedPath());
     
     entityEditContext.put("entityName", entityName);
-    labels.loadContext(entityEditContext);
+    labels.extractAll(entityEditContext);
 
     exchange.startBlocking();
     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");

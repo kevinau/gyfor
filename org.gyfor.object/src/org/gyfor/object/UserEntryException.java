@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.gyfor.object;
 
-
 public class UserEntryException extends Exception {
 
   /**
@@ -32,7 +31,7 @@ public class UserEntryException extends Exception {
     /**
      * The user entry is incomplete.  As the user entry stands, it is
      * in error, but additional characters will correct that.  For example
-     * "31/02" is not a valid date, but the addition of "/2008" will make
+     * "29/02" is not a valid date, but the addition of "/2008" will make
      * it a valid date.  
      */
     INCOMPLETE ("Incomplete"),
@@ -63,9 +62,9 @@ public class UserEntryException extends Exception {
       return prefix;
     }
     
-    public boolean isFatal () {
-      return this == ERROR || this == INCOMPLETE || this == REQUIRED;
-    }
+    //public boolean isFatal () {
+    //  return this == ERROR || this == INCOMPLETE || this == REQUIRED;
+    //}
     
   }
   
@@ -146,4 +145,5 @@ public class UserEntryException extends Exception {
     }
     return buffer.toString();
   }
+
 }

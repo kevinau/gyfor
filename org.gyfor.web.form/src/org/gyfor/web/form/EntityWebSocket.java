@@ -22,9 +22,9 @@ import io.undertow.server.HttpHandler;
 import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
 
 
-@Context("/eex")
-@Resource(path="/resources", location="resources")
-@Component(service=HttpHandler.class)
+//@Context("/eex")
+//@Resource(path="/resources", location="resources")
+//@Component(service=HttpHandler.class)
 public class EntityWebSocket extends WebSocketProtocolHandshakeHandler {
 
   private Logger logger = LoggerFactory.getLogger(EntityWebSocket.class);

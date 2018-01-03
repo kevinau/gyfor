@@ -40,10 +40,10 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
 
     String requestPath = null;
     if (context != null) {
-      if (!uri.startsWith(context + "/")) {
-        throw new RuntimeException("uri '" + uri + "' should start with " + context + "/");
+      if (!uri.startsWith(context)) {
+        throw new RuntimeException("uri '" + uri + "' should start with " + context);
       }
-      requestPath = uri.substring(context.length() + 1);
+      requestPath = uri.substring(context.length());
       int n = requestPath.indexOf('?');
       if (n >= 0) {
         requestPath = requestPath.substring(0, n);
@@ -69,7 +69,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
         }
       }
     }
-    Object sessionData = buildSessionData(requestPath, queryMap);
+    Object sessionData = buildSessionData(requestPath, queryMap, channel);
     
     synchronized (channels) {
       if (channels.isEmpty()) {
@@ -148,7 +148,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
   }
   
   
-  protected abstract Object buildSessionData (String path, Map<String, String> queryMap);
+  protected abstract Object buildSessionData (String path, Map<String, String> queryMap, WebSocketChannel channel);
 
   private static final char DELIMITER = '\t';
 

@@ -17,13 +17,6 @@ import org.gyfor.util.SimpleBuffer;
 
 public interface IType<T> {
   
-  public enum JsonType {
-    ESCAPED_STRING,
-    PLAIN_STRING,
-    NUMBER,
-    BOOLEAN;
-  }
-  
   public static final int BUFFER_NUL_TERMINATED = -1;
   public static final int BUFFER_UTF8 = -2;
   public static final int BUFFER_UTF8_LENGTH = -3;
@@ -58,10 +51,6 @@ public interface IType<T> {
   public String toEntryString (T value, T fillValue);
 
   public String toValueString (T value);
-  
-  public default JsonType getJsonType () {
-    return JsonType.ESCAPED_STRING;
-  }
   
   /**
    * A zero or empty field value.  For string values it will be the empty string.  For numeric values it will be zero.

@@ -32,19 +32,19 @@ class WS {
 				console.log("error: " + msgParts[0] + " does not name a gloably known function");
 				return;
 			}
-//			let argx = envent.data.substring(n1 + 1);
-//			var arg;
-//			try {
-//				arg = JSON.parse(argx);
-//			} catch (e) {
-//				console.log("error: " + e);
-//			}
-//			console.log("onmessage " + fnName + " " + argx);
-//			if (isArray(arg)) {
-//				fn.apply(null, arg);
-//			} else {
-//				fn(arg);
-//			}
+			let args = [];
+			for (let i = 1; i < msgParts.length; i++) {
+				let msgPart = msgParts[i];
+				var arg1;
+				try {
+					arg1 = JSON.parse(msgPart);
+				} catch (e) {
+					console.log("error: " + e);
+				}
+				args.push(arg1);
+				console.log("arg: " + i + ": " + arg1);
+			}
+			v(...args);
 		};
 		websocket2.onopen = function(event) {
 			console.log("websocket " + websocketURL + ": onopen");

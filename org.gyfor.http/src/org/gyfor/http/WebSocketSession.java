@@ -1,9 +1,11 @@
 package org.gyfor.http;
 
 import java.io.IOException;
+import java.util.Map;
 
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
+
 
 public class WebSocketSession {
 
@@ -14,19 +16,25 @@ public class WebSocketSession {
   }
   
   
-  public void sendText (String text) {
+  public void send (String text) {
     WebSockets.sendText(text, channel, null);
   }
   
   
-  public void sendText (String command, Object... args) {
+  public void send (String command, Object... args) {
+    send(channel, command, args);
+  }
+  
+  
+  public static void send (WebSocketChannel channel, String command, Object... args) {
     StringBuilder buffer = new StringBuilder();
     buffer.append(command);
     for (Object arg : args) {
       buffer.append('\t');
       buffer.append(arg.toString());
     }
-    sendText(buffer.toString());
+    System.out.println("WebSocketSession: " + buffer.toString());
+    WebSockets.sendText(buffer.toString(), channel, null);    
   }
   
   

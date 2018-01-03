@@ -59,7 +59,7 @@ public class EntityLabelGroup implements ILabelGroup {
 
 
   @Override
-  public void loadContext(Map<String, Object> context) {
+  public void extractAll(Map<String, Object> context) {
     if (title != null && title.length() > 0) {
       context.put("title", title);
     }

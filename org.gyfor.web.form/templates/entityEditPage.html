@@ -1,0 +1,47 @@
+{% extends "page" %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block styles %}
+{% endblock %}
+
+{% block scripts %}
+	<script type="module">
+import {openWebSocket} from "/global/ws.js";
+
+var websocket;
+
+window.addEventListener("load", function() {
+	websocket = openWebSocket("/roundtrip/person", {
+		setEntity: function(props) {
+			console.log("application element: " + appElement);
+			console.log("application element props id: " + props.id);
+			let elem = document.getElementById("content0");
+			
+			console.log(window.elementMap);
+			let elem = window.elementMap.get(0);
+			elem.setEntity(props);
+		},
+		addChild: function(parentId, props) {
+  	  		console.log("addChild: " + parentId + " " + props.id + " " + props.name);
+			console.log(window.elementMap);
+			let id = parentId;
+    		console.log("Save dom element ***************** " + id);
+    		console.log("Save dom element ***************** " + window.elementMap.size);
+    		console.log("Save dom element ***************** " + window.elementMap.has(id));
+    		console.log("Save dom element ***************** " + window.elementMap.get(id));
+			let elem2 = window.elementMap.get(parentId);
+			console.log("........: " + elem2);
+			elem2.addChild(props);
+		},
+	}, function(ws) {
+		console.log("websocket: onopen method");
+		ws.sendMessage("hello");
+	});
+}, false);
+	</script>
+{% endblock %}
+
+{% block body %}
+  <div id="content0"></div>
+{% endblock %}

@@ -1,11 +1,8 @@
-<div id="node-{{parentId}}">
+<div id="{{id}}">
 <h1 class="title">{{title}}</h1>
 {% if description is not empty %}
 <p>{{description}}</p>
 {% endif %}
-<div class="entity" id="socket-{{id}}">
-{% block entityContent %}
-{% entity * %}{% endentity %}
-{% endblock %}
+<div class="entity" id="contentHere{{id}}">
 </div>
 </div>

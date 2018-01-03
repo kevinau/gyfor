@@ -1,11 +1,14 @@
 package org.gyfor.web.form;
 
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.type.IType;
@@ -16,8 +19,15 @@ import org.gyfor.template.ITemplateEngine;
  * A class that builds HTML for a model.  Pebble templates--that contain HTML--are used 
  * to build the HTML.
  */
-public class ModelHtmlBuilder {
+public class TemplateHtmlBuilder {
 
+  private final ITemplateEngine templateEngine;
+  
+  
+  public TemplateHtmlBuilder (ITemplateEngine templateEngine) {
+    this.templateEngine = templateEngine;
+  }
+  
 
 //  @Activate
 //  public void activate (BundleContext bundleContext) {
@@ -34,9 +44,16 @@ public class ModelHtmlBuilder {
 //  }
   
   
-  public static void buildHtml (ITemplateEngine templateEngine, Writer writer, INodeModel nodeModel, Map<String, Object> withValues) {
+  public void buildHtml (Writer writer, INodeModel nodeModel, Map<String, Object> withValues) {
     // Build template name
-    String templateName = nodeModel.getQualifiedName();
+    System.out.println("................... " + nodeModel.getClass());
+    System.out.println("................... " + nodeModel);
+    IEntityPlan<?> entityPlan = nodeModel.getParentEntity().getPlan();
+    String templateName = entityPlan.getClassName();
+    if (!(nodeModel instanceof IEntityModel)) {
+      templateName += "#" + nodeModel.getQualifiedPlanName();
+    }
+    System.out.println("................... " + templateName);
     String defaultName;
     if (nodeModel instanceof IItemModel) {
       IType<?> type = ((IItemPlan<?>)nodeModel.getPlan()).getType();
@@ -44,7 +61,9 @@ public class ModelHtmlBuilder {
     } else {
       defaultName = nodeModel.getClass().getSimpleName();
     }
+    System.out.println("................... " + defaultName);
     templateName += "(" + defaultName + ")";
+    System.out.println("................... " + templateName);
     
     ITemplate nodeTemplate = templateEngine.getTemplate(templateName);
     
@@ -53,7 +72,7 @@ public class ModelHtmlBuilder {
 
     // The labels are loaded individually.  This allows them to be overridden by field "with" values.
     INodePlan nodePlan = nodeModel.getPlan();
-    nodePlan.getLabels().loadContext(templateContext);
+    nodePlan.getLabels().extractAll(templateContext);
 
     // The following are a convenience to template writers
     int parentId = 0;
@@ -75,4 +94,11 @@ public class ModelHtmlBuilder {
     nodeTemplate.evaluate(writer, templateContext);
   }
   
+  
+  public String buildHtml(INodeModel nodeModel, Map<String, Object> withValues) {
+    StringWriter writer = new StringWriter();
+    buildHtml(writer, nodeModel, withValues);
+    return writer.toString();
+  }
+
 }

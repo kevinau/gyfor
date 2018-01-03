@@ -53,12 +53,6 @@ public class VersionType extends StringBasedType<VersionTime> {
   
   
   @Override
-  public JsonType getJsonType () {
-    return JsonType.PLAIN_STRING;
-  }
-  
-  
-  @Override
   public VersionTime primalValue () {
     return new VersionTime(new Timestamp(0L));
   }

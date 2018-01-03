@@ -54,12 +54,6 @@ public class DecimalType extends DecimalBasedType<Decimal> {
 
 
   @Override
-  public JsonType getJsonType () {
-    return JsonType.PLAIN_STRING;
-  }
-  
-  
-  @Override
   public Decimal newInstance(String source) {
     return new Decimal(source);
   }

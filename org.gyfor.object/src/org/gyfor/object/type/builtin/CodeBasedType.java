@@ -187,12 +187,6 @@ public abstract class CodeBasedType<T extends ICode> implements IType<T> {
   
   
   @Override
-  public JsonType getJsonType () {
-    return JsonType.PLAIN_STRING;
-  }
-  
-  
-  @Override
   public T primalValue() {
     lazyValueListUpdate(valueList);
     return valueList.get(0);

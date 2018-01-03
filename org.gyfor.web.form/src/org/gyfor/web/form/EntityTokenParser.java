@@ -12,6 +12,35 @@ import com.mitchellbosecke.pebble.parser.StoppingCondition;
 import com.mitchellbosecke.pebble.tokenParser.AbstractTokenParser;
 
 
+/**
+ * 'entity' token parser for the Pebble template engine.
+ * <p>
+ * The <code>entity</code> tag allows you to insert an entity form into the current template.
+ * <code>{% entity "fully-qualified-class-name" %}
+ * HTML content, including a selection of fields
+ * {% endentity %}
+ * </code>
+ * The HTML content can be empty, in which case all fields of the class are included.  For example:
+ * <p><code>{% entity "org.pennyledger.party.Party" %}{% endentity %}</code><p>
+ * will include all fields of the Party class.
+ * <p>
+ * If the HTML content is not empty, only named fields' are included.  For example:
+ * <p><code>{% entity "org.pennyledger.party.Party" %}
+ * {% field "name" %}
+ * {% field "telephone" %}
+ * {% endentity %}</code><p>
+ * will include only the name and telephone fields of the Party class.  Additional HTML and Pebble tags 
+ * can surround the fields.
+ * <p>
+ * You can add additional variables to the context of the included template by passing a map after
+ * the with keyword. The included template will have access to the same variables that the current 
+ * template does plus the additional ones defined in the map passed after the <code>with</code> keyword:
+ * <p><code>{% entity "org.pennyledger.party.Party" with {"country":"au"} %}
+ * {% endentity %}
+ * </code>
+ * @author Kevin
+ *
+ */
 public class EntityTokenParser extends AbstractTokenParser {
 
   @Override

@@ -41,9 +41,9 @@ import io.undertow.websockets.core.WebSockets;
 import io.undertow.websockets.spi.WebSocketHttpExchange;
 
 
-@Context("/eex")
-@Resource(path = "/resources", location = "resources")
-@Component(service = HttpHandler.class)
+//@Context("/eex")
+//@Resource(path = "/resources", location = "resources")
+//@Component(service = HttpHandler.class)
 public class ModelWebSocketHandler extends WebSocketProtocolHandshakeHandler {
 
   private Logger logger = LoggerFactory.getLogger(ModelWebSocketHandler.class);
@@ -100,7 +100,7 @@ public class ModelWebSocketHandler extends WebSocketProtocolHandshakeHandler {
           public void childAdded(IContainerModel parent, INodeModel node, Map<String, Object> context) {
             Writer writer = new StringWriter();
             NodeChangeMessage.beginMessage(writer, parent.getNodeId(), Action.ADD, node.getNodeId());
-            ModelHtmlBuilder.buildHtml(templateEngine, writer, entityModel, context);
+            TemplateHtmlBuilder.buildHtml(templateEngine, writer, entityModel, context);
 
             logger.info("Send text: childAdded {}", writer);
             WebSockets.sendText(writer.toString(), channel, null);
@@ -177,7 +177,7 @@ public class ModelWebSocketHandler extends WebSocketProtocolHandshakeHandler {
               
               Writer writer = new StringWriter();
               NodeChangeMessage.beginMessage(writer, 0, Action.ADD, entityModel.getNodeId());
-              ModelHtmlBuilder.buildHtml(templateEngine, writer, entityModel, context);
+              TemplateHtmlBuilder.buildHtml(templateEngine, writer, entityModel, context);
 
               logger.info("Send text: {}", writer);
 //              @SuppressWarnings("unchecked")

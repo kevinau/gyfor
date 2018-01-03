@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.INode;
+import org.gyfor.object.UserEntryException;
 import org.gyfor.object.plan.INodePlan;
 
 public interface INodeModel extends INode {
@@ -36,6 +37,10 @@ public interface INodeModel extends INode {
 
   public void removeEffectiveEntryModeListener(EffectiveEntryModeListener x);
 
+  public void addItemEventListener(ItemEventListener x);
+
+  public void removeItemEventListener(ItemEventListener x);
+
   public default void dump() {
     dump(0);
   }
@@ -47,5 +52,25 @@ public interface INodeModel extends INode {
   public String getQualifiedName();
   
   public void walkModel(Consumer<INodeModel> before, Consumer<INodeModel> after);
+
+  public void fireEffectiveModeChange(INodeModel node, EffectiveEntryMode priorMode);
+
+  public void fireErrorNoted(INodeModel node, UserEntryException ex);
+
+  public void fireErrorCleared(INodeModel node);
+
+  public void fireSourceChange(INodeModel node);
+
+  public void fireSourceEqualityChange(INodeModel node);
+
+  public void fireValueChange(INodeModel node);
+
+  public void fireValueEqualityChange(INodeModel node);
+
+  public void fireComparisonBasisChange(INodeModel node);
+
+  public String getQualifiedPlanName();
+
+  public IEntityModel getParentEntity();
 
 }

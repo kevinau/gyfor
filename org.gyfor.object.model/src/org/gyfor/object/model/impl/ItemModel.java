@@ -1,6 +1,5 @@
 package org.gyfor.object.model.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,7 +54,6 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   private String currentSource = "";
   private boolean currentValueInError = true;
   
-  private List<ItemEventListener> itemEventListeners = new ArrayList<>();
 
   @SuppressWarnings("unchecked")
   public ItemModel (ModelFactory modelFactory, IValueReference valueRef, IItemPlan<?> itemPlan) {
@@ -125,7 +123,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
    */
   @Override
   public void addItemEventListener (ItemEventListener x) {
-    itemEventListeners.add(x);
+    super.addItemEventListener(x);
   }
   
   
@@ -134,61 +132,11 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
    */
   @Override
   public void removeItemEventListener (ItemEventListener x) {
-    itemEventListeners.remove(x);
     // Notify listeners if this model was in error
     for (Object source : validationErrors.values()) {
       clearError(source);
     }
-  }
-  
-  
-  private void fireErrorNoted (IItemModel model, UserEntryException ex) {
-    for (ItemEventListener x : itemEventListeners) {
-      x.errorNoted(model, ex);
-    }
-  }
-  
-  
-  private void fireErrorCleared (IItemModel model) {
-    for (ItemEventListener x : itemEventListeners) {
-      x.errorCleared(model);
-    }
-  }
-  
-  
-  private void fireSourceChange (IItemModel model) {
-    for (ItemEventListener x : itemEventListeners) {
-      x.sourceChange(model);
-    }
-  }
-  
-  
-  private void fireSourceEqualityChange (IItemModel model) {
-    for (ItemEventListener x : itemEventListeners) {
-      x.sourceEqualityChange(model);
-    }
-  }
-  
-  
-  private void fireValueChange (IItemModel model) {
-    for (ItemEventListener x : itemEventListeners) {
-      x.valueChange(model);
-    }
-  }
-  
-  
-  private void fireValueEqualityChange (IItemModel model) {
-    for (ItemEventListener x : itemEventListeners) {
-      x.valueEqualityChange(model);
-    }
-  }
-  
-  
-  @SuppressWarnings("unused")
-  private void fireComparisonBasisChange (IItemModel model) {
-    for (ItemEventListener x : itemEventListeners) {
-      x.comparisonBasisChange(model);
-    }
+    super.removeItemEventListener(x);
   }
   
   
@@ -719,8 +667,13 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
       for (ErrorInstance error : errors) {
         UserEntryException ev = error.exception;
         UserEntryException.Type type = ev.getType();
-        if (type.isFatal()) {
+        switch (type) {
+        case ERROR :
+        case INCOMPLETE :
+        case REQUIRED :
           return true;
+        default :
+          break;
         }
       }
       return false;

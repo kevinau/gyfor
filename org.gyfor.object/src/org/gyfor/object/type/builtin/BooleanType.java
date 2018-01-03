@@ -40,12 +40,6 @@ public class BooleanType extends Type<Boolean> implements IType<Boolean> {
 
 
   @Override
-  public JsonType getJsonType () {
-    return JsonType.BOOLEAN;
-  }
-  
-  
-  @Override
   public String getRequiredMessage() {
     return REQUIRED_MESSAGE;
   }

@@ -1,5 +1,7 @@
 package org.pennyledger.party;
 
+import java.io.Serializable;
+
 import org.gyfor.object.Entity;
 import org.gyfor.object.EntityLabel;
 import org.gyfor.object.SelfDescribing;
@@ -11,7 +13,9 @@ import org.gyfor.object.value.VersionTime;
 @Entity
 @UniqueConstraint({"partyCode", "shortName"})
 @EntityLabel (title="Business Entity")
-public class Party implements SelfDescribing {
+public class Party implements SelfDescribing, Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private int id;
   

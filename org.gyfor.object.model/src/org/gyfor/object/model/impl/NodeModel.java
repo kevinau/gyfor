@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.gyfor.object.EntryMode;
+import org.gyfor.object.UserEntryException;
 import org.gyfor.object.model.EffectiveEntryMode;
 import org.gyfor.object.model.EffectiveEntryModeListener;
 import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.IRepeatingModel;
+import org.gyfor.object.model.ItemEventListener;
 import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.model.ref.IValueReference;
 import org.gyfor.object.plan.INodePlan;
@@ -27,7 +29,9 @@ public abstract class NodeModel implements INodeModel {
   private EffectiveEntryMode effectiveEntryMode = EffectiveEntryMode.ENABLED;
   
   private List<EffectiveEntryModeListener> effectiveEntryModeListeners = new ArrayList<>();
-  
+  private List<ItemEventListener> itemEventListeners = new ArrayList<>();
+
+
   
   @Override
   public abstract void syncValue(Object value);
@@ -86,6 +90,25 @@ public abstract class NodeModel implements INodeModel {
   public void removeEffectiveEntryModeListener (EffectiveEntryModeListener x) {
     effectiveEntryModeListeners.remove(x);
   }
+
+  
+  /**
+   * Add a ItemChangeListener.  
+   */
+  @Override
+  public void addItemEventListener (ItemEventListener x) {
+    itemEventListeners.add(x);
+  }
+  
+  
+  /**
+   * Remove a ItemChangeListener.  
+   */
+  @Override
+  public void removeItemEventListener (ItemEventListener x) {
+    itemEventListeners.remove(x);
+  }
+  
   
   @Override
   public void setEntryMode (EntryMode entryMode) {
@@ -108,7 +131,7 @@ public abstract class NodeModel implements INodeModel {
     if (newEffectiveEntryMode != effectiveEntryMode) {
       EffectiveEntryMode priorMode = effectiveEntryMode;
       effectiveEntryMode = newEffectiveEntryMode;
-      fireEffectiveModeChange(priorMode);
+      fireEffectiveModeChange(this, priorMode);
       
       for (INodeModel child : getContainerNodes()) {
         child.updateEffectiveEntryMode (effectiveEntryMode);
@@ -123,12 +146,110 @@ public abstract class NodeModel implements INodeModel {
   }
   
   
-  private void fireEffectiveModeChange (EffectiveEntryMode priorMode) {
+  @Override
+  public void fireEffectiveModeChange (INodeModel node, EffectiveEntryMode priorMode) {
     for (EffectiveEntryModeListener x : effectiveEntryModeListeners) {
       x.effectiveModeChanged(this, priorMode);
     }
+    // Propagate the event upwards
+    IContainerModel parentNode = getParent();
+    if (parentNode != null) {
+      parentNode.fireEffectiveModeChange(node, priorMode);
+    }
   }
 
+  
+  @Override
+  public void fireErrorNoted (INodeModel node, UserEntryException ex) {
+    for (ItemEventListener x : itemEventListeners) {
+      x.errorNoted(node, ex);
+    }
+    // Propagate the event upwards
+    IContainerModel parentNode = getParent();
+    if (parentNode != null) {
+      parentNode.fireErrorNoted(node, ex);
+    }
+  }
+  
+  
+  @Override
+  public void fireErrorCleared (INodeModel node) {
+    for (ItemEventListener x : itemEventListeners) {
+      x.errorCleared(node);
+    }
+    // Propagate the event upwards
+    IContainerModel parentNode = getParent();
+    if (parentNode != null) {
+      parentNode.fireErrorCleared(node);
+    }
+  }
+  
+  
+  @Override
+  public void fireSourceChange (INodeModel node) {
+    for (ItemEventListener x : itemEventListeners) {
+      x.sourceChange(node);
+    }
+    // Propagate the event upwards
+    IContainerModel parentNode = getParent();
+    if (parentNode != null) {
+      parentNode.fireSourceChange(node);
+    }
+  }
+  
+  
+  @Override
+  public void fireSourceEqualityChange (INodeModel node) {
+    for (ItemEventListener x : itemEventListeners) {
+      x.sourceEqualityChange(node);
+    }
+    // Propagate the event upwards
+    IContainerModel parentNode = getParent();
+    if (parentNode != null) {
+      parentNode.fireSourceEqualityChange(node);
+    }
+  }
+  
+  
+  @Override
+  public void fireValueChange (INodeModel node) {
+    for (ItemEventListener x : itemEventListeners) {
+      x.valueChange(node);
+    }
+    // Propagate the event upwards
+    IContainerModel parentNode = getParent();
+    if (parentNode != null) {
+      parentNode.fireValueChange(node);
+    }
+  }
+  
+  
+  @Override
+  public void fireValueEqualityChange (INodeModel node) {
+    for (ItemEventListener x : itemEventListeners) {
+      x.valueEqualityChange(node);
+    }
+    // Propagate the event upwards
+    IContainerModel parentNode = getParent();
+    if (parentNode != null) {
+      parentNode.fireValueEqualityChange(node);
+    }
+  }
+  
+  
+  @Override
+  public void fireComparisonBasisChange (INodeModel node) {
+    for (ItemEventListener x : itemEventListeners) {
+      x.comparisonBasisChange(node);
+    }
+    // Propagate the event upwards
+    IContainerModel parentNode = getParent();
+    if (parentNode != null) {
+      parentNode.fireValueEqualityChange(node);
+    }
+  }
+  
+  
   @Override
   public abstract void dump(int level);
  
@@ -201,6 +322,31 @@ public abstract class NodeModel implements INodeModel {
     return buildQualifiedName();
   }
   
+  
+  private void buildQualifiedPlanName(StringBuilder buffer) {
+    if (parent != null) {
+      ((NodeModel)parent).buildQualifiedPlanName(buffer);
+      if (buffer.length() > 0) {
+        buffer.append('.');
+      }
+      buffer.append(getName());
+    }
+  }
+  
+  
+  @Override
+  public String getQualifiedPlanName() {
+    StringBuilder buffer = new StringBuilder();
+    buildQualifiedPlanName(buffer);
+    return buffer.toString();
+  }
+  
+  
+  @Override
+  public IEntityModel getParentEntity() {
+    return parent.getParentEntity();
+  }
+
   
   @Override
   public void walkModel(Consumer<INodeModel> before, Consumer<INodeModel> after) {

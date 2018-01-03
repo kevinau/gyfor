@@ -94,7 +94,7 @@ public class EntitySetWebSocket extends WebSocketProtocolHandshakeHandler {
       String html = allDescriptionsTemplate.evaluate();
       
       Response response = new Response(JSEdit.REPLACE_CHILDREN.command(), target, html);
-      session.sendText(response.toString());
+      session.send(response.toString());
       logger.info("{} descriptions sent", descriptions.size());
     }
     
