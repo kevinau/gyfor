@@ -69,6 +69,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
 
   @Override
   public void syncValue(Object value) {
+    setValue(value);
   }
 
   
@@ -335,15 +336,15 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
       fireSourceChange(this);
     }
     testAndFireSourceEqualityChange(true);
-//    try {
-//      boolean creating = true;
-      //Object newValue = type.createFromString(null, itemPlan.isNullable(), creating, source);
-      setRawValue(value, null, true);
-//    } catch (UserEntryException ex) {
-//      itemValueInError = true;
-//      testAndFireValueEqualityChange();
-//      noteValidationError (ex);
-//    }
+    try {
+      boolean creating = true;
+      Object newValue = type.createFromString(null, itemPlan.isNullable(), creating, source);
+      setRawValue(newValue, null, true);
+    } catch (UserEntryException ex) {
+      currentValueInError = true;
+      testAndFireValueEqualityChange();
+      noteValidationError (ex);
+    }
   }
 
   
@@ -443,6 +444,10 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
 
   
   public void setValueFromSource(String source, ItemEventListener self, boolean creating) {
+    
+    System.out.println("item model: set value from source: " + source);
+    System.out.println("item model: set value from source: " + getType());
+    
     if (!currentSource.equals(source)) {
       currentSource = source;
       fireSourceChange(this);
@@ -450,11 +455,15 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
       currentSource = source;
     }
     
+    System.out.println("item model: set value from source: 2");
     testAndFireSourceEqualityChange(true);
+    System.out.println("item model: set value from source: 3");
     try {
+      System.out.println("item model: set value from source: 4");
       Object newValue = type.createFromString(null, itemPlan.isNullable(), creating, source);
       setRawValue (newValue, self, true);
     } catch (UserEntryException ex) {
+      System.out.println("item model: set value from source: 5");
       currentValueInError = true;
       testAndFireValueEqualityChange();
       // noteConversionError includes the processing of noteValidationError

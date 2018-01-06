@@ -12,41 +12,37 @@ package org.gyfor.object.type.builtin;
 
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.gyfor.object.TextCase;
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.type.builtin.RegexStringType;
 
 
-public class PhoneNumberType extends RegexStringType {
+public class PhoneNumberType extends StringType {
     
-  /** Regular expression string.  Made up of country code (digits starting with +), area code (digits enclosed
-   *  in parenthesis ()), followed by the phone number proper.  The country and area codes are optional.  Spaces,
-   *  periods and dashes may be used to space out the phone number. */
-  //private static final String regex = "^(\\+[0-9]{1,3}[ \\.\\-]+)?(\\([0-9]+([ \\.\\-][0-9]+)*\\)[ \\.\\-]*)?[0-9]+([ \\.\\-][0-9]+)*$";
-  private static final String regex = "^[0-9]+([ \\.\\-][0-9]+)*$";
-
   private static String[] a2Codes = {
-    "US",
-    "CA",
-    "GB",
-    "AU",
-    "NZ",
-  };
-  
+      "US",
+      "CA",
+      "GB",
+      "AU",
+      "NZ",
+    };
+    
   private static String[] ixCodes = {
-    "1",
-    "1",
-    "44",
-    "61",
-    "64",
+    "+1",
+    "+1",
+    "+44",
+    "+61",
+    "+64",
   };
   
   private static int[] maxDigitsArray = {
-    10,
-    10,
-    10, 
-    10,
-    10,
+      10,
+      10,
+      10, 
+      10,
+      10,
   };
   
   private static int defaultMaxDigits = 10;
@@ -66,7 +62,7 @@ public class PhoneNumberType extends RegexStringType {
   
   
   public PhoneNumberType () {
-    super (18, regex, "phone number");
+    super (18, TextCase.MIXED);
   }
   
   
@@ -80,39 +76,55 @@ public class PhoneNumberType extends RegexStringType {
   
   @Override
   protected void validate (String value) throws UserEntryException {
+    System.out.println("phone number type 1: " + value);
     super.validate(value);
+    
+    // Clean string, removing padding characters
+    StringBuilder vx = new StringBuilder();
+    for (int c : value.toCharArray()) {
+      if (c != ' ' && c != '-') {
+        vx.append((char)c);
+      }
+    }
+    value = vx.toString();
+    System.out.println("phone number type 2: " + value);
+    
+    Pattern pattern = Pattern.compile("(\\+\\d{1,3})?(\\(\\d+\\))?\\d+");
+    Matcher matcher = pattern.matcher(value);
+    if (!matcher.matches()) {
+      System.out.println("phone number type 3: " + value);
+      boolean complete = matcher.hitEnd();
+      throw new UserEntryException("not a valid phone number", complete);
+    }
+
+    System.out.println("phone number type 4: " + value);
     int maxDigits = 10;
     int n = 0;
     if (value.charAt(0) == '+') {
-      n = 1;
-      while (n < value.length() && Character.isDigit(value.charAt(n))) {
-        n++;
-      }
-      String code = value.substring(1, n);
       for (int i = 0; i < ixCodes.length; i++) {
-        if (ixCodes[i].equals(code)) {
+        System.out.println("phone number type 7: " + i + ": " + value + " " + ixCodes[i]);
+        if (value.startsWith(ixCodes[i])) {
           maxDigits = maxDigitsArray[i];
+          n = ixCodes[i].length();
+          break;
         }
       }
     } else {
       maxDigits = defaultMaxDigits;
     }
+    System.out.println("phone number type 5: " + maxDigits + "  " + n);
+    
     int digits = 0;
-    boolean first = true;
     for (int i = n; i < value.length(); i++) {
-      if (first && value.charAt(i) == '0') {
-        first = false;
-      } else {
-        if (Character.isDigit(value.charAt(i))) {
-          digits++;
-          first = false;
-        }
+      if (value.charAt(i) != '(' && value.charAt(i) != ')') {
+        digits++;
       }
     }
     if (digits > maxDigits) {
       String msg = MessageFormat.format("not a valid phone number (more than {0} digits)", Integer.toString(maxDigits));
       throw new UserEntryException(msg, false);
     }
+    System.out.println("phone number type 9: " + value);
   }
   
 }

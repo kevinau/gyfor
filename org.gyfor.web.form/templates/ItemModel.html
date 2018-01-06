@@ -1,11 +1,11 @@
-<div class="form-item" id="{{id}}">
-<label for="input{{id}}">{{label}}
-{% if hint is not empty %}
-<span class="desc">{{hint}}</span>
-{% endif %}
+<div class="item" id="node{{id}}">
+<label for="input{{id}}"><span class="label">{{label}}</span>
+{% if description is not empty %}<br><span class="desc">{{description}}</span>{% endif %}
 </label>
+<div class="input">
 {% block itemContent %}<p>No item content specified</p>{% endblock %}
-{% if description is not empty %}
-<div class="desc">{{description}}</div>
-{% endif %}
+<div class="status">{% if hint is not empty %}
+<div class="hint">{{hint}}</div>
+{% endif %}<div class="message">This field is in error</div></div>
+</div>
 </div>

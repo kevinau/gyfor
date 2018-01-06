@@ -1,0 +1,169 @@
+/* roboto-mono-regular - latin */
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto Mono'), local('RobotoMono-Regular'),
+       url('/global/fonts/roboto-mono-v5-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('/global/fonts/roboto-mono-v5-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* roboto-mono-italic - latin */
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Roboto Mono Italic'), local('RobotoMono-Italic'),
+       url('/gobal/fonts/roboto-mono-v5-latin-italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('/gobal/fonts/roboto-mono-v5-latin-italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+// Fonts
+$infoFont: "Helvetica Neue", Helvetica, sans-serif;
+$inputFont: 'Roboto Mono', monospace;
+$inputFontSize: 1.4rem;
+$inputFontWeight: 400;
+$inputColor: #000000;
+$formColor: #4682b4;
+
+$errorColor: rgba(255, 0, 0, 0.75);
+$incompleteColor: #ffa500;
+$requiredColor: $incompleteColor;
+
+*:focus {
+  outline: none;
+}
+
+* { 
+  box-sizing: content-box;
+}
+
+input[type=text]::-ms-clear {
+  width : 0;
+  height: 0;
+}
+
+// Start of form css
+
+html {
+	font-size: 62.5%;
+	font-family: $infoFont;
+}
+
+// Entity styling
+form div.entity div.entityContent {
+  display: table;
+  padding: 0;
+  margin: 2em 0 1em 0;
+  //margin: 0 auto;
+}
+
+div.entity h1 {
+  font-family: $infoFont;
+  font-size: 2.4rem;
+  padding: 0;
+  margin: 0 0 0.125em 0;
+}
+
+div.entity p {
+  font-size: 1.2rem;
+  opacity: 0.75;
+  padding: 0;
+  margin: 0 0.25em;
+}
+
+// Item styling
+
+form div.item {
+  display: table-row;
+}
+
+form label, form div.input {
+  display: table-cell;
+  height: 4ex;
+  box-sizing: border-box;
+  padding-bottom: 4px;
+}
+
+form label {
+  color: $formColor;
+  width: auto;
+  padding-right: 1em;
+  text-align: right;
+}
+
+form input {
+  font-family: $inputFont;
+  font-size: $inputFontSize;
+  font-weight: $inputFontWeight;
+  color: $inputColor;
+  width: 300px;
+  border: none;
+  background-clip: padding-box;
+  border-bottom: solid 1px transparentize($formColor,0.5);
+}
+
+form input:focus {
+  border-bottom: solid 1px transparentize($formColor,0.25);
+  box-shadow: 0px 1px 0px 0px transparentize($formColor,0.5);
+}
+
+form label {
+	//line-height: 100%;
+}
+form label span.label {
+	font-size: 1.4rem;
+	font-weight: 400;
+	color: $formColor;
+	line-height: 100%;
+}
+
+form label > span.desc {
+	font-size: 1.0rem;
+	font-weight: 400;
+ 	color: $formColor;
+	line-height: 100%;
+}
+
+form div.input div.status {
+	padding-top: 0.25em;
+	font-size: 1.0rem;
+	line-height: 1;
+	min-height: 1.0rem;
+}
+
+form div.input div.status div.hint {
+	display: none;
+}
+
+form div.input.focused div.status div.hint {
+	display: block;
+	color: $formColor;
+}
+
+form div.input[data-status] div.status div.hint {
+	display: none;
+}
+
+form div.input div.status div.message {
+	display: none;
+}
+
+form div.input[data-status] div.status div.message {
+	display: block;
+	font-size: 1.0rem;
+	line-height: 1;
+}
+
+form div.input[data-status=ERROR] div.status div.message {
+	color: $errorColor;
+}
+
+form div.input[data-status=INCOMPLETE] div.status div.message {
+	color: $incompleteColor;
+}
+
+form div.input[data-status=REQUIRED] div.status div.message {
+	color: $requiredColor;
+}
+

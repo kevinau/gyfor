@@ -27,8 +27,18 @@
 						console.log("websocket " + url + " is not open.");
 					}
 
-				}
+				},
+		 		sendInput: function(id, value) {
+		 			if (websocket2.readyState == WebSocket.OPEN) {
+		 				let message = "input\t" + id + "\t" + value;
+		 				console.log("websocket " + ws.url + ": send: " + message);
+		 				websocket2.send(message);
+		 			} else {
+		 				console.log("websocket " + ws.url + " is not open.");
+		 			}
+		 		}
 		}
+
 		websocket2.onmessage = function(event) {
 			console.log("websocket " + websocketURL + ": onmessage: " + event.data);
 			let msgParts = event.data.split("\t");

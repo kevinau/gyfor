@@ -10,6 +10,7 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 
 
+@Resource(path = "/global/fonts", location="resources/fonts")
 @Resource(path = "/global", location="resources")
 @Component(service = HttpHandler.class, immediate = true)
 public class GlobalResources implements HttpHandler {

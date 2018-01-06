@@ -10,6 +10,7 @@ import org.gyfor.http.Context;
 import org.gyfor.http.Resource;
 import org.gyfor.http.WebSocketSession;
 import org.gyfor.object.model.IEntityModel;
+import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.IModelFactory;
 import org.gyfor.object.ref.ObjectReference;
 import org.gyfor.template.ITemplateEngine;
@@ -95,6 +96,7 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
         TemplateModelListener eventListener = new TemplateModelListener(channel, templateEngine);
         objectModel.addEntityCreationListener(eventListener);
         objectModel.addContainerChangeListener(eventListener);
+        objectModel.addItemEventListener(eventListener);
         //Object instanceValue = objectModel.newInstance();
         //objectModel.setValue(instanceValue);
         
@@ -117,14 +119,12 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
         objectModel.setValue(instance);
         break;
       case "input" :
+        IEntityModel objectModel2 = (IEntityModel)sessionData;
         int id = Integer.parseInt(args[0]);
-        try {
-          int value = Integer.parseInt(args[1].trim());
-          wss.send("clearError", id);
-        } catch (NumberFormatException ex) {
-          wss.send("setError", id, "Not a number");
-        }
-        System.out.println("....... " + args[0] + "=" + args[1]);
+        IItemModel item = objectModel2.getById(id);
+        System.out.println(".......... " + id + " " + item);
+        item.setValueFromSource(args[1]);
+        System.out.println(".......... " + "value set");
         break;
       default :
         throw new RuntimeException("Unknown command: '" + command + "'");
@@ -146,18 +146,14 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
   
   @Activate
   public void activate (ComponentContext componentContext) {
-    System.out.println("1 ........... activate round trip");
     callback = CallbackAccessor.getCallback(this);
 
-    System.out.println("2 ........... activate round trip");
     BundleContext context = componentContext.getBundleContext();
     callback.setBundleContext(context);
     callback.setModelFactory(modelFactory);
-    System.out.println("3 ........... activate round trip");
     
     ITemplateEngine templateEngine = templateEngineFactory.buildTemplateEngine(componentContext.getBundleContext());
     callback.setTemplateEngine(templateEngine);
-    System.out.println("4 ........... activate round trip");
   }
   
   

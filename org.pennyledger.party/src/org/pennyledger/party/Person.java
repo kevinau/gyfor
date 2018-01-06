@@ -4,22 +4,26 @@ import org.gyfor.object.Entity;
 import org.gyfor.object.EntityLabel;
 import org.gyfor.object.ItemField;
 import org.gyfor.object.Label;
+import org.gyfor.object.Optional;
+import org.gyfor.object.type.builtin.PhoneNumberType;
 
 @Entity
 @EntityLabel(description = "A real person (not a business)")
 public class Person {
 
-  @Label(hint = "Typically first name and surname", description = "The full name of the person")
+  @Label(description = "The full name of the person", hint = "Typically first name and surname")
   private String name;
   
   @ItemField(length = 32)
-  @Label(description = "How to address this person")
+  @Optional
+  @Label(description = "How to address this person", hint = "First name only")
   private String knownAs;
   
-  @ItemField(length = 20)
+  @ItemField(type=PhoneNumberType.class)
   private String phoneNumber;
   
-  @ItemField(length = 20)
+  @ItemField(type=PhoneNumberType.class)
+  @Optional
   private String phoneNumber2;
   
   private String emailAddress;

@@ -31,7 +31,9 @@ public class WebSocketSession {
     buffer.append(command);
     for (Object arg : args) {
       buffer.append('\t');
-      buffer.append(arg.toString());
+      if (arg != null) {
+        buffer.append(arg.toString());
+      }
     }
     System.out.println("WebSocketSession: " + buffer.toString());
     WebSockets.sendText(buffer.toString(), channel, null);    

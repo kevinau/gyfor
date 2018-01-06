@@ -3,18 +3,24 @@
 <head>
   	<meta charset="utf-8" /> 
   	<title>Web Socket Test</title>
-  	<script type="text/javascript" src="/global/domEdit.js"></script>
+	<link rel="stylesheet" href="/global/flat.css" type="text/css">
+  	<!-- script type="text/javascript" src="/global/domEdit.js"></script -->
 	<script type="module">
+import * as domEditCallback from "/global/domEdit.js";
 import {openWebSocket} from "/global/ws.js";
 
 var websocket;
+var websocket3;
 
 window.addEventListener("load", function() {
 	websocket = openWebSocket("/roundtrip/person", domEditCallback, function(ws) {
 		console.log("websocket: onopen method");
 		ws.sendMessage("hello");
 	});
+	window.websocket3 = websocket;
 }, false);
+
+//export {websocket};
 	</script>
 </head>
 <body>

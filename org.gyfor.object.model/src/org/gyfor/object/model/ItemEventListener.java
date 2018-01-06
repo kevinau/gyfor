@@ -61,8 +61,6 @@ public interface ItemEventListener extends EventListener {
    * If the field, default or reference values have changed since the control
    * entered the error state, this event will be followed by the appropriate
    * equality shown or equality changed events.
-   * 
-   * @param ev
    */
   public void errorCleared(INodeModel node);
 
@@ -89,5 +87,5 @@ public interface ItemEventListener extends EventListener {
    * The comparison basis of the object node has changed.
    */
   public void comparisonBasisChange (INodeModel node);
-  
+
 }

@@ -1,5 +1,9 @@
-body {
-  font-family: "Arial", sans-serf;
+// Fonts
+$infoFont: Helvetica, Arial, sans-serf;
+$inputFont: Courier, "Courier New", monospaced;
+
+html {
+  font-family: $infoFont;
   ////font-size: 16px;
   line-height: 1.2em;
 }
@@ -8,7 +12,7 @@ body {
   outline: none;
 }
 
-* {
+* { 
   box-sizing: content-box;
 }
 
@@ -33,7 +37,7 @@ form.j2form {
   input[type="number"],
   input[type="url"],
   input[type="tel"] {
-    font-family: "Roboto Mono", monospaced;
+    font-family: $inputFont;
     font-size: 1rem;
     padding: 0;
     border: none;

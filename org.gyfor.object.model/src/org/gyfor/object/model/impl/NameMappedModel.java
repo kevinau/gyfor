@@ -52,6 +52,7 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
           fireChildAdded(this, member, null);
         }
         Object memberValue = memberPlan.getFieldValue(nameMappedValue);
+        System.out.println("name mapped model: aaaaaaaaaa " + memberPlan.getName() + " " + memberValue);
         member.syncValue(memberValue);
       }
     }

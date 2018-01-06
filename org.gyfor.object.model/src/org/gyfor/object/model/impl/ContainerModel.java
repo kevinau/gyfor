@@ -159,6 +159,13 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
   }
   
   
+  @SuppressWarnings("unchecked")
+  @Override
+  public <X extends INodeModel> X getById (int id) {
+    return (X)nodesById.get(id);
+  }
+  
+  
   @Override
   public String getName() {
     return getPlan().getName();

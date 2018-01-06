@@ -6,5 +6,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.gyfor.object,
+ org.gyfor.object.type.builtin,
  org.gyfor.object.value
 Export-Package: org.pennyledger.party

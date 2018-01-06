@@ -18,14 +18,14 @@ import io.undertow.websockets.core.WebSocketChannel;
 
 public class TemplateModelListener implements EntityCreationListener, ItemEventListener, EffectiveEntryModeListener, ContainerChangeListener {
 
-  private final ClientHtmlEdit clientHtml;
+  private final ClientDomEdit clientDom;
   private final TemplateHtmlBuilder htmlBuilder;
   
   TemplateModelListener (WebSocketChannel channel, ITemplateEngine templateEngine) {
     if (channel == null) {
       throw new NullPointerException("channel");
     }
-    this.clientHtml = new ClientHtmlEdit(channel);
+    this.clientDom = new ClientDomEdit(channel);
     this.htmlBuilder = new TemplateHtmlBuilder(templateEngine);
   }
   
@@ -34,13 +34,13 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
   public void childAdded(IContainerModel parent, INodeModel node, Map<String, Object> context) {
     // Context is not used here
     String html = htmlBuilder.buildHtml(node, null);
-    clientHtml.addChildren("#contentHere" + parent.getNodeId(), html);
+    clientDom.addChildren("#contentHere" + parent.getNodeId(), html);
   }
 
 
   @Override
   public void childRemoved(IContainerModel parent, INodeModel node) {
-    clientHtml.removeNode(node.getNodeId());
+    clientDom.removeNode(node.getNodeId());
   }
 
   
@@ -76,15 +76,15 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
 
   @Override
   public void errorCleared(INodeModel node) {
-    // TODO Auto-generated method stub
-    
+    System.out.println("++++++++++ error cleared: " + node.getNodeId());
+    clientDom.clearError(node.getNodeId());
   }
 
   
   @Override
   public void errorNoted(INodeModel node, UserEntryException ex) {
-    // TODO Auto-generated method stub
-    
+    System.out.println("++++++++++ error noted: " + node.getNodeId() + " " + ex);
+    clientDom.noteError(node.getNodeId(), ex);
   }
 
   
@@ -105,13 +105,13 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
   public void entityCreated(IEntityModel node) {
     IEntityModel entityModel = (IEntityModel)node;
     String html = htmlBuilder.buildHtml(entityModel, null);
-    clientHtml.replaceChildren("#contentHere0", html);      
+    clientDom.replaceChildren("#contentHere0", html);      
   }
 
 
   @Override
   public void entityDestoryed(IEntityModel node) {
-    clientHtml.removeChildren("#contentHere0");
+    clientDom.removeChildren("#contentHere0");
   }
 
 }
