@@ -76,14 +76,12 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
 
   @Override
   public void errorCleared(INodeModel node) {
-    System.out.println("++++++++++ error cleared: " + node.getNodeId());
     clientDom.clearError(node.getNodeId());
   }
 
   
   @Override
   public void errorNoted(INodeModel node, UserEntryException ex) {
-    System.out.println("++++++++++ error noted: " + node.getNodeId() + " " + ex);
     clientDom.noteError(node.getNodeId(), ex);
   }
 

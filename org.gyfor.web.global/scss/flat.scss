@@ -53,19 +53,25 @@ html {
 // Entity styling
 form div.entity div.entityContent {
   display: table;
+  width: 100%;
   padding: 0;
   margin: 2em 0 1em 0;
-  //margin: 0 auto;
 }
 
-div.entity h1 {
+form div.entity div.desc {
   font-family: $infoFont;
+  margin: 0 0 0.25em 0;
+  width: 100%;
+}
+
+form div.entity div.desc div.title {
   font-size: 2.4rem;
+  font-weight: 400;
   padding: 0;
   margin: 0 0 0.125em 0;
 }
 
-div.entity p {
+form div.entity div.desc p {
   font-size: 1.2rem;
   opacity: 0.75;
   padding: 0;
@@ -87,9 +93,13 @@ form label, form div.input {
 
 form label {
   color: $formColor;
-  width: auto;
+  width: 20%;
   padding-right: 1em;
   text-align: right;
+}
+
+form div.input {
+  width: 80%;
 }
 
 form input {
@@ -97,10 +107,14 @@ form input {
   font-size: $inputFontSize;
   font-weight: $inputFontWeight;
   color: $inputColor;
-  width: 300px;
   border: none;
   background-clip: padding-box;
   border-bottom: solid 1px transparentize($formColor,0.5);
+  width: 100%;
+}
+
+form div.input[data-status=ERROR] input {
+  border-bottom: solid 1px $errorColor;
 }
 
 form input:focus {
@@ -108,9 +122,11 @@ form input:focus {
   box-shadow: 0px 1px 0px 0px transparentize($formColor,0.5);
 }
 
-form label {
-	//line-height: 100%;
+form div.input[data-status=ERROR] input:focus {
+  border-bottom: solid 1px $errorColor;
+  box-shadow: 0px 1px 0px 0px transparentize($errorColor,0.25);
 }
+
 form label span.label {
 	font-size: 1.4rem;
 	font-weight: 400;
@@ -119,7 +135,7 @@ form label span.label {
 }
 
 form label > span.desc {
-	font-size: 1.0rem;
+	font-size: 1.1rem;
 	font-weight: 400;
  	color: $formColor;
 	line-height: 100%;
@@ -127,43 +143,54 @@ form label > span.desc {
 
 form div.input div.status {
 	padding-top: 0.25em;
-	font-size: 1.0rem;
+	font-size: 1.1rem;
 	line-height: 1;
-	min-height: 1.0rem;
+	min-height: 1.1rem;
 }
 
-form div.input div.status div.hint {
+form div.input div.status span.hint {
 	display: none;
 }
 
-form div.input.focused div.status div.hint {
-	display: block;
+form div.input[data-status] div.status span.hint {
+	display: none;
+}
+
+form div.input input:focus + div.status span.hint {
+	display: inline;
 	color: $formColor;
+	padding-right: 0.5em;
 }
 
-form div.input[data-status] div.status div.hint {
+form div.input[data-status] input:focus + div.status span.hint {
 	display: none;
 }
 
-form div.input div.status div.message {
+form div.input[data-status=REQUIRED] input:focus + div.status span.hint {
+	display: inline;
+	color: $formColor;
+	padding-right: 0.5em;
+}
+
+form div.input div.status span.message {
 	display: none;
 }
 
-form div.input[data-status] div.status div.message {
-	display: block;
-	font-size: 1.0rem;
+form div.input[data-status] div.status span.message {
+	display: inline;
+	font-size: 1.1rem;
 	line-height: 1;
 }
 
-form div.input[data-status=ERROR] div.status div.message {
+form div.input[data-status=ERROR] div.status span.message {
 	color: $errorColor;
 }
 
-form div.input[data-status=INCOMPLETE] div.status div.message {
+form div.input[data-status=INCOMPLETE] div.status span.message {
 	color: $incompleteColor;
 }
 
-form div.input[data-status=REQUIRED] div.status div.message {
+form div.input[data-status=REQUIRED] div.status span.message {
 	color: $requiredColor;
 }
 

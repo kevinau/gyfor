@@ -76,7 +76,6 @@ public class PhoneNumberType extends StringType {
   
   @Override
   protected void validate (String value) throws UserEntryException {
-    System.out.println("phone number type 1: " + value);
     super.validate(value);
     
     // Clean string, removing padding characters
@@ -87,22 +86,18 @@ public class PhoneNumberType extends StringType {
       }
     }
     value = vx.toString();
-    System.out.println("phone number type 2: " + value);
     
     Pattern pattern = Pattern.compile("(\\+\\d{1,3})?(\\(\\d+\\))?\\d+");
     Matcher matcher = pattern.matcher(value);
     if (!matcher.matches()) {
-      System.out.println("phone number type 3: " + value);
       boolean complete = matcher.hitEnd();
-      throw new UserEntryException("not a valid phone number", complete);
+      throw new UserEntryException("Not a valid phone number", complete);
     }
 
-    System.out.println("phone number type 4: " + value);
     int maxDigits = 10;
     int n = 0;
     if (value.charAt(0) == '+') {
       for (int i = 0; i < ixCodes.length; i++) {
-        System.out.println("phone number type 7: " + i + ": " + value + " " + ixCodes[i]);
         if (value.startsWith(ixCodes[i])) {
           maxDigits = maxDigitsArray[i];
           n = ixCodes[i].length();
@@ -112,7 +107,6 @@ public class PhoneNumberType extends StringType {
     } else {
       maxDigits = defaultMaxDigits;
     }
-    System.out.println("phone number type 5: " + maxDigits + "  " + n);
     
     int digits = 0;
     for (int i = n; i < value.length(); i++) {
@@ -121,10 +115,9 @@ public class PhoneNumberType extends StringType {
       }
     }
     if (digits > maxDigits) {
-      String msg = MessageFormat.format("not a valid phone number (more than {0} digits)", Integer.toString(maxDigits));
+      String msg = MessageFormat.format("Not a valid phone number (more than {0} digits)", Integer.toString(maxDigits));
       throw new UserEntryException(msg, false);
     }
-    System.out.println("phone number type 9: " + value);
   }
   
 }

@@ -161,16 +161,12 @@ public abstract class NodeModel implements INodeModel {
   
   @Override
   public void fireErrorNoted (INodeModel node, UserEntryException ex) {
-    System.out.println("AAAAAAAAAAA fireErrorNoted " + node.getNodeId() + " " + ex);
-    System.out.println("AAAAAAAAAAA fireErrorNoted " + itemEventListeners.size());
     for (ItemEventListener x : itemEventListeners) {
       x.errorNoted(node, ex);
     }
     // Propagate the event upwards
     IContainerModel parentNode = getParent();
     if (parentNode != null) {
-      System.out.println("AAAAAAAAAAA fireErrorNoted up " + parentNode);
-
       parentNode.fireErrorNoted(node, ex);
     }
   }

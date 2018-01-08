@@ -20,6 +20,7 @@ public class Person {
   private String knownAs;
   
   @ItemField(type=PhoneNumberType.class)
+  @Label(hint = "Typically a mobile phone number")
   private String phoneNumber;
   
   @ItemField(type=PhoneNumberType.class)

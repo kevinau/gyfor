@@ -1,7 +1,6 @@
 {% extends "ItemModel" %}
 {% block itemContent %}
-<input type="text" id="input{{id}}" name="input{{id}}" 
-       onfocus="this.parentElement.classList.add('focused')"
-       onblur="this.parentElement.classList.remove('focused')"
-       oninput="window.websocket3.sendInput({{id}},this.value)">
+<input type="text" id="input{{id}}" name="input{{id}}" maxlength="{{type.fieldSize}}" 
+{% if type.fieldSize != 255 %} style="width:{{type.fieldSize}}ch"{% endif %}
+   oninput="window.websocket3.sendInput({{id}},this.value)">
 {% endblock %}

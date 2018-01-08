@@ -66,7 +66,7 @@ public abstract class StringBasedType<T> extends Type<T> implements ILengthSetta
   
   @Override
   public String getRequiredMessage () {
-    return "must not be blank";
+    return "Required";
   }
 
   

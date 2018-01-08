@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.gyfor.web.form
 Bundle-Version: 1.0.0
 Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Service-Component: OSGI-INF/org.gyfor.web.form.EntityEditPage.xml,
- OSGI-INF/org.gyfor.web.form.RoundtripWebSocket.xml
+Service-Component: OSGI-INF/org.gyfor.web.form.RoundtripWebSocket.xml
 Import-Package: com.mitchellbosecke.pebble,
  com.mitchellbosecke.pebble.error,
  com.mitchellbosecke.pebble.extension,

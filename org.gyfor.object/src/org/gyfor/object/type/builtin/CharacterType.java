@@ -84,7 +84,7 @@ public class CharacterType extends Type<Character> implements ICaseSettable {
   
   @Override
   public String getRequiredMessage () {
-    return "must not be blank";
+    return "Required";
   }
 
   

@@ -89,13 +89,13 @@
 		console.log("note error: " + nodeId + " " + errorType + " " + message);
 		let elem = document.querySelector("#node" + nodeId + " div.input");
 		elem.setAttribute("data-status", errorType);
-		let elem2 = elem.querySelector("div.message");
+		let elem2 = elem.querySelector("span.message");
 		if (elem2) {
-			console.log("existing div.message");
+			console.log("existing span.message");
 			elem2.textContent = message;
 		} else {
-			console.log("no existing div.message");
-			let dx = document.createElement('div');
+			console.log("no existing span.message");
+			let dx = document.createElement('span');
 			dx.classList.add("message");
 			dx.textContent = message;
 			elem2 = elem.parentNode.querySelector("div.status");
@@ -109,7 +109,7 @@
 		let classList = elem.classList;
 		elem.removeAttribute("data-status");
 		classList.remove("error", "warning", "incomplete");
-		elem = elem.querySelector("div.message");
+		elem = elem.querySelector("span.message");
 		if (elem) {
 			elem.parentNode.removeChild(elem);
 		}

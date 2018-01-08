@@ -122,9 +122,7 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
         IEntityModel objectModel2 = (IEntityModel)sessionData;
         int id = Integer.parseInt(args[0]);
         IItemModel item = objectModel2.getById(id);
-        System.out.println(".......... " + id + " " + item);
         item.setValueFromSource(args[1]);
-        System.out.println(".......... " + "value set");
         break;
       default :
         throw new RuntimeException("Unknown command: '" + command + "'");
