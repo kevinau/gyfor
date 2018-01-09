@@ -94,4 +94,9 @@ public class ClientDomEdit {
     WebSocketSession.send(channel, "replaceClass", oldName, newName);
   }
   
+  
+  public void setTitle(String title) {
+    WebSocketSession.send(channel, "setTitle", title);
+  }
+  
 }

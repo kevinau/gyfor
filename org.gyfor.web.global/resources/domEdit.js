@@ -116,5 +116,10 @@
 	}
 
 
+	function setTitle(title) {
+		document.title = title;
+	}
+
+
 export {addChildren, replaceNode, replaceChildren, deleteChildren, deleteNodes,
-	    noteError, clearError};
+	    noteError, clearError, setTitle};

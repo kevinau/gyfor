@@ -2,5 +2,5 @@
 {% block itemContent %}
 <input type="text" id="input{{id}}" name="input{{id}}" maxlength="{{type.fieldSize}}" 
 {% if type.fieldSize != 255 %} style="width:{{type.fieldSize}}ch"{% endif %}
-   oninput="window.websocket3.sendInput({{id}},this.value)">
+   oninput="window.websocket.sendInput({{id}},this.value)">
 {% endblock %}

@@ -22,12 +22,14 @@ import com.mitchellbosecke.pebble.template.ScopeChain;
 
 public class EntityNode extends AbstractRenderableNode {
 
+  private static final String CONTEXT_KEY = "renderValues";
+  
   private final Expression<?> entityNameExpression;
 
   private final BodyNode inlineBody;
 
   private final MapExpression mapExpression;
-
+  
 
   public EntityNode(int lineNumber, Expression<?> entityNameExpression, BodyNode inlineBody, MapExpression mapExpression) {
     super(lineNumber);
@@ -85,7 +87,7 @@ public class EntityNode extends AbstractRenderableNode {
     
     ScopeChain scopeChain = context.getScopeChain();
     if (inlineBody != null) {
-      // The entity template is 'inline
+      // The entity template is 'inline'
       scopeChain.pushScope(addnlContext);
       inlineBody.render(self, writer, context);
       scopeChain.popScope();
@@ -93,6 +95,10 @@ public class EntityNode extends AbstractRenderableNode {
       // The entity template is included
       self.includeTemplate(writer, context, entityName + "(entity)", addnlContext);
     }
+    
+    // Save the withValues in the template context under the name "entityValues".  This
+    // can be retrieved by application code.
+    scopeChain.put(CONTEXT_KEY, addnlContext);
   }
   
 

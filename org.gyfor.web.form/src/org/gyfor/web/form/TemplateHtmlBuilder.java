@@ -8,12 +8,16 @@ import java.util.Map;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.plan.EntityLabelGroup;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.type.IType;
 import org.gyfor.template.ITemplate;
 import org.gyfor.template.ITemplateEngine;
+
+import com.mitchellbosecke.pebble.template.EvaluationContext;
+import com.mitchellbosecke.pebble.template.ScopeChain;
 
 /**
  * A class that builds HTML for a model.  Pebble templates--that contain HTML--are used 
@@ -44,16 +48,13 @@ public class TemplateHtmlBuilder {
 //  }
   
   
-  public void buildHtml (Writer writer, INodeModel nodeModel, Map<String, Object> withValues) {
+  public ScopeChain buildHtml (Writer writer, INodeModel nodeModel, Map<String, Object> withValues) {
     // Build template name
-    System.out.println("................... " + nodeModel.getClass());
-    System.out.println("................... " + nodeModel);
     IEntityPlan<?> entityPlan = nodeModel.getParentEntity().getPlan();
     String templateName = entityPlan.getClassName();
     if (!(nodeModel instanceof IEntityModel)) {
       templateName += "#" + nodeModel.getQualifiedPlanName();
     }
-    System.out.println("................... " + templateName);
     String defaultName;
     if (nodeModel instanceof IItemModel) {
       IType<?> type = ((IItemPlan<?>)nodeModel.getPlan()).getType();
@@ -61,9 +62,7 @@ public class TemplateHtmlBuilder {
     } else {
       defaultName = nodeModel.getClass().getSimpleName();
     }
-    System.out.println("................... " + defaultName);
     templateName += "(" + defaultName + ")";
-    System.out.println("................... " + templateName);
     
     ITemplate nodeTemplate = templateEngine.getTemplate(templateName);
     
@@ -91,14 +90,21 @@ public class TemplateHtmlBuilder {
       templateContext.putAll(withValues);
     }
     
-    nodeTemplate.evaluate(writer, templateContext);
+    return nodeTemplate.evaluate2(writer, templateContext);
   }
   
   
-  public String buildHtml(INodeModel nodeModel, Map<String, Object> withValues) {
-    StringWriter writer = new StringWriter();
-    buildHtml(writer, nodeModel, withValues);
-    return writer.toString();
+  public String buildTitle (INodeModel nodeModel, Map<String, Object> withValues) {
+    String title = null;
+    if (withValues != null) {
+      title = (String)withValues.get("title");
+    }
+    if (title == null) {
+      IEntityPlan<?> entityPlan = nodeModel.getParentEntity().getPlan();
+      EntityLabelGroup labelGroup = entityPlan.getLabels();
+      title = labelGroup.getTitle();
+    }
+    return title;
   }
-
+  
 }

@@ -64,11 +64,12 @@ public class FieldNode extends AbstractRenderableNode {
       withValues = (Map<String, Object>)withExpression.evaluate(self, context);
     }
     
+    // Save field names and withValues in the template context under the name "fieldSet".  This
+    // can be retrieved by application code.
     Map<String, Map<String, Object>> fieldSet = (Map<String, Map<String, Object>>)context.getScopeChain().get("fieldSet");
     if (fieldSet != null) {
       fieldSet.put(fieldRef, withValues);
     }
-
 
 //    ITemplateEngine templateEngine = (ITemplateEngine)context.getScopeChain().get("engine");
 //    

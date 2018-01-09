@@ -1,5 +1,6 @@
 package org.gyfor.web.form;
 
+import java.io.StringWriter;
 import java.util.Map;
 
 import org.gyfor.object.UserEntryException;
@@ -11,7 +12,10 @@ import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ItemEventListener;
+import org.gyfor.object.plan.EntityLabelGroup;
 import org.gyfor.template.ITemplateEngine;
+
+import com.mitchellbosecke.pebble.template.ScopeChain;
 
 import io.undertow.websockets.core.WebSocketChannel;
 
@@ -33,8 +37,9 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
   @Override
   public void childAdded(IContainerModel parent, INodeModel node, Map<String, Object> context) {
     // Context is not used here
-    String html = htmlBuilder.buildHtml(node, null);
-    clientDom.addChildren("#contentHere" + parent.getNodeId(), html);
+    StringWriter writer = new StringWriter();
+    htmlBuilder.buildHtml(writer, node, null);
+    clientDom.addChildren("#contentHere" + parent.getNodeId(), writer.toString());
   }
 
 
@@ -102,8 +107,19 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
   @Override
   public void entityCreated(IEntityModel node) {
     IEntityModel entityModel = (IEntityModel)node;
-    String html = htmlBuilder.buildHtml(entityModel, null);
-    clientDom.replaceChildren("#contentHere0", html);      
+    
+    // TODO the null in the following should be context from the template
+    StringWriter writer = new StringWriter();
+    ScopeChain scopeChain = htmlBuilder.buildHtml(writer, entityModel, null);
+
+    String title = (String)scopeChain.get("title");
+    if (title == null) {
+      EntityLabelGroup labelGroup = entityModel.getPlan().getLabels();
+      title = labelGroup.getTitle();
+    }
+    clientDom.setTitle(title);
+
+    clientDom.replaceChildren("#contentHere0", writer.toString());      
   }
 
 

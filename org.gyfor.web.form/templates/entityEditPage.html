@@ -3,36 +3,26 @@
 {% block title %}{{title}}{% endblock %}
 
 {% block styles %}
+<link rel="stylesheet" href="/global/flat.css" type="text/css">
 {% endblock %}
 
 {% block scripts %}
 	<script type="module">
+import * as domEditCallback from "/global/domEdit.js";
 import {openWebSocket} from "/global/ws.js";
 
 var websocket;
 
 window.addEventListener("load", function() {
-	websocket = openWebSocket("/roundtrip/person", {
-		setEntity: function(props) {
-			console.log("application element: " + appElement);
-			let elem = document.getElementById("content0");
-			let elem = window.elementMap.get(0);
-			elem.setEntity(props);
-		},
-		addChild: function(parentId, props) {
-  	  		console.log("addChild: " + parentId + " " + props.id + " " + props.name);
-			let id = parentId;
- 			let elem2 = window.elementMap.get(parentId);
-			elem2.addChild(props);
-		},
-	}, function(ws) {
+	let websocket1 = openWebSocket("/roundtrip/{{name}}", domEditCallback, function(ws) {
 		console.log("websocket: onopen method");
 		ws.sendMessage("hello");
 	});
+	window.websocket = websocket1;
 }, false);
 	</script>
 {% endblock %}
 
 {% block body %}
-  <div id="content0"></div>
+  <form id="contentHere0"></form>
 {% endblock %}
