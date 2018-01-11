@@ -93,7 +93,8 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
         String objectClassName = objectRef.getClassName();
         IEntityModel objectModel = modelFactory.buildEntityModel(objectClassName);
         
-        TemplateModelListener eventListener = new TemplateModelListener(channel, templateEngine);
+        boolean hasTitle = (queryMap.get("popup") == null); 
+        TemplateModelListener eventListener = new TemplateModelListener(channel, templateEngine, hasTitle);
         objectModel.addEntityCreationListener(eventListener);
         objectModel.addContainerChangeListener(eventListener);
         objectModel.addItemEventListener(eventListener);
@@ -151,6 +152,9 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
     callback.setModelFactory(modelFactory);
     
     ITemplateEngine templateEngine = templateEngineFactory.buildTemplateEngine(componentContext.getBundleContext());
+    templateEngine.addTokenParser(new EntityTokenParser());
+    templateEngine.addTokenParser(new FieldTokenParser());
+    
     callback.setTemplateEngine(templateEngine);
   }
   

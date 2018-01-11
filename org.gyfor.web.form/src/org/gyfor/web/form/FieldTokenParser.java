@@ -10,6 +10,23 @@ import com.mitchellbosecke.pebble.parser.Parser;
 import com.mitchellbosecke.pebble.tokenParser.AbstractTokenParser;
 
 
+/**
+ * 'field' token parser for the Pebble template engine.
+ * <p>
+ * The <code>field</code> tag allows you to nominate what entity items should be
+ * inlcuded on the form.
+ * <p>
+ * {% field <field name> [ with <map expression> ] %}
+ * <p>
+ * {% field * %}
+ * <p>
+ * {% field omit %}
+ * <p>
+ * You can add additional variables to the context of the included template by passing a map after
+ * the with keyword. The included template will have access to the same variables that the current 
+ * template does plus the additional ones defined in the map passed after the <code>with</code> keyword:
+ * <p><code>{% field "phoneNumber" with {"label":"Primary phone number"} %}</code>
+ */
 public class FieldTokenParser extends AbstractTokenParser {
 
   @Override

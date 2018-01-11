@@ -1,6 +1,7 @@
 package org.gyfor.web.form;
 
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.gyfor.object.UserEntryException;
@@ -24,13 +25,18 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
 
   private final ClientDomEdit clientDom;
   private final TemplateHtmlBuilder htmlBuilder;
+  private final boolean hasTitle;
   
-  TemplateModelListener (WebSocketChannel channel, ITemplateEngine templateEngine) {
+  private final ProjectionNode rootProjectionNode = new ProjectionNode();
+  
+  
+  TemplateModelListener (WebSocketChannel channel, ITemplateEngine templateEngine, boolean hasTitle) {
     if (channel == null) {
       throw new NullPointerException("channel");
     }
     this.clientDom = new ClientDomEdit(channel);
     this.htmlBuilder = new TemplateHtmlBuilder(templateEngine);
+    this.hasTitle = hasTitle;
   }
   
   
@@ -39,7 +45,7 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
     // Context is not used here
     StringWriter writer = new StringWriter();
     htmlBuilder.buildHtml(writer, node, null);
-    clientDom.addChildren("#contentHere" + parent.getNodeId(), writer.toString());
+    clientDom.syncChildren("#contentHere" + parent.getNodeId(), "#node" + node.getNodeId(), writer.toString());
   }
 
 
@@ -110,16 +116,28 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
     
     // TODO the null in the following should be context from the template
     StringWriter writer = new StringWriter();
-    ScopeChain scopeChain = htmlBuilder.buildHtml(writer, entityModel, null);
+    Map<String, Object> initialContext = new HashMap<>();
+    initialContext.put("projection", rootProjectionNode);
+    System.out.println("==================== " + entityModel.getName());
+    
+    initialContext.put(entityModel.getName(), entityModel);
+    ScopeChain scopeChain = htmlBuilder.buildHtml(writer, entityModel, initialContext);
+    
+    // Debug TODO
+    System.out.println("=========================================================");
+    rootProjectionNode.dump(0);
+    System.out.println("=========================================================");
 
-    String title = (String)scopeChain.get("title");
-    if (title == null) {
-      EntityLabelGroup labelGroup = entityModel.getPlan().getLabels();
-      title = labelGroup.getTitle();
+    if (hasTitle) {
+      String title = (String)scopeChain.get("title");
+      if (title == null) {
+        EntityLabelGroup labelGroup = entityModel.getPlan().getLabels();
+        title = labelGroup.getTitle();
+      }
+      clientDom.setTitle(title);
     }
-    clientDom.setTitle(title);
 
-    clientDom.replaceChildren("#contentHere0", writer.toString());      
+    clientDom.replaceChildren("#contentHere0", writer.toString());     
   }
 
 

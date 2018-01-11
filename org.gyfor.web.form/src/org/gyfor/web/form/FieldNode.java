@@ -10,6 +10,7 @@ import com.mitchellbosecke.pebble.node.expression.Expression;
 import com.mitchellbosecke.pebble.node.expression.MapExpression;
 import com.mitchellbosecke.pebble.template.EvaluationContext;
 import com.mitchellbosecke.pebble.template.PebbleTemplateImpl;
+import com.mitchellbosecke.pebble.template.ScopeChain;
 
 
 public class FieldNode extends AbstractRenderableNode {
@@ -64,13 +65,14 @@ public class FieldNode extends AbstractRenderableNode {
       withValues = (Map<String, Object>)withExpression.evaluate(self, context);
     }
     
-    // Save field names and withValues in the template context under the name "fieldSet".  This
+    // Save field name and withValues in the template context as a "projection" node.  This
     // can be retrieved by application code.
-    Map<String, Map<String, Object>> fieldSet = (Map<String, Map<String, Object>>)context.getScopeChain().get("fieldSet");
-    if (fieldSet != null) {
-      fieldSet.put(fieldRef, withValues);
-    }
-
+    ScopeChain scopeChain = context.getScopeChain();
+    ProjectionNode parentProjectionNode = (ProjectionNode)scopeChain.get("projection");
+    System.out.println("============== " + parentProjectionNode);
+    ProjectionNode fieldProjectionNode = new ProjectionNode(fieldRef, withValues);
+    parentProjectionNode.add(fieldProjectionNode);
+    
 //    ITemplateEngine templateEngine = (ITemplateEngine)context.getScopeChain().get("engine");
 //    
 //    ModelHtmlBuilder.buildHtml(templateEngine, writer, fieldModel, withValues);

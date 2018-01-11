@@ -22,20 +22,18 @@ import com.mitchellbosecke.pebble.template.ScopeChain;
 
 public class EntityNode extends AbstractRenderableNode {
 
-  private static final String CONTEXT_KEY = "renderValues";
-  
   private final Expression<?> entityNameExpression;
 
   private final BodyNode inlineBody;
 
-  private final MapExpression mapExpression;
+  private final MapExpression withExpression;
   
 
-  public EntityNode(int lineNumber, Expression<?> entityNameExpression, BodyNode inlineBody, MapExpression mapExpression) {
+  public EntityNode(int lineNumber, Expression<?> entityNameExpression, BodyNode inlineBody, MapExpression withExpression) {
     super(lineNumber);
     this.entityNameExpression = entityNameExpression;
     this.inlineBody = inlineBody;
-    this.mapExpression = mapExpression;
+    this.withExpression = withExpression;
   }
 
 
@@ -80,12 +78,20 @@ public class EntityNode extends AbstractRenderableNode {
     ILabelGroup labels = plan.getLabels();
     labels.extractAll(addnlContext);
     
-    if (mapExpression != null) {
-      Map<String, Object> map = (Map<String, Object>)mapExpression.evaluate(self, context);
-      addnlContext.putAll(map);
+    Map<String, Object> withValues = null;
+    if (withExpression != null) {
+      withValues = (Map<String, Object>)withExpression.evaluate(self, context);
+      addnlContext.putAll(withValues);
     }
     
+    // Save field name and withValues in the template context as a "projection" node.  This
+    // can be retrieved by application code.
     ScopeChain scopeChain = context.getScopeChain();
+    ProjectionNode parentProjectionNode = (ProjectionNode)scopeChain.get("projection");
+    ProjectionNode entityProjectionNode = new ProjectionNode(entityName, withValues);
+    parentProjectionNode.add(entityProjectionNode);
+    addnlContext.put("projection", entityProjectionNode);
+    
     if (inlineBody != null) {
       // The entity template is 'inline'
       scopeChain.pushScope(addnlContext);
@@ -95,10 +101,6 @@ public class EntityNode extends AbstractRenderableNode {
       // The entity template is included
       self.includeTemplate(writer, context, entityName + "(entity)", addnlContext);
     }
-    
-    // Save the withValues in the template context under the name "entityValues".  This
-    // can be retrieved by application code.
-    scopeChain.put(CONTEXT_KEY, addnlContext);
   }
   
 

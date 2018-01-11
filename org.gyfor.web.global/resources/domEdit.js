@@ -39,6 +39,16 @@
 				}
 	}
 
+	function syncChildren(parentSelector, nodeSelector, htmlSource) {
+		let node = document.querySelector(nodeSelector);
+		if (node) {
+			replaceChildren(nodeSelector, htmlSource);
+		} else {
+			addChildren(parentSelector, htmlSource);
+		}
+	}
+	
+	
 	function replaceChildren(selector, htmlSource) {
 				// Remove the children of the existing element (identified by container selector), then add the 
 				// html in its place.  The html can be multiple elements. A wschange event is fired after all

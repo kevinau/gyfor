@@ -88,6 +88,7 @@ public class FormWebPage implements HttpHandler {
     String formName = requestPath.substring(1);
     Collection<ServiceReference<FormReference>> serviceRefs = bundleContext.getServiceReferences(FormReference.class, "(name=" + formName + ")");
     if (serviceRefs.size() == 0) {
+      logger.info("No " + FormReference.class + " service ref for (name = " + formName + ")");
       exchange.dispatch(PageNotFoundHandler.instance);
       return;
       //throw new IllegalArgumentException("No form reference named '" + requestPath + "' was found");
@@ -96,8 +97,8 @@ public class FormWebPage implements HttpHandler {
     FormReference formRef = bundleContext.getService(serviceRef);
     String formClassName = formRef.getClassName();
     
-    String templateName = formClassName + "(entityEditPage)";
-    ITemplate template = templateEngine.getTemplate(templateName);
+    //String templateName = formClassName + "(entityEditPage)";
+    ITemplate template = templateEngine.getTemplate("entityEditPage");
 
     Map<String, Object> siteContext = new HashMap<>();
     siteContext.put("name", formName);
