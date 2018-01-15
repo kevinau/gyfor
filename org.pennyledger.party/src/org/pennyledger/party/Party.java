@@ -12,7 +12,7 @@ import org.gyfor.object.value.VersionTime;
 
 @Entity
 @UniqueConstraint({"partyCode", "shortName"})
-@EntityLabel (title="Business Entity")
+@EntityLabel (value="Business Entity")
 public class Party implements SelfDescribing, Serializable {
 
   private static final long serialVersionUID = 1L;

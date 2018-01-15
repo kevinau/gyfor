@@ -19,30 +19,38 @@ public class QualifiedNameTest {
     ModelFactory modelFactory = new ModelFactory(new PlanFactory());
     IEntityModel entity = modelFactory.buildEntityModel(Party.class);
     entity.setValue(new Party("Kevin Holloway", "17", "Burwood Avenue", "Nailsworth"));
+    entity.dump();
+    System.out.println();
+    
+    StringBuilder builder = new StringBuilder();
     
     IItemModel nameModel = entity.selectItemModel("name");
     Assert.assertNotNull(nameModel);
-    String qname = nameModel.getQualifiedName();
-    Assert.assertEquals("name", qname);
+    String qname = nameModel.getQName();
+    Assert.assertEquals("/name", qname);
     
+    builder.setLength(0);
     IItemModel homeModel = entity.selectItemModel("home.suburb");
     Assert.assertNotNull(homeModel);
-    qname = homeModel.getQualifiedName();
-    Assert.assertEquals("home.suburb", qname);
+    qname = homeModel.getQName();
+    Assert.assertEquals("/home/suburb", qname);
     
+    builder.setLength(0);
     List<INodeModel> locationsModel = entity.selectNodeModels("locations.*");
     Assert.assertNotNull(locationsModel);
-    Assert.assertEquals(2,  locationsModel.size());
+    Assert.assertEquals(2, locationsModel.size());
 
+    builder.setLength(0);
     IItemModel locationsModel2 = entity.selectItemModel("locations.*.suburb");
     Assert.assertNotNull(locationsModel2);
-    qname = locationsModel2.getQualifiedName();
-    Assert.assertEquals("locations[0].suburb", qname);
+    qname = locationsModel2.getQName();
+    Assert.assertEquals("/locations/0/suburb", qname);
 
+    builder.setLength(0);
     IItemModel suburbModel = entity.selectItemModel("locations.*.*.number");
     Assert.assertNotNull(suburbModel);
-    qname = suburbModel.getQualifiedName();
-    Assert.assertEquals("locations[0].street.number", qname);
+    qname = suburbModel.getQName();
+    Assert.assertEquals("/locations/0/street/number", qname);
   }
 
 }

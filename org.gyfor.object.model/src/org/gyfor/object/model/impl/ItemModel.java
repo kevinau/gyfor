@@ -86,6 +86,12 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   
   
   @Override
+  public String getValueRefName() {
+    return valueRef.getName();
+  }
+  
+  
+  @Override
   public void dump(int level) {
     indent (level);
     System.out.println("ItemModel[" + itemPlan.getName() + " = " + getValue() + " (" + super.getEffectiveEntryMode() + " " + itemPlan + ")]");

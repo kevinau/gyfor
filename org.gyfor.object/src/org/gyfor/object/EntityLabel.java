@@ -26,10 +26,10 @@ import java.lang.annotation.Target;
 public @interface EntityLabel {
 
   /**
-   * A shortish title that describes the entity. If not supplied it is
+   * A shortish name that describes the entity. If not supplied it is
    * calculated from the class name using camel case conventions.
    */
-  String title() default "";
+  String value() default "";
 
 
   /**

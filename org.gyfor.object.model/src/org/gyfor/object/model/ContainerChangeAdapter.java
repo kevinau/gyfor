@@ -1,11 +1,9 @@
 package org.gyfor.object.model;
 
-import java.util.Map;
-
 public class ContainerChangeAdapter implements ContainerChangeListener {
 
   @Override
-  public void childAdded(IContainerModel parent, INodeModel node, Map<String, Object> context) {
+  public void childAdded(IContainerModel parent, INodeModel node) {
   }
 
   @Override

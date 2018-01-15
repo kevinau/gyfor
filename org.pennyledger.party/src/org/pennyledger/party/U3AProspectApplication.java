@@ -8,7 +8,7 @@ import org.gyfor.object.Optional;
 import org.gyfor.object.type.builtin.PhoneNumberType;
 
 @Entity
-@EntityLabel(title = "U3A Prospect membership application")
+@EntityLabel(value = "U3A Prospect membership application")
 public class U3AProspectApplication {
   
   @ItemField(length = 40)

@@ -24,7 +24,7 @@ public abstract class DateBasedType<T> extends Type<T> implements IType<T> {
 
   protected static final Calendar tzCal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 
-  private static final String REQUIRED_MESSAGE = "a date is required";
+  private static final String REQUIRED_MESSAGE = "Required";
   
   //private static final DateTimeFormatter isoFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
   

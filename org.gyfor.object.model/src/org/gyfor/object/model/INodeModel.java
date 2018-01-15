@@ -49,8 +49,6 @@ public interface INodeModel extends INode {
 
   public IContainerModel getParent();
 
-  public String getQualifiedName();
-  
   public void walkModel(Consumer<INodeModel> before, Consumer<INodeModel> after);
 
   public void fireEffectiveModeChange(INodeModel node, EffectiveEntryMode priorMode);
@@ -68,9 +66,13 @@ public interface INodeModel extends INode {
   public void fireValueEqualityChange(INodeModel node);
 
   public void fireComparisonBasisChange(INodeModel node);
+  
+  public IEntityModel getParentEntity();
+
+  public String getQName();
+
+  public String getValueRefName();
 
   public String getQualifiedPlanName();
-
-  public IEntityModel getParentEntity();
 
 }

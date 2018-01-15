@@ -116,19 +116,20 @@ public abstract class DecimalBasedType<T> extends Type<T> implements IType<T>, I
   
   @Override
   public String getRequiredMessage() {
-    if (decimals == 0) {
-      if (sign == NumberSign.SIGNED) {
-        return "Number required (it may be signed, but with no decimal digits)";
-      } else {
-        return "Number required (it must be unsigned and with no decimal digits)";
-      }
-    } else {
-      if (sign == NumberSign.SIGNED) {
-        return "Number required (it may be signed and have up to " + decimals + " decimal digits)";
-      } else {
-        return "Number required (it must be unsigned but can have up to " + decimals + " decimal digits)";
-      }
-    }
+//    if (decimals == 0) {
+//      if (sign == NumberSign.SIGNED) {
+//        return "Number required (it may be signed, but with no decimal digits)";
+//      } else {
+//        return "Number required (it must be unsigned and with no decimal digits)";
+//      }
+//    } else {
+//      if (sign == NumberSign.SIGNED) {
+//        return "Number required (it may be signed and have up to " + decimals + " decimal digits)";
+//      } else {
+//        return "Number required (it must be unsigned but can have up to " + decimals + " decimal digits)";
+//      }
+//    }
+    return "Required";
   }
   
   

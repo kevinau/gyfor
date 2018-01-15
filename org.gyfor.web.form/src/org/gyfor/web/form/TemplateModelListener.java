@@ -3,6 +3,7 @@ package org.gyfor.web.form;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.model.ContainerChangeListener;
@@ -27,7 +28,7 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
   private final TemplateHtmlBuilder htmlBuilder;
   private final boolean hasTitle;
   
-  private final ProjectionNode rootProjectionNode = new ProjectionNode();
+  private final ProjectionNode rootProjection = new ProjectionNode();
   
   
   TemplateModelListener (WebSocketChannel channel, ITemplateEngine templateEngine, boolean hasTitle) {
@@ -41,8 +42,29 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
   
   
   @Override
-  public void childAdded(IContainerModel parent, INodeModel node, Map<String, Object> context) {
-    // Context is not used here
+  public void childAdded(IContainerModel parent, INodeModel node) {
+    if (rootProjection.hasChildren()) {
+      String qname = node.getQName();
+      boolean found = false;
+      for (ProjectionNode child : rootProjection.getChildren()) {
+        Matcher matcher = child.getMatcher(qname);
+        if (matcher.matches()) {
+          if (child.omittable()) {
+            // This model node matches a projection node that we want to omit.
+            return;
+          } else {
+            // We want this model node.
+            found = true;
+            break;
+          }
+          
+        }
+      }
+      if (!found) {
+        // No match found, so we don't want this model node.
+        return;
+      }
+    }
     StringWriter writer = new StringWriter();
     htmlBuilder.buildHtml(writer, node, null);
     clientDom.syncChildren("#contentHere" + parent.getNodeId(), "#node" + node.getNodeId(), writer.toString());
@@ -117,7 +139,7 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
     // TODO the null in the following should be context from the template
     StringWriter writer = new StringWriter();
     Map<String, Object> initialContext = new HashMap<>();
-    initialContext.put("projection", rootProjectionNode);
+    initialContext.put("projection", rootProjection);
     System.out.println("==================== " + entityModel.getName());
     
     initialContext.put(entityModel.getName(), entityModel);
@@ -125,7 +147,7 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
     
     // Debug TODO
     System.out.println("=========================================================");
-    rootProjectionNode.dump(0);
+    rootProjection.dump(0);
     System.out.println("=========================================================");
 
     if (hasTitle) {

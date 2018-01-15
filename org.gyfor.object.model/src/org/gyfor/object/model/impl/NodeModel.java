@@ -11,7 +11,6 @@ import org.gyfor.object.model.EffectiveEntryModeListener;
 import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.INodeModel;
-import org.gyfor.object.model.IRepeatingModel;
 import org.gyfor.object.model.ItemEventListener;
 import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.model.ref.IValueReference;
@@ -282,48 +281,26 @@ public abstract class NodeModel implements INodeModel {
   }
   
 
-  private String buildQualifiedName () {
-    List<INodeModel> trail = new ArrayList<>();
-    buildModelTrail (this, trail);
-    
-    StringBuilder builder1 = new StringBuilder();
-    boolean isFirst = true;
-    boolean isRepeating = false;
-    
-    int i = 0;
-    for (INodeModel x : trail) {
-      if (i == 0) {
-        // Don't include the entity name
-      } else {
-        if (isRepeating) {
-          builder1.append('[');
-          builder1.append(x.getName());
-          builder1.append(']');
-          isRepeating = false;
-        } else {
-          if (!isFirst) {
-            builder1.append('.');
-          }
-          builder1.append(x.getName());
-          if (x instanceof IRepeatingModel) {
-            isRepeating = true;
-          }
-          isFirst = false;
-        }
-      }
-      i++;
-    }
-    return builder1.toString();
-  }
-  
-  
   @Override
-  public String getQualifiedName () {
-    return buildQualifiedName();
+  public String getQName () {
+    StringBuilder builder = new StringBuilder();
+    buildQName(builder);
+    String qname = builder.toString();
+    return qname;
   }
   
   
-  private void buildQualifiedPlanName(StringBuilder buffer) {
+  protected void buildQName(StringBuilder builder) {
+    System.out.println("......" + this + "     " + getValueRefName());
+    if (getParent() != null) {
+      ((NodeModel)getParent()).buildQName(builder);
+    }
+    builder.append('/');
+    builder.append(getValueRefName());
+  }
+  
+  
+  protected void buildQualifiedPlanName(StringBuilder buffer) {
     if (parent != null) {
       ((NodeModel)parent).buildQualifiedPlanName(buffer);
       if (buffer.length() > 0) {

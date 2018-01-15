@@ -131,5 +131,5 @@
 	}
 
 
-export {addChildren, replaceNode, replaceChildren, deleteChildren, deleteNodes,
+export {addChildren, syncChildren, replaceNode, replaceChildren, deleteChildren, deleteNodes,
 	    noteError, clearError, setTitle};

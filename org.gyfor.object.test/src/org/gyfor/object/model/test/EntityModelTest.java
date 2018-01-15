@@ -186,4 +186,6 @@ public class EntityModelTest {
     EntityLife entityLife = entityLifeModel.getValue();
     Assert.assertEquals(EntityLife.ACTIVE, entityLife);
   }
+  
+  
 }

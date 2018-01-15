@@ -4,6 +4,7 @@ package org.gyfor.web.form;
 import java.util.Collection;
 import java.util.Map;
 
+import org.gyfor.formref.FormReference;
 import org.gyfor.http.AbstractWebSocketConnectionCallback;
 import org.gyfor.http.CallbackAccessor;
 import org.gyfor.http.Context;
@@ -12,7 +13,6 @@ import org.gyfor.http.WebSocketSession;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.IModelFactory;
-import org.gyfor.object.ref.ObjectReference;
 import org.gyfor.template.ITemplateEngine;
 import org.gyfor.template.ITemplateEngineFactory;
 import org.osgi.framework.BundleContext;
@@ -84,12 +84,12 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
       try {
         // Assuming the path starts with a slash (/)
         path = path.substring(1);
-        Collection<ServiceReference<ObjectReference>> serviceRefs = bundleContext.getServiceReferences(ObjectReference.class, "(name=" + path + ")");
+        Collection<ServiceReference<FormReference>> serviceRefs = bundleContext.getServiceReferences(FormReference.class, "(name=" + path + ")");
         if (serviceRefs.size() == 0) {
           throw new IllegalArgumentException("No object reference named '" + path + "' was found");
         }
-        ServiceReference<ObjectReference> serviceRef = serviceRefs.iterator().next();
-        ObjectReference objectRef = bundleContext.getService(serviceRef);
+        ServiceReference<FormReference> serviceRef = serviceRefs.iterator().next();
+        FormReference objectRef = bundleContext.getService(serviceRef);
         String objectClassName = objectRef.getClassName();
         IEntityModel objectModel = modelFactory.buildEntityModel(objectClassName);
         

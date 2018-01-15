@@ -49,10 +49,9 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
           IValueReference memberValueRef = new ClassValueReference(valueRef, memberPlan);
           member = buildNodeModel(this, memberValueRef, memberPlan);
           members.put(fieldName, member);
-          fireChildAdded(this, member, null);
+          fireChildAdded(this, member);
         }
         Object memberValue = memberPlan.getFieldValue(nameMappedValue);
-        System.out.println("name mapped model: aaaaaaaaaa " + memberPlan.getName() + " " + memberValue);
         member.syncValue(memberValue);
       }
     }
@@ -64,7 +63,8 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
     System.out.println("NameMappedModel {");
     for (Map.Entry<String, INodeModel> member : members.entrySet()) {
       indent(level);
-      System.out.println(member.getKey() + ": ");
+      //System.out.println(member.getKey() + ": ");
+      System.out.println(member.getValue().getValueRefName() + ": ");
       member.getValue().dump(level + 1);
     }
     indent(level);
@@ -116,4 +116,5 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
     after.accept(this);
   }
   
+    
 }

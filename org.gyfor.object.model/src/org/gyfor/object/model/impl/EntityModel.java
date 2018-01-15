@@ -97,4 +97,10 @@ public class EntityModel extends NameMappedModel implements IEntityModel {
     return this;
   }
   
+  
+  @Override
+  public void buildQName (StringBuilder builder) {
+    System.out.println("Entity model: buildQName: " + builder.toString());
+  }
+ 
 }

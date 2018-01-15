@@ -9,7 +9,8 @@ Import-Package: org.gyfor.object,
  org.gyfor.object.plan,
  org.gyfor.object.type,
  org.gyfor.sql,
- org.gyfor.todo
+ org.gyfor.todo,
+ org.osgi.service.component.annotations;version="1.3.0";resolution:=optional
 Export-Package: org.gyfor.object.model
 Service-Component: OSGI-INF/org.gyfor.object.model.ModelFactory.xml
 Bundle-ActivationPolicy: lazy

@@ -17,7 +17,7 @@ public class EntityLabelGroup implements ILabelGroup {
       title = CamelCase.toSentence(klass.getSimpleName());
       description = "";
     } else {
-      String t = labelAnn.title();
+      String t = labelAnn.value();
       if (t.length() == 0) {
         title = CamelCase.toSentence(klass.getSimpleName());
       } else {

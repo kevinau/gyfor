@@ -31,7 +31,7 @@ public class ClientDomEdit {
   }
 
   public void syncChildren(String parentSelector, String nodeSelector, String htmlSource) {
-    WebSocketSession.send(channel, "syncChild", parentSelector, nodeSelector, htmlSource);
+    WebSocketSession.send(channel, "syncChildren", parentSelector, nodeSelector, htmlSource);
   }
 
   public void replaceChildren(String selector, String htmlSource) {

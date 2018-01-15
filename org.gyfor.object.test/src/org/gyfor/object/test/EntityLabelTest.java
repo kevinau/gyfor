@@ -24,13 +24,13 @@ public class EntityLabelTest {
 
 
   @Entity
-  @EntityLabel(title="Simple entity one")
+  @EntityLabel(value="Simple entity one")
   public static class SimpleEntity3 {
   }
 
 
   @Entity
-  @EntityLabel(title="Simple entity one", description="Simple description")
+  @EntityLabel(value="Simple entity one", description="Simple description")
   public static class SimpleEntity4 {
   }
 

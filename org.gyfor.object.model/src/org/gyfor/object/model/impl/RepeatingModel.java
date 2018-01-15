@@ -22,10 +22,10 @@ public abstract class RepeatingModel extends ContainerModel implements IRepeatin
   @Override
   public void dump(int level) {
     indent (level);
-    System.out.println(this.getClass().getSimpleName() + " " + elements.size() + " elements [");
+    System.out.println("repeating " /*this.getClass().getSimpleName()*/ + " #" + elements.size() + " elements [");
     for (INodeModel element : elements) {
       indent (level);
-      System.out.println(element.getName() + ":");
+      System.out.println(element.getValueRefName() + ":");
       element.dump(level + 1);
     }
     indent (level);
@@ -72,7 +72,5 @@ public abstract class RepeatingModel extends ContainerModel implements IRepeatin
   public INodeModel getIndexedNode(int n) {
     return elements.get(n);
   }
-
-
   
 }

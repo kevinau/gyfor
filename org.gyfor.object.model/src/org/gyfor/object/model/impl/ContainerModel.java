@@ -21,7 +21,8 @@ import org.gyfor.object.plan.IContainerPlan;
 
 public abstract class ContainerModel extends NodeModel implements IContainerModel {
 
-  protected final IValueReference valueRef;
+  // TODO change the private back to protected or something
+  public final IValueReference valueRef;
   private final List<ContainerChangeListener> containerChangeListeners = new ArrayList<>();
   private final Map<Integer, INodeModel> nodesById = new HashMap<>();
   
@@ -36,6 +37,12 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
   public <T> T getValue() {
     return valueRef.getValue();
   }
+  
+  @Override
+  public String getValueRefName() {
+    return valueRef.getName();
+  }
+  
 
   @Override
   public void addContainerChangeListener(ContainerChangeListener x) {
@@ -49,14 +56,14 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
 
   
   @Override
-  public void fireChildAdded(IContainerModel parent, INodeModel node, Map<String, Object> context) {
+  public void fireChildAdded(IContainerModel parent, INodeModel node) {
     for (ContainerChangeListener x : containerChangeListeners) {
-      x.childAdded(parent, node, context);
+      x.childAdded(parent, node);
     }
     // Propagate the event upwards
     IContainerModel parentNode = getParent();
     if (parentNode != null) {
-      parentNode.fireChildAdded(parent, node, context);
+      parentNode.fireChildAdded(parent, node);
     }
   }
 

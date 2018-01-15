@@ -1,7 +1,6 @@
 package org.gyfor.object.model;
 
 import java.util.List;
-import java.util.Map;
 
 
 public interface IContainerModel extends INodeModel {
@@ -12,7 +11,7 @@ public interface IContainerModel extends INodeModel {
 
   public void removeContainerChangeListener(ContainerChangeListener x);
 
-  public void fireChildAdded(IContainerModel parent, INodeModel node, Map<String, Object> context);
+  public void fireChildAdded(IContainerModel parent, INodeModel node);
 
   public void fireChildRemoved(IContainerModel parent, INodeModel node);
 

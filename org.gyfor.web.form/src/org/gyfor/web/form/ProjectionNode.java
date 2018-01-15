@@ -3,25 +3,38 @@ package org.gyfor.web.form;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ProjectionNode {
   
-  private final String fieldName;
+  private final Pattern nodePattern;
   
-  private final Map<String, Object> context;
+  private final Map<String, Object> withValues;
+  
+  private final boolean omit;
 
   private final List<ProjectionNode> children = new ArrayList<>();
   
   
   public ProjectionNode() {
-    this.fieldName = "ROOT";
-    this.context = null;
+    this.nodePattern = Pattern.compile(".*");
+    this.withValues = null;
+    this.omit = false;
   }
   
   
-  public ProjectionNode(String fieldName, Map<String, Object> context) {
-    this.fieldName = fieldName;
-    this.context = context;
+  public ProjectionNode(String simpleNodePath, Map<String, Object> withValues) {
+    this.nodePattern = Pattern.compile(simpleNodePath);
+    this.withValues = withValues;
+    this.omit = false;
+  }
+  
+  
+  public ProjectionNode(String simpleNodePath, boolean omit) {
+    this.nodePattern = Pattern.compile(simpleNodePath);
+    this.withValues = null;
+    this.omit = omit;
   }
   
   
@@ -30,19 +43,34 @@ public class ProjectionNode {
   }
   
   
-  public String getFieldName() {
-    return fieldName;
+  public Matcher getMatcher(String arg) {
+    return nodePattern.matcher(arg);
   }
   
   
-  public Map<String, Object> getContext() {
-    return context;
+  public Map<String, Object> getWithValues() {
+    return withValues;
+  }
+  
+  
+  public boolean hasChildren() {
+    return children.size() > 0;
+  }
+  
+  
+  public List<ProjectionNode> getChildren() {
+    return children;
+  }
+  
+  
+  public boolean omittable() {
+    return omit;
   }
   
   
   @Override
   public String toString() {
-    return "ProjectionNode[" + fieldName + "," + context + ",#" + children.size() + "]";
+    return "ProjectionNode[" + nodePattern.pattern() + "," + withValues + "," + omit + ",#" + children.size() + "]";
   }
   
   
@@ -50,7 +78,7 @@ public class ProjectionNode {
     for (int i = 0; i < level; i++) {
       System.out.print("  ");
     }
-    System.out.println(fieldName + ": " + context);
+    System.out.println(nodePattern + ": " + withValues);
     for (ProjectionNode child : children) {
       child.dump(level + 1);
     }

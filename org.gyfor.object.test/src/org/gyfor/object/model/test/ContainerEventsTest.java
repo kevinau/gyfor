@@ -1,7 +1,5 @@
 package org.gyfor.object.model.test;
 
-import java.util.Map;
-
 import org.gyfor.object.Entity;
 import org.gyfor.object.Optional;
 import org.gyfor.object.model.ContainerChangeListener;
@@ -72,7 +70,7 @@ public class ContainerEventsTest {
     private int childRemovedCount = 0;
     
     @Override
-    public void childAdded(IContainerModel parent, INodeModel node, Map<String, Object> context) {
+    public void childAdded(IContainerModel parent, INodeModel node) {
       childAddedCount++;
     }
 

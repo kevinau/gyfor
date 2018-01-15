@@ -1,7 +1,6 @@
 package org.gyfor.object.model;
 
 import java.util.EventListener;
-import java.util.Map;
 
 /**
  * @author Kevin Holloway

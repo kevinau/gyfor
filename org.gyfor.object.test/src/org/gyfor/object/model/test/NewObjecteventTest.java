@@ -1,7 +1,5 @@
 package org.gyfor.object.model.test;
 
-import java.util.Map;
-
 import org.gyfor.object.model.ContainerChangeListener;
 import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.IEntityModel;
@@ -24,7 +22,7 @@ public class NewObjecteventTest {
     private int childRemovedCount = 0;
     
     @Override
-    public void childAdded(IContainerModel parent, INodeModel node, Map<String, Object> context) {
+    public void childAdded(IContainerModel parent, INodeModel node) {
       System.out.println("childAdded " + parent.getNodeId() + ":" + parent.getName() + " " + node.getNodeId() + ":" + node.getName());
       childAddedCount++;
     }
