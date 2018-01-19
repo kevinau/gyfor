@@ -22,13 +22,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A marking annotation to mark a field as not a form field.  A field should not
- * be marked with NotFormField and FormField.
+ * A marking annotation to mark a set method as not a form member.  A method should not
+ * be marked with both NotFormField and FormField.
  * 
  * @author kevin
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target(ElementType.METHOD)
 public @interface NotItemField {
 }

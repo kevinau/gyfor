@@ -87,6 +87,15 @@ public class BuiltinTypeTest {
     public EntityLifeEntity(EntityLife field1) {
       this.field1 = field1;
     }
+   
+    public EntityLife getField1() {
+      return field1;
+    }
+    
+    public void setField1(EntityLife field1) {
+      this.field1 = field1;
+    }
+    
   }
   
   

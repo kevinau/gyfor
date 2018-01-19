@@ -44,7 +44,6 @@ public class EntityPlan<T> extends NameMappedPlan<T> implements IEntityPlan<T> {
     this.entityClass = entityClass;
     this.entityName = entityClass.getSimpleName();
     this.labels = new EntityLabelGroup(entityClass);
-    
   }
 
   

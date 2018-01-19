@@ -10,15 +10,13 @@ import org.gyfor.object.value.Code;
 import org.gyfor.object.value.EntityLife;
 import org.gyfor.object.value.ICode;
 
-@SuppressWarnings("unused")
+
 public class CodeBased {
 
   public enum Gender {
-    MALE,
-    FEMALE,
-    UNKNOWN;
+    MALE, FEMALE, UNKNOWN;
   }
-  
+
   public static class WeekdayNames implements ICodeSource {
 
     private ICode mon = new Code("mon", "Monday");
@@ -28,7 +26,7 @@ public class CodeBased {
     private ICode fri = new Code("fri", "Friday");
     private ICode sat = new Code("sat", "Saturday");
     private ICode sun = new Code("sun", "Sunday");
-    
+
     @Override
     public List<ICode> values() {
       return Arrays.asList(mon, tue, wed, thu, fri, sat, sun);
@@ -41,18 +39,50 @@ public class CodeBased {
     @Override
     public void removeValueSourceListener(ValueSourceListener x) {
     }
-    
+
   }
-  
+
   public Boolean boolean1;
-  
+
   public Gender gender;
-  
+
   public EntityLife entityLife;
-  
-  @CodeSource(WeekdayNames.class)
+
   public ICode code;
-  
-  //public IImageCodeValue imageCode;
-  
+
+  public Boolean getBoolean1() {
+    return boolean1;
+  }
+
+  public void setBoolean1(Boolean boolean1) {
+    this.boolean1 = boolean1;
+  }
+
+  public Gender getGender() {
+    return gender;
+  }
+
+  public void setGender(Gender gender) {
+    this.gender = gender;
+  }
+
+  public EntityLife getEntityLife() {
+    return entityLife;
+  }
+
+  public void setEntityLife(EntityLife entityLife) {
+    this.entityLife = entityLife;
+  }
+
+  public ICode getCode() {
+    return code;
+  }
+
+  @CodeSource(WeekdayNames.class)
+  public void setCode(ICode code) {
+    this.code = code;
+  }
+
+  // public IImageCodeValue imageCode;
+
 }

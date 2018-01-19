@@ -63,7 +63,7 @@ public class CodeBasedModels {
   
   @Test
   public void codeTest () throws ParseException {
-    getSetTest("code", new Code("Wed"), "Wed", () -> instance.code);
+    getSetTest("code", new Code("wed"), "wed", () -> instance.code);
   }
   
 }

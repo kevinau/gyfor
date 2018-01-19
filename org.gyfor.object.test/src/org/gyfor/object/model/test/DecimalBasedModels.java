@@ -37,6 +37,10 @@ public class DecimalBasedModels {
     ModelFactory modelFactory = new ModelFactory(new PlanFactory());
     model = modelFactory.buildEntityModel(DecimalBased.class);
     instance = new DecimalBased();
+    instance.float1 = 123.45F;
+    instance.double1 = 1234.56;
+    instance.decimal = new Decimal("1234.56");
+    instance.bigDecimal = new BigDecimal(1234.56);
     model.setValue(instance);
   }
   
@@ -52,7 +56,7 @@ public class DecimalBasedModels {
   }
   
   @Test
-  public void bidDecimalTest () {
+  public void bigDecimalTest () {
     getSetTest("bigDecimal", new BigDecimal(1234.56), "1234.56", () -> instance.bigDecimal);
   }
   

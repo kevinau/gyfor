@@ -6,17 +6,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target(ElementType.METHOD)
 /**
- * Whether this field can be empty. The Optional annotation will override any optional
+ * Whether the data entry field can be empty. The Optional annotation will override any optional
  * characteristics of the field's type.
  * <p>
- * If @Optional is added to a field, eg Optional or Optional(true), an empty
+ * If @Optional is added to a set method, eg Optional or Optional(true), an empty
  * data entry field is accepted and assigned a <code>null</code> value, without invoking any 
  * field validation.
  * <p>
  * If 
- * @Optional added to a field with a false value, eg Optional(false), an empty data entry field will be 
+ * @Optional is added to a set method with a false value, eg Optional(false), an empty data entry field will be 
  * fully validated and the value assigned will be that returned by the type's ... method.
  * <p>
  * Some examples will make this clear:

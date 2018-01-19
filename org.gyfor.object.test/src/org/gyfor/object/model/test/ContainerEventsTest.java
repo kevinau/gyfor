@@ -21,28 +21,24 @@ public class ContainerEventsTest {
   public static class StandardEntity {
 
     private int id;
-    
+
     private VersionTime version;
-    
+
     private String name;
 
-    @Optional
     private String location;
 
     private EntityLife entityLife;
-    
-    
+
     public StandardEntity() {
       this.name = "No name given";
       this.location = null;
     }
-    
 
     public StandardEntity(String name, String location) {
       this.name = name;
       this.location = location;
     }
-
 
     public StandardEntity(int id, String name, String location) {
       this.id = id;
@@ -52,14 +48,53 @@ public class ContainerEventsTest {
       this.entityLife = EntityLife.ACTIVE;
     }
 
-
     @Override
     public String toString() {
       return name + ", " + location;
     }
 
-  }
+    public int getId() {
+      return id;
+    }
 
+    public void setId(int id) {
+      this.id = id;
+    }
+
+    public VersionTime getVersion() {
+      return version;
+    }
+
+    public void setVersion(VersionTime version) {
+      this.version = version;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    @Optional
+    public String getLocation() {
+      return location;
+    }
+
+    public void setLocation(String location) {
+      this.location = location;
+    }
+
+    public EntityLife getEntityLife() {
+      return entityLife;
+    }
+
+    public void setEntityLife(EntityLife entityLife) {
+      this.entityLife = entityLife;
+    }
+
+  }
   
   private PlanFactory planFactory = new PlanFactory();
   private ModelFactory modelFactory = new ModelFactory();

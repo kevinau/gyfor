@@ -19,6 +19,14 @@ public class SimpleArrayValueTest {
       this.names = names;
     }
 
+    public String[] getNames() {
+      return names;
+    }
+    
+    public void setNames(String[] names) {
+      this.names = names;
+    }
+
   }
   
   @Test

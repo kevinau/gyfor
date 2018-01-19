@@ -1,10 +1,8 @@
 package org.gyfor.object.plan.impl;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-
 import org.gyfor.object.Describing;
 import org.gyfor.object.EntryMode;
+import org.gyfor.object.plan.GetSetField;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.ItemLabelGroup;
 import org.gyfor.object.plan.PlanStructure;
@@ -23,7 +21,7 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
   //private final Object staticDefaultValue;
   
   
-  public ItemPlan (Field field, String name, EntryMode entryMode, IType<T> type) {
+  public ItemPlan (GetSetField field, String name, EntryMode entryMode, IType<T> type) {
     super (field, name, entryMode);
     if (type == null) { 
       throw new IllegalArgumentException("Type argument cannot be null");
@@ -105,12 +103,6 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
 //  public Object newValue () {
 //    return type.newValue();
 //  }
-
-
-  @Override
-  public <A extends Annotation> A getAnnotation(Class<A> klass) {
-    return getField().getAnnotation(klass);
-  }
 
 
 //  @Override

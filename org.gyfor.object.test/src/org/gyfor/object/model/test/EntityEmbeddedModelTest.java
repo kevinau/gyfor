@@ -48,7 +48,6 @@ public class EntityEmbeddedModelTest {
     
     private String name;
 
-    @Embedded
     private Location location;
 
     public Party() {
@@ -62,6 +61,34 @@ public class EntityEmbeddedModelTest {
       this.location = new Location(street, suburb);
     }
 
+    public VersionTime getVersion() {
+      return version;
+    }
+
+    public void setVersion(VersionTime version) {
+      this.version = version;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    public Location getLocation() {
+      return location;
+    }
+
+    @Embedded
+    public void setLocation(Location location) {
+      this.location = location;
+    }
+
+    public int getId() {
+      return id;
+    }
 
     @Override
     public String toString() {

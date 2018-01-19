@@ -1,15 +1,16 @@
 package org.gyfor.object.plan.impl;
 
-import java.lang.reflect.Field;
+import java.lang.annotation.Annotation;
 
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.Mode;
 import org.gyfor.object.Optional;
+import org.gyfor.object.plan.GetSetField;
 import org.gyfor.object.plan.INodePlan;
 
 public abstract class NodePlan implements INodePlan {
 
-  private final Field field;
+  private final GetSetField field;
   
   private final String name;
   
@@ -34,7 +35,7 @@ public abstract class NodePlan implements INodePlan {
   }
   
   
-  private static boolean isNullable (Field field) {
+  private static boolean isNullable (GetSetField field) {
     if (field == null) {
       return false;
     } else {
@@ -48,11 +49,8 @@ public abstract class NodePlan implements INodePlan {
   }
   
   
-  public NodePlan (Field field, String name, EntryMode entryMode) {
+  public NodePlan (GetSetField field, String name, EntryMode entryMode) {
     this.field = field;
-    if (field != null) {
-      field.setAccessible(true);
-    }
     this.name = name;
     
     this.staticMode = entryMode;
@@ -60,30 +58,21 @@ public abstract class NodePlan implements INodePlan {
   }
   
   
-  @SuppressWarnings("unchecked")
   @Override
   public <X> X getFieldValue (Object instance) {
-    if (field == null) {
-      throw new RuntimeException("Cannot invoke getValue on Entity level plan");
-    }
-    try {
-      return (X)field.get(instance);
-    } catch (IllegalArgumentException | IllegalAccessException ex) {
-      throw new RuntimeException(ex);
-    }
+    return field.get(instance);
   }
   
   
   @Override
   public void setFieldValue (Object instance, Object value) {
-    if (field == null) {
-      throw new RuntimeException("Cannot invoke setValue on Entity level plan");
-    }
-    try {
-      field.set(instance, value);
-    } catch (IllegalArgumentException | IllegalAccessException ex) {
-      throw new RuntimeException(ex);
-    }
+    field.set(instance, value);
+  }
+  
+  
+  @Override
+  public boolean isViewOnly () {
+    return !field.isSettable();
   }
   
   
@@ -118,9 +107,21 @@ public abstract class NodePlan implements INodePlan {
   
   
   @Override
-  public Field getField () {
-    return field;
+  public <A extends Annotation> A getAnnotation(Class<A> klass) {
+    return field.getAnnotation(klass);
   }
+  
+  
+//  @Override
+//  public Method getSetter () {
+//    return setter;
+//  }
+//  
+//  
+//  @Override
+//  public Method getGetter () {
+//    return getter;
+//  }
   
   
   @Override

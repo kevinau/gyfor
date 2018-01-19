@@ -1,6 +1,6 @@
 package org.gyfor.object.plan;
 
-import java.lang.reflect.Field;
+import java.lang.annotation.Annotation;
 
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.INode;
@@ -50,6 +50,10 @@ public interface INodePlan extends INode {
   
   public PlanStructure getStructure();
 
-  public Field getField();
+  public <A extends Annotation> A getAnnotation(Class<A> klass);
+
+  public boolean isViewOnly();
+
+//  public Field getField();
 
 }

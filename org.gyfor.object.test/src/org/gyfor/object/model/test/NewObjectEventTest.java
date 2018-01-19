@@ -5,13 +5,14 @@ import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ModelFactory;
+import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.test.data.Party;
 import org.junit.Assert;
 import org.junit.Test;
 
 
-public class NewObjecteventTest {
+public class NewObjectEventTest {
   
   private PlanFactory planFactory = new PlanFactory();
   private ModelFactory modelFactory = new ModelFactory(planFactory);
@@ -36,7 +37,8 @@ public class NewObjecteventTest {
   
   @Test
   public void testContainerEvents () {
-    IEntityModel model = modelFactory.buildEntityModel(Party.class);
+    IEntityPlan<Party> plan = planFactory.getEntityPlan(Party.class);
+    IEntityModel model = modelFactory.buildEntityModel(plan);
   
     EventCounter eventCounter = new EventCounter();
     model.addContainerChangeListener(eventCounter);

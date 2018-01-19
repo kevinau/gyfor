@@ -1,10 +1,10 @@
 package org.gyfor.object.plan.impl;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.util.Iterator;
 
 import org.gyfor.object.EntryMode;
+import org.gyfor.object.plan.GetSetField;
 import org.gyfor.object.plan.IArrayPlan;
 import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.plan.PlanStructure;
@@ -13,7 +13,7 @@ import org.gyfor.util.ArrayIterator;
 
 public class ArrayPlan extends RepeatingPlan implements IArrayPlan {
 
-  public ArrayPlan (PlanFactory planFactory, Field field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
+  public ArrayPlan (PlanFactory planFactory, GetSetField field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
     super (planFactory, field, elemClass, name, entryMode, dimension);
   }
   

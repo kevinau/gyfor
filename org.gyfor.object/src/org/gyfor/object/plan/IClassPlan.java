@@ -39,6 +39,6 @@ public interface IClassPlan<T> extends IContainerPlan {
 
   public <X extends INodePlan> X getMember(String name);
 
-  public Field getNodeField(String memberName);
+  public GetSetField getNodeField(String memberName);
 
 }

@@ -1,8 +1,7 @@
 package org.gyfor.object.plan.impl;
 
-import java.lang.reflect.Field;
-
 import org.gyfor.object.EntryMode;
+import org.gyfor.object.plan.GetSetField;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IReferencePlan;
 import org.gyfor.object.plan.ItemLabelGroup;
@@ -17,7 +16,7 @@ public class ReferencePlan<T> extends ItemPlan<Integer> implements IReferencePla
   private final ReferenceLabelGroup labels;
 
   
-  public ReferencePlan(PlanFactory planFactory, Field field, Class<T> referencedClass, String pathName, EntryMode entryMode) {
+  public ReferencePlan(PlanFactory planFactory, GetSetField field, Class<T> referencedClass, String pathName, EntryMode entryMode) {
     super(field, pathName, entryMode, new IntegerType());
     this.referencedPlan = planFactory.getEntityPlan(referencedClass);
     this.labels = new ReferenceLabelGroup(field, pathName);

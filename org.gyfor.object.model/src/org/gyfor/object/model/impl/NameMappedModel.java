@@ -43,6 +43,7 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
     } else {
       INodePlan[] memberPlans = classPlan.getMembers();
       for (INodePlan memberPlan : memberPlans) {
+        System.out.println("ccccccccccc " + classPlan.getName() + " > " + memberPlan.getName());
         String fieldName = memberPlan.getName();
         INodeModel member = members.get(fieldName);
         if (member == null) {
@@ -51,8 +52,14 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
           members.put(fieldName, member);
           fireChildAdded(this, member);
         }
-        Object memberValue = memberPlan.getFieldValue(nameMappedValue);
-        member.syncValue(memberValue);
+        System.out.println("bbbbbbbbbbbbbbbbbb 1 " + memberPlan.getName());
+        if (memberPlan.isViewOnly() == false) {
+          System.out.println("bbbbbbbbbbbbbbbbbb 2");
+          Object memberValue = memberPlan.getFieldValue(nameMappedValue);
+          System.out.println("bbbbbbbbbbbbbbbbbb 2a" + memberValue);
+          member.syncValue(memberValue);
+        }
+        System.out.println("bbbbbbbbbbbbbbbbbb 3");
       }
     }
   }

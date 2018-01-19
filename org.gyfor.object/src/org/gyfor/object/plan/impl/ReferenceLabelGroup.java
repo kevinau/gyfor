@@ -1,7 +1,6 @@
 package org.gyfor.object.plan.impl;
 
-import java.lang.reflect.Field;
-
+import org.gyfor.object.plan.GetSetField;
 import org.gyfor.object.plan.ItemLabelGroup;
 
 /** 
@@ -15,7 +14,7 @@ public class ReferenceLabelGroup extends ItemLabelGroup {
     super(label, hint, description);
   }
 
-  public ReferenceLabelGroup (Field field, String fieldName) {
+  public ReferenceLabelGroup (GetSetField field, String fieldName) {
     super(field, fieldName);
   }
 
