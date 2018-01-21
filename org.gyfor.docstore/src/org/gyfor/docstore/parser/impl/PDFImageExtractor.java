@@ -32,9 +32,9 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.state.PDGraphicsState;
 import org.apache.pdfbox.util.Matrix;
+import org.gyfor.doc.DocumentContents;
 import org.gyfor.doc.IDocumentContents;
 import org.gyfor.doc.IDocumentStore;
-import org.gyfor.docstore.DocumentContents;
 import org.gyfor.docstore.parser.IImageParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +96,7 @@ final class PDFImageExtractor {
 
     for (int i = 0; i < document.getNumberOfPages(); i++) {
       PDPage page = document.getPage(i);
+      logger.info("Extract image: " + page + " " + i + " " + id);
       ImageGraphicsEngine extractor = new ImageGraphicsEngine(page, i, id);
       extractor.run();
       IDocumentContents pageContents = extractor.getPageContents();
@@ -134,24 +135,52 @@ final class PDFImageExtractor {
         seen.add(xobject);
       }
 
-      Matrix ctm = getGraphicsState().getCurrentTransformationMatrix();
-      float x = ctm.getTranslateX();
-      float y = ctm.getTranslateY();
+      /* ---------------------------------------------------------------- */
+      //PDImageXObject image2 = (PDImageXObject)pdImage;
+      int imageWidth2 = pdImage.getWidth();
+      int imageHeight2 = pdImage.getHeight();
+      System.out.println("*******************************************************************");
 
-      x = 59;
-      y = 62;
+      Matrix ctmNew = getGraphicsState().getCurrentTransformationMatrix();
+      float imageXScale = ctmNew.getScalingFactorX();
+      float imageYScale = ctmNew.getScalingFactorY();
+
+      // position in user space units. 1 unit = 1/72 inch at 72 dpi
+      System.out.println("position in PDF = " + ctmNew.getTranslateX() + ", " + ctmNew.getTranslateY() + " in user space units");
+      // raw size in pixels
+      System.out.println("raw image size  = " + imageWidth2 + ", " + imageHeight2 + " in pixels");
+      // displayed size in user space units
+      System.out.println("displayed size  = " + imageXScale + ", " + imageYScale + " in user space units");
+//      // displayed size in inches at 72 dpi rendering
+//      imageXScale /= 72;
+//      imageYScale /= 72;
+//      System.out.println("displayed size  = " + imageXScale + ", " + imageYScale + " in inches at 72 dpi rendering");
+//      // displayed size in millimeters at 72 dpi rendering
+//      imageXScale *= 25.4;
+//      imageYScale *= 25.4;
+//      System.out.println("displayed size  = " + imageXScale + ", " + imageYScale + " in millimeters at 72 dpi rendering");
+      System.out.println();
+      /* ---------------------------------------------------------------- */
+
+      //Matrix ctm = getGraphicsState().getCurrentTransformationMatrix();
+      //float x = ctm.getTranslateX();
+      //float y = ctm.getTranslateY();
+
+      //x = 59;
+      //y = 62;
       //x *= 72 / 25.4;
       //y *= 72 / 25.4;
-      
-      logger.info("Extracting image no. {}; at {},{}; from page {} of: {}", imageIndex, x, y, pageIndex, id);
+      //logger.info("Extracting image no. {}; at {},{}; from page {} of: {}", imageIndex, x, y, pageIndex, id);
+
       int imageWidth = pdImage.getWidth();
       int imageHeight = pdImage.getHeight();
       if (imageWidth > 1 && imageHeight > 1) {
         // Only OCR significant images
         PDGraphicsState gs = getGraphicsState();
         Matrix gm = gs.getCurrentTransformationMatrix();
-     
+      
         BufferedImage image = pdImage.getImage();
+        logger.info("Image size: " + pdImage.getWidth() + "  " + pdImage.getHeight());
         Path ocrImagePath = OCRPaths.getOCRImagePath(id, pageIndex, imageIndex);
         ImageIO.writeImage(image, ocrImagePath);
         IDocumentContents imageContents = imageParser.parse(id, pageIndex, ocrImagePath);
@@ -174,32 +203,32 @@ final class PDFImageExtractor {
     
     @Override
     public void appendRectangle(Point2D p0, Point2D p1, Point2D p2, Point2D p3) throws IOException {
-      // logger.info("Append rectangle");
+      logger.info("Append rectangle");
     }
 
     @Override
     public void clip(int windingRule) throws IOException {
-      // logger.info("Clip");
+      logger.info("Clip");
     }
 
     @Override
     public void moveTo(float x, float y) throws IOException {
-      // logger.info("Moving to {}, {} from page {} of: {}", x, y, pageIndex, id);
+      logger.info("Moving to {}, {} from page {} of: {}", x, y, pageIndex, id);
     }
 
     @Override
     public void lineTo(float x, float y) throws IOException {
-      // logger.info("Line to {}, {}", x, y);
+      logger.info("Line to {}, {}", x, y);
     }
 
     @Override
     public void curveTo(float x1, float y1, float x2, float y2, float x3, float y3) throws IOException {
-      // logger.info("Curve to");
+      logger.info("Curve to");
     }
 
     @Override
     public Point2D getCurrentPoint() throws IOException {
-      // logger.info("Get current point");
+      //logger.info("Get current point");
       return new Point2D.Float(0, 0);
     }
 

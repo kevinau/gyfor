@@ -3,7 +3,6 @@ package org.gyfor.docstore.search;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +30,7 @@ import org.gyfor.doc.DocumentStoreListener;
 import org.gyfor.doc.IDocumentContents;
 import org.gyfor.doc.IDocumentStore;
 import org.gyfor.doc.ISegment;
-import org.gyfor.osgi.ComponentConfiguration;
-import org.gyfor.osgi.Configurable;
+import org.gyfor.home.IApplication;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -47,10 +45,9 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
 
   private final Logger logger = LoggerFactory.getLogger(LuceneSearchEngine.class);
   
+  @Reference
+  private IApplication application;
   
-  @Configurable
-  private Path baseDir = Paths.get(System.getProperty("user.home"), "/docstore");
-
   private static final String LUCENE = "lucene";
 
   private Path luceneDir;
@@ -66,9 +63,8 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
   
   @Activate 
   public void activate(ComponentContext context) {
-    ComponentConfiguration.load(this, context);
-    
     try {
+      Path baseDir = application.getBaseDir();
       luceneDir = baseDir.resolve(LUCENE);
       Files.createDirectories(luceneDir);
     } catch (IOException ex) {

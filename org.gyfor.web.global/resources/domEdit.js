@@ -1,20 +1,39 @@
-	function addChildren(selector, htmlSource) {
+	function addChildren(selector, order, htmlSource) {
 				// Add the html to the specified container (identified by containerSelector).
 				// The html can be multiple elements.  A wschange event is fired after all
 				// children have been added.
 				////console.log ("addChildren: " + selector + ": " + htmlSource);
 				let container = document.querySelector(selector);
-				////console.log ("container: " + container);
   				if (!container) {
   					console.log("Cannot find DOM element matching selector: " + selector);
   					return;
   				}
+  				
+  				// Find insert location
+  				let insertElem = null;
+  				if (container.hasChildNodes) {
+  					let nodeList = container.childNodes;
+  					for (let i = 0; i < nodeList.length; i++) {
+  						if (nodeList[i] instanceof Element) {
+    						let childOrder = nodeList[i].getAttribute("data-order");
+  	    					if (childOrder > order) {
+  		    					insertElem = nodeList[i];
+  			    				break;
+  					    	}
+  						}
+  					}
+  				}
+  				
 				let dx = document.createElement('div');
   				dx.innerHTML = htmlSource;
   				let children = dx.childNodes;
     			while (children.length > 0) {
-    				container.appendChild(children[0]);
+    				if (children[0] instanceof Element) {
+    					children[0].setAttribute("data-order", order);
+    				}
+    				container.insertBefore(children[0], insertElem);
     			}
+    			dx.remove();
 			    let event1 = new Event('wschange');
        	        container.dispatchEvent(event1);
 	}
@@ -39,12 +58,12 @@
 				}
 	}
 
-	function syncChildren(parentSelector, nodeSelector, htmlSource) {
+	function syncChildren(parentSelector, nodeSelector, index, htmlSource) {
 		let node = document.querySelector(nodeSelector);
 		if (node) {
 			replaceChildren(nodeSelector, htmlSource);
 		} else {
-			addChildren(parentSelector, htmlSource);
+			addChildren(parentSelector, index, htmlSource);
 		}
 	}
 	

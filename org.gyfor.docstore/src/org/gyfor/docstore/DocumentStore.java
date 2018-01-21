@@ -10,8 +10,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.gyfor.doc.Document;
+import org.gyfor.doc.DocumentStoreListener;
+import org.gyfor.doc.DocumentSummary;
 import org.gyfor.doc.IDocumentContents;
 import org.gyfor.doc.IDocumentStore;
 import org.gyfor.doc.ISegment;
@@ -20,9 +24,9 @@ import org.gyfor.docstore.parser.IPDFParser;
 import org.gyfor.docstore.parser.impl.ImageIO;
 import org.gyfor.docstore.parser.impl.PDFBoxPDFParser;
 import org.gyfor.docstore.parser.impl.TesseractImageOCR;
+import org.gyfor.home.IApplication;
 import org.gyfor.nio.SafeOutputStream;
 import org.gyfor.osgi.ComponentConfiguration;
-import org.gyfor.osgi.Configurable;
 import org.gyfor.util.CRC64DigestFactory;
 import org.gyfor.util.Digest;
 import org.gyfor.util.DigestFactory;
@@ -31,11 +35,12 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
+@Component(configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 public class DocumentStore implements IDocumentStore {
 
   private Logger logger = LoggerFactory.getLogger(DocumentStore.class);
@@ -43,18 +48,22 @@ public class DocumentStore implements IDocumentStore {
   // This document store uses the CRC64 digest to identify documents
   private final DigestFactory digestFactory = new CRC64DigestFactory();
 
-  @Configurable
-  private Path baseDir = Paths.get(System.getProperty("user.home"), "/data");
+  @Reference
+  private IApplication application;
+  
+  private Path baseDir = null;
 
   private static final String IMAGES = "images";
   private static final String SOURCE = "source";
   private static final String THUMBS = "thumbs";
-  private static final String DB = "db";
+  private static final String CATALOG = "catalog";
 
   private Path sourceDir;
   private Path imagesDir;
   private Path thumbsDir;
-  private Path dbDir;
+  private Path catalogDir;
+  
+  private final List<DocumentStoreListener> docStoreListeners = new ArrayList<>(2);
   
   
   public DocumentStore () {
@@ -63,7 +72,11 @@ public class DocumentStore implements IDocumentStore {
   
   @Activate
   public void activate(ComponentContext context) {
+    baseDir = application.getBaseDir();
     ComponentConfiguration.load(this, context);
+    if (baseDir == null) {
+      baseDir = Paths.get(System.getProperty("user.home"), application.getId());
+    }
 
     try {
       sourceDir = baseDir.resolve(SOURCE);
@@ -72,10 +85,36 @@ public class DocumentStore implements IDocumentStore {
       Files.createDirectories(imagesDir);
       thumbsDir = baseDir.resolve(THUMBS);
       Files.createDirectories(thumbsDir);
-      dbDir = baseDir.resolve(DB);
-      Files.createDirectories(dbDir);
+      catalogDir = baseDir.resolve(CATALOG);
+      Files.createDirectories(catalogDir);
     } catch (IOException ex) {
       throw new RuntimeException(ex);
+    }
+  }
+
+  
+  @Override
+  public void addDocumentStoreListener(DocumentStoreListener x) {
+    docStoreListeners.add(x);
+  }
+
+  
+  @Override
+  public void removeDocumentStoreListener(DocumentStoreListener x) {
+    docStoreListeners.remove(x);
+  }
+  
+  
+  private void fireDocumentAdded(Document doc) {
+    for (DocumentStoreListener x : docStoreListeners) {
+      x.documentAdded(doc);
+    }
+  }
+
+  
+  private void fireDocumentRemoved(Document doc) {
+    for (DocumentStoreListener x : docStoreListeners) {
+      x.documentRemoved(doc);
     }
   }
 
@@ -120,10 +159,10 @@ public class DocumentStore implements IDocumentStore {
     Digest digest = digestFactory.getFileDigest(path);
     String hashCode = digest.toString();
     
-    Path dbPath = dbDir.resolve(hashCode + ".ser");
-    if (Files.exists(dbPath)) {
+    Path catalogPath = catalogDir.resolve(hashCode + ".ser");
+    if (Files.exists(catalogPath)) {
        // No need to import.  The file already exists.  The file is uniquely named by it's hashCode, 
-      // so if it exists under that name, it exists and is current.  Size and timestamp do not 
+      // so if it exists under that name, it exists and is current.  Size and time stamp do not 
       // need to be checked.
       return hashCode;
     }
@@ -170,8 +209,8 @@ public class DocumentStore implements IDocumentStore {
   
   
   private String importDocument(String hashCode, InputStream is, String originName, String extn) {
-    Path dbPath = dbDir.resolve(hashCode + ".ser");
-    if (Files.exists(dbPath)) {
+    Path catalogPath = catalogDir.resolve(hashCode + ".ser");
+    if (Files.exists(catalogPath)) {
       // No need to import.  The file already exists.  The file is uniquely named by it's id, 
       // so if it exists under that name, it exists and is current.  Size and timestamp do not 
       // need to be checked.
@@ -235,9 +274,12 @@ public class DocumentStore implements IDocumentStore {
     // Write Document record
     Timestamp importTime = new Timestamp(System.currentTimeMillis());
     Document document = new Document(hashCode, originTime, originName, extn, importTime, docContents);
-    Path dbPath = dbDir.resolve(hashCode + ".ser");
-    document.save(dbPath);
+    Path catalogPath = catalogDir.resolve(hashCode + ".ser");
+    document.save(catalogPath);
+    
     logger.info("Import complete: {} -> {}", originName, hashCode + ".ser");
+
+    fireDocumentAdded(document);
     
     // For debugging
 //    Document d = primaryIndex.get(id);
@@ -383,9 +425,9 @@ public class DocumentStore implements IDocumentStore {
     try {
       // Remove the document from all the 'at-rest' places
       // Document details and contents
-      Path dbDir = baseDir.resolve("db");
-      Path dbPath = dbDir.resolve(hashCode + ".ser");
-      Files.deleteIfExists(dbPath);
+      Path catalogDir = baseDir.resolve(CATALOG);
+      Path catalogPath = catalogDir.resolve(hashCode + ".ser");
+      Files.deleteIfExists(catalogPath);
       
       // Source file
       Path sourcePath = getSourcePath(hashCode, document.getOriginExtension());
@@ -397,6 +439,8 @@ public class DocumentStore implements IDocumentStore {
       
       // All page images
       // TODO need to do this
+      
+      fireDocumentRemoved(document);
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
@@ -405,8 +449,23 @@ public class DocumentStore implements IDocumentStore {
 
   @Override
   public Document getDocument(String hashCode) {
-    Path dbPath = dbDir.resolve(hashCode + ".ser");
-    return Document.load(dbPath);
+    Path catalogPath = catalogDir.resolve(hashCode + ".ser");
+    return Document.load(catalogPath);
+  }
+
+
+  @Override
+  public List<DocumentSummary> getAllDocuments() {
+    List<DocumentSummary> docList = new ArrayList<>();
+    
+    String[] names = catalogDir.toFile().list();
+    for (String name : names) {
+      if (name.endsWith(".ser")) {
+        Document doc = Document.load(catalogDir.resolve(name));
+        docList.add(doc);
+      }
+    }
+    return docList;
   }
 
 

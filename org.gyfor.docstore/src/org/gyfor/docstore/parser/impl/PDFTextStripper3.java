@@ -5,8 +5,9 @@ import java.util.List;
 
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
-import org.gyfor.docstore.DocumentContents;
-import org.gyfor.docstore.PartialSegment;
+import org.gyfor.doc.DocumentContents;
+import org.gyfor.doc.PartialSegment;
+import org.gyfor.docstore.segment.SegmentMatcherList;
 
 
 class PDFTextStripper3 extends PDFTextStripper {
@@ -45,7 +46,7 @@ class PDFTextStripper3 extends PDFTextStripper {
     for (TextPosition p : textPositions) {
       partialSegment.add(new PartialSegment.Nibble(p.getX() - x0, p.getWidth(), p.getUnicode()));
     }
-    docContents.add(partialSegment);
+    docContents.add(SegmentMatcherList.matchers, partialSegment);
     
     super.writeString(text, textPositions);
   }

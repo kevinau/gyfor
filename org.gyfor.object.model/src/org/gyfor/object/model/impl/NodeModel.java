@@ -286,12 +286,14 @@ public abstract class NodeModel implements INodeModel {
     StringBuilder builder = new StringBuilder();
     buildQName(builder);
     String qname = builder.toString();
+    if (qname.startsWith("/")) {
+      qname = qname.substring(1);
+    }
     return qname;
   }
   
   
   protected void buildQName(StringBuilder builder) {
-    System.out.println("......" + this + "     " + getValueRefName());
     if (getParent() != null) {
       ((NodeModel)getParent()).buildQName(builder);
     }

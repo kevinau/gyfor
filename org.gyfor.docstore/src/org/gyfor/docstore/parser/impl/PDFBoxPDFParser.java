@@ -15,6 +15,8 @@ import org.gyfor.doc.IDocumentStore;
 import org.gyfor.doc.PageImage;
 import org.gyfor.docstore.parser.IImageParser;
 import org.gyfor.docstore.parser.IPDFParser;
+import org.gyfor.util.CRC64DigestFactory;
+import org.gyfor.util.DigestFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +49,7 @@ public class PDFBoxPDFParser implements IPDFParser {
   }
 
 
-  private IDocumentContents extractImages(PDDocument document, int dpi, String id, Path pdfPath, boolean keepOCRImageFile, IDocumentContents docContents)
+  private IDocumentContents extractImages(PDDocument document, int dpi, String id, Path pdfPath, IDocumentContents docContents)
       throws IOException {
     logger.info("Extract images from PDF document: " + pdfPath.getFileName());
 
@@ -57,8 +59,36 @@ public class PDFBoxPDFParser implements IPDFParser {
   }
 
   
+  private IDocumentContents extractImages2(PDDocument pdDocument, int dpi, String id, Path pdfPath, IDocumentContents docContents)
+      throws IOException {
+    logger.info("Extract images from PDF document: " + pdfPath.getFileName());
+
+    PDFRendererNoText renderer = new PDFRendererNoText(pdDocument);
+    int endPage = pdDocument.getNumberOfPages();
+    for (int i = 0; i < endPage; i++) {
+      System.out.println("======================= dpi " + dpi);
+      dpi = 300;
+      BufferedImage image = renderer.renderImageWithDPI(i, dpi, ImageType.BINARY);
+      System.out.println("Image size in pixels: " + image.getWidth() + " x " + image.getHeight());
+      System.out.println("A4 size in pixels (@300 dpi): " + "2480 x 3508");
+      Path imageFile = OCRPaths.getOCRImagePath(id, i);
+      //ImageIO.writeImage(image, imageFile);
+      ImageIOUtil.writeImage(image, imageFile.toString(), dpi);
+      IDocumentContents imageDocContents = imageParser.parse(id, i, imageFile);
+      double scale = dpi / 72;
+      scale = 1.2;
+      System.out.println("======================= " + scale + " " + IDocumentStore.IMAGE_SCALE);
+      imageDocContents.scaleSegments(scale * IDocumentStore.IMAGE_SCALE);
+      docContents = docContents.merge(imageDocContents);
+    }
+    return docContents;
+  }
+
+  
   @Override
   public IDocumentContents parseText(String id, Path pdfPath, int dpi, IDocumentStore docStore) {
+    //DigestFactory digestFactory = new CRC64DigestFactory();
+
     PDDocument pdDocument = null;
 
     // create PDFTextStipper to convert PDF to Text
@@ -93,6 +123,43 @@ public class PDFBoxPDFParser implements IPDFParser {
   
 
   @Override
+  public IDocumentContents parse(Path pdfPath, int dpi) {
+    DigestFactory digestFactory = new CRC64DigestFactory();
+    String id = digestFactory.getFileDigest(pdfPath).toString();
+    
+    PDDocument pdDocument = null;
+    try {
+      InputStream input = Files.newInputStream(pdfPath);
+      pdDocument = PDDocument.load(input);
+
+      // create PDFTextStipper to convert PDF to Text
+      PDFTextStripper3 pdfTextStripper = new PDFTextStripper3();
+      pdfTextStripper.getText(pdDocument);
+
+      IDocumentContents textContents = pdfTextStripper.getDocumentContents();
+      // The default for renderImage is 72dpi, so adjust the segment locations
+      // to match our scale.
+      double scale = dpi / 72;
+      textContents.scaleSegments(scale * IDocumentStore.IMAGE_SCALE);
+
+      // Add segments OCR'd from images within the PDF document
+      IDocumentContents docContents = extractImages(pdDocument, dpi, id, pdfPath, textContents);
+      return docContents;
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    } finally {
+      if (pdDocument != null) {
+        try {
+          pdDocument.close();
+        } catch (IOException ex) {
+          throw new RuntimeException(ex);
+        }
+      }
+    }
+  }
+  
+ 
+  @Override
   public IDocumentContents parse(String id, Path pdfPath, int dpi, IDocumentStore docStore) {
     PDDocument pdDocument = null;
     try {
@@ -114,11 +181,11 @@ public class PDFBoxPDFParser implements IPDFParser {
       textContents.scaleSegments(scale * IDocumentStore.IMAGE_SCALE);
 
       // Add segments OCR'd from images within the PDF document
-      IDocumentContents docContents = extractImages(pdDocument, dpi, id, pdfPath, false, textContents);
+      IDocumentContents docContents = extractImages2(pdDocument, dpi, id, pdfPath, textContents);
 
       // Render PDF as an image for viewing
-      int endPage = pdDocument.getNumberOfPages();
       PDFRenderer renderer = new PDFRenderer(pdDocument);
+      int endPage = pdDocument.getNumberOfPages();
       for (int i = 0; i < endPage; i++) {
         BufferedImage image = renderer.renderImageWithDPI(i, dpi, ImageType.RGB);
         if (i == 0) {
@@ -128,7 +195,7 @@ public class PDFBoxPDFParser implements IPDFParser {
         }
         Path imageFile = docStore.newViewImagePath(id, i);
         ImageIO.writeImage(image, imageFile);
-        ImageIOUtil.writeImage(image, imageFile.toString(), dpi);
+///////////////////////////////////////////////        ImageIOUtil.writeImage(image, imageFile.toString(), dpi);
         PageImage pageImage = new PageImage(i, image.getWidth(), image.getHeight());
         docContents.addPageImage(pageImage);
       }

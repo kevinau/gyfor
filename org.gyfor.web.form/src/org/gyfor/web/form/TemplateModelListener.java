@@ -16,6 +16,8 @@ import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ItemEventListener;
 import org.gyfor.object.plan.EntityLabelGroup;
 import org.gyfor.template.ITemplateEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mitchellbosecke.pebble.template.ScopeChain;
 
@@ -24,6 +26,9 @@ import io.undertow.websockets.core.WebSocketChannel;
 
 public class TemplateModelListener implements EntityCreationListener, ItemEventListener, EffectiveEntryModeListener, ContainerChangeListener {
 
+  private final Logger logger = LoggerFactory.getLogger(TemplateModelListener.class);
+  
+ 
   private final ClientDomEdit clientDom;
   private final TemplateHtmlBuilder htmlBuilder;
   private final boolean hasTitle;
@@ -43,21 +48,27 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
   
   @Override
   public void childAdded(IContainerModel parent, INodeModel node) {
+    logger.info("Child {} added within parent {}", node.getName(), parent.getName());
+    int index = 32767;
     if (rootProjection.hasChildren()) {
+      System.out.println("....... root projection " + rootProjection.hasChildren());
+      System.out.println("....... root projection " + rootProjection.getChildren().size());
       String qname = node.getQName();
+      System.out.println("....... root projection " + qname);
       boolean found = false;
       for (ProjectionNode child : rootProjection.getChildren()) {
         Matcher matcher = child.getMatcher(qname);
+        System.out.println("....... root projection 2 " + qname + " " + child.toString());
         if (matcher.matches()) {
           if (child.omittable()) {
             // This model node matches a projection node that we want to omit.
             return;
           } else {
             // We want this model node.
+            index = child.index();
             found = true;
             break;
           }
-          
         }
       }
       if (!found) {
@@ -67,7 +78,7 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
     }
     StringWriter writer = new StringWriter();
     htmlBuilder.buildHtml(writer, node, null);
-    clientDom.syncChildren("#contentHere" + parent.getNodeId(), "#node" + node.getNodeId(), writer.toString());
+    clientDom.syncChildren("#contentHere" + parent.getNodeId(), "#node" + node.getNodeId(), index, writer.toString());
   }
 
 

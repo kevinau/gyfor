@@ -3,9 +3,9 @@ package org.gyfor.docstore.segment;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.gyfor.doc.ISegmentMatchResult;
+import org.gyfor.doc.ISegmentMatcher;
 import org.gyfor.doc.SegmentType;
-import org.gyfor.docstore.parser.ISegmentMatchResult;
-import org.gyfor.docstore.parser.ISegmentMatcher;
 
 
 class PercentMatcher implements ISegmentMatcher {

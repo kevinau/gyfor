@@ -22,9 +22,10 @@ public class PDFToImage {
       ImageType imageType = ImageType.RGB;
       
       int endPage = document.getNumberOfPages();
-      PDFRenderer renderer = new PDFRenderer(document);
+      PDFRenderer renderer = new PDFRendererNoText(document);
       BufferedImage singleImage = null;
       for (int i = 0; i < endPage; i++) {
+        System.out.println("............" + renderer.getClass());
         BufferedImage image = renderer.renderImageWithDPI(i, dpi, imageType);
         singleImage = ImageIO.appendImage(singleImage, image);
         Path imagePath = docStore.newViewImagePath(id, i);

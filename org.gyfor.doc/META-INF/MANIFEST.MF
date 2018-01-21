@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Kevin Holloway
 Export-Package: org.gyfor.doc
-Import-Package: org.gyfor.math,
+Import-Package: org.gyfor.home,
+ org.gyfor.math,
  org.gyfor.nio,
  org.gyfor.object.value,
  org.gyfor.osgi,

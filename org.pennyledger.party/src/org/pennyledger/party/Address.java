@@ -6,7 +6,6 @@ import org.gyfor.object.Label;
 @Entity
 public class Address {
 
-  @SuppressWarnings("unused")
   private String unannotatedField;
   
   private String noLabelField;

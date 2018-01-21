@@ -3,6 +3,7 @@
    <service>
       <provide interface="org.gyfor.docstore.search.ISearchEngine"/>
    </service>
+   <reference cardinality="1..1" field="application" interface="org.gyfor.home.IApplication" name="application"/>
    <reference cardinality="1..1" field="docStore" interface="org.gyfor.doc.IDocumentStore" name="docStore"/>
    <implementation class="org.gyfor.docstore.search.LuceneSearchEngine"/>
 </scr:component>

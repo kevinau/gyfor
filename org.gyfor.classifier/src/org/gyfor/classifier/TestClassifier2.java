@@ -41,7 +41,7 @@ public class TestClassifier2 {
 
   
   public void run () {
-    File catalogDir = new File("C:/Users/Kevin/docstore/catalog");
+    File catalogDir = new File("C:/Users/Kevin/pennyledger/catalog");
     File[] catalogFiles = catalogDir.listFiles();
 
     for (int n = 0; n < catalogFiles.length; n++) {

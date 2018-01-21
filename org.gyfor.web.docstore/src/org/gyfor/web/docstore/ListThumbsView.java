@@ -36,43 +36,22 @@ public class ListThumbsView implements HttpHandler {
 
   private ITemplateEngine templateEngine;
   private ITemplate template = null;
-  
-  private IDocumentStore docStore;
-  private ITemplateEngineFactory templateEngineFactory;
 
   @Reference
-  public void setDocumentStore (IDocumentStore docStore) {
-    this.docStore = docStore;
-  }
-  
-  
-  public void unsetDocumentStore (IDocumentStore docStore) {
-    this.docStore = null;
-  }
-  
-  
+  private IDocumentStore docStore;
+
   @Reference
-  public void setTemplateEngineFactory (ITemplateEngineFactory templateEngineFactory) {
-    this.templateEngineFactory = templateEngineFactory;
-  }
-  
-  
-  public void unsetTemplateEngineFactory (ITemplateEngineFactory templateEngineFactory) {
-    this.templateEngineFactory = null;
-  }
-  
-  
+  private ITemplateEngineFactory templateEngineFactory;
+
   @Activate
   public void activate(BundleContext bundleContext) {
     templateEngine = templateEngineFactory.buildTemplateEngine(bundleContext);
   }
 
-  
   @Deactivate
   public void deactivate() {
     this.templateEngine = null;
   }
-
 
   @Override
   public void handleRequest(HttpServerExchange exchange) throws Exception {
@@ -81,32 +60,33 @@ public class ListThumbsView implements HttpHandler {
       return;
     }
     logger.info("Handle request: {}", exchange.getRequestPath());
-    
-//    String id = exchange.getRelativePath();
-//    if (id == null || id.length() <= 1) {
-//      HttpUtility.endWithStatus(exchange, 400, "Document id not specified as part of request");
-//      return;
-//    }
-//    // Remove leading slash (/)
-//    id = id.substring(1);
-//    
-//    Document document = docStore.getDocument(id);
-//    if (document == null) {
-//      HttpUtility.endWithStatus(exchange, 404, "No document found for '" + id + "'");
-//      return;
-//    }
-    
+
+    // String id = exchange.getRelativePath();
+    // if (id == null || id.length() <= 1) {
+    // HttpUtility.endWithStatus(exchange, 400, "Document id not specified as
+    // part of request");
+    // return;
+    // }
+    // // Remove leading slash (/)
+    // id = id.substring(1);
+    //
+    // Document document = docStore.getDocument(id);
+    // if (document == null) {
+    // HttpUtility.endWithStatus(exchange, 404, "No document found for '" + id +
+    // "'");
+    // return;
+    // }
+
     // Lazily create template
     if (template == null) {
       template = templateEngine.getTemplate("listThumbsView");
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put("hostAndPort", exchange.getHostAndPort());
-    context.put("context", exchange.getResolvedPath());
 
     List<DocumentSummary> docList = docStore.getAllDocuments();
     Collections.sort(docList, new Comparator<DocumentSummary>() {
+
       @Override
       public int compare(DocumentSummary arg0, DocumentSummary arg1) {
         return arg0.getImportTime().compareTo(arg1.getImportTime());
@@ -115,9 +95,9 @@ public class ListThumbsView implements HttpHandler {
 
     context.put("docStore", docStore);
     context.put("docList", docList);
-    
+
     exchange.startBlocking();
-    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");    
+    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");
     Writer responseWriter = new OutputStreamWriter(exchange.getOutputStream());
     template.evaluate(responseWriter, context);
   }

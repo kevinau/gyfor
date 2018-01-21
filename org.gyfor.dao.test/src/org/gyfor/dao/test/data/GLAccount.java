@@ -36,7 +36,7 @@ public class GLAccount implements SelfDescribing {
   private Type type;
 
   @Override
-  public String getDescription() {
+  public String buildDescription() {
     return name + " (" + type.getDescription() + ")";
   }
   

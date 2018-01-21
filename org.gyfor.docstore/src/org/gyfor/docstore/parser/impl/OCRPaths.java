@@ -12,6 +12,11 @@ class OCRPaths {
   }
 
 
+  static Path getOCRImagePath (String id, int page) {
+    return Paths.get(tmpDir, id + ".p" + page + ".png");  
+  }
+
+
   static Path getOCRImagePath (String id, int page, int image) {
     return Paths.get(tmpDir, id + ".p" + page + "i" + image + ".png");  
   }

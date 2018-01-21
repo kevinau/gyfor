@@ -16,6 +16,8 @@ public class ProjectionNode {
 
   private final List<ProjectionNode> children = new ArrayList<>();
   
+  private int index = 0;
+  
   
   public ProjectionNode() {
     this.nodePattern = Pattern.compile(".*");
@@ -39,6 +41,7 @@ public class ProjectionNode {
   
   
   public void add(ProjectionNode pnode) {
+    pnode.index = children.size();
     children.add(pnode);
   }
   
@@ -65,6 +68,11 @@ public class ProjectionNode {
   
   public boolean omittable() {
     return omit;
+  }
+  
+  
+  public int index() {
+    return index;
   }
   
   

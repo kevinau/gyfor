@@ -3,8 +3,8 @@ package org.gyfor.docstore.segment;
 import java.util.List;
 
 import org.gyfor.doc.ISegment;
-import org.gyfor.docstore.parser.ISegmentMatchResult;
-import org.gyfor.docstore.parser.ISegmentMatcher;
+import org.gyfor.doc.ISegmentMatchResult;
+import org.gyfor.doc.ISegmentMatcher;
 
 
 public class SegmentMatcherList {
@@ -12,9 +12,9 @@ public class SegmentMatcherList {
   public static ISegmentMatcher[] matchers = {
     new NamedDateMatcher(),
     new DelimitedDateMatcher(),
+    new PercentMatcher(),
     new CurrencyMatcher(),
     new CentsPenceMatcher(),
-    new PercentMatcher(),
     new ABNMatcher(),
   };
   

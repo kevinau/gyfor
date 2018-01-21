@@ -3,14 +3,13 @@ package org.gyfor.doc;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import org.gyfor.osgi.ComponentConfiguration;
-import org.gyfor.osgi.Configurable;
+import org.gyfor.home.IApplication;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,14 +18,15 @@ public class DocumentStoreFiles {
   
   private Logger logger = LoggerFactory.getLogger(DocumentStoreFiles.class);
 
+  @Reference
+  public IApplication application;
   
-  @Configurable
-  private Path baseDir = Paths.get(System.getProperty("user.home"), "/docstore");
+  private Path baseDir;
 
   
   @Activate
   public void activate(ComponentContext context) {
-    ComponentConfiguration.load(this, context);
+    baseDir = application.getBaseDir();
     logger.info("Document store base directory set to: {}", baseDir);
   }
 
