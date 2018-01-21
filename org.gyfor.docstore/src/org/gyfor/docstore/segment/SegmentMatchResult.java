@@ -2,8 +2,8 @@ package org.gyfor.docstore.segment;
 
 import java.util.regex.MatchResult;
 
-import org.gyfor.doc.ISegmentMatchResult;
-import org.gyfor.doc.SegmentType;
+import org.gyfor.srcdoc.ISegmentMatchResult;
+import org.gyfor.srcdoc.SegmentType;
 
 
 class SegmentMatchResult implements ISegmentMatchResult {

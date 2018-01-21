@@ -1,4 +1,4 @@
-package org.gyfor.doc;
+package org.gyfor.docstore;
 
 import org.gyfor.srcdoc.SourceDocument;
 

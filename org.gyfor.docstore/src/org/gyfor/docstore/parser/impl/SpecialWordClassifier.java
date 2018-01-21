@@ -9,13 +9,13 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.gyfor.doc.Dictionary;
-import org.gyfor.doc.IDocumentStore;
-import org.gyfor.doc.ISegment;
-import org.gyfor.doc.SegmentType;
+import org.gyfor.docstore.IDocumentStore;
 import org.gyfor.docstore.ITrainingData;
 import org.gyfor.docstore.parser.IImageParser;
 import org.gyfor.docstore.parser.IPDFParser;
+import org.gyfor.srcdoc.Dictionary;
+import org.gyfor.srcdoc.ISegment;
+import org.gyfor.srcdoc.SegmentType;
 
 public class SpecialWordClassifier {
   

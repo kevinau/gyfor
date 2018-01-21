@@ -5,18 +5,18 @@ import java.util.List;
 
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
-import org.gyfor.doc.DocumentContents;
-import org.gyfor.doc.PartialSegment;
 import org.gyfor.docstore.segment.SegmentMatcherList;
+import org.gyfor.srcdoc.PartialSegment;
+import org.gyfor.srcdoc.SourceDocumentContents;
 
 
 class PDFTextStripper3 extends PDFTextStripper {
   
-  private DocumentContents docContents;
+  private SourceDocumentContents docContents;
   
   
   public PDFTextStripper3() throws IOException {
-    docContents = new DocumentContents();
+    docContents = new SourceDocumentContents();
   }
 
   
@@ -57,7 +57,7 @@ class PDFTextStripper3 extends PDFTextStripper {
   }
   
   
-  public DocumentContents getDocumentContents () {
+  public SourceDocumentContents getDocumentContents () {
     return docContents;
   }
   

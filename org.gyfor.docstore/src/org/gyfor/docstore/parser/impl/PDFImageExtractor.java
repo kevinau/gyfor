@@ -32,10 +32,10 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.state.PDGraphicsState;
 import org.apache.pdfbox.util.Matrix;
-import org.gyfor.doc.DocumentContents;
-import org.gyfor.doc.IDocumentContents;
-import org.gyfor.doc.IDocumentStore;
+import org.gyfor.docstore.IDocumentStore;
 import org.gyfor.docstore.parser.IImageParser;
+import org.gyfor.srcdoc.ISourceDocumentContents;
+import org.gyfor.srcdoc.SourceDocumentContents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,7 +88,7 @@ final class PDFImageExtractor {
 //  }
 
 
-  IDocumentContents extract(PDDocument document, String id, IDocumentContents docContents) throws IOException {
+  ISourceDocumentContents extract(PDDocument document, String id, ISourceDocumentContents docContents) throws IOException {
     AccessPermission ap = document.getCurrentAccessPermission();
     if (!ap.canExtractContent()) {
       throw new IOException("You do not have permission to extract images");
@@ -99,7 +99,7 @@ final class PDFImageExtractor {
       logger.info("Extract image: " + page + " " + i + " " + id);
       ImageGraphicsEngine extractor = new ImageGraphicsEngine(page, i, id);
       extractor.run();
-      IDocumentContents pageContents = extractor.getPageContents();
+      ISourceDocumentContents pageContents = extractor.getPageContents();
       docContents = docContents.merge(pageContents);
     }
     return docContents;
@@ -109,13 +109,13 @@ final class PDFImageExtractor {
   private class ImageGraphicsEngine extends PDFGraphicsStreamEngine {
     private final int pageIndex;
     private final String id;
-    private IDocumentContents pageContents;
+    private ISourceDocumentContents pageContents;
     private int imageIndex = 0;
     
     
     protected ImageGraphicsEngine(PDPage page, int pageIndex, String id) throws IOException {
       super(page);
-      this.pageContents = new DocumentContents();
+      this.pageContents = new SourceDocumentContents();
       this.pageIndex = pageIndex;
       this.id = id;
     }
@@ -183,7 +183,7 @@ final class PDFImageExtractor {
         logger.info("Image size: " + pdImage.getWidth() + "  " + pdImage.getHeight());
         Path ocrImagePath = OCRPaths.getOCRImagePath(id, pageIndex, imageIndex);
         ImageIO.writeImage(image, ocrImagePath);
-        IDocumentContents imageContents = imageParser.parse(id, pageIndex, ocrImagePath);
+        ISourceDocumentContents imageContents = imageParser.parse(id, pageIndex, ocrImagePath);
         float pageWidth = gm.getScaleX() + gm.getTranslateX();
         
         // Scale the image down to page width (at 72dpi), and then scale to the dpi we want.
@@ -196,7 +196,7 @@ final class PDFImageExtractor {
     }
 
     
-    public IDocumentContents getPageContents () {
+    public ISourceDocumentContents getPageContents () {
       return pageContents;
     }
     

@@ -13,12 +13,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gyfor.doc.Document;
-import org.gyfor.doc.DocumentStoreListener;
-import org.gyfor.doc.DocumentSummary;
-import org.gyfor.doc.IDocumentContents;
-import org.gyfor.doc.IDocumentStore;
-import org.gyfor.doc.ISegment;
 import org.gyfor.docstore.parser.IImageParser;
 import org.gyfor.docstore.parser.IPDFParser;
 import org.gyfor.docstore.parser.impl.ImageIO;
@@ -27,6 +21,10 @@ import org.gyfor.docstore.parser.impl.TesseractImageOCR;
 import org.gyfor.home.IApplication;
 import org.gyfor.nio.SafeOutputStream;
 import org.gyfor.osgi.ComponentConfiguration;
+import org.gyfor.srcdoc.ISegment;
+import org.gyfor.srcdoc.ISourceDocumentContents;
+import org.gyfor.srcdoc.SourceDocument;
+import org.gyfor.srcdoc.SourceReference;
 import org.gyfor.util.CRC64DigestFactory;
 import org.gyfor.util.Digest;
 import org.gyfor.util.DigestFactory;
@@ -105,14 +103,14 @@ public class DocumentStore implements IDocumentStore {
   }
   
   
-  private void fireDocumentAdded(Document doc) {
+  private void fireDocumentAdded(SourceDocument doc) {
     for (DocumentStoreListener x : docStoreListeners) {
       x.documentAdded(doc);
     }
   }
 
   
-  private void fireDocumentRemoved(Document doc) {
+  private void fireDocumentRemoved(SourceDocument doc) {
     for (DocumentStoreListener x : docStoreListeners) {
       x.documentRemoved(doc);
     }
@@ -244,7 +242,7 @@ public class DocumentStore implements IDocumentStore {
     Path path = getSourcePath(hashCode, extn);
 
     logger.info("Parsing {} to extact textual contents", path.getFileName());
-    IDocumentContents docContents;
+    ISourceDocumentContents docContents;
     if (isImageFile(extn)) {
       IImageParser imageParser = new TesseractImageOCR();
       docContents = imageParser.parse(hashCode, 0, path);
@@ -273,7 +271,7 @@ public class DocumentStore implements IDocumentStore {
     
     // Write Document record
     Timestamp importTime = new Timestamp(System.currentTimeMillis());
-    Document document = new Document(hashCode, originTime, originName, extn, importTime, docContents);
+    SourceDocument document = new SourceDocument(hashCode, originTime, originName, extn, importTime, docContents);
     Path catalogPath = catalogDir.resolve(hashCode + ".ser");
     document.save(catalogPath);
     
@@ -331,7 +329,7 @@ public class DocumentStore implements IDocumentStore {
   
   
   @Override 
-  public Path getViewImagePath (Document doc) {
+  public Path getViewImagePath (SourceDocument doc) {
     // If the origin extension is that of an image, the view image path is the source path
     String extn = doc.getOriginExtension();
     if (isImageFile(extn)) {
@@ -363,7 +361,7 @@ public class DocumentStore implements IDocumentStore {
   
 
   @Override 
-  public String webSourcePath (Document doc) {
+  public String webSourcePath (SourceDocument doc) {
     return "/" + SOURCE + "/" + doc.getHashCode() + doc.getOriginExtension();
   }
   
@@ -419,7 +417,7 @@ public class DocumentStore implements IDocumentStore {
 
 
   @Override
-  public void removeDocument(Document document) {
+  public void removeDocument(SourceDocument document) {
     String hashCode = document.getHashCode();
     
     try {
@@ -448,20 +446,20 @@ public class DocumentStore implements IDocumentStore {
 
 
   @Override
-  public Document getDocument(String hashCode) {
+  public SourceDocument getDocument(String hashCode) {
     Path catalogPath = catalogDir.resolve(hashCode + ".ser");
-    return Document.load(catalogPath);
+    return SourceDocument.load(catalogPath);
   }
 
 
   @Override
-  public List<DocumentSummary> getAllDocuments() {
-    List<DocumentSummary> docList = new ArrayList<>();
+  public List<SourceReference> getAllDocuments() {
+    List<SourceReference> docList = new ArrayList<>();
     
     String[] names = catalogDir.toFile().list();
     for (String name : names) {
       if (name.endsWith(".ser")) {
-        Document doc = Document.load(catalogDir.resolve(name));
+        SourceDocument doc = SourceDocument.load(catalogDir.resolve(name));
         docList.add(doc);
       }
     }
@@ -473,7 +471,7 @@ public class DocumentStore implements IDocumentStore {
     Path path = getSourcePath(hashCode, ".pdf");
     IImageParser imageParser = new TesseractImageOCR();
     IPDFParser pdfParser = new PDFBoxPDFParser(imageParser);
-    IDocumentContents docContents = pdfParser.parse(hashCode, path, dpi, this);
+    ISourceDocumentContents docContents = pdfParser.parse(hashCode, path, dpi, this);
     for (ISegment seg : docContents.getSegments()) {
       System.out.println(seg);
     }

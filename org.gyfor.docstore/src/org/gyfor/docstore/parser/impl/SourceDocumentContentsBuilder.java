@@ -2,21 +2,21 @@ package org.gyfor.docstore.parser.impl;
 
 import java.nio.file.Path;
 
-import org.gyfor.doc.IDocumentContents;
-import org.gyfor.doc.IDocumentStore;
+import org.gyfor.docstore.IDocumentStore;
 import org.gyfor.docstore.parser.IImageParser;
 import org.gyfor.docstore.parser.IPDFParser;
+import org.gyfor.srcdoc.ISourceDocumentContents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class DocumentContentsBuilder {
+public class SourceDocumentContentsBuilder {
 
-  private static final Logger logger = LoggerFactory.getLogger(DocumentContentsBuilder.class);
+  private static final Logger logger = LoggerFactory.getLogger(SourceDocumentContentsBuilder.class);
  
-  public IDocumentContents buildContent (String hashCode, String extn, IDocumentStore docStore) {
+  public ISourceDocumentContents buildContent (String hashCode, String extn, IDocumentStore docStore) {
     Path path = docStore.getSourcePath(hashCode, extn);
-    IDocumentContents docContents;
+    ISourceDocumentContents docContents;
 
     logger.info("Parsing {} to extact textual contents", path.getFileName());
 

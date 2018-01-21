@@ -2,10 +2,10 @@ package org.gyfor.docstore.parser;
 
 import java.nio.file.Path;
 
-import org.gyfor.doc.IDocumentContents;
+import org.gyfor.srcdoc.ISourceDocumentContents;
 
 public interface IImageParser {
 
-  public IDocumentContents parse (String id, int pageIndex, Path path);
+  public ISourceDocumentContents parse (String id, int pageIndex, Path path);
   
 }

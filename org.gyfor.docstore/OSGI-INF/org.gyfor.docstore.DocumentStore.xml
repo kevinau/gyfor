@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" configuration-policy="optional" immediate="true" name="org.gyfor.docstore.DocumentStore">
    <service>
-      <provide interface="org.gyfor.doc.IDocumentStore"/>
+      <provide interface="org.gyfor.docstore.IDocumentStore"/>
    </service>
    <reference cardinality="1..1" field="application" interface="org.gyfor.home.IApplication" name="application"/>
    <implementation class="org.gyfor.docstore.DocumentStore"/>

@@ -2,25 +2,17 @@ package org.gyfor.docstore.parser.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
-import org.codehaus.stax2.XMLInputFactory2;
-import org.gyfor.doc.DocumentContents;
-import org.gyfor.doc.IDocumentContents;
-import org.gyfor.doc.PartialSegment;
 import org.gyfor.docstore.parser.IImageParser;
 import org.gyfor.docstore.segment.SegmentMatcherList;
+import org.gyfor.srcdoc.ISourceDocumentContents;
+import org.gyfor.srcdoc.PartialSegment;
+import org.gyfor.srcdoc.SourceDocumentContents;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.slf4j.Logger;
@@ -38,89 +30,89 @@ public class TesseractImageOCR implements IImageParser {
   private Logger logger = LoggerFactory.getLogger(TesseractImageOCR.class);
 
 
-  private IDocumentContents readOCRResults(int pageIndex, Path resultsFile) {
-    XMLInputFactory2 factory = null;
-    try {
-      factory = (XMLInputFactory2)XMLInputFactory2.newInstance();
-      factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-      factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
-      factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-      factory.setProperty(XMLInputFactory.IS_COALESCING, false);
+//  private ISourceDocumentContents readOCRResults(int pageIndex, Path resultsFile) {
+//    XMLInputFactory2 factory = null;
+//    try {
+//      factory = (XMLInputFactory2)XMLInputFactory2.newInstance();
+//      factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+//      factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
+//      factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+//      factory.setProperty(XMLInputFactory.IS_COALESCING, false);
+//
+//      Reader resultsReader = Files.newBufferedReader(resultsFile);
+//      XMLStreamReader reader = factory.createXMLStreamReader(resultsReader);
+//
+//      SourceDocumentContents docContents = new SourceDocumentContents();
+//      PartialSegment lineSegment = null;
+//      PartialSegment wordSegment = null;
+//      int level = 0;
+//      int lineLevel = 0;
+//
+//      while (reader.hasNext()) {
+//        int event = reader.next();
+//        switch (event) {
+//        case XMLStreamConstants.START_DOCUMENT :
+//          break;
+//        case XMLStreamConstants.START_ELEMENT :
+//          level++;
+//          String klass = reader.getAttributeValue(null, "class");
+//          if (klass != null) {
+//            switch (klass) {
+//            case "ocr_line" :
+//              lineSegment = null;
+//              lineLevel = level;
+//              break;
+//            case "ocrx_word" :
+//              // Create an empty segment with the word's bounding box. Attribute
+//              // "title" contains the bounding box dimensions.
+//              wordSegment = new PartialSegment(pageIndex, reader.getAttributeValue(null, "title"), null);
+//              break;
+//            }
+//          }
+//          break;
+//        case XMLStreamConstants.CHARACTERS :
+//          String word = reader.getText().trim();
+//          if (word.length() != 0) {
+//            if (lineSegment != null && lineSegment.overlaps(wordSegment, word)) {
+//              if (lineSegment.almostAdjacent(wordSegment, word)) {
+//                // If the two segments are almost adjacent, append the text
+//                // without a space
+//                lineSegment.extendWide(wordSegment, word);
+//              } else {
+//                // ... otherwise add a space between the two segments
+//                lineSegment.extendWide(wordSegment, ' ', word);
+//              }
+//            } else {
+//              // Add the existing, completed, line segment to the document
+//              // before starting a new one.
+//              if (lineSegment != null) {
+//                docContents.add(SegmentMatcherList.matchers, lineSegment);
+//                // logger.info("Adding line segment:{}", lineSegment);
+//              }
+//              lineSegment = new PartialSegment(wordSegment, word, 0);
+//            }
+//          }
+//          break;
+//        case XMLStreamConstants.END_ELEMENT :
+//          if (lineLevel == level && lineSegment != null) {
+//            // logger.info("Adding line segmnt: {}", lineSegment);
+//            docContents.add(SegmentMatcherList.matchers, lineSegment);
+//          }
+//          level--;
+//          break;
+//        }
+//      }
+//      reader.close();
+//      resultsReader.close();
+//
+//      return docContents;
+//    } catch (FactoryConfigurationError | XMLStreamException | IOException ex) {
+//      throw new RuntimeException(ex);
+//    }
+//  }
 
-      Reader resultsReader = Files.newBufferedReader(resultsFile);
-      XMLStreamReader reader = factory.createXMLStreamReader(resultsReader);
 
-      DocumentContents docContents = new DocumentContents();
-      PartialSegment lineSegment = null;
-      PartialSegment wordSegment = null;
-      int level = 0;
-      int lineLevel = 0;
-
-      while (reader.hasNext()) {
-        int event = reader.next();
-        switch (event) {
-        case XMLStreamConstants.START_DOCUMENT :
-          break;
-        case XMLStreamConstants.START_ELEMENT :
-          level++;
-          String klass = reader.getAttributeValue(null, "class");
-          if (klass != null) {
-            switch (klass) {
-            case "ocr_line" :
-              lineSegment = null;
-              lineLevel = level;
-              break;
-            case "ocrx_word" :
-              // Create an empty segment with the word's bounding box. Attribute
-              // "title" contains the bounding box dimensions.
-              wordSegment = new PartialSegment(pageIndex, reader.getAttributeValue(null, "title"), null);
-              break;
-            }
-          }
-          break;
-        case XMLStreamConstants.CHARACTERS :
-          String word = reader.getText().trim();
-          if (word.length() != 0) {
-            if (lineSegment != null && lineSegment.overlaps(wordSegment, word)) {
-              if (lineSegment.almostAdjacent(wordSegment, word)) {
-                // If the two segments are almost adjacent, append the text
-                // without a space
-                lineSegment.extendWide(wordSegment, word);
-              } else {
-                // ... otherwise add a space between the two segments
-                lineSegment.extendWide(wordSegment, ' ', word);
-              }
-            } else {
-              // Add the existing, completed, line segment to the document
-              // before starting a new one.
-              if (lineSegment != null) {
-                docContents.add(SegmentMatcherList.matchers, lineSegment);
-                // logger.info("Adding line segment:{}", lineSegment);
-              }
-              lineSegment = new PartialSegment(wordSegment, word, 0);
-            }
-          }
-          break;
-        case XMLStreamConstants.END_ELEMENT :
-          if (lineLevel == level && lineSegment != null) {
-            // logger.info("Adding line segmnt: {}", lineSegment);
-            docContents.add(SegmentMatcherList.matchers, lineSegment);
-          }
-          level--;
-          break;
-        }
-      }
-      reader.close();
-      resultsReader.close();
-
-      return docContents;
-    } catch (FactoryConfigurationError | XMLStreamException | IOException ex) {
-      throw new RuntimeException(ex);
-    }
-  }
-
-
-  private void parseOcrLine(DocumentContents docContents, Document doc, int page, Element e) {
+  private void parseOcrLine(SourceDocumentContents docContents, Document doc, int page, Element e) {
     final NodeList children = e.getChildNodes();
     for (int i = 0; i < children.getLength(); i++) {
       final Node n = children.item(i);
@@ -140,7 +132,7 @@ public class TesseractImageOCR implements IImageParser {
   }
 
 
-  private void parseOuter(DocumentContents docContents, Document doc, int page, Element e) {
+  private void parseOuter(SourceDocumentContents docContents, Document doc, int page, Element e) {
     final NodeList children = e.getChildNodes();
     for (int i = 0; i < children.getLength(); i++) {
       final Node n = children.item(i);
@@ -157,8 +149,8 @@ public class TesseractImageOCR implements IImageParser {
   }
 
 
-  private IDocumentContents readOCRResults2(int pageIndex, Path resultsFile) {
-    DocumentContents docContents = new DocumentContents();
+  private ISourceDocumentContents readOCRResults2(int pageIndex, Path resultsFile) {
+    SourceDocumentContents docContents = new SourceDocumentContents();
 
     Document doc;
     try {
@@ -181,7 +173,7 @@ public class TesseractImageOCR implements IImageParser {
   
   
   @Override
-  public IDocumentContents parse(String id, int pageIndex, Path imagePath) {
+  public ISourceDocumentContents parse(String id, int pageIndex, Path imagePath) {
     logger.info("Starting Tesseract OCR of: {}, page {}", imagePath, pageIndex);
 
     Path ocrBase = OCRPaths.getBasePath(id);
@@ -227,7 +219,7 @@ public class TesseractImageOCR implements IImageParser {
     // Now do something with the lines extracted by Tesseract
     Path hocrFile = OCRPaths.getHocrPath(id);
     logger.info("Starting parse of html file from OCR: " + hocrFile);
-    IDocumentContents docInstance = readOCRResults2(pageIndex, hocrFile);
+    ISourceDocumentContents docInstance = readOCRResults2(pageIndex, hocrFile);
 
     // The readOCRResults method is done with the hocrFile, so we can get rid of
     // it.

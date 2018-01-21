@@ -1,6 +1,6 @@
 package org.gyfor.docstore;
 
-import org.gyfor.doc.SegmentType;
+import org.gyfor.srcdoc.SegmentType;
 
 //import java.io.FileOutputStream;
 //import java.io.FileReader;
