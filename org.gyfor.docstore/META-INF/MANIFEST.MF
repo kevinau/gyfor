@@ -31,5 +31,6 @@ Bundle-ClassPath: lib/imgscalr-lib-4.2.jar,
  lib/bcprov-jdk15on-156.jar,
  lib/xmpbox-2.0.3.jar,
  .
-Export-Package: org.gyfor.docstore.parser,
+Export-Package: org.gyfor.docstore,
+ org.gyfor.docstore.parser,
  org.gyfor.docstore.parser.impl

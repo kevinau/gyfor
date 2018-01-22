@@ -3,7 +3,6 @@ package org.gyfor.web.docstore;
 import java.util.List;
 import java.util.Map;
 
-import org.gyfor.doc.DocumentTypeRegistry;
 import org.gyfor.http.AbstractWebSocketConnectionCallback;
 import org.gyfor.http.CallbackAccessor;
 import org.gyfor.http.Context;
@@ -26,8 +25,8 @@ import io.undertow.server.HttpHandler;
 import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
 
 
-@Context("/ws/documentTypes")
-@Component(service = HttpHandler.class)
+////@Context("/ws/documentTypes")
+////@Component(service = HttpHandler.class)
 public class DocumentTypesWebSocket extends WebSocketProtocolHandshakeHandler {
 
   @Reference

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.gyfor.doc.IDocumentStore;
+import org.gyfor.docstore.IDocumentStore;
 import org.gyfor.docstore.search.DocumentReference;
 import org.gyfor.docstore.search.ISearchEngine;
 import org.gyfor.http.Context;

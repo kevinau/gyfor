@@ -3,6 +3,6 @@
    <service>
       <provide interface="org.gyfor.docfinder.file.FolderWatchService"/>
    </service>
-   <reference bind="setDocumentStore" cardinality="1..1" interface="org.gyfor.doc.IDocumentStore" name="DocumentStore" policy="static" unbind="unsetDocumentStore"/>
+   <reference cardinality="1..1" field="docStore" interface="org.gyfor.docstore.IDocumentStore" name="docStore"/>
    <implementation class="org.gyfor.docfinder.file.FolderWatchService"/>
 </scr:component>

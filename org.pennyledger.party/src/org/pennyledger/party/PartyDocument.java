@@ -1,18 +1,11 @@
 package org.pennyledger.party;
 
-import java.sql.Timestamp;
+import java.io.Serializable;
 
-import org.gyfor.doc.Document;
-import org.gyfor.doc.IDocumentContents;
 import org.gyfor.object.ManyToOne;
 
 
-public class PartyDocument extends Document {
-
-  public PartyDocument(String hashCode, Timestamp originTime, String originName, String originExtension,
-      Timestamp importTime, IDocumentContents contents) {
-    super(hashCode, originTime, originName, originExtension, importTime, contents);
-  }
+public class PartyDocument implements Serializable {
 
   private static final long serialVersionUID = 1L;
 

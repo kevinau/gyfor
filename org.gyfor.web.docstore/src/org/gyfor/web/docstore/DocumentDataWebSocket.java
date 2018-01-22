@@ -29,8 +29,8 @@ import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.spi.WebSocketHttpExchange;
 
 
-@Context("/ws/documentData")
-@Component(service = HttpHandler.class)
+////@Context("/ws/documentData")
+////@Component(service = HttpHandler.class)
 public class DocumentDataWebSocket extends WebSocketProtocolHandshakeHandler {
 
   @Reference

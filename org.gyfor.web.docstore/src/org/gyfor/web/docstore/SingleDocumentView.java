@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.gyfor.doc.Document;
-import org.gyfor.doc.IDocumentStore;
+import org.gyfor.docstore.IDocumentStore;
 import org.gyfor.http.Context;
 import org.gyfor.http.HttpUtility;
 import org.gyfor.http.Resource;
+import org.gyfor.srcdoc.SourceDocument;
 import org.gyfor.template.ITemplate;
 import org.gyfor.template.ITemplateEngine;
 import org.gyfor.template.ITemplateEngineFactory;
@@ -92,7 +92,7 @@ public class SingleDocumentView implements HttpHandler {
     // Remove leading slash (/)
     id = id.substring(1);
     
-    Document doc = docStore.getDocument(id);
+    SourceDocument doc = docStore.getDocument(id);
     if (doc == null) {
       HttpUtility.endWithStatus(exchange, 404, "No document found for '" + id + "'");
       return;

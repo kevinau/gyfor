@@ -25,12 +25,12 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.gyfor.doc.Document;
-import org.gyfor.doc.DocumentStoreListener;
-import org.gyfor.doc.IDocumentContents;
-import org.gyfor.doc.IDocumentStore;
-import org.gyfor.doc.ISegment;
+import org.gyfor.docstore.DocumentStoreListener;
+import org.gyfor.docstore.IDocumentStore;
 import org.gyfor.home.IApplication;
+import org.gyfor.srcdoc.ISegment;
+import org.gyfor.srcdoc.ISourceDocumentContents;
+import org.gyfor.srcdoc.SourceDocument;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -95,12 +95,12 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
 
 
   @Override
-  public void documentAdded(Document doc) {
+  public void documentAdded(SourceDocument doc) {
     IndexWriterConfig config = new IndexWriterConfig(analyzer);
     try (IndexWriter iwriter = new IndexWriter(directory, config)) {
       org.apache.lucene.document.Document indexedDoc = new org.apache.lucene.document.Document();
       
-      IDocumentContents docContents = doc.getContents();
+      ISourceDocumentContents docContents = doc.getContents();
       // Add document id
       indexedDoc.add(new Field("id", doc.getHashCode(), StringField.TYPE_STORED));
       indexedDoc.add(new Field("source", "doc", StringField.TYPE_STORED));
@@ -180,7 +180,7 @@ public class LuceneSearchEngine implements DocumentStoreListener, ISearchEngine 
 
   
   @Override
-  public void documentRemoved(Document doc) {
+  public void documentRemoved(SourceDocument doc) {
     IndexWriterConfig config = new IndexWriterConfig(analyzer);
     try (IndexWriter iwriter = new IndexWriter(directory, config)) {
       logger.info("Updating document data {} ({})", doc.getHashCode(), doc.getOriginName());

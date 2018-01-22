@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.gyfor.doc.DocumentSummary;
-import org.gyfor.doc.IDocumentStore;
+import org.gyfor.docstore.IDocumentStore;
 import org.gyfor.http.Context;
+import org.gyfor.srcdoc.SourceReference;
 import org.gyfor.template.ITemplate;
 import org.gyfor.template.ITemplateEngine;
 import org.gyfor.template.ITemplateEngineFactory;
@@ -84,11 +84,11 @@ public class ListThumbsView implements HttpHandler {
 
     Map<String, Object> context = new HashMap<>();
 
-    List<DocumentSummary> docList = docStore.getAllDocuments();
-    Collections.sort(docList, new Comparator<DocumentSummary>() {
+    List<SourceReference> docList = docStore.getAllDocuments();
+    Collections.sort(docList, new Comparator<SourceReference>() {
 
       @Override
-      public int compare(DocumentSummary arg0, DocumentSummary arg1) {
+      public int compare(SourceReference arg0, SourceReference arg1) {
         return arg0.getImportTime().compareTo(arg1.getImportTime());
       }
     });

@@ -16,9 +16,9 @@ import io.undertow.server.HttpHandler;
 import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
 
 
-@Context("/d/edit")
-@Resource(path = "/resources", location = "resources")
-@Component(service = HttpHandler.class)
+////@Context("/d/edit")
+////@Resource(path = "/resources", location = "resources")
+////@Component(service = HttpHandler.class)
 public class DocumentDataEdit extends WebSocketProtocolHandshakeHandler {
 
   private EditWebSocketConnectionCallback callback;

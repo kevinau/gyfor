@@ -3,8 +3,7 @@ package org.gyfor.docfinder.file;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent.Kind;
 import java.util.regex.Pattern;
-
-import org.gyfor.doc.IDocumentStore;
+import org.gyfor.docstore.IDocumentStore;
 import org.gyfor.nio.DirectoryWatcher;
 import org.gyfor.osgi.ComponentConfiguration;
 import org.gyfor.osgi.Configurable;
@@ -30,20 +29,10 @@ public class FolderWatchService {
   @Configurable
   private Pattern pattern = Pattern.compile(".");
   
+  @Reference
   private IDocumentStore docStore;
   
   private DirectoryWatcher watchService;
-  
-  
-  @Reference
-  public void setDocumentStore (IDocumentStore docStore) {
-    this.docStore = docStore;
-  }
-
-  
-  public void unsetDocumentStore (IDocumentStore docStore) {
-    this.docStore = null;
-  }
   
   
   @Activate
