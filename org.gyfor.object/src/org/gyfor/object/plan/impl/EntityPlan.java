@@ -387,7 +387,7 @@ public class EntityPlan<T> extends NameMappedPlan<T> implements IEntityPlan<T> {
     String description = null;
     if (instance instanceof SelfDescribing) {
       SelfDescribing describing = (SelfDescribing)instance;
-      description = describing.buildDescription();
+      description = describing.entityDescription();
       return new EntityDescription(idx, description, entityLife);
     }
     

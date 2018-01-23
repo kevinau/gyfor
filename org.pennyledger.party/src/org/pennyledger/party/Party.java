@@ -4,16 +4,19 @@ import java.io.Serializable;
 
 import org.gyfor.object.Entity;
 import org.gyfor.object.EntityLabel;
+import org.gyfor.object.ItemField;
+import org.gyfor.object.Label;
 import org.gyfor.object.Optional;
 import org.gyfor.object.SelfDescribing;
 import org.gyfor.object.UniqueConstraint;
+import org.gyfor.object.type.builtin.PhoneNumberType;
 import org.gyfor.object.value.EntityLife;
 import org.gyfor.object.value.VersionTime;
 
 
 @Entity
 @UniqueConstraint({ "shortName" })
-@EntityLabel(value = "Business Entity")
+@EntityLabel(value = "Party", description = "A person or business that you deal with")
 public class Party implements SelfDescribing, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -27,6 +30,8 @@ public class Party implements SelfDescribing, Serializable {
   private String formalName;
 
   private String webPage;
+  
+  private String phoneNumber;
 
   private EntityLife entityLife;
 
@@ -76,6 +81,7 @@ public class Party implements SelfDescribing, Serializable {
     return shortName;
   }
 
+  @ItemField(length = 16)
   public void setShortName(String shortName) {
     this.shortName = shortName;
   }
@@ -94,6 +100,17 @@ public class Party implements SelfDescribing, Serializable {
 
   @Optional
   public void setWebPage(String webPage) {
+    this.webPage = webPage;
+  }
+
+  public String getPhoneNumber() {
+    return phoneNumber;
+  }
+
+  @Optional
+  @ItemField(type = PhoneNumberType.class)
+  @Label("Primary phone number")
+  public void setPhoneNumber(String webPage) {
     this.webPage = webPage;
   }
 

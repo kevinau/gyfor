@@ -24,48 +24,51 @@ input[type=text]::-ms-clear {
 
 html {
   font-size: 62.5%;
-  font-family: "Helvetica Neue", Helvetica, sans-serif; }
-
-form div.entity div.entityContent {
-  display: table;
-  width: 100%;
-  padding: 0;
-  margin: 2em 0 1em 0; }
-
-form div.entity div.desc {
   font-family: "Helvetica Neue", Helvetica, sans-serif;
-  margin: 0 0 0.25em 0;
+  padding: 0;
+  margin: 0; }
+
+body {
+  padding: 0;
+  margin: 1em; }
+
+form table.entity {
   width: 100%; }
 
-form div.entity div.desc div.title {
+form table.entity caption {
+  text-align: left;
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  padding: 0 0 1em 0;
+  width: 100%; }
+
+form table.entity caption div.title {
   font-size: 2.4rem;
   font-weight: 400;
   padding: 0;
-  margin: 0 0 0.125em 0; }
+  margin: 0 0 0.125em 0;
+  color: #4682b4; }
 
-form div.entity div.desc p {
+form table.entity caption p {
   font-size: 1.2rem;
-  opacity: 0.75;
+  opacity: 0.625;
   padding: 0;
-  margin: 0 0.25em; }
+  margin: 0 0.25em;
+  color: #4682b4; }
 
-form div.item {
-  display: table-row; }
-
-form label, form div.input {
-  display: table-cell;
+form table.entity th {
+  width: 20%;
   height: 4ex;
   box-sizing: border-box;
-  padding-bottom: 4px; }
-
-form label {
+  padding-bottom: 4px;
   color: #4682b4;
-  width: 20%;
   padding-right: 1em;
   text-align: right; }
 
-form div.input {
-  width: 80%; }
+form table.entity td {
+  width: 80%;
+  height: 4ex;
+  box-sizing: border-box;
+  padding-bottom: 4px; }
 
 form input {
   font-family: "Roboto Mono", monospace;
@@ -77,14 +80,18 @@ form input {
   border-bottom: solid 1px rgba(70, 130, 180, 0.5);
   width: 100%; }
 
-form div.input[data-status=ERROR] input {
+form td,
+form th {
+  vertical-align: text-bottom; }
+
+form td.input[data-status=ERROR] input {
   border-bottom: solid 1px rgba(255, 0, 0, 0.75); }
 
 form input:focus {
   border-bottom: solid 1px rgba(70, 130, 180, 0.75);
   box-shadow: 0px 1px 0px 0px rgba(70, 130, 180, 0.5); }
 
-form div.input[data-status=ERROR] input:focus {
+form td.input[data-status=ERROR] input:focus {
   border-bottom: solid 1px rgba(255, 0, 0, 0.75);
   box-shadow: 0px 1px 0px 0px rgba(255, 0, 0, 0.5); }
 
@@ -100,46 +107,46 @@ form label > span.desc {
   color: #4682b4;
   line-height: 100%; }
 
-form div.input div.status {
+form td.input div.status {
   padding-top: 0.25em;
   font-size: 1.1rem;
   line-height: 1;
   min-height: 1.1rem; }
 
-form div.input div.status span.hint {
+form td.input div.status span.hint {
   display: none; }
 
-form div.input[data-status] div.status span.hint {
+form td.input[data-status] div.status span.hint {
   display: none; }
 
-form div.input input:focus + div.status span.hint {
+form td.input input:focus + div.status span.hint {
   display: inline;
   color: #4682b4;
   padding-right: 0.5em; }
 
-form div.input[data-status] input:focus + div.status span.hint {
+form td.input[data-status] input:focus + div.status span.hint {
   display: none; }
 
-form div.input[data-status=REQUIRED] input:focus + div.status span.hint {
+form td.input[data-status=REQUIRED] input:focus + div.status span.hint {
   display: inline;
   color: #4682b4;
   padding-right: 0.5em; }
 
-form div.input div.status span.message {
+form td.input div.status span.message {
   display: none; }
 
-form div.input[data-status] div.status span.message {
+form td.input[data-status] div.status span.message {
   display: inline;
   font-size: 1.1rem;
   line-height: 1; }
 
-form div.input[data-status=ERROR] div.status span.message {
+form td.input[data-status=ERROR] div.status span.message {
   color: rgba(255, 0, 0, 0.75); }
 
-form div.input[data-status=INCOMPLETE] div.status span.message {
+form td.input[data-status=INCOMPLETE] div.status span.message {
   color: #ffa500; }
 
-form div.input[data-status=REQUIRED] div.status span.message {
+form td.input[data-status=REQUIRED] div.status span.message {
   color: #ffa500; }
 
 /*# sourceMappingURL=flat.css.map */

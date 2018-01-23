@@ -18,6 +18,7 @@ public interface IItemPlan<T> extends INodePlan, INode {
   /**
    * A convenience method that returns an Annotation for this input field.
    */
+  @Override
   public <A extends Annotation> A getAnnotation(Class<A> klass);
 
   /**

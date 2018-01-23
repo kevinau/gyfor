@@ -1,11 +1,19 @@
-<div class="entity" id="node{{id}}">
-<div class="desc">
+<form id="node{{id}}" onsubmit="event.preventDefault(); false;">
+<table class="entity">
+<caption>
 <div class="title">{{title}}</div>
 {% if description is not empty %}
 <p>{{description}}</p>
 {% endif %}
-</div>
-<div id="contentHere{{id}}" class="entityContent">
+</caption>
+<tbody class="entityContent" id="contentHere{{id}}">
 {% block entityContent %}{% endblock %}
-</div>
-</div>
+</tbody>
+<tfoot>
+<tr class="item">
+<th>&nbsp;</th>
+<td class="input"><button>BUTTON</button></td>
+</tr>
+</tfoot>
+</table>
+</form>

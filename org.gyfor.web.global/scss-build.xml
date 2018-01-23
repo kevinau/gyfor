@@ -1,7 +1,7 @@
 <project basedir="." default="scss" >
     <target name="scss">
-        <apply dest="resources" executable="C:/Ruby22-x64\bin/ruby.exe">
-        	<arg value="C:/Ruby22-x64/bin/scss" />
+        <apply dest="resources" executable="C:/Ruby24-x64\bin/ruby.exe">
+        	<arg value="C:/Ruby24-x64/bin/scss" />
             <srcfile/>
             <targetfile/>
             <fileset dir="scss" includes="*.scss"/>

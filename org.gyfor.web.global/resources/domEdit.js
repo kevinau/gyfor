@@ -2,7 +2,7 @@
 				// Add the html to the specified container (identified by containerSelector).
 				// The html can be multiple elements.  A wschange event is fired after all
 				// children have been added.
-				////console.log ("addChildren: " + selector + ": " + htmlSource);
+				console.log ("addChildren: " + selector + ": " + htmlSource);
 				let container = document.querySelector(selector);
   				if (!container) {
   					console.log("Cannot find DOM element matching selector: " + selector);
@@ -24,7 +24,7 @@
   					}
   				}
   				
-				let dx = document.createElement('div');
+				let dx = document.createElement(container.tagName);
   				dx.innerHTML = htmlSource;
   				let children = dx.childNodes;
     			while (children.length > 0) {
@@ -59,6 +59,7 @@
 	}
 
 	function syncChildren(parentSelector, nodeSelector, index, htmlSource) {
+		console.log ("syncChildren: " + nodeSelector + ": " + htmlSource);
 		let node = document.querySelector(nodeSelector);
 		if (node) {
 			replaceChildren(nodeSelector, htmlSource);
@@ -72,7 +73,7 @@
 				// Remove the children of the existing element (identified by container selector), then add the 
 				// html in its place.  The html can be multiple elements. A wschange event is fired after all
 				// children have been replaced.
-				////console.log ("replaceChildren: " + selector + ": " + htmlSource);
+				console.log ("replaceChildren: " + selector + ": " + htmlSource);
 				let container = document.querySelector(selector);
 				if (container) {
 				    let last;
@@ -116,7 +117,7 @@
 	
 	function noteError(nodeId, errorType, message) {
 		console.log("note error: " + nodeId + " " + errorType + " " + message);
-		let elem = document.querySelector("#node" + nodeId + " div.input");
+		let elem = document.querySelector("#node" + nodeId + " td.input");
 		elem.setAttribute("data-status", errorType);
 		let elem2 = elem.querySelector("span.message");
 		if (elem2) {
@@ -134,7 +135,7 @@
 
 	
 	function clearError(nodeId) {
-		let elem = document.querySelector("#node" + nodeId + " div.input");
+		let elem = document.querySelector("#node" + nodeId + " td.input");
 		let classList = elem.classList;
 		elem.removeAttribute("data-status");
 		classList.remove("error", "warning", "incomplete");

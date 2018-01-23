@@ -1,11 +1,13 @@
-<div class="item" id="node{{id}}">
+<tr class="item" id="node{{id}}">
+<th>
 <label for="input{{id}}"><span class="label">{{label}}</span>
 {% if description is not empty %}<br><span class="desc">{{description}}</span>{% endif %}
 </label>
-<div class="input">
+</th>
+<td class="input">
 {% block itemContent %}<p>No item content specified</p>{% endblock %}
 <div class="status">{% if hint is not empty %}
 <span class="hint">{{hint}}</span>
 {% endif %}</div>
-</div>
-</div>
+</td>
+</tr>
