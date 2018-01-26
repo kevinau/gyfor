@@ -59,7 +59,7 @@ form table.entity th {
   width: 20%;
   height: 4ex;
   box-sizing: border-box;
-  padding-bottom: 4px;
+  padding-top: 4px;
   color: #4682b4;
   padding-right: 1em;
   text-align: right; }
@@ -68,7 +68,7 @@ form table.entity td {
   width: 80%;
   height: 4ex;
   box-sizing: border-box;
-  padding-bottom: 4px; }
+  padding-top: 4px; }
 
 form input {
   font-family: "Roboto Mono", monospace;
@@ -148,5 +148,27 @@ form td.input[data-status=INCOMPLETE] div.status span.message {
 
 form td.input[data-status=REQUIRED] div.status span.message {
   color: #ffa500; }
+
+button {
+  color: #333;
+  background: #b2cce1;
+  border: 1px solid #4682b4;
+  border-radius: 3px;
+  padding: 0.2em 0.6em;
+  cursor: default; }
+
+button:disabled,
+button:disabled:hover {
+  color: #4682b4;
+  background: #fff;
+  cursor: default; }
+
+button:hover {
+  cursor: pointer; }
+
+button:active {
+  color: #000;
+  background: #8db3d3;
+  cursor: pointer; }
 
 /*# sourceMappingURL=flat.css.map */

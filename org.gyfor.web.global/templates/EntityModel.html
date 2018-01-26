@@ -1,3 +1,8 @@
+{% macro button(id,label,show="available") %}
+{% if show == "available" %}{% set sx = "showAvailable" %}{% else %}{% set sx = "showAlways" %}{% endif %}
+<button class="action {{sx}}" type="button"
+        onclick="window.websocket.sendClick({{id}},this.value)">{{ label }}</button>
+{% endmacro %}
 <form id="node{{id}}" onsubmit="event.preventDefault(); false;">
 <table class="entity">
 <caption>
@@ -7,12 +12,17 @@
 {% endif %}
 </caption>
 <tbody class="entityContent" id="contentHere{{id}}">
+<tr class="item">
+<th>&nbsp;</th>
+<td class="input">{{ button("START_ADD", "Add", show="available") }}</td>
+</tr>
 {% block entityContent %}{% endblock %}
 </tbody>
 <tfoot>
 <tr class="item">
 <th>&nbsp;</th>
-<td class="input"><button>BUTTON</button></td>
+<td class="input">{{ button("CONFIRM_ADD", "Add", show="available") }}
+                  {{ button("CANCEL", "Cancel", show="available") }}</td>
 </tr>
 </tfoot>
 </table>

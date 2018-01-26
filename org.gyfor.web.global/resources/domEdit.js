@@ -121,28 +121,49 @@
 		elem.setAttribute("data-status", errorType);
 		let elem2 = elem.querySelector("span.message");
 		if (elem2) {
-			console.log("existing span.message");
+			//console.log("existing span.message");
 			elem2.textContent = message;
 		} else {
-			console.log("no existing span.message");
+			//console.log("no existing span.message");
 			let dx = document.createElement('span');
 			dx.classList.add("message");
 			dx.textContent = message;
 			elem2 = elem.parentNode.querySelector("div.status");
 			elem2.appendChild(dx);
 		}
+		adjustButton(elem);
 	}
 
+	
+	function adjustButton(elem) {
+		// Find nodeId of the enclosing form element.
+		let formElem = elem.parentNode;
+		while (formElem.tagName != "FORM") {
+			formElem = formElem.parentNode;
+		}
+		// Find the action button
+		let actionButton = formElem.querySelector("button.action");
+		
+		// Are there any items with errors?
+		let errors = formElem.querySelector("td.input[data-status]");
+		if (errors) {
+			actionButton.disabled = true;
+		} else {
+			actionButton.disabled = false;
+		}
+	}
+	
 	
 	function clearError(nodeId) {
 		let elem = document.querySelector("#node" + nodeId + " td.input");
 		let classList = elem.classList;
 		elem.removeAttribute("data-status");
 		classList.remove("error", "warning", "incomplete");
-		elem = elem.querySelector("span.message");
-		if (elem) {
-			elem.parentNode.removeChild(elem);
+		let msgElem = elem.querySelector("span.message");
+		if (msgElem) {
+			msgElem.parentNode.removeChild(msgElem);
 		}
+		adjustButton(elem);
 	}
 
 

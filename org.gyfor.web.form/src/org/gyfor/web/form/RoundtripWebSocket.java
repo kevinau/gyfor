@@ -90,7 +90,7 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
         }
         ServiceReference<FormReference> serviceRef = serviceRefs.iterator().next();
         FormReference objectRef = bundleContext.getService(serviceRef);
-        String objectClassName = objectRef.getClassName();
+        String objectClassName = objectRef.getEntityClassName();
         IEntityModel objectModel = modelFactory.buildEntityModel(objectClassName);
         
         boolean hasTitle = (queryMap.get("popup") == null); 
@@ -121,9 +121,15 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
         break;
       case "input" :
         IEntityModel objectModel2 = (IEntityModel)sessionData;
-        int id = Integer.parseInt(args[0]);
-        IItemModel item = objectModel2.getById(id);
-        item.setValueFromSource(args[1]);
+        int id2 = Integer.parseInt(args[0]);
+        IItemModel item2 = objectModel2.getById(id2);
+        item2.setValueFromSource(args[1]);
+        break;
+      case "click" :
+        IEntityModel objectModel3 = (IEntityModel)sessionData;
+        int id3 = Integer.parseInt(args[0]);
+        IItemModel item3 = objectModel3.getById(id3);
+        item3.setValueFromSource(args[1]);
         break;
       default :
         throw new RuntimeException("Unknown command: '" + command + "'");

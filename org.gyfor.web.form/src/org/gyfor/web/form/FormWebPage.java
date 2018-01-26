@@ -95,7 +95,7 @@ public class FormWebPage implements HttpHandler {
     }
     ServiceReference<FormReference> serviceRef = serviceRefs.iterator().next();
     FormReference formRef = bundleContext.getService(serviceRef);
-    String formClassName = formRef.getClassName();
+    String formClassName = formRef.getEntityClassName();
     
     //String templateName = formClassName + "(entityEditPage)";
     ITemplate template = templateEngine.getTemplate("entityEditPage");

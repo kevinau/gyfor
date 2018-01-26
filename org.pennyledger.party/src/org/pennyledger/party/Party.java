@@ -16,7 +16,7 @@ import org.gyfor.object.value.VersionTime;
 
 @Entity
 @UniqueConstraint({ "shortName" })
-@EntityLabel(value = "Party", description = "A person or business that you deal with")
+@EntityLabel(description = "A person or business that you deal with")
 public class Party implements SelfDescribing, Serializable {
 
   private static final long serialVersionUID = 1L;

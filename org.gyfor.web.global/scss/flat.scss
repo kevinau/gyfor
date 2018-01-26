@@ -89,7 +89,7 @@ form table.entity th {
   width: 20%;
   height: 4ex;
   box-sizing: border-box;
-  padding-bottom: 4px;
+  padding-top: 4px;
   color: $formColor;
   padding-right: 1em;
   text-align: right;
@@ -99,7 +99,7 @@ form table.entity td {
   width: 80%;
   height: 4ex;
   box-sizing: border-box;
-  padding-bottom: 4px;
+  padding-top: 4px;
 }
 
 // Item styling
@@ -201,3 +201,28 @@ form td.input[data-status=REQUIRED] div.status span.message {
 	color: $requiredColor;
 }
 
+button {
+    color: #333;
+	background: lighten($formColor, 30);
+	border: 1px solid $formColor;
+	border-radius: 3px;
+	padding: 0.2em 0.6em;
+	cursor: default;
+}
+
+button:disabled,
+button:disabled:hover {
+    color: $formColor;
+	background: #fff;
+	cursor: default;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+button:active {
+    color: #000;
+	background: lighten($formColor, 20);
+	cursor: pointer;
+}

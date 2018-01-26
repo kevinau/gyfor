@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import org.gyfor.value.ExistingDirectory;
@@ -39,20 +38,23 @@ public class ComponentConfiguration {
               propertyName = field.getName();
             }
             Class<?> fieldClass = field.getType();
-            if (List.class.isAssignableFrom(fieldClass)) {
-              // The list is assumed to be a list of String
-              ArrayList<String> list = new ArrayList<>();
+            if (fieldClass.isArray()) {
+              ArrayList<Object> list = new ArrayList<>();
               String prefix = propertyName + ".";
               
               for (Enumeration<String> e = dict.keys(); e.hasMoreElements(); ) {
                 String key = e.nextElement();
                 if (key.equals(propertyName) || key.startsWith(prefix)) {
-                  String value = dict.get(key).toString();
-                  list.add(value);
+                  String propertyValue = dict.get(key).toString();
+                  Object fieldValue = getFieldValue(field.getType(), propertyValue);
+                  //field.setAccessible(true);
+                  //field.set(target, fieldValue);
+                  list.add(fieldValue);
                 }
               }
+              Object[] array = list.toArray();
               field.setAccessible(true);
-              field.set(target, list);
+              field.set(target, array);
             } else {
               String propertyValue = (String)dict.get(propertyName);
               if (propertyValue != null) {
