@@ -1,4 +1,4 @@
-<tr class="item" id="node{{id}}">
+<tr class="item{% if mode == 'HIDDEN' %} hidden{% endif %}" id="node{{id}}">
 <th>
 <label for="input{{id}}"><span class="label">{{label}}</span>
 {% if description is not empty %}<br><span class="desc">{{description}}</span>{% endif %}

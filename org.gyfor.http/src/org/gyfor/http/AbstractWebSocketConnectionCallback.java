@@ -24,7 +24,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
   
   private final Logger logger = LoggerFactory.getLogger(AbstractWebSocketConnectionCallback.class);
   
-  private final Map<WebSocketChannel, Object> channels = new HashMap<>();
+  private final Map<WebSocketChannel, ISessionData> channels = new HashMap<>();
 
   private String context;
 
@@ -69,7 +69,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
         }
       }
     }
-    Object sessionData = buildSessionData(requestPath, queryMap, channel);
+    ISessionData sessionData = buildSessionData(requestPath, queryMap, channel);
     
     synchronized (channels) {
       if (channels.isEmpty()) {
@@ -97,7 +97,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
       @Override
       protected void onFullTextMessage(WebSocketChannel channel, BufferedTextMessage message) {
         synchronized (channels) {
-        String msg = message.getData();
+          String msg = message.getData();
           logger.info("Websocket receive msg: {}, {}", channel.getSourceAddress(), msg);
           if (msg.equals("close")) {
             try {
@@ -107,7 +107,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
               throw new RuntimeException(ex);
             }
           } else {
-            Object sessionData = channels.get(channel);
+            ISessionData sessionData = channels.get(channel);
             WebSocketSession wss = new WebSocketSession(channel);
             
             // Split message into command and args
@@ -148,7 +148,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
   }
   
   
-  protected abstract Object buildSessionData (String path, Map<String, String> queryMap, WebSocketChannel channel);
+  protected abstract ISessionData buildSessionData (String path, Map<String, String> queryMap, WebSocketChannel channel);
 
   private static final char DELIMITER = '\t';
 
@@ -192,7 +192,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
   }
   
   
-  protected abstract void doRequest (String command, String[] args, Object sessionData, WebSocketSession wss);
+  protected abstract void doRequest (String command, String[] args, ISessionData sessionData, WebSocketSession wss);
   
   
   public void closeAllSessions() {
@@ -211,7 +211,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
   
   protected void forAllSessions (Consumer<WebSocketSession> consumer) {
     synchronized (channels) {
-      for (Map.Entry<WebSocketChannel, Object> entry : channels.entrySet()) {
+      for (Map.Entry<WebSocketChannel, ISessionData> entry : channels.entrySet()) {
         WebSocketSession session = new WebSocketSession(entry.getKey());
         consumer.accept(session);
       }
@@ -223,5 +223,5 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
   
   
   protected abstract void closeResources ();
-  
+
 }

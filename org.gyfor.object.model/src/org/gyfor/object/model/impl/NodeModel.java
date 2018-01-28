@@ -68,6 +68,8 @@ public abstract class NodeModel implements INodeModel {
   protected INodeModel buildNodeModel (IContainerModel parent, IValueReference valueRef, INodePlan nodePlan) {
     INodeModel node = modelFactory.buildNodeModel(valueRef, nodePlan);
     node.setParent(parent);
+    System.out.println("====================== 3 " + node.getName() + " " + node.getNodeId());
+
     node.setEntryMode(nodePlan.getEntryMode());
     return node;
   }
@@ -148,7 +150,7 @@ public abstract class NodeModel implements INodeModel {
   @Override
   public void fireEffectiveModeChange (INodeModel node, EffectiveEntryMode priorMode) {
     for (EffectiveEntryModeListener x : effectiveEntryModeListeners) {
-      x.effectiveModeChanged(this, priorMode);
+      x.effectiveModeChanged(node, priorMode);
     }
     // Propagate the event upwards
     IContainerModel parentNode = getParent();

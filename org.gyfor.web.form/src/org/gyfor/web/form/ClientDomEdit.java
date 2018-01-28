@@ -2,6 +2,7 @@ package org.gyfor.web.form;
 
 import org.gyfor.http.WebSocketSession;
 import org.gyfor.object.UserEntryException;
+import org.gyfor.object.model.EffectiveEntryMode;
 
 import io.undertow.websockets.core.WebSocketChannel;
 
@@ -76,14 +77,6 @@ public class ClientDomEdit {
     WebSocketSession.send(channel, "removeNodes", selector);
   }
   
-  public void noteError(int id, UserEntryException ex) {
-    WebSocketSession.send(channel, "noteError", id, ex.getType(), ex.getMessage(), ex.getCompletion());
-  }
-  
-  public void clearError(int id) {
-    WebSocketSession.send(channel, "clearError", id);
-  }
-  
   /**
    * Toggle a class name on the nodes that match the selector.
    */
@@ -103,4 +96,25 @@ public class ClientDomEdit {
     WebSocketSession.send(channel, "setTitle", title);
   }
   
+
+  public void setValue(int id, String sourceValue) {
+    WebSocketSession.send(channel, "setValue", id, sourceValue);
+  }
+  
+  
+  public void noteError(int id, UserEntryException ex) {
+    WebSocketSession.send(channel, "noteError", id, ex.getType(), ex.getMessage(), ex.getCompletion());
+  }
+  
+  public void clearError(int id) {
+    WebSocketSession.send(channel, "clearError", id);
+  }
+  
+  public void setEntryMode(int id, EffectiveEntryMode mode) {
+    WebSocketSession.send(channel, "setEntryMode", id, mode);
+  }
+  
+  public void changeOption(Enum<?> option, boolean available) {
+    WebSocketSession.send(channel, "changeOption", option, available);
+  }
 }

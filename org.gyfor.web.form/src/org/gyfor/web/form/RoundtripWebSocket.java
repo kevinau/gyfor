@@ -8,6 +8,7 @@ import org.gyfor.formref.FormReference;
 import org.gyfor.http.AbstractWebSocketConnectionCallback;
 import org.gyfor.http.CallbackAccessor;
 import org.gyfor.http.Context;
+import org.gyfor.http.ISessionData;
 import org.gyfor.http.Resource;
 import org.gyfor.http.WebSocketSession;
 import org.gyfor.object.model.IEntityModel;
@@ -15,6 +16,7 @@ import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.IModelFactory;
 import org.gyfor.template.ITemplateEngine;
 import org.gyfor.template.ITemplateEngineFactory;
+import org.gyfor.web.form.action.StateMachine;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -75,7 +77,7 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
     
     
     @Override
-    protected Object buildSessionData(String path, Map<String, String> queryMap, WebSocketChannel channel) {
+    protected ISessionData buildSessionData(String path, Map<String, String> queryMap, WebSocketChannel channel) {
       System.out.println("Round trip: build session data");
       
       if (path == null || path.length() == 0) {
@@ -90,6 +92,8 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
         }
         ServiceReference<FormReference> serviceRef = serviceRefs.iterator().next();
         FormReference objectRef = bundleContext.getService(serviceRef);
+        
+        // Set up object model...
         String objectClassName = objectRef.getEntityClassName();
         IEntityModel objectModel = modelFactory.buildEntityModel(objectClassName);
         
@@ -98,10 +102,15 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
         objectModel.addEntityCreationListener(eventListener);
         objectModel.addContainerChangeListener(eventListener);
         objectModel.addItemEventListener(eventListener);
+        objectModel.addEffectiveEntryModeListener(eventListener);
         //Object instanceValue = objectModel.newInstance();
         //objectModel.setValue(instanceValue);
         
-        return objectModel;
+        // ... and state machine, but do not fire any events yet
+        StateMachine stateMachine = new StateMachine();
+        stateMachine.addOptionChangeListener(eventListener);
+        
+        return new RoundtripData(objectModel, stateMachine);
       } catch (ClassNotFoundException ex) {
         throw new RuntimeException(ex);
       } catch (InvalidSyntaxException ex) {
@@ -111,25 +120,27 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
 
 
     @Override
-    protected void doRequest(String command, String[] args, Object sessionData, WebSocketSession wss) {
+    protected void doRequest(String command, String[] args, ISessionData sessionData, WebSocketSession wss) {
       System.out.println("Round trip: doRequest " + command);
       switch (command) {
       case "hello" :
-        IEntityModel objectModel = (IEntityModel)sessionData;
-        Object instance = objectModel.newInstance();
-        objectModel.setValue(instance);
+        //IEntityModel objectModel = ((RoundtripData)sessionData).entityModel();
+        //Object instance = objectModel.newInstance();
+        //objectModel.setValue(instance);
+        //StateMachine stateMachine = ((RoundtripData)sessionData).stateMachine();
+        //stateMachine.start(objectModel);
+        sessionData.startSession();
         break;
       case "input" :
-        IEntityModel objectModel2 = (IEntityModel)sessionData;
+        IEntityModel objectModel2 = ((RoundtripData)sessionData).entityModel();
         int id2 = Integer.parseInt(args[0]);
         IItemModel item2 = objectModel2.getById(id2);
         item2.setValueFromSource(args[1]);
         break;
       case "click" :
-        IEntityModel objectModel3 = (IEntityModel)sessionData;
-        int id3 = Integer.parseInt(args[0]);
-        IItemModel item3 = objectModel3.getById(id3);
-        item3.setValueFromSource(args[1]);
+        IEntityModel objectModel3 = ((RoundtripData)sessionData).entityModel();
+        StateMachine stateMachine3 = ((RoundtripData)sessionData).stateMachine();
+        stateMachine3.setOption(args[0], objectModel3);
         break;
       default :
         throw new RuntimeException("Unknown command: '" + command + "'");

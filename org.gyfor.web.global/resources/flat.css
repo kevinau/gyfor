@@ -59,7 +59,8 @@ form table.entity th {
   width: 20%;
   height: 4ex;
   box-sizing: border-box;
-  padding-top: 4px;
+  padding-top: 2px;
+  padding-bottom: 2px;
   color: #4682b4;
   padding-right: 1em;
   text-align: right; }
@@ -68,7 +69,8 @@ form table.entity td {
   width: 80%;
   height: 4ex;
   box-sizing: border-box;
-  padding-top: 4px; }
+  padding-top: 2px;
+  padding-bottom: 2px; }
 
 form input {
   font-family: "Roboto Mono", monospace;
@@ -79,6 +81,9 @@ form input {
   background-clip: padding-box;
   border-bottom: solid 1px rgba(70, 130, 180, 0.5);
   width: 100%; }
+
+form tr.item.hidden {
+  display: none; }
 
 form td,
 form th {
@@ -156,6 +161,9 @@ button {
   border-radius: 3px;
   padding: 0.2em 0.6em;
   cursor: default; }
+
+button.hidden {
+  display: none; }
 
 button:disabled,
 button:disabled:hover {

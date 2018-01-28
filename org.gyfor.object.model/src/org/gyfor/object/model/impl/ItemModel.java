@@ -51,6 +51,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   
   //private Object parentInstance;
   
+  private Object currentValue;
   private String currentSource = "";
   private boolean currentValueInError = true;
   
@@ -270,7 +271,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   public void setDefaultValue (Object value) {
     boolean defaultWasShowing = false;
     if (comparisonBasis == ComparisonBasis.DEFAULT) {
-      Object currentValue = valueRef.getValue();
+      //Object currentValue = valueRef.getValue();
       defaultWasShowing = (defaultValue == null ? currentValue == null : defaultValue.equals(currentValue));
     }
     defaultValue = value;
@@ -291,7 +292,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   public void setReferenceValue (Object value) {
     boolean referenceWasShowing = false;
     if (comparisonBasis == ComparisonBasis.REFERENCE) {
-      Object currentValue = valueRef.getValue();
+      //Object currentValue = valueRef.getValue();
       referenceWasShowing = (referenceValue == null ? currentValue == null : referenceValue.equals(currentValue));
     }
     referenceValue = value;
@@ -321,6 +322,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
 //  }
   
   
+  @Override
   public String getValueAsSource () {
     return currentSource;
   }
@@ -364,7 +366,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
     String source = type.toEntryString(primalValue, null);
     currentSource = source;
     
-    Object currentValue = valueRef.getValue();
+    //Object currentValue = valueRef.getValue();
     if (primalValue == null ? currentValue != null : !primalValue.equals(currentValue)) {
       fireSourceChange(this);
     }
@@ -386,7 +388,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
     String source = type.toEntryString(defaultValue, null);
     currentSource = source;
     
-    Object currentValue = valueRef.getValue();
+    //Object currentValue = valueRef.getValue();
     if (defaultValue == null ? currentValue != null : !defaultValue.equals(currentValue)) {
       fireSourceChange(this);
     }
@@ -408,7 +410,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
     String source = type.toEntryString(referenceValue, null);
     currentSource = source;
     
-    Object currentValue = valueRef.getValue();
+    //Object currentValue = valueRef.getValue();
     if (referenceValue == null ? currentValue != null : !referenceValue.equals(currentValue)) {
       fireSourceChange(this);
     }
@@ -428,7 +430,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   
   public void setReferenceFromValue () {
     if (!currentValueInError) {
-      Object currentValue = valueRef.getValue();
+      //Object currentValue = valueRef.getValue();
       setReferenceValue (currentValue);
     }
   }
@@ -491,15 +493,17 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
     if (currentValueInError) {
       // The value is being set when previously it was in error, so let others know
       currentValueInError = false;
+      currentValue = value;
       valueRef.setValue(value);
       if (fireValueChangeEvents) {
         fireValueChange(this);
       }
     } else {
-      Object currentValue = valueRef.getValue();
+      //Object currentValue = valueRef.getValue();
       if (value == null ? currentValue != null : !value.equals(currentValue)) {
         // Set the new value.
         currentValueInError = false;
+        currentValue = value;
         valueRef.setValue(value);
         // Firing a value change will trigger validation
         if (fireValueChangeEvents) {
@@ -523,7 +527,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
       if (currentValueInError) {
         ce = true;
       } else {
-        Object currentValue = valueRef.getValue();
+        //Object currentValue = valueRef.getValue();
         switch (comparisonBasis) {
         case DEFAULT :
           ce = defaultValue == null ? currentValue == null : defaultValue.equals(currentValue);

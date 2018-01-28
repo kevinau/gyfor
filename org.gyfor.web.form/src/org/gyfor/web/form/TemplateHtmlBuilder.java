@@ -84,6 +84,8 @@ public class TemplateHtmlBuilder {
       IType<?> type = ((IItemPlan<?>)nodeModel.getPlan()).getType();
       templateContext.put("type", type);
     }
+    System.out.println(">>>>>>>>>>>>>> " + nodeModel.getName() + " " + nodeModel.getEffectiveEntryMode());
+    templateContext.put("mode", nodeModel.getEffectiveEntryMode().toString());
     if (withValues != null) {
       templateContext.putAll(withValues);
     }

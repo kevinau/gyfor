@@ -115,6 +115,13 @@
 	}
 
 	
+	function setValue(nodeId, value) {
+		console.log("set value: " + nodeId + " " + value);
+		let elem = document.querySelector("#node" + nodeId + " td.input input");
+		elem.value = value;
+	}
+	
+	
 	function noteError(nodeId, errorType, message) {
 		console.log("note error: " + nodeId + " " + errorType + " " + message);
 		let elem = document.querySelector("#node" + nodeId + " td.input");
@@ -135,6 +142,19 @@
 	}
 
 	
+	function clearError(nodeId) {
+		let elem = document.querySelector("#node" + nodeId + " td.input");
+		let classList = elem.classList;
+		elem.removeAttribute("data-status");
+		classList.remove("error", "warning", "incomplete");
+		let msgElem = elem.querySelector("span.message");
+		if (msgElem) {
+			msgElem.parentNode.removeChild(msgElem);
+		}
+		adjustButton(elem);
+	}
+
+
 	function adjustButton(elem) {
 		// Find nodeId of the enclosing form element.
 		let formElem = elem.parentNode;
@@ -152,25 +172,65 @@
 			actionButton.disabled = false;
 		}
 	}
+
 	
-	
-	function clearError(nodeId) {
-		let elem = document.querySelector("#node" + nodeId + " td.input");
-		let classList = elem.classList;
-		elem.removeAttribute("data-status");
-		classList.remove("error", "warning", "incomplete");
-		let msgElem = elem.querySelector("span.message");
-		if (msgElem) {
-			msgElem.parentNode.removeChild(msgElem);
+	function setEntryMode(nodeId, mode) {
+		console.log("set entry mode: " + nodeId + " " + mode);
+		let elem = document.querySelector("#node" + nodeId);
+		if (elem) {
+    		console.log("............... " + elem + "  " + nodeId);
+	    	let elem2 = elem.querySelector("td.input input");
+		    console.log("............... " + elem2.tagName);
+		    switch (mode) {
+		    case "HIDDEN" :
+		    	// Change the item elements
+		    	elem.classList.add("hidden");
+		    	// Remove the other modes from the input elements
+		    	elem2.classList.remove("view", "enabled", "disabled");
+		    	break;
+		    case "VIEW" :
+		    	elem.classList.remove("hidden");
+		    	elem2.classList.add("view");
+		    	elem2.classList.remove("enabled", "disabled");
+		    	break;
+		    case "ENABLED" :
+		    	elem.classList.remove("hidden");
+		    	elem2.classList.add("enabled");
+		    	elem2.classList.remove("view", "disabled");
+		    	break;
+		    case "DISABLED" :
+		    	elem.classList.remove("hidden");
+		    	elem2.classList.add("disabled");
+		    	elem2.classList.remove("view", "enabled");
+		    	break;
+		    default :
+		    	console.log("Unknown mode type: " + mode);
+		    }
 		}
-		adjustButton(elem);
 	}
-
-
+	
+	function changeOption(name, available) {
+		console.log("changeOption " + name + " " + available);
+		let matches = document.querySelectorAll("button[value=" + name + "]");
+		console.log("changeOption " + name + " " + available + " " + matches.length);
+		for (let i = 0; i < matches.length; i++) {
+			let node = matches[i];
+			if (available == "true") {
+				node.removeAttribute("disabled");
+				node.classList.remove("hidden");
+			} else {
+				if (node.getAttribute("data-show") != "always") {
+					node.classList.add("hidden");
+				}
+				node.setAttribute("disabled", "");
+			}
+		}
+	}
+	
 	function setTitle(title) {
 		document.title = title;
 	}
 
 
 export {addChildren, syncChildren, replaceNode, replaceChildren, deleteChildren, deleteNodes,
-	    noteError, clearError, setTitle};
+	    setValue, noteError, clearError, setEntryMode, setTitle, changeOption};

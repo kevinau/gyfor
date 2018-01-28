@@ -35,4 +35,6 @@ public interface IItemModel extends INodeModel, INode {
     return false;
   }
 
+  public String getValueAsSource();
+
 }

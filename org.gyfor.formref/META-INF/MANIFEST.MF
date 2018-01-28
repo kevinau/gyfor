@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Form definition
+Bundle-SymbolicName: org.gyfor.formref
+Bundle-Version: 1.0.0
+Bundle-Vendor: Kevin Holloway
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/org.gyfor.formref.FormReference.xml
+Import-Package: org.gyfor.osgi,
+ org.osgi.framework;version="1.8.0",
+ org.osgi.service.component,
+ org.osgi.service.component.annotations;version="1.3.0";resolution:=optional
+Export-Package: org.gyfor.formref

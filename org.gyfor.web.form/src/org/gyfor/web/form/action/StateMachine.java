@@ -5,15 +5,19 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Function;
 
-import org.gyfor.object.Entity;
+import org.gyfor.object.EntryMode;
 import org.gyfor.object.model.IEntityModel;
 
 public class StateMachine {
 
   private enum Option {
-    FETCH, 
+    //FETCH, 
+    @OptionLabel(label="New", description="Create a new {}")
     START_ADD, 
-    CONFIRM_ADD, 
+    
+    @OptionLabel(label="Add", description="Save the {}")
+    CONFIRM_ADD,
+    
     //START_EDIT, 
     //START_CHANGE, 
     //CONFIRM_CHANGE, 
@@ -24,6 +28,7 @@ public class StateMachine {
     //START_REMOVE, 
     //CONFIRM_REMOVE, 
     CLEAR, 
+    
     CANCEL;
   };
 
@@ -40,6 +45,8 @@ public class StateMachine {
   };
 
   private State state;
+  
+  private final Function<IEntityModel, State> initialFunction;
 
   private final List<Transition<State, Option, IEntityModel>> transitions = new ArrayList<>();
 
@@ -48,30 +55,36 @@ public class StateMachine {
   private final EnumSet<Option> availableOptions = EnumSet.noneOf(Option.class);
   
   public StateMachine () {
-    transition(State.ADDING, Option.CANCEL, entity -> {
-      entity.getClass();
-      return State.CLEAR;
-    });
-    transition(State.ADDING, Option.CONFIRM_ADD, entity -> {
-      entity.getClass();
-      return State.SHOWING;
-    });
-    transition(State.CLEAR, Option.FETCH, entity -> {
-      entity.getClass();
-      return State.SHOWING;
-    });
-    transition(State.CLEAR, Option.START_ADD, entity -> {
-      entity.clear();
+    Function<IEntityModel, State> startAdding = entityModel -> {
+      System.out.println("startAdding ..........");
+      entityModel.setEntryMode(EntryMode.ENABLED);
+      //Object newInstance = entityModel.newInstance();
+      //entityModel.setValue(newInstance);
       return State.ADDING;
-    });
-    transition(State.SHOWING, Option.CLEAR, entity -> {
-      entity.clear();
+    };
+    
+    Function<IEntityModel, State> confirmAdd = entityModel -> {
+      System.out.println("confirmAdd ..........");
+      entityModel.setEntryMode(EntryMode.DISABLED);
+      Object instance = entityModel.getValue();
+      System.out.println("       adding " + instance);
+      return State.SHOWING;
+    };
+    
+    Function<IEntityModel, State> clearForm = entityModel -> {
+      System.out.println("clearForm ..........." + entityModel.getName() + " " + entityModel.getNodeId());
+      entityModel.setEntryMode(EntryMode.HIDDEN);
+      entityModel.setValue(entityModel.newInstance());
       return State.CLEAR;
-    });
-    transition(State.SHOWING, Option.START_ADD, entity -> {
-      entity.clear();
-      return State.ADDING;
-    });
+    };
+    
+    initialFunction = clearForm;
+    
+    transition(State.CLEAR, Option.START_ADD, startAdding);
+    transition(State.ADDING, Option.CANCEL, clearForm);
+    transition(State.ADDING, Option.CONFIRM_ADD, confirmAdd);
+    transition(State.SHOWING, Option.CLEAR, clearForm);
+    transition(State.SHOWING, Option.START_ADD, startAdding);
   }
 
   
@@ -102,10 +115,10 @@ public class StateMachine {
    * Set the initial state of this FSM.  This method fires option change events for
    * all options that are available.
    */
-  private void setInitialState(State state) {
-    this.state = state;
-    availableOptions = EnumSet.noneOf(Option.class);
-    
+  public void start(IEntityModel entityModel) {
+    state = initialFunction.apply(entityModel);
+  
+    availableOptions.clear();
     for (Transition<State, Option, ?> t : transitions) {
       if (t.getState() == state) {
         Option o = t.getOption();
@@ -130,7 +143,8 @@ public class StateMachine {
     this.state = state;
     EnumSet<Option> priorOptions = availableOptions.clone();
     
-   for (Transition<State, Option, ?> t : transitions) {
+    availableOptions.clear();
+    for (Transition<State, Option, ?> t : transitions) {
       if (t.getState() == state) {
         Option o = t.getOption();
         availableOptions.add(o);
@@ -151,16 +165,22 @@ public class StateMachine {
     }
   }
   
+  public void setOption(String optionName, IEntityModel entityModel) {
+    Option option = Option.valueOf(optionName);
+    // Find transition using the current state and the specified option
+    for (Transition<State, Option, IEntityModel> t : transitions) {
+      if (t.getState() == state && t.getOption() == option) {
+        State newState = t.proceed(entityModel);
+        setState(newState);
+        return;
+      }
+    }
+    throw new IllegalArgumentException("Option not known: " + optionName);
+  }
+  
   
   public State getState() {
     return state;
-  }
-
-  public void proceed() {
-    this.state.proceed(this);
-  }
-
-  private static void sendNotifcation(Entity entity) {
   }
 
 }

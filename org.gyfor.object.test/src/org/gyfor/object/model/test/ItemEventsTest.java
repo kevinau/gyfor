@@ -125,7 +125,30 @@ public class ItemEventsTest {
     Assert.assertEquals(2, eventCounter.valueChangeCount);
     Assert.assertEquals(3, eventCounter.sourceChangeCount);
     Assert.assertEquals(0, eventCounter.errorNoted);
-}  
+  }  
+
+  @Test
+  public void testItemEventsViaEntity () {
+    IEntityPlan<StandardEntity> plan = planFactory.getEntityPlan(StandardEntity.class);
+    IEntityModel model = modelFactory.buildEntityModel(plan);
+    
+    EventCounter eventCounter = new EventCounter();
+    model.addItemEventListener(eventCounter);
+    Assert.assertEquals(0, eventCounter.valueChangeCount);
+    Assert.assertEquals(0, eventCounter.sourceChangeCount);
+
+    StandardEntity instance = new StandardEntity();
+    model.setValue(instance);
+    
+    Assert.assertEquals(1, eventCounter.valueChangeCount);
+    Assert.assertEquals(1, eventCounter.sourceChangeCount);
+
+    StandardEntity instance2 = new StandardEntity(345);
+    model.setValue(instance2);
+
+    Assert.assertEquals(2, eventCounter.valueChangeCount);
+    Assert.assertEquals(2, eventCounter.sourceChangeCount);
+  }  
 
   @Test
   public void testItemErrors () {
@@ -147,6 +170,6 @@ public class ItemEventsTest {
     itemModel.setValueFromSource("1234");
     Assert.assertEquals(1, eventCounter.errorNoted);
     Assert.assertEquals(1, eventCounter.errorCleared);
-}  
+  }  
 
 }

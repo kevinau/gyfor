@@ -12,10 +12,12 @@ import org.gyfor.object.model.EffectiveEntryModeListener;
 import org.gyfor.object.model.EntityCreationListener;
 import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.IEntityModel;
+import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ItemEventListener;
 import org.gyfor.object.plan.EntityLabelGroup;
 import org.gyfor.template.ITemplateEngine;
+import org.gyfor.web.form.action.OptionChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +26,9 @@ import com.mitchellbosecke.pebble.template.ScopeChain;
 import io.undertow.websockets.core.WebSocketChannel;
 
 
-public class TemplateModelListener implements EntityCreationListener, ItemEventListener, EffectiveEntryModeListener, ContainerChangeListener {
+public class TemplateModelListener implements EntityCreationListener, ItemEventListener, 
+                                              EffectiveEntryModeListener, ContainerChangeListener,
+                                              OptionChangeListener {
 
   private final Logger logger = LoggerFactory.getLogger(TemplateModelListener.class);
   
@@ -49,36 +53,12 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
   @Override
   public void childAdded(IContainerModel parent, INodeModel node) {
     logger.info("Child {} added within parent {}", node.getName(), parent.getName());
-    int index = 32767;
-    if (rootProjection.hasChildren()) {
-      System.out.println("....... root projection " + rootProjection.hasChildren());
-      System.out.println("....... root projection " + rootProjection.getChildren().size());
-      String qname = node.getQName();
-      System.out.println("....... root projection " + qname);
-      boolean found = false;
-      for (ProjectionNode child : rootProjection.getChildren()) {
-        Matcher matcher = child.getMatcher(qname);
-        System.out.println("....... root projection 2 " + qname + " " + child.toString());
-        if (matcher.matches()) {
-          if (child.omittable()) {
-            // This model node matches a projection node that we want to omit.
-            return;
-          } else {
-            // We want this model node.
-            index = child.index();
-            found = true;
-            break;
-          }
-        }
-      }
-      if (!found) {
-        // No match found, so we don't want this model node.
-        return;
-      }
+    int index = projectionIndex(node);
+    if (index != -1) {
+      StringWriter writer = new StringWriter();
+      htmlBuilder.buildHtml(writer, node, null);
+      clientDom.syncChildren("#contentHere" + parent.getNodeId(), "#node" + node.getNodeId(), index, writer.toString());
     }
-    StringWriter writer = new StringWriter();
-    htmlBuilder.buildHtml(writer, node, null);
-    clientDom.syncChildren("#contentHere" + parent.getNodeId(), "#node" + node.getNodeId(), index, writer.toString());
   }
 
 
@@ -88,10 +68,41 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
   }
 
   
+  private int projectionIndex(INodeModel node) {
+    if (rootProjection.hasChildren()) {
+      String qname = node.getQName();
+      
+      boolean found = false;
+      for (ProjectionNode child : rootProjection.getChildren()) {
+        Matcher matcher = child.getMatcher(qname);
+        if (matcher.matches()) {
+          if (child.omittable()) {
+            // This model node matches a projection node that we want to omit.
+            return -1;
+          } else {
+            // We want this model node.
+            return child.index();
+          }
+        }
+      }
+      if (!found) {
+        // No match found, so we don't want this model node.
+        return -1;
+      }
+    }
+    // Return a large number (but not too large that it upsets JavaScript)
+    return 32767;
+  }
+  
+  
   @Override
-  public void effectiveModeChanged(INodeModel model, EffectiveEntryMode priorMode) {
-    // TODO Auto-generated method stub
+  public void effectiveModeChanged(INodeModel node, EffectiveEntryMode priorMode) {
+    logger.info("Effective mode changed: {} to {}", node.getName(), node.getEffectiveEntryMode());
     
+    int index = projectionIndex(node);
+    if (index != -1) {
+      clientDom.setEntryMode(node.getNodeId(), node.getEffectiveEntryMode());
+    }
   }
 
   @Override
@@ -114,8 +125,8 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
 
   @Override
   public void valueChange(INodeModel node) {
-    // TODO Auto-generated method stub
-    
+    logger.info("Value change: name {} = value '{}'", node.getName(), ((IItemModel)node).getValueAsSource());
+    // I don't think we need to respond to this event.
   }
 
   @Override
@@ -132,8 +143,16 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
   
   @Override
   public void sourceChange(INodeModel node) {
-    // TODO Auto-generated method stub
-    
+    logger.info("Source change: name {} = value '{}'", node.getName(), ((IItemModel)node).getValueAsSource());
+    if (!(node instanceof IItemModel)) {
+      throw new IllegalArgumentException("Expecting IItemModel, but was given " + node.getClass());
+    }
+    int index = projectionIndex(node);
+    logger.info("index " + index);
+    if (index != -1) {
+      IItemModel inode = (IItemModel)node;
+      clientDom.setValue(inode.getNodeId(), inode.getValueAsSource());
+    }
   }
 
   @Override
@@ -147,7 +166,6 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
   public void entityCreated(IEntityModel node) {
     IEntityModel entityModel = (IEntityModel)node;
     
-    // TODO the null in the following should be context from the template
     StringWriter writer = new StringWriter();
     Map<String, Object> initialContext = new HashMap<>();
     initialContext.put("projection", rootProjection);
@@ -177,6 +195,12 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
   @Override
   public void entityDestoryed(IEntityModel node) {
     clientDom.removeChildren("#contentHere0");
+  }
+
+
+  @Override
+  public void optionChanged(Enum<?> option, boolean available) {
+    clientDom.changeOption(option, available);
   }
 
 }
