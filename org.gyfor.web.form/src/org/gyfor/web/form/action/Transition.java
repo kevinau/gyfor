@@ -1,14 +1,12 @@
 package org.gyfor.web.form.action;
 
-import java.util.function.Function;
-
 public class Transition<S extends Enum<?>, O extends Enum<?>, A> {
   
   private final S state;
   private final O option;
-  private final Function<A, S> function;
+  private final TransitionFunction<A, S> function;
   
-  public Transition(S state, O option, Function<A, S> function) {
+  public Transition(S state, O option, TransitionFunction<A, S> function) {
     this.state = state;
     this.option = option;
     this.function = function;

@@ -1,95 +1,44 @@
 package org.gyfor.web.form.action;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.EnumSet;
+import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
-import org.gyfor.object.EntryMode;
 import org.gyfor.object.model.IEntityModel;
 
-public class StateMachine {
+public class StateMachine<S extends Enum<?>, O extends Enum<?>> {
 
-  private enum Option {
-    //FETCH, 
-    @OptionLabel(label="New", description="Create a new {}")
-    START_ADD, 
-    
-    @OptionLabel(label="Add", description="Save the {}")
-    CONFIRM_ADD,
-    
-    //START_EDIT, 
-    //START_CHANGE, 
-    //CONFIRM_CHANGE, 
-    //START_RETIRE, 
-    //CONFIRM_RETIRE, 
-    //START_UNRETIRE, 
-    //CONFIRM_UNRETIRE, 
-    //START_REMOVE, 
-    //CONFIRM_REMOVE, 
-    CLEAR, 
-    
-    CANCEL;
-  };
-
-  private enum State {
-    CLEAR,
-    ADDING,
-    SHOWING;
-    //EDITING,
-    //CHANGING,
-    //RETIRING,
-    //UNRETRING,
-    //REMOVING;
+  private S state;
   
-  };
+  private final TransitionFunction<IEntityModel, S> initialFunction;
 
-  private State state;
-  
-  private final Function<IEntityModel, State> initialFunction;
-
-  private final List<Transition<State, Option, IEntityModel>> transitions = new ArrayList<>();
+  private final List<Transition<S, O, IEntityModel>> transitions = new ArrayList<>();
 
   private final List<OptionChangeListener> optionChangeListeners = new ArrayList<>();
 
-  private final EnumSet<Option> availableOptions = EnumSet.noneOf(Option.class);
+  private final O[] optionValues;
   
-  public StateMachine () {
-    Function<IEntityModel, State> startAdding = entityModel -> {
-      System.out.println("startAdding ..........");
-      entityModel.setEntryMode(EntryMode.ENABLED);
-      //Object newInstance = entityModel.newInstance();
-      //entityModel.setValue(newInstance);
-      return State.ADDING;
-    };
+  private final boolean[] availableOptions;
+  
+  @SuppressWarnings("unchecked")
+  public StateMachine (Class<S> stateClass, Class<O> optionClass, TransitionFunction<IEntityModel, S> initialFunction) {
+    try {
+      Method method = optionClass.getDeclaredMethod("values");
+      optionValues = (O[])method.invoke(null);
+      availableOptions = new boolean[optionValues.length];
+    } catch (NoSuchMethodException | SecurityException | IllegalAccessException |
+             IllegalArgumentException | InvocationTargetException ex) {
+      throw new RuntimeException(ex);
+    }    
     
-    Function<IEntityModel, State> confirmAdd = entityModel -> {
-      System.out.println("confirmAdd ..........");
-      entityModel.setEntryMode(EntryMode.DISABLED);
-      Object instance = entityModel.getValue();
-      System.out.println("       adding " + instance);
-      return State.SHOWING;
-    };
-    
-    Function<IEntityModel, State> clearForm = entityModel -> {
-      System.out.println("clearForm ..........." + entityModel.getName() + " " + entityModel.getNodeId());
-      entityModel.setEntryMode(EntryMode.HIDDEN);
-      entityModel.setValue(entityModel.newInstance());
-      return State.CLEAR;
-    };
-    
-    initialFunction = clearForm;
-    
-    transition(State.CLEAR, Option.START_ADD, startAdding);
-    transition(State.ADDING, Option.CANCEL, clearForm);
-    transition(State.ADDING, Option.CONFIRM_ADD, confirmAdd);
-    transition(State.SHOWING, Option.CLEAR, clearForm);
-    transition(State.SHOWING, Option.START_ADD, startAdding);
+    this.initialFunction = initialFunction;
   }
 
   
-  private void transition(State state, Option option, Function<IEntityModel, State> function) {
-    Transition<State, Option, IEntityModel> transition = new Transition<>(state, option, function);
+  public void transition(S state, O option, TransitionFunction<IEntityModel, S> function) {
+    Transition<S, O, IEntityModel> transition = new Transition<S, O, IEntityModel>(state, option, function);
     transitions.add(transition);
   }
   
@@ -117,69 +66,80 @@ public class StateMachine {
    */
   public void start(IEntityModel entityModel) {
     state = initialFunction.apply(entityModel);
-  
-    availableOptions.clear();
-    for (Transition<State, Option, ?> t : transitions) {
+
+    // Clear all available options
+    Arrays.fill(availableOptions, false);
+    
+    // Set options that are available for this state
+    for (Transition<S, O, ?> t : transitions) {
       if (t.getState() == state) {
-        Option o = t.getOption();
-        availableOptions.add(o);
+        O o = t.getOption();
+        availableOptions[o.ordinal()] = true;
       }
     }
 
     // Fire events for all options that are 'not available'
-    for (Option o : Option.values()) {
-      if (!availableOptions.contains(o)) {
+    for (O o : optionValues) {
+      if (!availableOptions[o.ordinal()]) {
         fireOptionChanged(o, false);
       }
     }
     // Then fire event for all options that are 'available'
-    for (Option o : availableOptions) {
-      fireOptionChanged(o, true);
+    for (O o : optionValues) {
+      if (availableOptions[o.ordinal()]) {
+        fireOptionChanged(o, true);
+      }
     }
   }
   
   
-  public void setState(State state) {
+  public void setState(S state) {
     this.state = state;
-    EnumSet<Option> priorOptions = availableOptions.clone();
+    boolean[] priorOptions = availableOptions.clone();
     
-    availableOptions.clear();
-    for (Transition<State, Option, ?> t : transitions) {
+    // Clear all available options
+    Arrays.fill(availableOptions, false);
+    
+    for (Transition<S, O, ?> t : transitions) {
       if (t.getState() == state) {
-        Option o = t.getOption();
-        availableOptions.add(o);
+        O o = t.getOption();
+        availableOptions[o.ordinal()] = true;
       }
     }
 
     // Fire events for all options that have changed to 'not available'
-    for (Option o : Option.values()) {
-      if (priorOptions.contains(o) && !availableOptions.contains(o)) {
+    for (O o : optionValues) {
+      if (priorOptions[o.ordinal()] && !availableOptions[o.ordinal()]) {
         fireOptionChanged(o, false);
       }
     }
     // Then fire event for all options that have changed to 'available'
-    for (Option o : Option.values()) {
-      if (availableOptions.contains(o) && !priorOptions.contains(o)) {
+    for (O o : optionValues) {
+      if (availableOptions[o.ordinal()] && !priorOptions[o.ordinal()]) {
         fireOptionChanged(o, true);
       }
     }
   }
   
   public void setOption(String optionName, IEntityModel entityModel) {
-    Option option = Option.valueOf(optionName);
-    // Find transition using the current state and the specified option
-    for (Transition<State, Option, IEntityModel> t : transitions) {
-      if (t.getState() == state && t.getOption() == option) {
-        State newState = t.proceed(entityModel);
-        setState(newState);
-        return;
+    for (O option : optionValues) {
+      if (option.name().equals(optionName)) {
+        // Find transition using the current state and the specified option
+        for (Transition<S, O, IEntityModel> t : transitions) {
+          if (t.getState() == state && t.getOption() == option) {
+            S newState = t.proceed(entityModel);
+            setState(newState);
+            return;
+          }
+        }
+        throw new IllegalArgumentException("No transition for: state " + state + ", option " + option);
       }
     }
     throw new IllegalArgumentException("Option not known: " + optionName);
   }
   
   
-  public State getState() {
+  public S getState() {
     return state;
   }
 
