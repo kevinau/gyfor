@@ -16,7 +16,8 @@ import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.IModelFactory;
 import org.gyfor.template.ITemplateEngine;
 import org.gyfor.template.ITemplateEngineFactory;
-import org.gyfor.web.form.action.StateMachine;
+import org.gyfor.web.form.state.IStateMachineFactory;
+import org.gyfor.web.form.state.StateMachine;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -91,10 +92,10 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
           throw new IllegalArgumentException("No object reference named '" + path + "' was found");
         }
         ServiceReference<FormReference> serviceRef = serviceRefs.iterator().next();
-        FormReference objectRef = bundleContext.getService(serviceRef);
+        FormReference formRef = bundleContext.getService(serviceRef);
         
         // Set up object model...
-        String objectClassName = objectRef.getEntityClassName();
+        String objectClassName = formRef.getEntityClassName();
         IEntityModel objectModel = modelFactory.buildEntityModel(objectClassName);
         
         boolean hasTitle = (queryMap.get("popup") == null); 
@@ -107,13 +108,13 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
         //objectModel.setValue(instanceValue);
         
         // ... and state machine, but do not fire any events yet
-        StateMachine stateMachine = new StateMachine();
+        String stateMachineFactoryName = formRef.getStateMachineFactoryClassName();
+        IStateMachineFactory stateMachineFactory = (IStateMachineFactory)Class.forName(stateMachineFactoryName).newInstance(); 
+        StateMachine<?,?> stateMachine = stateMachineFactory.getStateMachine();
         stateMachine.addOptionChangeListener(eventListener);
         
         return new RoundtripData(objectModel, stateMachine);
-      } catch (ClassNotFoundException ex) {
-        throw new RuntimeException(ex);
-      } catch (InvalidSyntaxException ex) {
+      } catch (ClassNotFoundException | InvalidSyntaxException | InstantiationException | IllegalAccessException ex) {
         throw new RuntimeException(ex);
       }
     }
@@ -139,7 +140,7 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
         break;
       case "click" :
         IEntityModel objectModel3 = ((RoundtripData)sessionData).entityModel();
-        StateMachine stateMachine3 = ((RoundtripData)sessionData).stateMachine();
+        StateMachine<?,?> stateMachine3 = ((RoundtripData)sessionData).stateMachine();
         stateMachine3.setOption(args[0], objectModel3);
         break;
       default :

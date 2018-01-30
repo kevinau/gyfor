@@ -19,8 +19,8 @@ public class FormReference {
   private String htmlFileName = null;
   
   
-  @Configurable(name="actionHandler")
-  private String actionHandlerClassName;
+  @Configurable(name="stateMachine")
+  private String stateMachineFactoryClassName;
   
   
   @Activate
@@ -42,8 +42,8 @@ public class FormReference {
   }
   
   
-  public String getActionHandlerClassName() {
-    return actionHandlerClassName;
+  public String getStateMachineFactoryClassName() {
+    return stateMachineFactoryClassName;
   }
   
 }

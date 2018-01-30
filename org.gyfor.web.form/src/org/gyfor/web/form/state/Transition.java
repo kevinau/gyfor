@@ -1,4 +1,4 @@
-package org.gyfor.web.form.action;
+package org.gyfor.web.form.state;
 
 public class Transition<S extends Enum<?>, O extends Enum<?>, A> {
   

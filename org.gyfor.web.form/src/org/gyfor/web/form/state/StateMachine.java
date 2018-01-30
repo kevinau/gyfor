@@ -1,7 +1,6 @@
-package org.gyfor.web.form.action;
+package org.gyfor.web.form.state;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,16 +21,29 @@ public class StateMachine<S extends Enum<?>, O extends Enum<?>> {
   
   private final boolean[] availableOptions;
   
-  @SuppressWarnings("unchecked")
+  private final boolean[] requiresValidEntry;
+  
+  
   public StateMachine (Class<S> stateClass, Class<O> optionClass, TransitionFunction<IEntityModel, S> initialFunction) {
-    try {
-      Method method = optionClass.getDeclaredMethod("values");
-      optionValues = (O[])method.invoke(null);
-      availableOptions = new boolean[optionValues.length];
-    } catch (NoSuchMethodException | SecurityException | IllegalAccessException |
-             IllegalArgumentException | InvocationTargetException ex) {
-      throw new RuntimeException(ex);
-    }    
+    if (!stateClass.isEnum()) {
+      throw new IllegalArgumentException("State class is not an Enum");
+    }
+    if (!optionClass.isEnum()) {
+      throw new IllegalArgumentException("Option class is not an Enum");
+    }
+    optionValues = optionClass.getEnumConstants();
+    availableOptions = new boolean[optionValues.length];
+    requiresValidEntry = new boolean[optionValues.length];
+    
+    Field[] optionFields = optionClass.getDeclaredFields();
+    for (Field optionField : optionFields) {
+      if (optionField.isEnumConstant()) {
+        if (optionField.isAnnotationPresent(RequiresValidEntry.class)) {
+          O e = valueOf(optionField.getName());
+          requiresValidEntry[e.ordinal()] = true;
+        }
+      }
+    }
     
     this.initialFunction = initialFunction;
   }
@@ -53,12 +65,28 @@ public class StateMachine<S extends Enum<?>, O extends Enum<?>> {
   }
 
 
-  private void fireOptionChanged(Enum<?> option, boolean available) {
+  private void fireOptionChanged(O option, boolean available) {
     for (OptionChangeListener x : optionChangeListeners) {
       x.optionChanged(option, available);
     }
   }
 
+  
+  private O valueOf(String optionName) {
+    for (O option : optionValues) {
+      if (option.name().equals(optionName)) {
+        return option;
+      }
+    }
+    throw new IllegalArgumentException("Option not known: " + optionName);
+  }
+
+  
+  public boolean requiresValidEntry(String optionName) {
+    O option = valueOf(optionName);
+    return requiresValidEntry[option.ordinal()];
+  }
+  
   
   /**
    * Set the initial state of this FSM.  This method fires option change events for

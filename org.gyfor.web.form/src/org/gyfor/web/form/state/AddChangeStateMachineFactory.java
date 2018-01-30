@@ -1,21 +1,26 @@
-package org.gyfor.web.form.action;
+package org.gyfor.web.form.state;
 
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.model.IEntityModel;
 
-public class FormStateMachineFactory implements IStateMachineFactory {
+public class AddChangeStateMachineFactory extends AddOnlyStateMachineFactory {
 
-  private enum Option {
-    //FETCH, 
+  protected enum Option {
+    FETCH, 
+    
     @OptionLabel(label="New", description="Create a new {}")
     START_ADD, 
     
     @OptionLabel(label="Add", description="Save the {}")
+    @RequiresValidEntry
     CONFIRM_ADD,
     
-    //START_EDIT, 
-    //START_CHANGE, 
-    //CONFIRM_CHANGE, 
+    START_EDIT, 
+    
+    START_CHANGE, 
+    
+    CONFIRM_CHANGE, 
+    
     //START_RETIRE, 
     //CONFIRM_RETIRE, 
     //START_UNRETIRE, 
@@ -27,16 +32,15 @@ public class FormStateMachineFactory implements IStateMachineFactory {
     CANCEL;
   };
 
-  private enum State {
+  protected enum State {
     CLEAR,
     ADDING,
-    SHOWING;
-    //EDITING,
-    //CHANGING,
+    SHOWING,
+    EDITING,
+    CHANGING;
     //RETIRING,
     //UNRETRING,
     //REMOVING;
-  
   };
 
   

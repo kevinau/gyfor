@@ -17,7 +17,7 @@ import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ItemEventListener;
 import org.gyfor.object.plan.EntityLabelGroup;
 import org.gyfor.template.ITemplateEngine;
-import org.gyfor.web.form.action.OptionChangeListener;
+import org.gyfor.web.form.state.OptionChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -40,3 +40,4 @@ Bundle-ActivationPolicy: lazy
 Eclipse-BuddyPolicy: global
 Bundle-ClassPath: lib/javax.json-1.1.2.jar,
  .
+Export-Package: org.gyfor.web.form.state

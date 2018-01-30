@@ -1,4 +1,4 @@
-package org.gyfor.web.form.action;
+package org.gyfor.web.form.state;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
