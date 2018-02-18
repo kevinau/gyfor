@@ -7,7 +7,7 @@ import java.nio.channels.Channel;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +20,11 @@ import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.spi.WebSocketHttpExchange;
 
 
-public abstract class AbstractWebSocketConnectionCallback implements WebSocketConnectionCallback {
+public abstract class AbstractWebSocketConnectionCallback<S extends ISessionData> implements WebSocketConnectionCallback {
   
   private final Logger logger = LoggerFactory.getLogger(AbstractWebSocketConnectionCallback.class);
   
-  private final Map<WebSocketChannel, ISessionData> channels = new HashMap<>();
+  private final Map<WebSocketChannel, S> channels = new HashMap<>();
 
   private String context;
 
@@ -69,7 +69,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
         }
       }
     }
-    ISessionData sessionData = buildSessionData(requestPath, queryMap, channel);
+    S sessionData = buildSessionData(requestPath, queryMap, channel);
     
     synchronized (channels) {
       if (channels.isEmpty()) {
@@ -148,7 +148,7 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
   }
   
   
-  protected abstract ISessionData buildSessionData (String path, Map<String, String> queryMap, WebSocketChannel channel);
+  protected abstract S buildSessionData (String path, Map<String, String> queryMap, WebSocketChannel channel);
 
   private static final char DELIMITER = '\t';
 
@@ -209,11 +209,11 @@ public abstract class AbstractWebSocketConnectionCallback implements WebSocketCo
   }
   
   
-  protected void forAllSessions (Consumer<WebSocketSession> consumer) {
+  protected void forAllSessions (BiConsumer<WebSocketSession, S> consumer) {
     synchronized (channels) {
-      for (Map.Entry<WebSocketChannel, ISessionData> entry : channels.entrySet()) {
+      for (Map.Entry<WebSocketChannel, S> entry : channels.entrySet()) {
         WebSocketSession session = new WebSocketSession(entry.getKey());
-        consumer.accept(session);
+        consumer.accept(session, entry.getValue());
       }
     }
   }

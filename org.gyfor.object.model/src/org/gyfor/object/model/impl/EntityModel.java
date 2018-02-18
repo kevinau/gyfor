@@ -10,6 +10,8 @@ import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.model.ref.IValueReference;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.value.EntityLife;
+import org.gyfor.value.VersionTime;
 
 public class EntityModel extends NameMappedModel implements IEntityModel {
   
@@ -19,6 +21,12 @@ public class EntityModel extends NameMappedModel implements IEntityModel {
 
   private final List<EntityCreationListener> entityCreationListeners = new ArrayList<>();
 
+  private int entityId;
+  
+  private VersionTime versionTime;
+  
+  private EntityLife entityLife;
+  
   
   public EntityModel (ModelFactory modelFactory, IValueReference valueRef, IEntityPlan<?> entityPlan) {
     super (modelFactory, valueRef, entityPlan);
@@ -37,6 +45,24 @@ public class EntityModel extends NameMappedModel implements IEntityModel {
   public void setValue (Object value) {
     valueRef.setValue(value);
     syncValue(value);
+  }
+  
+  
+  @Override
+  public void setEntityId (int id) {
+    this.entityId = id;
+  }
+  
+  
+  @Override
+  public void setVersionTime (VersionTime versionTime) {
+    this.versionTime = versionTime;
+  }
+  
+  
+  @Override
+  public void setEntityLife (EntityLife entityLife) {
+    this.entityLife = entityLife;
   }
   
   
@@ -69,7 +95,25 @@ public class EntityModel extends NameMappedModel implements IEntityModel {
     System.out.println("}");
   }
 
+  
+  @Override
+  public int getEntityId() {
+    return entityId;
+  }
 
+  
+  @Override
+  public VersionTime getVersionTime() {
+    return versionTime;
+  }
+
+  
+  @Override
+  public EntityLife getEntityLife() {
+    return entityLife;
+  }
+
+  
   @Override
   public List<INodeModel> getDataModels() {
     List<INodePlan> dataPlans = entityPlan.getDataPlans();

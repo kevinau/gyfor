@@ -1,14 +1,14 @@
 package org.gyfor.web.form.state;
 
-public class Transition<S extends Enum<?>, O extends Enum<?>, A> {
+public class Transition<S extends Enum<?>, A extends Enum<?>> {
   
   private final S state;
-  private final O option;
-  private final TransitionFunction<A, S> function;
+  private final A action;
+  private final TransitionFunction<S> function;
   
-  public Transition(S state, O option, TransitionFunction<A, S> function) {
+  public Transition(S state, A action, TransitionFunction<S> function) {
     this.state = state;
-    this.option = option;
+    this.action = action;
     this.function = function;
   }
 
@@ -16,13 +16,13 @@ public class Transition<S extends Enum<?>, O extends Enum<?>, A> {
     return state;
   }
   
-  public O getOption() {
-    return option;
+  public A getAction() {
+    return action;
   }
   
   
-  public S proceed(A arg) {
-    return function.apply(arg);
+  public S proceed() {
+    return function.apply();
   }
   
 }

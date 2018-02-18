@@ -7,8 +7,8 @@ import org.gyfor.object.CodeSource;
 import org.gyfor.object.ICodeSource;
 import org.gyfor.object.ValueSourceListener;
 import org.gyfor.object.value.Code;
-import org.gyfor.object.value.EntityLife;
 import org.gyfor.object.value.ICode;
+import org.gyfor.value.EntityLife;
 
 
 public class CodeBased {

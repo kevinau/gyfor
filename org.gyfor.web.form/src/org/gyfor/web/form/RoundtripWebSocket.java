@@ -52,7 +52,7 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
   }
   
   
-  private static class RoundtripWebSocketConnectionCallback extends AbstractWebSocketConnectionCallback {
+  private static class RoundtripWebSocketConnectionCallback extends AbstractWebSocketConnectionCallback<RoundtripSessionData> {
     
     private BundleContext bundleContext;
     
@@ -78,7 +78,7 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
     
     
     @Override
-    protected ISessionData buildSessionData(String path, Map<String, String> queryMap, WebSocketChannel channel) {
+    protected RoundtripSessionData buildSessionData(String path, Map<String, String> queryMap, WebSocketChannel channel) {
       System.out.println("Round trip: build session data");
       
       if (path == null || path.length() == 0) {
@@ -111,9 +111,9 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
         String stateMachineFactoryName = formRef.getStateMachineFactoryClassName();
         IStateMachineFactory stateMachineFactory = (IStateMachineFactory)Class.forName(stateMachineFactoryName).newInstance(); 
         StateMachine<?,?> stateMachine = stateMachineFactory.getStateMachine();
-        stateMachine.addOptionChangeListener(eventListener);
+        stateMachine.addActionChangeListener(eventListener);
         
-        return new RoundtripData(objectModel, stateMachine);
+        return new RoundtripSessionData(objectModel, stateMachine);
       } catch (ClassNotFoundException | InvalidSyntaxException | InstantiationException | IllegalAccessException ex) {
         throw new RuntimeException(ex);
       }
@@ -133,15 +133,15 @@ public class RoundtripWebSocket extends WebSocketProtocolHandshakeHandler {
         sessionData.startSession();
         break;
       case "input" :
-        IEntityModel objectModel2 = ((RoundtripData)sessionData).entityModel();
+        IEntityModel objectModel2 = ((RoundtripSessionData)sessionData).entityModel();
         int id2 = Integer.parseInt(args[0]);
         IItemModel item2 = objectModel2.getById(id2);
         item2.setValueFromSource(args[1]);
         break;
       case "click" :
-        IEntityModel objectModel3 = ((RoundtripData)sessionData).entityModel();
-        StateMachine<?,?> stateMachine3 = ((RoundtripData)sessionData).stateMachine();
-        stateMachine3.setOption(args[0], objectModel3);
+        IEntityModel objectModel3 = ((RoundtripSessionData)sessionData).entityModel();
+        StateMachine<?,?> stateMachine3 = ((RoundtripSessionData)sessionData).stateMachine();
+        stateMachine3.setAction(args[0], objectModel3);
         break;
       default :
         throw new RuntimeException("Unknown command: '" + command + "'");

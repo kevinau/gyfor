@@ -24,5 +24,4 @@ Import-Package: io.undertow.server,
 Bundle-ActivationPolicy: lazy
 Eclipse-BuddyPolicy: global
 Require-Bundle: slf4j.api
-Service-Component: OSGI-INF/org.gyfor.web.dao.EntityEditPage.xml,
- OSGI-INF/org.gyfor.web.dao.EntitySetWebSocket.xml
+Service-Component: OSGI-INF/org.gyfor.web.dao.EntityEditPage.xml

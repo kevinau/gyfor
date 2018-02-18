@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: gyfor - support for BerkleyDB
 Bundle-SymbolicName: org.gyfor.berkeleydb
 Bundle-Version: 1.0.0
-Bundle-ClassPath: lib/je-7.0.6.jar,
+Bundle-ClassPath: lib/je-7.5.11.jar,
  .
 Bundle-Vendor: Kevin Holloway
 Export-Package: com.sleepycat.je,
@@ -11,17 +11,16 @@ Export-Package: com.sleepycat.je,
  com.sleepycat.persist.model,
  org.gyfor.berkeleydb
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.gyfor.math,
- org.gyfor.object,
- org.gyfor.object.plan,
- org.gyfor.object.type,
- org.gyfor.object.type.builtin,
+Import-Package: org.gyfor.home,
+ org.gyfor.math,
  org.gyfor.osgi,
  org.gyfor.todo,
  org.gyfor.util,
  org.osgi.framework,
  org.osgi.service.component;version="1.2.0",
  org.slf4j;version="1.7.21"
-Service-Component: OSGI-INF/org.gyfor.berkeleydb.DataEnvironment.xml
+Service-Component: OSGI-INF/org.gyfor.berkeleydb.DataEnvironment.xml,
+ OSGI-INF/org.gyfor.berkeleydb.DataStore.xml,
+ OSGI-INF/org.gyfor.berkeleydb.learn.ExampleDatabasePut2.xml
 Bundle-ActivationPolicy: lazy
 Eclipse-BuddyPolicy: global

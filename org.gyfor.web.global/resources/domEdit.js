@@ -209,10 +209,10 @@
 		}
 	}
 	
-	function changeOption(name, available) {
-		console.log("changeOption " + name + " " + available);
+	function changeAction(name, available) {
+		console.log("changeAction " + name + " " + available);
 		let matches = document.querySelectorAll("button[value=" + name + "]");
-		console.log("changeOption " + name + " " + available + " " + matches.length);
+		console.log("changeAction " + name + " " + available + " " + matches.length);
 		for (let i = 0; i < matches.length; i++) {
 			let node = matches[i];
 			if (available == "true") {

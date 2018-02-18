@@ -1,8 +1,9 @@
 package org.gyfor.web.form.state;
 
+import java.util.Map;
 
 public interface IStateMachineFactory {
 
-  public <S extends Enum<?>, O extends Enum<?>> StateMachine<S, O> getStateMachine();
-  
+  public StateMachine<? extends Enum<?>, ? extends Enum<?>> getStateMachine(Map<String, Object> props);
+
 }

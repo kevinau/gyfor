@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.IRepeatingModel;
 import org.gyfor.object.model.ModelFactory;
@@ -59,6 +60,14 @@ public abstract class RepeatingModel extends ContainerModel implements IRepeatin
       element.walkModel(before, after);
     }
     after.accept(this);
+  }
+  
+  
+  @Override
+  public void walkItems(Consumer<IItemModel> consumer) {
+    for (INodeModel element : elements) {
+      element.walkItems(consumer);
+    }
   }
   
   

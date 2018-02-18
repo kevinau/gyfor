@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gyfor.object.Id;
-import org.gyfor.object.SelfDescribing;
 import org.gyfor.object.UniqueConstraint;
 import org.gyfor.object.Version;
 import org.gyfor.object.plan.EntityLabelGroup;
@@ -18,10 +17,9 @@ import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.EntityLifeType;
 import org.gyfor.object.type.builtin.StringType;
 import org.gyfor.object.type.builtin.VersionType;
-import org.gyfor.object.value.EntityDescription;
-import org.gyfor.object.value.EntityLife;
-import org.gyfor.object.value.VersionTime;
 import org.gyfor.sql.IResultSet;
+import org.gyfor.value.EntityLife;
+import org.gyfor.value.VersionTime;
 
 
 public class EntityPlan<T> extends NameMappedPlan<T> implements IEntityPlan<T> {
@@ -34,7 +32,7 @@ public class EntityPlan<T> extends NameMappedPlan<T> implements IEntityPlan<T> {
   private IItemPlan<VersionTime> versionPlan;
   private IItemPlan<EntityLife> entityLifePlan;
   private List<INodePlan> dataPlans;
-  private List<IItemPlan<?>> descriptionPlans;
+  //private List<IItemPlan<?>> descriptionPlans;
   
   private List<IItemPlan<?>[]> uniqueConstraints;
 
@@ -52,7 +50,7 @@ public class EntityPlan<T> extends NameMappedPlan<T> implements IEntityPlan<T> {
     super.complete(planFactory);
     
     findEntityItems();
-    findDescriptionItems();
+    //findDescriptionItems();
     findUniqueConstraints();
   }
 
@@ -324,108 +322,55 @@ public class EntityPlan<T> extends NameMappedPlan<T> implements IEntityPlan<T> {
   }
 
   
-  @Override
-  public List<IItemPlan<?>> getDescriptionPlans () {
-    return descriptionPlans;
-  }
+//  @Override
+//  public List<IItemPlan<?>> getDescriptionPlans () {
+//    return descriptionPlans;
+//  }
   
   
-  private void findDescriptionItems () {
-    descriptionPlans = new ArrayList<>();
+//  private void findDescriptionItems () {
+//    descriptionPlans = new ArrayList<>();
+//
+//    // Use the entity's self describing method if present
+//    if (SelfDescribing.class.isAssignableFrom(entityClass)) {
+//      FieldDependency fieldDependency = new FieldDependency();
+//      fieldDependency.parseClass(entityClass);
+//      List<String> fieldNames = fieldDependency.getDependencies(entityClass.getName(), "invokeDescription");
+//      for (String fieldName : fieldNames) {
+//        IItemPlan<?> itemPlan = (IItemPlan<?>)getMember(fieldName);
+//        descriptionPlans.add(itemPlan);
+//      }
+//      return;
+//    }
+//    
+//    // Otherwise, concatenate all top level nodes that are marked as describing.
+//    for (INodePlan nodePlan : getMembers()) {
+//      if  (nodePlan.getStructure() == PlanStructure.ITEM) {
+//        IItemPlan<?> itemPlan = (IItemPlan<?>)nodePlan;
+//        if (itemPlan.isDescribing()) {
+//          descriptionPlans.add(itemPlan);
+//        }
+//      }
+//    }
+//    if (descriptionPlans.size() > 0) {
+//      return;
+//    }
+//    
+//    // Otherwise, use the first top level String node
+//    for (INodePlan nodePlan : getMembers()) {
+//      if  (nodePlan.getStructure() == PlanStructure.ITEM) {
+//        IItemPlan<?> itemPlan = (IItemPlan<?>)nodePlan;
+//        IType<?> type = itemPlan.getType();
+//        if (type instanceof StringType) {
+//          descriptionPlans.add(itemPlan);
+//          return;
+//        }
+//      }
+//    }
+//    
+//    // Otherwise, leave the list empty
+//  }
 
-    // Use the entity's self describing method if present
-    if (SelfDescribing.class.isAssignableFrom(entityClass)) {
-      FieldDependency fieldDependency = new FieldDependency();
-      fieldDependency.parseClass(entityClass);
-      List<String> fieldNames = fieldDependency.getDependencies(entityClass.getName(), "getDescription");
-      for (String fieldName : fieldNames) {
-        IItemPlan<?> itemPlan = (IItemPlan<?>)getMember(fieldName);
-        descriptionPlans.add(itemPlan);
-      }
-      return;
-    }
-    
-    // Otherwise, concatenate all top level nodes that are marked as describing.
-    for (INodePlan nodePlan : getMembers()) {
-      if  (nodePlan.getStructure() == PlanStructure.ITEM) {
-        IItemPlan<?> itemPlan = (IItemPlan<?>)nodePlan;
-        if (itemPlan.isDescribing()) {
-          descriptionPlans.add(itemPlan);
-        }
-      }
-    }
-    if (descriptionPlans.size() > 0) {
-      return;
-    }
-    
-    // Otherwise, use the first top level String node
-    for (INodePlan nodePlan : getMembers()) {
-      if  (nodePlan.getStructure() == PlanStructure.ITEM) {
-        IItemPlan<?> itemPlan = (IItemPlan<?>)nodePlan;
-        IType<?> type = itemPlan.getType();
-        if (type instanceof StringType) {
-          descriptionPlans.add(itemPlan);
-          return;
-        }
-      }
-    }
-    
-    // Otherwise, leave the list empty
-  }
-
-  @Override
-  public EntityDescription getDescription (Object instance) {
-    int id = idPlan.getFieldValue(instance);
-    String idx = Integer.toString(id);
-    
-    EntityLife entityLife = EntityLife.ACTIVE;
-    if (entityLifePlan != null) {
-      entityLife = entityLifePlan.getFieldValue(instance);
-    }
-    
-    // Use the entity's self describing method if present
-    String description = null;
-    if (instance instanceof SelfDescribing) {
-      SelfDescribing describing = (SelfDescribing)instance;
-      description = describing.entityDescription();
-      return new EntityDescription(idx, description, entityLife);
-    }
-    
-    // Otherwise, concatenate all top level nodes that are marked as describing.
-    int i = 0;
-    for (INodePlan nodePlan : getMembers()) {
-      if  (nodePlan.getStructure() == PlanStructure.ITEM) {
-        if (((IItemPlan<?>)nodePlan).isDescribing()) {
-          String part = nodePlan.getFieldValue(instance).toString();
-          if (i == 0) {
-            description = part;
-          } else {
-            description += " " + part;
-          }
-          i++;
-        }
-      }
-    }
-    if (description != null) {
-      return new EntityDescription(idx, description, entityLife);
-    }
-    
-    // Otherwise, use the first top level String node
-    for (INodePlan nodePlan : getMembers()) {
-      if  (nodePlan.getStructure() == PlanStructure.ITEM) {
-        IType<?> type = ((IItemPlan<?>)nodePlan).getType();
-        if (type instanceof StringType) {
-          description =  nodePlan.getFieldValue(instance).toString();
-          return new EntityDescription(idx, description, entityLife);
-        }
-      }
-    }
-
-    // Otherwise, return an empty description
-    return new EntityDescription(idx, "", entityLife);
-  }
-
-  
   @Override
   public void indent (int level) {
     for (int i = 0; i < level; i++) {

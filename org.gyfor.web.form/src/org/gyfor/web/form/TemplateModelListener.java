@@ -17,7 +17,7 @@ import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ItemEventListener;
 import org.gyfor.object.plan.EntityLabelGroup;
 import org.gyfor.template.ITemplateEngine;
-import org.gyfor.web.form.state.OptionChangeListener;
+import org.gyfor.web.form.state.ActionChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +28,7 @@ import io.undertow.websockets.core.WebSocketChannel;
 
 public class TemplateModelListener implements EntityCreationListener, ItemEventListener, 
                                               EffectiveEntryModeListener, ContainerChangeListener,
-                                              OptionChangeListener {
+                                              ActionChangeListener {
 
   private final Logger logger = LoggerFactory.getLogger(TemplateModelListener.class);
   
@@ -199,8 +199,8 @@ public class TemplateModelListener implements EntityCreationListener, ItemEventL
 
 
   @Override
-  public void optionChanged(Enum<?> option, boolean available) {
-    clientDom.changeOption(option, available);
+  public void actionChanged(Enum<?> action, boolean available) {
+    clientDom.changeAction(action, available);
   }
 
 }

@@ -3,12 +3,12 @@ package org.gyfor.web.docstore;
 import java.util.List;
 import java.util.Map;
 
+import org.gyfor.dao.EntityDescription;
 import org.gyfor.http.AbstractWebSocketConnectionCallback;
 import org.gyfor.http.CallbackAccessor;
 import org.gyfor.http.Context;
 import org.gyfor.http.Response;
 import org.gyfor.http.WebSocketSession;
-import org.gyfor.object.value.EntityDescription;
 import org.gyfor.template.ITemplate;
 import org.gyfor.template.ITemplateEngine;
 import org.gyfor.template.ITemplateEngineFactory;

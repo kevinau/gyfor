@@ -114,7 +114,7 @@ public class ClientDomEdit {
     WebSocketSession.send(channel, "setEntryMode", id, mode);
   }
   
-  public void changeOption(Enum<?> option, boolean available) {
-    WebSocketSession.send(channel, "changeOption", option, available);
+  public void changeAction(Enum<?> action, boolean available) {
+    WebSocketSession.send(channel, "changeAction", action, available);
   }
 }

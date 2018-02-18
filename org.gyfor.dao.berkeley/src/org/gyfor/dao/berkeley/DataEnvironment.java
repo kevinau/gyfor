@@ -4,16 +4,16 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
-import org.gyfor.object.plan.IEntityPlan;
+import org.gyfor.home.IApplication;
 import org.gyfor.osgi.ComponentConfiguration;
 import org.gyfor.osgi.Configurable;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,8 +35,11 @@ public class DataEnvironment {
 
   private Logger logger = LoggerFactory.getLogger(DataEnvironment.class);
   
+  @Reference
+  private IApplication application;
+  
   @Configurable
-  private String envHome = System.getProperty("user.home") + "/data/berkeleydb";
+  private Path envHome = null;
   
   private Environment envmnt;
 
@@ -44,15 +47,17 @@ public class DataEnvironment {
   @Activate
   public void activate (ComponentContext componentContext) {
     ComponentConfiguration.load(this, componentContext);
-    logger.info("activate: envHome {}", envHome);
+    if (envHome == null) {
+      envHome = application.getBaseDir().resolve("berkeleydb");
+    }
     
     // Create directory if it does not exist
-    Path envPath = Paths.get(envHome);
     try {
-      Files.createDirectories(envPath);
+      Files.createDirectories(envHome);
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
+    logger.info("activate: envHome {}", envHome);
     
     // Set up the environment
     EnvironmentConfig envConfig = new EnvironmentConfig();
@@ -60,7 +65,7 @@ public class DataEnvironment {
     envConfig.setTransactional(true);
 
     // Open the environment
-    File envHomeFile = new File(envHome);
+    File envHomeFile = envHome.toFile();
     envmnt = new Environment(envHomeFile, envConfig);
   }
   
@@ -79,11 +84,6 @@ public class DataEnvironment {
   
   public Database openDatabase (Transaction trans, String name, DatabaseConfig dbConfig) {
     return envmnt.openDatabase(trans, name, dbConfig);
-  }
-  
-  
-  public DataTable openTable (IEntityPlan<?> entityPlan, boolean readOnly) {
-    return new DataTable(this, entityPlan, readOnly);
   }
   
   

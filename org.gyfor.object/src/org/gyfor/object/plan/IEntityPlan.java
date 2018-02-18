@@ -3,10 +3,9 @@ package org.gyfor.object.plan;
 import java.sql.Timestamp;
 import java.util.List;
 
-import org.gyfor.object.value.EntityDescription;
-import org.gyfor.object.value.EntityLife;
-import org.gyfor.object.value.VersionTime;
 import org.gyfor.sql.IResultSet;
+import org.gyfor.value.EntityLife;
+import org.gyfor.value.VersionTime;
 
 
 public interface IEntityPlan<T> extends IClassPlan<T> {
@@ -23,8 +22,6 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
 
   public List<IItemPlan<?>[]> getUniqueConstraints();
 
-  public EntityDescription getDescription (Object instance);
-  
   public IItemPlan<EntityLife> getEntityLifePlan();
   
   public boolean hasEntityLife();
@@ -54,6 +51,6 @@ public interface IEntityPlan<T> extends IClassPlan<T> {
   
   public List<INodePlan> getDataPlans();
 
-  public List<IItemPlan<?>> getDescriptionPlans();
+  //public List<IItemPlan<?>> getDescriptionPlans();
 
 }

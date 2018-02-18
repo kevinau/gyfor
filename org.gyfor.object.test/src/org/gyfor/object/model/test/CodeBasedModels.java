@@ -10,7 +10,7 @@ import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.test.data.CodeBased;
 import org.gyfor.object.test.data.CodeBased.Gender;
 import org.gyfor.object.value.Code;
-import org.gyfor.object.value.EntityLife;
+import org.gyfor.value.EntityLife;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

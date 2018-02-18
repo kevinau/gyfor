@@ -10,6 +10,7 @@ import org.gyfor.object.model.EffectiveEntryMode;
 import org.gyfor.object.model.EffectiveEntryModeListener;
 import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.IEntityModel;
+import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ItemEventListener;
 import org.gyfor.object.model.ModelFactory;
@@ -200,14 +201,14 @@ public abstract class NodeModel implements INodeModel {
   
   
   @Override
-  public void fireSourceEqualityChange (INodeModel node) {
+  public void fireSourceEqualityChange (INodeModel node, boolean equal) {
     for (ItemEventListener x : itemEventListeners) {
-      x.sourceEqualityChange(node);
+      x.sourceEqualityChange(node, equal);
     }
     // Propagate the event upwards
     IContainerModel parentNode = getParent();
     if (parentNode != null) {
-      parentNode.fireSourceEqualityChange(node);
+      parentNode.fireSourceEqualityChange(node, equal);
     }
   }
   
@@ -226,14 +227,14 @@ public abstract class NodeModel implements INodeModel {
   
   
   @Override
-  public void fireValueEqualityChange (INodeModel node) {
+  public void fireValueEqualityChange (INodeModel node, boolean equal) {
     for (ItemEventListener x : itemEventListeners) {
-      x.valueEqualityChange(node);
+      x.valueEqualityChange(node, equal);
     }
     // Propagate the event upwards
     IContainerModel parentNode = getParent();
     if (parentNode != null) {
-      parentNode.fireValueEqualityChange(node);
+      parentNode.fireValueEqualityChange(node, equal);
     }
   }
   
@@ -246,7 +247,7 @@ public abstract class NodeModel implements INodeModel {
     // Propagate the event upwards
     IContainerModel parentNode = getParent();
     if (parentNode != null) {
-      parentNode.fireValueEqualityChange(node);
+      parentNode.fireComparisonBasisChange(node);
     }
   }
   
@@ -333,6 +334,11 @@ public abstract class NodeModel implements INodeModel {
   public void walkModel(Consumer<INodeModel> before, Consumer<INodeModel> after) {
     before.accept(this);
     after.accept(this);
+  }
+  
+  
+  @Override
+  public void walkItems(Consumer<IItemModel> consumer) {
   }
 
 }

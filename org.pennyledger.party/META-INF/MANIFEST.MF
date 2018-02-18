@@ -8,7 +8,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.gyfor.math,
  org.gyfor.object,
  org.gyfor.object.type.builtin,
- org.gyfor.object.value
+ org.gyfor.object.value,
+ org.gyfor.value
 Export-Package: org.pennyledger.party
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/org.pennyledger.party.PartyDocumentFactory.xml

@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-@Component(immediate=true)
+//@Component(immediate=true)
 public class GLTransactionTest {
 
   private final Logger logger = LoggerFactory.getLogger(GLTransactionTest.class);

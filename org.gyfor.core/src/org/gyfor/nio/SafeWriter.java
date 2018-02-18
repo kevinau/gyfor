@@ -34,6 +34,8 @@ public class SafeWriter extends Writer {
   private final Writer tempWriter;
   private final String lineSeparator = System.getProperty("line.separator");
   
+  private boolean committed = false;
+  
   
   public SafeWriter (Path targetPath) {
     this.targetPath = targetPath;
@@ -48,10 +50,26 @@ public class SafeWriter extends Writer {
   
   
   @Override
-  public void write(int c) throws IOException {
-    tempWriter.write(c);
+  public void close() {
+    try {
+      tempWriter.close();
+      if (committed) {
+        Files.move(tempFile.toPath(),  targetPath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+        committed = false;
+      }
+      if (tempFile.exists()) {
+        tempFile.delete();
+      }
+    } catch (IOException ex) {
+      throw new UncheckedIOException(ex);
+    }
   }
 
+  
+  public void commit() {
+    committed = true;
+  }
+  
   
   @Override
   public void flush() throws IOException {
@@ -59,35 +77,26 @@ public class SafeWriter extends Writer {
   }
   
   
-  public void commit() throws IOException {
-    tempWriter.close();
-    Files.move(tempFile.toPath(),  targetPath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
-  }
-  
-  
-  @Override
-  public void close() throws IOException {
-    tempWriter.close();
-    if (tempFile.exists()) {
-      tempFile.delete();
-    }
-  }
-  
-  
   public void newLine() throws IOException {
     write(lineSeparator);
   }
+  
+  
+  @Override
+  public void write(char[] cbuf, int off, int len) throws IOException {
+    tempWriter.write(cbuf,  off,  len);
+  }
 
   
   @Override
-  public void write(String str) throws IOException {
-    tempWriter.write(str);
+  public void write(int c) throws IOException {
+    tempWriter.write(c);
   }
   
 
   @Override
-  public void write(char[] cbuf, int off, int len) throws IOException {
-    tempWriter.write(cbuf,  off,  len);
+  public void write(String str) throws IOException {
+    tempWriter.write(str);
   }
 
 }

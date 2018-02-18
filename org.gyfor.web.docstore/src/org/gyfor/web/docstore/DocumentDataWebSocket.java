@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.gyfor.dao.EntityDescription;
 import org.gyfor.doc.DocumentData;
 import org.gyfor.doc.DocumentTypeRegistry;
 import org.gyfor.http.AbstractWebSocketConnectionCallback;
@@ -11,7 +12,6 @@ import org.gyfor.http.CallbackAccessor;
 import org.gyfor.http.Context;
 import org.gyfor.http.Response;
 import org.gyfor.http.WebSocketSession;
-import org.gyfor.object.value.EntityDescription;
 import org.gyfor.template.ITemplateEngine;
 import org.gyfor.template.ITemplateEngineFactory;
 import org.gyfor.web.global.JSEdit;

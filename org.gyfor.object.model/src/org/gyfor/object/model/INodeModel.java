@@ -51,6 +51,8 @@ public interface INodeModel extends INode {
 
   public void walkModel(Consumer<INodeModel> before, Consumer<INodeModel> after);
 
+  public void walkItems(Consumer<IItemModel> consumer);
+
   public void fireEffectiveModeChange(INodeModel node, EffectiveEntryMode priorMode);
 
   public void fireErrorNoted(INodeModel node, UserEntryException ex);
@@ -59,11 +61,11 @@ public interface INodeModel extends INode {
 
   public void fireSourceChange(INodeModel node);
 
-  public void fireSourceEqualityChange(INodeModel node);
+  public void fireSourceEqualityChange(INodeModel node, boolean equal);
 
   public void fireValueChange(INodeModel node);
 
-  public void fireValueEqualityChange(INodeModel node);
+  public void fireValueEqualityChange(INodeModel node, boolean equal);
 
   public void fireComparisonBasisChange(INodeModel node);
   

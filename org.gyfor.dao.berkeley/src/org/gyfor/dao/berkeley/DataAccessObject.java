@@ -4,13 +4,18 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gyfor.dao.EntityData;
 import org.gyfor.dao.IDataAccessObject;
 import org.gyfor.dao.IdValuePair;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.IPlanFactory;
 import org.gyfor.object.value.EntityLife;
+import org.gyfor.osgi.Configurable;
 import org.gyfor.todo.NotYetImplementedException;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,22 +26,13 @@ import com.sleepycat.je.SecondaryCursor;
 import com.sleepycat.je.Transaction;
 
 
-public class DataAccessObject<T> implements IDataAccessObject<T> {
+@Component(property = "type=berkeley")
+public class DataAccessObject implements IDataAccessObject {
 
   private final Logger logger = LoggerFactory.getLogger(DataAccessObject.class);
   
-  
-  private final DataEnvironment dataEnvironment;
-  
-  private final String className;
-  
-  private final IEntityPlan<T> entityPlan;
-  
-  private final boolean readOnly;
-  
-  private DataTable dataTable;
-  private KeyDatabaseEntry keyEntry;
-  private ObjectDatabaseEntry dataEntry;
+  @Reference 
+  private DataStore dataStore;
   
 
   public DataAccessObject (DataEnvironment dataEnvironment, IPlanFactory planFactory, String className, boolean readOnly) {
@@ -163,27 +159,16 @@ public class DataAccessObject<T> implements IDataAccessObject<T> {
 
 
   @Override
-  public void add (T instance) {
-    if (entityPlan.hasId() == false) {
-      throw new NotYetImplementedException("Entity without an integer id");
-    }
-
+  public EntityData add (Object value) {
     if (dataTable == null) {
       open();
     }
     
     Transaction txn = dataEnvironment.beginTransaction();
-    int id = entityPlan.getId(instance);
-    if (id == 0) {
-      id = dataTable.getNextSequence(txn);
-      entityPlan.setId(instance, id);
-    }
+    int id = dataTable.getNextSequence(txn);
     keyEntry.setInt(id);
     
-    if (entityPlan.hasVersion()) {
-      Timestamp now = new Timestamp(System.currentTimeMillis());
-      entityPlan.setVersion(instance, now);
-    }
+    EntityData data = new EntityData(id, value);
     
     if (entityPlan.hasEntityLife()) {
       entityPlan.setEntityLife(instance, EntityLife.ACTIVE);

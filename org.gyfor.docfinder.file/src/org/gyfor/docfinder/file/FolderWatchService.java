@@ -45,7 +45,7 @@ public class FolderWatchService {
     DirectoryWatcher.IProcessor processor = new DirectoryWatcher.IProcessor() {
       @Override
       public void process(Path path, Kind<?> kind) {
-        logger.info("Found {} {} for adding to document store", kind, path);
+        //logger.info("Found {} {} for adding to document store", kind, path);
         docStore.importDocument(path);
       }      
     };

@@ -5,11 +5,14 @@ Bundle-SymbolicName: org.gyfor.dao.berkeley
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/org.gyfor.dao.berkeley.DataEnvironment.xml,
- OSGI-INF/org.gyfor.dao.berkeley.DataTableReference.xml
+ OSGI-INF/org.gyfor.dao.berkeley.DataTableReference.xml,
+ OSGI-INF/org.gyfor.dao.berkeley.DataStore.xml
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: lib/je-7.0.6.jar,
- .
+Bundle-ClassPath: .,
+ lib/je-7.5.11.jar
 Import-Package: org.gyfor.dao,
+ org.gyfor.home,
+ org.gyfor.math,
  org.gyfor.object,
  org.gyfor.object.plan,
  org.gyfor.object.type,
@@ -19,3 +22,5 @@ Import-Package: org.gyfor.dao,
  org.gyfor.util,
  org.osgi.service.component;version="1.3.0",
  org.slf4j
+Bundle-ClassPath: lib/je-7.5.11.jar,
+ .

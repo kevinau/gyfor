@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" immediate="true" name="org.gyfor.berkeleydb.learn.ExampleDatabasePut2">
+   <service>
+      <provide interface="org.gyfor.berkeleydb.learn.ExampleDatabasePut2"/>
+   </service>
+   <reference cardinality="1..1" field="dataStore" interface="org.gyfor.berkeleydb.DataStore" name="dataStore"/>
+   <implementation class="org.gyfor.berkeleydb.learn.ExampleDatabasePut2"/>
+</scr:component>

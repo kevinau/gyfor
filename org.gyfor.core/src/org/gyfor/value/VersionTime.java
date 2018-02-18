@@ -1,0 +1,84 @@
+/*******************************************************************************
+ * Copyright (c) 2012 Kevin Holloway (kholloway@geckosoftware.co.uk).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Kevin Holloway - initial API and implementation
+ *******************************************************************************/
+package org.gyfor.value;
+
+
+import java.nio.file.attribute.FileTime;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
+
+
+public class VersionTime {
+
+  private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSSSS");
+  
+  private final FileTime ft;
+
+  
+  private VersionTime () {
+    this.ft = FileTime.from(Instant.now());
+  }
+  
+  
+  public VersionTime (Timestamp t) {
+    this.ft = FileTime.from(t.getTime(), TimeUnit.MILLISECONDS);
+  }
+  
+
+  public VersionTime (FileTime ft) {
+    this.ft = ft;
+  }
+  
+
+  public static VersionTime now () {
+    return new VersionTime();
+  }
+  
+  
+  public FileTime fileTimeValue () {
+    return ft;
+  }
+  
+  
+  @Override
+  public String toString() {
+    return formatter.withZone(ZoneId.systemDefault()).format(ft.toInstant());
+  }
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ft.hashCode();
+    return result;
+  }
+
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    VersionTime other = (VersionTime)obj;
+    if (!ft.equals(other.ft)) {
+      return false;
+    }
+    return true;
+  }
+}

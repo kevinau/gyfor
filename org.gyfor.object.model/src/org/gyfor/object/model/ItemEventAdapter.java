@@ -6,11 +6,11 @@ import org.gyfor.object.UserEntryException;
 public class ItemEventAdapter extends EffectiveEntryModeAdapter implements ItemEventListener {
 
   @Override
-  public void valueEqualityChange(INodeModel node) {
+  public void valueEqualityChange(INodeModel node, boolean equal) {
   }
 
   @Override
-  public void sourceEqualityChange(INodeModel node) {
+  public void sourceEqualityChange(INodeModel node, boolean equal) {
   }
 
   @Override

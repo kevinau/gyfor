@@ -159,14 +159,14 @@ public class DocumentStore implements IDocumentStore {
     
     Path catalogPath = catalogDir.resolve(hashCode + ".ser");
     if (Files.exists(catalogPath)) {
-      logger.info("Document already exists as: {}", hashCode);
+      logger.info("{} already exists as {}. Not importing", path, hashCode);
        // No need to import.  The file already exists.  The file is uniquely named by it's hashCode, 
       // so if it exists under that name, it exists and is current.  Size and time stamp do not 
       // need to be checked.
       return hashCode;
     }
     
-    logger.info("Importing document from file/path {}", path);
+    logger.info("Importing {} as {}", path, hashCode);
     String pathName = path.toString();
     int n = pathName.lastIndexOf('.');
     if (n == -1) {

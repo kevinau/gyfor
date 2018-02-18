@@ -11,35 +11,35 @@ public class StateMachine2 {
 
   private Enum<?> state;
   
-  private TransitionFunction<IEntityModel, Enum<?>> initialFunction;
+  private TransitionFunction<Enum<?>> initialFunction;
 
-  private final List<Transition<Enum<?>, Enum<?>, IEntityModel>> transitions = new ArrayList<>();
+  private final List<Transition<Enum<?>, Enum<?>>> transitions = new ArrayList<>();
 
-  private final List<OptionChangeListener> optionChangeListeners = new ArrayList<>();
+  private final List<ActionChangeListener> actionChangeListeners = new ArrayList<>();
 
-  private final Enum<?>[] optionValues;
+  private final Enum<?>[] actionValues;
   
-  private final boolean[] availableOptions;
+  private final boolean[] availableActions;
   
   private final boolean[] requiresValidEntry;
   
   
-  public StateMachine2 (Class<Enum<?>> stateClass, Class<Enum<?>> optionClass, TransitionFunction<IEntityModel, Enum<?>> initialFunction) {
+  public StateMachine2 (Class<Enum<?>> stateClass, Class<Enum<?>> actionClass, TransitionFunction<Enum<?>> initialFunction) {
     if (!stateClass.isEnum()) {
       throw new IllegalArgumentException("State class is not an Enum");
     }
-    if (!optionClass.isEnum()) {
-      throw new IllegalArgumentException("Option class is not an Enum");
+    if (!actionClass.isEnum()) {
+      throw new IllegalArgumentException("Action class is not an Enum");
     }
-    optionValues = optionClass.getEnumConstants();
-    availableOptions = new boolean[optionValues.length];
-    requiresValidEntry = new boolean[optionValues.length];
+    actionValues = actionClass.getEnumConstants();
+    availableActions = new boolean[actionValues.length];
+    requiresValidEntry = new boolean[actionValues.length];
     
-    Field[] optionFields = optionClass.getDeclaredFields();
-    for (Field optionField : optionFields) {
-      if (optionField.isEnumConstant()) {
-        if (optionField.isAnnotationPresent(RequiresValidEntry.class)) {
-          int i = indexOf(optionField.getName());
+    Field[] actionFields = actionClass.getDeclaredFields();
+    for (Field actionField : actionFields) {
+      if (actionField.isEnumConstant()) {
+        if (actionField.isAnnotationPresent(RequiresValidEntry.class)) {
+          int i = indexOf(actionField.getName());
           requiresValidEntry[i] = true;
         }
       }
@@ -47,99 +47,99 @@ public class StateMachine2 {
   }
 
   
-  protected void transition(Enum<?> state, Enum<?> option, TransitionFunction<IEntityModel, Enum<?>> function) {
-    Transition<Enum<?>, Enum<?>, IEntityModel> transition = new Transition<Enum<?>, Enum<?>, IEntityModel>(state, option, function);
+  protected void transition(Enum<?> state, Enum<?> action, TransitionFunction<Enum<?>> function) {
+    Transition<Enum<?>, Enum<?>> transition = new Transition<Enum<?>, Enum<?>>(state, action, function);
     transitions.add(transition);
   }
   
   
-  protected void initialFunction(TransitionFunction<IEntityModel, Enum<?>> initialFunction) {
+  protected void initialFunction(TransitionFunction<Enum<?>> initialFunction) {
     this.initialFunction = initialFunction;
   }
   
   
-  public void addOptionChangeListener(OptionChangeListener x) {
-    optionChangeListeners.add(x);
+  public void addActionChangeListener(ActionChangeListener x) {
+    actionChangeListeners.add(x);
   }
 
 
-  public void removeOptionChangeListener(OptionChangeListener x) {
-    optionChangeListeners.remove(x);
+  public void removeActionChangeListener(ActionChangeListener x) {
+    actionChangeListeners.remove(x);
   }
 
 
-  private void fireOptionChanged(Enum<?> option, boolean available) {
-    for (OptionChangeListener x : optionChangeListeners) {
-      x.optionChanged(option, available);
+  private void fireActionChanged(Enum<?> action, boolean available) {
+    for (ActionChangeListener x : actionChangeListeners) {
+      x.actionChanged(action, available);
     }
   }
 
   
-  private int indexOf(String optionName) {
+  private int indexOf(String actionName) {
     int i = 0;
-    for (Enum<?> o : optionValues) {
-      if (o.name().equals(optionName)) {
+    for (Enum<?> a : actionValues) {
+      if (a.name().equals(actionName)) {
         return i;
       }
       i++;
     }
-    throw new IllegalArgumentException("Option not known: " + optionName);
+    throw new IllegalArgumentException("Action not known: " + actionName);
   }
 
   
-  private int indexOf(Enum<?> option) {
+  private int indexOf(Enum<?> action) {
     int i = 0;
-    for (Enum<?> o : optionValues) {
-      if (o.equals(option)) {
+    for (Enum<?> a : actionValues) {
+      if (a.equals(action)) {
         return i;
       }
       i++;
     }
-    throw new IllegalArgumentException("Option not known: " + option);
+    throw new IllegalArgumentException("Action not known: " + action);
   }
 
   
-  public boolean requiresValidEntry(String optionName) {
-    int i = indexOf(optionName);
+  public boolean requiresValidEntry(String actionName) {
+    int i = indexOf(actionName);
     return requiresValidEntry[i];
   }
   
   
   /**
-   * Set the initial state of this FSM.  This method fires option change events for
-   * all options that are available.
+   * Set the initial state of this FSM.  This method fires action change events for
+   * all actions that are available.
    */
   public void start(IEntityModel entityModel) {
     if (initialFunction == null) {
       throw new IllegalStateException("'initialFunction' not set");
     }
-    state = initialFunction.apply(entityModel);
+    state = initialFunction.apply();
 
-    // Clear all available options
-    Arrays.fill(availableOptions, false);
+    // Clear all available actions
+    Arrays.fill(availableActions, false);
     
-    // Set options that are available for this state
-    for (Transition<Enum<?>, Enum<?>, ?> t : transitions) {
+    // Set actions that are available for this state
+    for (Transition<Enum<?>, Enum<?>> t : transitions) {
       if (t.getState() == state) {
-        Enum<?> o = t.getOption();
-        int i = indexOf(o);
-        availableOptions[i] = true;
+        Enum<?> a = t.getAction();
+        int i = indexOf(a);
+        availableActions[i] = true;
       }
     }
 
-    // Fire events for all options that are 'not available'
+    // Fire events for all actions that are 'not available'
     int i = 0;
-    for (Enum<?> o : optionValues) {
-      if (!availableOptions[i]) {
-        fireOptionChanged(o, false);
+    for (Enum<?> a : actionValues) {
+      if (!availableActions[i]) {
+        fireActionChanged(a, false);
       }
       i++;
     }
-    // Then fire event for all options that are 'available'
+    // Then fire event for all actions that are 'available'
     i = 0;
-    for (Enum<?> o : optionValues) {
-      if (availableOptions[i]) {
-        fireOptionChanged(o, true);
+    for (Enum<?> a : actionValues) {
+      if (availableActions[i]) {
+        fireActionChanged(a, true);
       }
       i++;
     }
@@ -148,52 +148,52 @@ public class StateMachine2 {
   
   public void setState(Enum<?> state) {
     this.state = state;
-    boolean[] priorOptions = availableOptions.clone();
+    boolean[] priorActions = availableActions.clone();
     
-    // Clear all available options
-    Arrays.fill(availableOptions, false);
+    // Clear all available actions
+    Arrays.fill(availableActions, false);
     
-    for (Transition<Enum<?>, Enum<?>, ?> t : transitions) {
+    for (Transition<Enum<?>, Enum<?>> t : transitions) {
       if (t.getState() == state) {
-        Enum<?> o = t.getOption();
-        int i = indexOf(o);
-        availableOptions[i] = true;
+        Enum<?> a = t.getAction();
+        int i = indexOf(a);
+        availableActions[i] = true;
       }
     }
 
-    // Fire events for all options that have changed to 'not available'
+    // Fire events for all actions that have changed to 'not available'
     int i = 0;
-    for (Enum<?> o : optionValues) {
-      if (priorOptions[i] && !availableOptions[i]) {
-        fireOptionChanged(o, false);
+    for (Enum<?> a : actionValues) {
+      if (priorActions[i] && !availableActions[i]) {
+        fireActionChanged(a, false);
       }
       i++;
     }
-    // Then fire event for all options that have changed to 'available'
+    // Then fire event for all actions that have changed to 'available'
     i = 0;
-    for (Enum<?> o : optionValues) {
-      if (availableOptions[i] && !priorOptions[i]) {
-        fireOptionChanged(o, true);
+    for (Enum<?> a : actionValues) {
+      if (availableActions[i] && !priorActions[i]) {
+        fireActionChanged(a, true);
       }
       i++;
     }
   }
   
-  public void setOption(String optionName, IEntityModel entityModel) {
-    for (Enum<?> option : optionValues) {
-      if (option.name().equals(optionName)) {
-        // Find transition using the current state and the specified option
-        for (Transition<Enum<?>, Enum<?>, IEntityModel> t : transitions) {
-          if (t.getState() == state && t.getOption() == option) {
-            Enum<?> newState = t.proceed(entityModel);
+  public void setAction(String actionName, IEntityModel entityModel) {
+    for (Enum<?> action : actionValues) {
+      if (action.name().equals(actionName)) {
+        // Find transition using the current state and the specified action
+        for (Transition<Enum<?>, Enum<?>> t : transitions) {
+          if (t.getState() == state && t.getAction() == action) {
+            Enum<?> newState = t.proceed();
             setState(newState);
             return;
           }
         }
-        throw new IllegalArgumentException("No transition for: state " + state + ", option " + option);
+        throw new IllegalArgumentException("No transition for: state " + state + ", action " + action);
       }
     }
-    throw new IllegalArgumentException("Option not known: " + optionName);
+    throw new IllegalArgumentException("Action not known: " + actionName);
   }
   
   

@@ -10,8 +10,8 @@ import org.gyfor.object.Optional;
 import org.gyfor.object.SelfDescribing;
 import org.gyfor.object.UniqueConstraint;
 import org.gyfor.object.type.builtin.PhoneNumberType;
-import org.gyfor.object.value.EntityLife;
-import org.gyfor.object.value.VersionTime;
+import org.gyfor.value.EntityLife;
+import org.gyfor.value.VersionTime;
 
 
 @Entity
@@ -59,7 +59,7 @@ public class Party implements SelfDescribing, Serializable {
   }
 
   @Override
-  public String entityDescription() {
+  public String invokeDescription() {
     String description;
     String suffix = " Limited";
     if (formalName.endsWith(suffix)) {
@@ -110,8 +110,8 @@ public class Party implements SelfDescribing, Serializable {
   @Optional
   @ItemField(type = PhoneNumberType.class)
   @Label("Primary phone number")
-  public void setPhoneNumber(String webPage) {
-    this.webPage = webPage;
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
   }
 
 }

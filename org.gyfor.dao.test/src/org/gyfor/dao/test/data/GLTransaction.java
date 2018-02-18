@@ -5,9 +5,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 
-import org.gyfor.object.ManyToOne;
-import org.gyfor.object.value.EntityLife;
-import org.gyfor.object.value.VersionTime;
+import org.gyfor.value.EntityLife;
+import org.gyfor.value.VersionTime;
 
 
 public class GLTransaction {

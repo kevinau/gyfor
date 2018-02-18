@@ -545,7 +545,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
     }
     if (isComparedValueEqual != ce) {
       isComparedValueEqual = ce;
-      fireValueEqualityChange(this); 
+      fireValueEqualityChange(this, isComparedValueEqual); 
     }
   }
   
@@ -565,7 +565,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
     }
     if (isComparedSourceEqual != cs) {
       isComparedSourceEqual = cs;
-      fireSourceEqualityChange(this);
+      fireSourceEqualityChange(this, isComparedSourceEqual);
     }
   }
   
@@ -595,11 +595,11 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
         // Clear field events
         if (!isComparedSourceEqual) {
           isComparedSourceEqual = true;
-          fireSourceEqualityChange(this);
+          fireSourceEqualityChange(this, true);
         }
         if (!isComparedValueEqual) {
           isComparedValueEqual = true;
-          fireValueEqualityChange(this);
+          fireValueEqualityChange(this, true);
         }
         if (!validationErrors.isEmpty()) {
           validationErrors.clear();
@@ -877,6 +877,13 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
     before.accept(this);
     after.accept(this);
   }
+
+  
+  @Override
+  public void walkItems(Consumer<IItemModel> consumer) {
+    consumer.accept(this);
+  }
+
 
 
 //  @Override

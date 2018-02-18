@@ -1,8 +1,8 @@
 package org.gyfor.object.test.data;
 
 import org.gyfor.math.Decimal;
-import org.gyfor.object.value.EntityLife;
-import org.gyfor.object.value.VersionTime;
+import org.gyfor.value.EntityLife;
+import org.gyfor.value.VersionTime;
 
 @SuppressWarnings("unused")
 public class SimpleEntity {

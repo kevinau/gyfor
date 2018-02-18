@@ -2,10 +2,6 @@ package org.gyfor.dao.test.data;
 
 public class SimpleEntity {
 
-  private int id;
-  
-  //private VersionTime version;
-  
   private String code;
   
   private String description;
@@ -18,9 +14,29 @@ public class SimpleEntity {
     this.description = description;
   }
 
+  
+  public String getCode() {
+    return code;
+  }
+
+  
+  public void setCode(String code) {
+    this.code = code;
+  }
+
+  
+  public String getDescription() {
+    return description;
+  }
+
+  
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
   @Override
   public String toString() {
-    return "SimpleEntity[" + id + "," + code + "," + description + "]";
+    return "SimpleEntity[" + code + "," + description + "]";
   }
   
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.INameMappedModel;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ModelFactory;
@@ -121,6 +122,14 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
       member.walkModel(before, after);
     }
     after.accept(this);
+  }
+  
+    
+  @Override
+  public void walkItems(Consumer<IItemModel> consumer) {
+    for (INodeModel member : members.values()) {
+      member.walkItems(consumer);
+    }
   }
   
     

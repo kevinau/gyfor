@@ -1,15 +1,24 @@
 package org.gyfor.web.form.state;
 
+import java.util.Map;
+
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.model.IEntityModel;
+import org.gyfor.object.model.IModelFactory;
+import org.osgi.service.component.annotations.Reference;
+
 
 public class AddOnlyStateMachineFactory implements IStateMachineFactory {
 
-  protected enum Option {
-    @OptionLabel(label="New", description="Create a new {}")
+  @Reference 
+  private IModelFactory modelFactory;
+  
+  
+  private enum Action {
+    @ActionLabel(label="New", description="Create a new {}")
     START_ADD, 
     
-    @OptionLabel(label="Add", description="Save the {}")
+    @ActionLabel(label="Add", description="Save the {}")
     @RequiresValidEntry
     CONFIRM_ADD,
     
@@ -18,45 +27,54 @@ public class AddOnlyStateMachineFactory implements IStateMachineFactory {
     CANCEL;
   };
 
-  protected enum State {
+
+  private enum State {
     CLEAR,
     ADDING,
     SHOWING;
   };
 
-  
-  @SuppressWarnings("unchecked")
+
+
   @Override
-  public StateMachine<State, Option> getStateMachine() {
-    TransitionFunction<IEntityModel, State> startAdding = entityModel -> {
-      System.out.println("startAdding ..........");
+  public StateMachine<State, Action> getStateMachine(Map<String, Object> props) {
+    String entityClassName = (String)props.get("entity");
+    if (entityClassName == null) {
+      throw new IllegalArgumentException("No 'entity' property");
+    }
+    IEntityModel entityModel;
+    try {
+      entityModel = modelFactory.buildEntityModel(entityClassName);
+    } catch (ClassNotFoundException ex) {
+      throw new IllegalArgumentException(ex);
+    }
+    
+    TransitionFunction<State> startAdding = () -> {
       entityModel.setEntryMode(EntryMode.ENABLED);
       //Object newInstance = entityModel.newInstance();
       //entityModel.setValue(newInstance);
       return State.ADDING;
     };
     
-    TransitionFunction<IEntityModel, State> confirmAdd = entityModel -> {
-      System.out.println("confirmAdd ..........");
+    TransitionFunction<State> confirmAdd = () -> {
       entityModel.setEntryMode(EntryMode.DISABLED);
       Object instance = entityModel.getValue();
       System.out.println("       adding " + instance);
       return State.SHOWING;
     };
     
-    TransitionFunction<IEntityModel, State> clearForm = entityModel -> {
-      System.out.println("clearForm ..........." + entityModel.getName() + " " + entityModel.getNodeId());
+    TransitionFunction<State> clearForm = () -> {
       entityModel.setEntryMode(EntryMode.HIDDEN);
       entityModel.setValue(entityModel.newInstance());
       return State.CLEAR;
     };
 
-    StateMachine<State, Option> sm = new StateMachine<State, Option>(State.class, Option.class, clearForm);
-    sm.transition(State.CLEAR, Option.START_ADD, startAdding);
-    sm.transition(State.ADDING, Option.CANCEL, clearForm);
-    sm.transition(State.ADDING, Option.CONFIRM_ADD, confirmAdd);
-    sm.transition(State.SHOWING, Option.CLEAR, clearForm);
-    sm.transition(State.SHOWING, Option.START_ADD, startAdding);
+    StateMachine<State, Action> sm = new StateMachine<State, Action>(State.class, Action.class, startAdding);
+    sm.addTransition(State.CLEAR, Action.START_ADD, startAdding);
+    sm.addTransition(State.ADDING, Action.CANCEL, clearForm);
+    sm.addTransition(State.ADDING, Action.CONFIRM_ADD, confirmAdd);
+    sm.addTransition(State.SHOWING, Action.CLEAR, clearForm);
+    sm.addTransition(State.SHOWING, Action.START_ADD, startAdding);
     return sm;
   }
 

@@ -41,7 +41,7 @@ public interface IItemPlan<T> extends INodePlan, INode {
   @Override
   public void setFieldValue(Object instance, Object value);
 
-  public boolean isDescribing();
+  //public boolean isDescribing();
   
   public T getResultValue(IResultSet rs);
 

@@ -16,9 +16,10 @@ import com.sleepycat.persist.model.AnnotationModel;
 import com.sleepycat.persist.model.EntityModel;
 
 
-//@Component(service=DataStore.class, immediate = true)
+@Component(service=DataStore.class)
 public class DataStore {
 
+  @Reference
   private DataEnvironment envionment;
   
   @Configurable
@@ -26,18 +27,7 @@ public class DataStore {
   
   private EntityStore store;
   
-  
-  @Reference
-  public void setDataEnvironment (DataEnvironment environment) {
-    this.envionment = environment;
-  }
-  
-  
-  public void unsetDataEnvironment (DataEnvironment environment) {
-    this.envionment = null;
-  }
-  
-  
+
   @Activate 
   public void activate (ComponentContext componentContext) {
     ComponentConfiguration.load(this, componentContext);
@@ -57,6 +47,12 @@ public class DataStore {
   }
   
   
+  // TODO remove
+  public EntityStore getEntityStore() {
+    return store;
+  }
+  
+  
   @Deactivate
   public void deactivate () {
     store.close();
@@ -68,8 +64,18 @@ public class DataStore {
   }
   
 
+  public <E> PrimaryIndex<Integer,E> getPrimaryIndex (Class<E> entityClass) {
+    return getPrimaryIndex(Integer.class, entityClass);
+  }
+  
+
   public <SK,PK,E> SecondaryIndex<SK,PK,E> getSecondaryIndex (PrimaryIndex<PK,E> primaryIndex, Class<SK> skClass, String name) {
     return store.getSecondaryIndex(primaryIndex, skClass, name);
+  }
+  
+  
+  public <E> SecondaryIndex<String,Integer,E> getSecondaryIndex (PrimaryIndex<Integer,E> primaryIndex, String name) {
+    return getSecondaryIndex(primaryIndex, String.class, name);
   }
 
 }

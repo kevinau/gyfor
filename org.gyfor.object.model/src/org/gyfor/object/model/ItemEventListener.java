@@ -24,7 +24,7 @@ public interface ItemEventListener extends EventListener {
    * the equality of the field and default value).
    * 
    */
-  public void valueEqualityChange(INodeModel node);
+  public void valueEqualityChange(INodeModel node, boolean equal);
 
   /**
    * The field or default <b>source</b> values have changed so they are now equal, or no
@@ -35,7 +35,7 @@ public interface ItemEventListener extends EventListener {
    * than the value itself.
    * 
    */
-  public void sourceEqualityChange(INodeModel node);
+  public void sourceEqualityChange(INodeModel node, boolean equal);
 
   /**
    * The field value has changed, either by user data entry or by the

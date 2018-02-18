@@ -3,5 +3,6 @@
    <service>
       <provide interface="org.gyfor.dao.berkeley.DataEnvironment"/>
    </service>
+   <reference cardinality="1..1" field="application" interface="org.gyfor.home.IApplication" name="application"/>
    <implementation class="org.gyfor.dao.berkeley.DataEnvironment"/>
 </scr:component>

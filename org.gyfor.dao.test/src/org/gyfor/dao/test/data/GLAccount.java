@@ -2,7 +2,7 @@ package org.gyfor.dao.test.data;
 
 import org.gyfor.object.Entity;
 import org.gyfor.object.SelfDescribing;
-import org.gyfor.object.value.VersionTime;
+import org.gyfor.value.VersionTime;
 
 @Entity
 public class GLAccount implements SelfDescribing {

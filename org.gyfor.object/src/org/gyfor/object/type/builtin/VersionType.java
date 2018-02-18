@@ -17,9 +17,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.gyfor.object.UserEntryException;
-import org.gyfor.object.value.VersionTime;
 import org.gyfor.sql.IPreparedStatement;
 import org.gyfor.sql.IResultSet;
+import org.gyfor.value.VersionTime;
 
 
 public class VersionType extends StringBasedType<VersionTime> {
@@ -84,7 +84,7 @@ public class VersionType extends StringBasedType<VersionTime> {
 
   @Override
   public void setStatementFromValue(IPreparedStatement stmt, VersionTime value) {
-    stmt.setTimestamp(value.timestampValue());
+    stmt.setTimestamp(new Timestamp(value.fileTimeValue().toMillis()));
   }
 
 

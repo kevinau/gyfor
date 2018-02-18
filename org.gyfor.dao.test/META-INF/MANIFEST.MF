@@ -6,14 +6,11 @@ Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: lib/junit-4.12.jar,
  .
-Import-Package: org.gyfor.dao.mapping,
- org.gyfor.object,
- org.gyfor.object.plan,
- org.gyfor.object.value,
+Import-Package: org.gyfor.dao,
  org.gyfor.sql,
  org.gyfor.sql.dialect,
+ org.gyfor.value,
  org.slf4j;version="1.7.21"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.gyfor.dao.test.data
-Service-Component: OSGI-INF/org.gyfor.dao.test.GLTransactionTest.xml,
- OSGI-INF/org.gyfor.dao.test.TableDropCreate.xml
+Service-Component: OSGI-INF/org.gyfor.dao.test.AddTest.xml

@@ -9,8 +9,8 @@ import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.PlanFactory;
-import org.gyfor.object.value.EntityLife;
-import org.gyfor.object.value.VersionTime;
+import org.gyfor.value.EntityLife;
+import org.gyfor.value.VersionTime;
 import org.junit.Assert;
 import org.junit.Test;
 

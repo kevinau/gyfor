@@ -6,7 +6,9 @@ Bundle-Version: 1.0.0
 Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/org.gyfor.web.form.RoundtripWebSocket.xml,
- OSGI-INF/org.gyfor.web.form.FormWebPage.xml
+ OSGI-INF/org.gyfor.web.form.FormWebPage.xml,
+ OSGI-INF/org.gyfor.web.form.DescriptionWebSocket.xml,
+ OSGI-INF/org.gyfor.web.form.state.LoadStateMachineFactory.xml
 Import-Package: com.mitchellbosecke.pebble,
  com.mitchellbosecke.pebble.error,
  com.mitchellbosecke.pebble.extension,
@@ -23,17 +25,21 @@ Import-Package: com.mitchellbosecke.pebble,
  io.undertow.websockets,
  io.undertow.websockets.core,
  io.undertow.websockets.spi,
+ org.gyfor.dao,
  org.gyfor.formref,
  org.gyfor.http,
  org.gyfor.object,
+ org.gyfor.object.desc,
  org.gyfor.object.model,
  org.gyfor.object.plan,
  org.gyfor.object.type,
  org.gyfor.sql,
  org.gyfor.template,
+ org.gyfor.value,
  org.osgi.framework;version="1.8.0",
  org.osgi.service.component;version="1.3.0",
  org.osgi.service.component.annotations;resolution:=optional,
+ org.osgi.service.event;version="1.3.0",
  org.slf4j;version="1.7.21",
  org.xnio
 Bundle-ActivationPolicy: lazy
