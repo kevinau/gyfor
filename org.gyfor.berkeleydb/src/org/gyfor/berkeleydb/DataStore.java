@@ -16,7 +16,7 @@ import com.sleepycat.persist.model.AnnotationModel;
 import com.sleepycat.persist.model.EntityModel;
 
 
-@Component(service=DataStore.class)
+//@Component(service=DataStore.class)
 public class DataStore {
 
   @Reference

@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Addresses
+Bundle-SymbolicName: org.pennyledger.address;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Kevin Holloway
+Bundle-ActivationPolicy: lazy
+Export-Package: org.pennyledger.address
+Service-Component: OSGI-INF/org.pennyledger.address.AddressFactory.xml
+Import-Package: org.gyfor.object,
+ org.gyfor.osgi,
+ org.osgi.service.component;version="1.2.0"

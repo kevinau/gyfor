@@ -6,6 +6,7 @@ import java.util.TimerTask;
 import org.gyfor.dao.ConcurrentModificationException;
 import org.gyfor.dao.EntityData;
 import org.gyfor.dao.IDataAccessObject;
+import org.gyfor.dao.test.data.Party;
 import org.gyfor.dao.test.data.SimpleEntity;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -22,26 +23,26 @@ public class AddTest {
   private IDataAccessObject dao;
   
   private void runTest() {
-    SimpleEntity instance = new SimpleEntity("QAN", "Qantas Airways");
+    Party party0 = new Party("Qantas", "Qantas Airways", "www.qantas.com");
 
-    logger.info("About to add {}", instance);
-    EntityData entityData = dao.add(instance);
-    logger.info("Added: {}", entityData);
+    logger.info("About to add {}", party0);
+    party0 = (Party)dao.add(party0);
+    logger.info("Added: {}", party0);
     
-    int id = entityData.getId();
+    int id = party0.getId();
     logger.info("About to fetch record with id {}", id);
-    entityData = dao.fetchById(SimpleEntity.class, id);
-    logger.info("Fetched: {}", entityData);
+    Party party1 = (Party)dao.fetchById(Party.class, id);
+    logger.info("Fetched: {}", party1);
     
     logger.info("About to change record with id {}", id);
-    SimpleEntity simpleEntity2 = new SimpleEntity("QAN", "Qantas Airways Australia");
-    logger.info("New record {}", simpleEntity2);
+    party1.setFormalName("Qantas Airways Australia");
+    logger.info("New record {}", party1);
     try {
-      entityData = dao.change(entityData, simpleEntity2);
+      party1 = (Party)dao.update(party1);
     } catch (ConcurrentModificationException ex) {
       logger.error("Record change failure", ex);
     }
-    logger.info("Record changed");
+    logger.info("Record changed: {}", party1);
     
 //    logger.info("About to remove record with id {} and versin {}", id, entityData.getVersionTime());
 //    try {

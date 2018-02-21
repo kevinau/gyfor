@@ -6,16 +6,15 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 
 @Component(configurationPolicy=ConfigurationPolicy.REQUIRE)
-public class PartyDocumentFactory implements IEntityFactory {
+public class PartyDocumentFactory implements IEntityFactory<PartyDocument> {
 
-  @SuppressWarnings("unchecked")
   @Override
   public PartyDocument newEntityInstance() {
     return new PartyDocument();
   }
 
   @Override
-  public Class<?> getEntityClass() {
+  public Class<PartyDocument> getEntityClass() {
     return PartyDocument.class;
   }
 

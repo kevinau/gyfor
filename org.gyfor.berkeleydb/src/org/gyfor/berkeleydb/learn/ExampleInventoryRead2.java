@@ -16,7 +16,6 @@ package org.gyfor.berkeleydb.learn;
 import org.gyfor.berkeleydb.DataStore;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.sleepycat.je.DatabaseException;

@@ -30,7 +30,7 @@ import com.sleepycat.persist.EntityStore;
 import com.sleepycat.persist.StoreConfig;
 
 
-@Component(service = DataEnvironment.class)
+//@Component(service = DataEnvironment.class)
 public class DataEnvironment {
 
   private Logger logger = LoggerFactory.getLogger(DataEnvironment.class);

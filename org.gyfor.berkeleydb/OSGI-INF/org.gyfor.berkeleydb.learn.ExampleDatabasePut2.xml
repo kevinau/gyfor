@@ -3,6 +3,6 @@
    <service>
       <provide interface="org.gyfor.berkeleydb.learn.ExampleDatabasePut2"/>
    </service>
-   <reference cardinality="1..1" field="dataStore" interface="org.gyfor.berkeleydb.DataStore" name="dataStore"/>
+   <reference cardinality="1..1" field="dataStore" interface="DataStore" name="dataStore"/>
    <implementation class="org.gyfor.berkeleydb.learn.ExampleDatabasePut2"/>
 </scr:component>

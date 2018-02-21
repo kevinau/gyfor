@@ -8,6 +8,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
+import com.sleepycat.je.Transaction;
 import com.sleepycat.persist.EntityStore;
 import com.sleepycat.persist.PrimaryIndex;
 import com.sleepycat.persist.SecondaryIndex;
@@ -36,6 +37,7 @@ public class DataStore {
     model.registerClass(LocalDateProxy.class);
     model.registerClass(DecimalProxy.class);
     model.registerClass(CRC64DigestProxy.class);
+    model.registerClass(VersionTimeProxy.class);
 
     StoreConfig storeConfig = new StoreConfig();
     storeConfig.setAllowCreate(true);
@@ -78,4 +80,9 @@ public class DataStore {
     return getSecondaryIndex(primaryIndex, String.class, name);
   }
 
+  
+  public Transaction beginTransaction() {
+    return store.getEnvironment().beginTransaction(null, null);
+  }
+  
 }

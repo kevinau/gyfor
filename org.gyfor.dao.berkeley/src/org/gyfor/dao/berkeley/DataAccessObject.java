@@ -1,29 +1,19 @@
 package org.gyfor.dao.berkeley;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Field;
 
-import org.gyfor.dao.EntityData;
+import org.gyfor.dao.ConcurrentModificationException;
 import org.gyfor.dao.IDataAccessObject;
-import org.gyfor.dao.IdValuePair;
-import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.IItemPlan;
-import org.gyfor.object.plan.IPlanFactory;
-import org.gyfor.object.value.EntityLife;
-import org.gyfor.osgi.Configurable;
-import org.gyfor.todo.NotYetImplementedException;
+import org.gyfor.value.EntityLife;
+import org.gyfor.value.VersionTime;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sleepycat.je.Cursor;
-import com.sleepycat.je.LockMode;
-import com.sleepycat.je.OperationStatus;
-import com.sleepycat.je.SecondaryCursor;
+import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.Transaction;
+import com.sleepycat.persist.PrimaryIndex;
 
 
 @Component(property = "type=berkeley")
@@ -33,189 +23,114 @@ public class DataAccessObject implements IDataAccessObject {
   
   @Reference 
   private DataStore dataStore;
-  
 
-  public DataAccessObject (DataEnvironment dataEnvironment, IPlanFactory planFactory, String className, boolean readOnly) {
-    logger.info ("Creating data access service {} with {}", this.getClass(), className);
-    
-    this.dataEnvironment = dataEnvironment;
-    this.className = className;
-    this.readOnly = readOnly;
-        
-    entityPlan = planFactory.getEntityPlan(className);
-    dataTable = null;
-  }
-
-  
+  @SuppressWarnings("unchecked")
   @Override
-  public void close () {
-    logger.info ("Closing {} with {}", this.getClass(), className);
+  public Object add(Object value) {
+    Class<?> klass = value.getClass();
     
-    if (dataTable != null) {
-      dataTable.close();
-      dataTable = null;
+    // TODO Should the primary and secondary indexes be cached?
+    PrimaryIndex<Integer, Object> primaryById = (PrimaryIndex<Integer, Object>)dataStore.getPrimaryIndex(Integer.class, klass);
+
+    try {
+      Field timeField = klass.getDeclaredField("versionTime");
+      VersionTime versionTime = VersionTime.now();
+      timeField.setAccessible(true);
+      timeField.set(value, versionTime);
+      
+      Field lifeField = klass.getDeclaredField("entityLife");
+      lifeField.setAccessible(true);
+      lifeField.set(value, EntityLife.ACTIVE);
+    } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+      throw new RuntimeException(ex);
     }
-  }
-  
-  
-  protected synchronized void open () {
-    if (dataTable == null) {
-      dataTable = dataEnvironment.openTable(entityPlan, readOnly);
-      keyEntry = new KeyDatabaseEntry();
-      dataEntry = dataTable.getDatabaseEntry();
-    }
+    
+    // Put it in the store. Because we do not explicitly set
+    // a transaction here, and because the store was opened
+    // with transactional support, auto commit is used for each
+    // write to the store.
+    primaryById.put(value);
+    return value;
   }
 
   
   @Override
-  public T getById(int id) {
-    if (dataTable == null) {
-      open();
-    }
-    KeyDatabaseEntry key = new KeyDatabaseEntry(id);
-    ObjectDatabaseEntry data = dataTable.getDatabaseEntry();
-    
-    OperationStatus status = dataTable.get(null, key, data, LockMode.DEFAULT);
-    switch (status) {
-    case SUCCESS :
-      return data.getValue();
-    case NOTFOUND :
-      return null;
-    default :
-      throw new RuntimeException("Unexpected status: " + status);
-    }
+  public void close() {
+    // Nothing to do for Berkeley database
   }
 
-
+  
+  @SuppressWarnings("unchecked")
   @Override
-  public T getByKey(int keyNo, Object... keyValues) {
-    List<IItemPlan<?>[]> uniqueConstraints = entityPlan.getUniqueConstraints();
-    if (keyNo > uniqueConstraints.size()) {
-      throw new IllegalArgumentException("Key number number must be less than " + uniqueConstraints.size());
-    }
-    IItemPlan<?>[] itemPlans = uniqueConstraints.get(keyNo - 1);
-    if (keyValues.length != itemPlans.length) {
-      throw new IllegalArgumentException(keyValues.length + " key values when expecting " + itemPlans.length);
-    }
-    TableIndex index = dataTable.getIndex(keyNo);
-    SecondaryCursor cursor = index.openCursor();
-    cursor.get(key, data, getType, options)
-    throw new NotYetImplementedException();
+  public Object fetchById(Class<?> klass, int id) {
+    PrimaryIndex<Integer, Object> primaryById = (PrimaryIndex<Integer, Object>)dataStore.getPrimaryIndex(Integer.class, klass);
+    Object value = primaryById.get(id);
+    return value;
   }
+  
 
-
+  @SuppressWarnings("unchecked")
   @Override
-  public boolean existsByKey(Object... keyValues) {
-    throw new NotYetImplementedException();
-  }
+  public void remove(Object value) throws ConcurrentModificationException {
+    Transaction transaction = dataStore.beginTransaction();
+    try {
+      Class<?> klass = value.getClass();
+      Field idField = klass.getDeclaredField("id");
+      Field versionField = klass.getDeclaredField("versionTime");
+      idField.setAccessible(true);
+      int id = idField.getInt(value);
+      versionField.setAccessible(true);
+      VersionTime oldTime = (VersionTime)versionField.get(value);
 
-
-  @Override
-  public List<T> getAll() {
-    if (dataTable == null) {
-      open();
-    }
-    
-    ObjectDatabaseEntry data = dataTable.getDatabaseEntry();
-    List<T> results = new ArrayList<>();
-    
-    try (Cursor cursor = dataTable.openCursor()) {
-      OperationStatus status = cursor.getFirst(null, data, LockMode.DEFAULT);
-      while (status == OperationStatus.SUCCESS) {
-        results.add(data.getValue());
-        status = cursor.getNext(null, data, LockMode.DEFAULT);
+      PrimaryIndex<Integer, Object> primaryById = (PrimaryIndex<Integer, Object>)dataStore.getPrimaryIndex(Integer.class, klass);
+      Object value2 = primaryById.get(id);
+      VersionTime newTime = (VersionTime)versionField.get(value2);
+      if (!oldTime.equals(newTime)) {
+        throw new ConcurrentModificationException(oldTime + " vs " + newTime);
       }
-    } catch (Exception ex) {
-      ex.printStackTrace();
+      primaryById.delete(id);
+      transaction.commit();
+    } catch (NoSuchFieldException | SecurityException | IllegalArgumentException |
+             IllegalAccessException | DatabaseException ex) {
+      transaction.abort();
+      throw new RuntimeException(ex);
     }
-    return results;
   }
 
-
+  
+  /**
+   * Change an entity.  Only the 'id' and 'versionTime' of the old value is used.
+   */
+  @SuppressWarnings("unchecked")
   @Override
-  public List<IdValuePair<String>> getDescriptionAll() {
-    if (dataTable == null) {
-      open();
-    }
-    
-    KeyDatabaseEntry key = new KeyDatabaseEntry();
-    ObjectDatabaseEntry data = dataTable.getDatabaseEntry();
-    List<IdValuePair<String>> results = new ArrayList<>();
-    
-    try (Cursor cursor = dataTable.openCursor()) {
-      OperationStatus status = cursor.getFirst(key, data, LockMode.DEFAULT);
-      while (status == OperationStatus.SUCCESS) {
-        Object instance = data.getValue();
-        String description = entityPlan.getDescription(instance);
-        IdValuePair<String> idValue = new IdValuePair<String>(key.getInt(), description);
-        results.add(idValue);
-        status = cursor.getNext(null, data, LockMode.DEFAULT);
+  public Object update(Object newValue) throws ConcurrentModificationException {
+    Transaction transaction = dataStore.beginTransaction();
+    try {
+      Class<?> klass = newValue.getClass();
+      Field idField = klass.getDeclaredField("id");
+      Field versionField = klass.getDeclaredField("versionTime");
+      idField.setAccessible(true);
+      int id = idField.getInt(newValue);
+      versionField.setAccessible(true);
+      VersionTime oldTime = (VersionTime)versionField.get(newValue);
+
+      PrimaryIndex<Integer, Object> primaryById = (PrimaryIndex<Integer, Object>)dataStore.getPrimaryIndex(Integer.class, klass);
+      Object value = primaryById.get(id);
+      VersionTime newTime = (VersionTime)versionField.get(value);
+      if (!oldTime.equals(newTime)) {
+        throw new ConcurrentModificationException(oldTime + " vs " + newTime);
       }
-    } catch (Exception ex) {
-      ex.printStackTrace();
+      
+      newTime = VersionTime.now();
+      versionField.set(newValue, newTime);
+      primaryById.put(newValue);
+      transaction.commit();
+      return newValue;
+    } catch (NoSuchFieldException | SecurityException | IllegalArgumentException |
+             IllegalAccessException | DatabaseException ex) {
+      transaction.abort();
+      throw new RuntimeException(ex);
     }
-    return results;
   }
-
-
-  @Override
-  public EntityData add (Object value) {
-    if (dataTable == null) {
-      open();
-    }
-    
-    Transaction txn = dataEnvironment.beginTransaction();
-    int id = dataTable.getNextSequence(txn);
-    keyEntry.setInt(id);
-    
-    EntityData data = new EntityData(id, value);
-    
-    if (entityPlan.hasEntityLife()) {
-      entityPlan.setEntityLife(instance, EntityLife.ACTIVE);
-    }
-    dataEntry.setValue(instance);
-    dataTable.put(txn, keyEntry, dataEntry);
-    txn.commit();
-  }
-
-
-  @Override
-  public void update (T entity) {
-    // TODO Auto-generated method stub
-    
-  }
-
-
-  @Override
-  public void addOrUpdate (T instance) {
-    if (entityPlan.hasId() == false) {
-      throw new NotYetImplementedException("Entity without an integer id");
-    }
-
-    if (dataTable == null) {
-      open();
-    }
-    
-    int id = entityPlan.getId(instance);
-    if (id == 0) {
-      // Entity has not been stored, so add it
-      add (instance);
-    }
-    // TODO Auto-generated method stub
-    
-  }
-
-
-  @Override
-  public void remove (T entity) {
-    // TODO Auto-generated method stub
-    
-  }
-
-
-  @Override
-  public IEntityPlan<T> getEntityPlan() {
-    return entityPlan;
-  }
-
+  
 }

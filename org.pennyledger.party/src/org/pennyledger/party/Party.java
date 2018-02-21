@@ -10,21 +10,24 @@ import org.gyfor.object.Optional;
 import org.gyfor.object.SelfDescribing;
 import org.gyfor.object.UniqueConstraint;
 import org.gyfor.object.type.builtin.PhoneNumberType;
-import org.gyfor.value.EntityLife;
-import org.gyfor.value.VersionTime;
+
+import com.sleepycat.persist.model.PrimaryKey;
+import com.sleepycat.persist.model.Relationship;
+import com.sleepycat.persist.model.SecondaryKey;
 
 
 @Entity
+@com.sleepycat.persist.model.Entity
 @UniqueConstraint({ "shortName" })
 @EntityLabel(description = "A person or business that you deal with")
 public class Party implements SelfDescribing, Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  @PrimaryKey(sequence = "Party_seq")
   private int id;
-
-  private VersionTime version;
-
+  
+  @SecondaryKey(relate = Relationship.ONE_TO_ONE)
   private String shortName;
 
   private String formalName;
@@ -33,29 +36,21 @@ public class Party implements SelfDescribing, Serializable {
   
   private String phoneNumber;
 
-  private EntityLife entityLife;
-
   public Party() {
     this.shortName = "";
     this.formalName = "";
   }
 
-  public Party(int id, String partyCode, String shortName, String formalName, String webPage) {
-    this.id = id;
+  public Party(String partyCode, String shortName, String formalName, String webPage) {
     this.shortName = shortName;
     this.formalName = formalName;
     this.webPage = webPage;
   }
 
   public Party(Party old) {
-    this.id = old.id;
     this.shortName = old.shortName;
     this.formalName = old.formalName;
     this.webPage = old.webPage;
-  }
-
-  public int getId() {
-    return id;
   }
 
   @Override
@@ -73,8 +68,7 @@ public class Party implements SelfDescribing, Serializable {
 
   @Override
   public String toString() {
-    return "Party[" + id + ", " + shortName + ", " + formalName + ", " + webPage + ", " + version
-        + ", " + entityLife + "]";
+    return "Party[" + id + ", " + shortName + ", " + formalName + ", " + webPage + "]";
   }
 
   public String getShortName() {

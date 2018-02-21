@@ -11,56 +11,52 @@
 package org.gyfor.value;
 
 
-import java.nio.file.attribute.FileTime;
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.TimeUnit;
 
 
 public class VersionTime {
 
   private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSSSS");
   
-  private final FileTime ft;
+  private final Instant instant;
 
   
-  private VersionTime () {
-    this.ft = FileTime.from(Instant.now());
+  public VersionTime () {
+    this.instant = Instant.now();
   }
   
   
-  public VersionTime (Timestamp t) {
-    this.ft = FileTime.from(t.getTime(), TimeUnit.MILLISECONDS);
+  public VersionTime (long seconds, int nanos) {
+    this.instant = Instant.ofEpochSecond(seconds, nanos);
   }
   
-
-  public VersionTime (FileTime ft) {
-    this.ft = ft;
-  }
   
-
   public static VersionTime now () {
     return new VersionTime();
   }
   
   
-  public FileTime fileTimeValue () {
-    return ft;
+  public long getSeconds () {
+    return instant.getEpochSecond();
+  }
+  
+  
+  public int getNanos () {
+    return instant.getNano();
   }
   
   
   @Override
   public String toString() {
-    return formatter.withZone(ZoneId.systemDefault()).format(ft.toInstant());
+    return formatter.withZone(ZoneId.systemDefault()).format(instant);
   }
+  
+  
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ft.hashCode();
-    return result;
+    return instant.hashCode();
   }
 
 
@@ -76,9 +72,7 @@ public class VersionTime {
       return false;
     }
     VersionTime other = (VersionTime)obj;
-    if (!ft.equals(other.ft)) {
-      return false;
-    }
-    return true;
+    return instant.equals(other.instant);
   }
+  
 }

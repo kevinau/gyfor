@@ -15,86 +15,96 @@ package org.gyfor.berkeleydb.learn;
 
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
+import com.sleepycat.persist.model.Relationship;
+import com.sleepycat.persist.model.SecondaryKey;
+
 
 @Entity
 public class Vendor {
 
-    private String repName;
-    private String address;
-    private String city;
-    private String state;
-    private String postcode;
-    private String bizPhoneNumber;
-    private String repPhoneNumber;
+  private String repName;
+  private String address;
+  private String city;
+  private String state;
+  private String postcode;
+  private String bizPhoneNumber;
+  private String repPhoneNumber;
 
-    // Primary key is the vendor's name
-    // This assumes that the vendor's name is
-    // unique in the database.
-    @PrimaryKey
-    private String vendor;
+  // Primary key is the vendor's name
+  // This assumes that the vendor's name is
+  // unique in the database.
+  @PrimaryKey(sequence = "Vendor_seq")
+  private int id;
 
-    public void setRepName(String data) {
-        repName = data;
-    }
+  @SecondaryKey(relate = Relationship.ONE_TO_ONE)
+  private String vendor;
 
-    public void setAddress(String data) {
-        address = data;
-    }
+  public void setRepName(String data) {
+    repName = data;
+  }
 
-    public void setCity(String data) {
-        city = data;
-    }
+  public void setAddress(String data) {
+    address = data;
+  }
 
-    public void setState(String data) {
-        state = data;
-    }
+  public void setCity(String data) {
+    city = data;
+  }
 
-    public void setPostcode(String postcode) {
-        this.postcode = postcode;
-    }
+  public void setState(String data) {
+    state = data;
+  }
 
-    public void setBusinessPhoneNumber(String data) {
-        bizPhoneNumber = data;
-    }
+  public void setPostcode(String postcode) {
+    this.postcode = postcode;
+  }
 
-    public void setRepPhoneNumber(String data) {
-        repPhoneNumber = data;
-    }
+  public void setBusinessPhoneNumber(String data) {
+    bizPhoneNumber = data;
+  }
 
-    public void setVendorName(String data) {
-        vendor = data;
-    }
+  public void setRepPhoneNumber(String data) {
+    repPhoneNumber = data;
+  }
 
-    public String getRepName() {
-        return repName;
-    }
+  public void setVendorName(String data) {
+    vendor = data;
+  }
 
-    public String getAddress() {
-        return address;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public String getCity() {
-        return city;
-    }
+  public String getRepName() {
+    return repName;
+  }
 
-    public String getState() {
-        return state;
-    }
+  public String getAddress() {
+    return address;
+  }
 
-    public String getPostcode() {
-        return postcode;
-    }
+  public String getCity() {
+    return city;
+  }
 
-    public String getBusinessPhoneNumber() {
-        return bizPhoneNumber;
-    }
+  public String getState() {
+    return state;
+  }
 
-    public String getRepPhoneNumber() {
-        return repPhoneNumber;
-    }
+  public String getPostcode() {
+    return postcode;
+  }
 
-    public String getVendorName() {
-        return vendor;
-    }
+  public String getBusinessPhoneNumber() {
+    return bizPhoneNumber;
+  }
+
+  public String getRepPhoneNumber() {
+    return repPhoneNumber;
+  }
+
+  public String getVendorName() {
+    return vendor;
+  }
 
 }

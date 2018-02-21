@@ -12,10 +12,10 @@ public interface IDataAccessObject {
   
 
   /**
-   * Add the instance to the datastore.  The instance parameter is updated so  
-   * the id, version and entity life matches the datastore.
+   * Add the instance to the datastore.  The 'value' is updated so  
+   * the id, versionTime and entityLife matches the datastore.
    */
-  public EntityData add (Object value);
+  public Object add (Object value);
   
 //  public void addEntityChangeListener (EntityChangeListener<T> x);
 //  
@@ -23,12 +23,8 @@ public interface IDataAccessObject {
   
   public void close ();
 
-  public EntityData fetchById(Class<?> klass, int id);
+  public Object fetchById(Class<?> klass, int id);
   
-//  public boolean existsUnique(int uniqueIndex, Object[] values, int id);
-//  
-//  public List<T> getAll ();
-//  
 //  public T getById (int id);
 //  
 //  public List<EntityDescription> getDescriptionAll ();
@@ -39,7 +35,7 @@ public interface IDataAccessObject {
 //  
 //  public T newInstance (T fromValue);
 
-  public void remove (EntityData entityData) throws ConcurrentModificationException;
+  public void remove (Object value) throws ConcurrentModificationException;
   
 //  public void removeAll();
 //
@@ -58,12 +54,10 @@ public interface IDataAccessObject {
 //   * the version and entity life updated to match the datastore.
 //   */
 //  public void unretire(T instance);
-//  
-//  /**
-//   * Change the instance in the datastore.  The newInstance parameter is updated with 
-//   * the version updated to match the datastore.
-//   */
-//  public void change (T oldInstance, T newInstance);
-//
-  public EntityData change(EntityData entityData, Object value) throws ConcurrentModificationException;
+  
+  /**
+   * Change the instance in the datastore.  The newInstance parameter is updated with 
+   * the version updated to match the datastore.
+   */
+  public Object update(Object newValue) throws ConcurrentModificationException;
 }

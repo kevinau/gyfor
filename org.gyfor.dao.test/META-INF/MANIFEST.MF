@@ -6,7 +6,10 @@ Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: lib/junit-4.12.jar,
  .
-Import-Package: org.gyfor.dao,
+Import-Package: com.sleepycat.persist.model,
+ org.gyfor.dao,
+ org.gyfor.object,
+ org.gyfor.object.type.builtin,
  org.gyfor.sql,
  org.gyfor.sql.dialect,
  org.gyfor.value,

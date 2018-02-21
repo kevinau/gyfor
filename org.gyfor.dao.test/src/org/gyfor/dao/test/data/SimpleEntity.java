@@ -1,7 +1,18 @@
 package org.gyfor.dao.test.data;
 
+import com.sleepycat.persist.model.Entity;
+import com.sleepycat.persist.model.PrimaryKey;
+import com.sleepycat.persist.model.Relationship;
+import com.sleepycat.persist.model.SecondaryKey;
+
+
+@Entity
 public class SimpleEntity {
 
+  @PrimaryKey(sequence = "SimpleEntity_seq")
+  private int id;
+  
+  @SecondaryKey(relate = Relationship.ONE_TO_ONE)
   private String code;
   
   private String description;
@@ -36,7 +47,7 @@ public class SimpleEntity {
 
   @Override
   public String toString() {
-    return "SimpleEntity[" + code + "," + description + "]";
+    return "SimpleEntity[" + id + "," + code + "," + description + "]";
   }
   
 }

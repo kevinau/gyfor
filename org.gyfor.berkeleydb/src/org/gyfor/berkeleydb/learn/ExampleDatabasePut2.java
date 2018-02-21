@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gyfor.berkeleydb.DataStore;
+import org.gyfor.berkeley.DataStore;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -32,6 +32,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.sleepycat.je.DatabaseException;
 import com.sleepycat.persist.EntityCursor;
 import com.sleepycat.persist.PrimaryIndex;
+import com.sleepycat.persist.SecondaryIndex;
 
 
 @Component(service = ExampleDatabasePut2.class, immediate = true)
@@ -54,7 +55,8 @@ public class ExampleDatabasePut2 {
     // Get a cursor that will walk every
     // inventory object in the store.
     PrimaryIndex<String, Inventory> inventoryBySku = dataStore.getPrimaryIndex(String.class, Inventory.class);
-    PrimaryIndex<String, Vendor> vendorByName = dataStore.getPrimaryIndex(String.class, Vendor.class);
+    PrimaryIndex<Integer, Vendor> vendorById = dataStore.getPrimaryIndex(Integer.class, Vendor.class);
+    SecondaryIndex<String, Integer, Vendor> vendorByName = dataStore.getSecondaryIndex(vendorById, String.class, "vendor");
 
     EntityCursor<Inventory> items = inventoryBySku.entities();
 
@@ -78,7 +80,7 @@ public class ExampleDatabasePut2 {
     // file.
     List<String[]> vendors = loadFile("vendors.txt", 8);
 
-    PrimaryIndex<String, Vendor> vendorByName = dataStore.getPrimaryIndex(String.class, Vendor.class);
+    PrimaryIndex<Integer, Vendor> vendorByName = dataStore.getPrimaryIndex(Integer.class, Vendor.class);
 
     // Now load the data into the store.
     for (int i = 0; i < vendors.size(); i++) {
@@ -163,7 +165,7 @@ public class ExampleDatabasePut2 {
   }
 
   
-  private void displayInventoryRecord(PrimaryIndex<String,Vendor> vendorByName, Inventory theInventory) throws DatabaseException {
+  private void displayInventoryRecord(SecondaryIndex<String, Integer, Vendor> vendorByName, Inventory theInventory) throws DatabaseException {
 
     System.out.println(theInventory.getSku() + ":");
     System.out.println("\t " + theInventory.getItemName());
@@ -176,6 +178,8 @@ public class ExampleDatabasePut2 {
     Vendor theVendor = vendorByName.get(theInventory.getVendor());
     assert theVendor != null;
 
+    System.out.println("\t\t " + theVendor.getId());
+    System.out.println("\t\t " + theVendor.getVendorName());
     System.out.println("\t\t " + theVendor.getAddress());
     System.out.println("\t\t " + theVendor.getCity() + ", " + theVendor.getState() + " " + theVendor.getPostcode());
     System.out.println("\t\t Business Phone: " + theVendor.getBusinessPhoneNumber());
