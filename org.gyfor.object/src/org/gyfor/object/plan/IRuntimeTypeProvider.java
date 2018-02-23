@@ -12,6 +12,7 @@ package org.gyfor.object.plan;
 
 import org.gyfor.object.type.IType;
 
+@Deprecated
 public interface IRuntimeTypeProvider extends IRuntimeProvider {
 
   /**

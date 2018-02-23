@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 
 import org.gyfor.object.plan.IRuntimeLabelProvider;
 
-
+@Deprecated
 public class RuntimeLabelProvider extends RuntimeProvider implements IRuntimeLabelProvider {
 
   private final String staticLabel;

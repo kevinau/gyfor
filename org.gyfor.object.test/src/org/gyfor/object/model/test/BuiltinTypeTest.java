@@ -1,6 +1,7 @@
 package org.gyfor.object.model.test;
 
 import org.gyfor.object.Entity;
+import org.gyfor.object.IOField;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.INodeModel;
@@ -18,13 +19,28 @@ public class BuiltinTypeTest {
   @SuppressWarnings("unused")
   @Entity
   public static class PrimitivesEntity {
+    @IOField
     private boolean field1;
+
+    @IOField
     private char field2;
+
+    @IOField
     private byte field3;
+
+    @IOField
     private short field4;
+
+    @IOField
     private int field5;
+
+    @IOField
     private long field6;
+
+    @IOField
     private float field7;
+
+    @IOField
     private double field8;
 
     public PrimitivesEntity(boolean field1, char field2, byte field3, short field4, int field5, long field6,
@@ -79,9 +95,9 @@ public class BuiltinTypeTest {
   }
   
   
-  @SuppressWarnings("unused")
   @Entity
   public static class EntityLifeEntity {
+    @IOField
     private EntityLife field1;
 
     public EntityLifeEntity(EntityLife field1) {

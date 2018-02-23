@@ -1,6 +1,7 @@
 package org.gyfor.object.model.test;
 
 import org.gyfor.object.Entity;
+import org.gyfor.object.IOField;
 import org.gyfor.object.Optional;
 import org.gyfor.object.model.ContainerChangeListener;
 import org.gyfor.object.model.IContainerModel;
@@ -20,14 +21,19 @@ public class ContainerEventsTest {
   @Entity
   public static class StandardEntity {
 
+    @IOField
     private int id;
 
+    @IOField
     private VersionTime version;
 
+    @IOField
     private String name;
 
+    @IOField
     private String location;
 
+    @IOField
     private EntityLife entityLife;
 
     public StandardEntity() {

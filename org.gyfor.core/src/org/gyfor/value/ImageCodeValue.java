@@ -8,7 +8,7 @@
  * Contributors:
  *     Kevin Holloway - initial API and implementation
  *******************************************************************************/
-package org.gyfor.object.value;
+package org.gyfor.value;
 
 
 

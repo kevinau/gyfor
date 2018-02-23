@@ -28,6 +28,11 @@ public class VersionTime {
   }
   
   
+  public VersionTime (long millis) {
+    this.instant = Instant.ofEpochMilli(millis);
+  }
+  
+  
   public VersionTime (long seconds, int nanos) {
     this.instant = Instant.ofEpochSecond(seconds, nanos);
   }
@@ -45,6 +50,11 @@ public class VersionTime {
   
   public int getNanos () {
     return instant.getNano();
+  }
+  
+  
+  public long getMillis () {
+    return instant.toEpochMilli();
   }
   
   

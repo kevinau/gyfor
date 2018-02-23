@@ -2,17 +2,24 @@ package org.gyfor.object.test.data;
 
 import java.math.BigInteger;
 
+import org.gyfor.object.IOField;
+
 
 public class IntegerBased {
 
+  @IOField
   public Byte byte1;
 
+  @IOField
   public Integer integer1;
 
+  @IOField
   public Short short1;
 
+  @IOField
   public Long long1;
 
+  @IOField
   public BigInteger bigInteger;
 
   public Byte getByte1() {

@@ -1,22 +1,29 @@
 package org.pennyledger.address;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
+import org.gyfor.object.CodeSource;
 import org.gyfor.object.FactoryFor;
-import org.gyfor.object.ItemField;
+import org.gyfor.object.IOField;
 import org.gyfor.object.Optional;
+import org.gyfor.value.ICode;
 
 public class SelectCountryAddress implements IAddress {
 
   private transient Function<String, ICountryAddress> addressMapping;
   
-  private String country;
+  @IOField
+  @CodeSource(???????)
+  private ICode country;
   
+  @IOField
   private ICountryAddress countryAddress;
 
   
-  public SelectCountryAddress (String defaultCountry, Function<String, ICountryAddress> addressMapping) {
+  public SelectCountryAddress (String defaultCountry, Supplier<List<String>> addressCountries, Function<String, ICountryAddress> addressMapping) {
     if (defaultCountry != null) {
       this.country = defaultCountry;
     } else {
@@ -42,7 +49,7 @@ public class SelectCountryAddress implements IAddress {
   }
 
   
-  @ItemField(length = 2, pattern = "^[A-Z][A-Z]$", requiredMessage = "Two letter country code required", 
+  @IOField(length = 2, pattern = "^[A-Z][A-Z]$", requiredMessage = "Two letter country code required", 
                                                       errorMessage = "Not a two letter country code")
   @Optional
   public void setCountry(String country) {

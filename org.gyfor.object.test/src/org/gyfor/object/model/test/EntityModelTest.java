@@ -1,6 +1,7 @@
 package org.gyfor.object.model.test;
 
 import org.gyfor.object.Entity;
+import org.gyfor.object.IOField;
 import org.gyfor.object.Optional;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
@@ -20,8 +21,10 @@ public class EntityModelTest {
   @Entity
   public static class SimpleEntity {
 
+    @IOField
     private String name;
 
+    @IOField
     private String location;
 
     public SimpleEntity() {
@@ -62,14 +65,19 @@ public class EntityModelTest {
   @Entity
   public static class StandardEntity {
 
+    @IOField
     private int id;
 
+    @IOField
     private VersionTime version;
 
+    @IOField
     private String name;
 
+    @IOField
     private String location;
 
+    @IOField
     private EntityLife entityLife;
 
     public StandardEntity() {

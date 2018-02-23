@@ -1,7 +1,7 @@
 package org.gyfor.object.plan.impl;
 
 import org.gyfor.object.EntryMode;
-import org.gyfor.object.plan.GetSetField;
+import org.gyfor.object.plan.MemberValueGetterSetter;
 import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.ItemLabelGroup;
 import org.gyfor.object.plan.PlanStructure;
@@ -20,7 +20,7 @@ public class ItemPlan<T> extends NodePlan implements IItemPlan<T> {
   //private final Object staticDefaultValue;
   
   
-  public ItemPlan (GetSetField field, String name, EntryMode entryMode, IType<T> type) {
+  public ItemPlan (MemberValueGetterSetter field, String name, EntryMode entryMode, IType<T> type) {
     super (field, name, entryMode);
     if (type == null) { 
       throw new IllegalArgumentException("Type argument cannot be null");

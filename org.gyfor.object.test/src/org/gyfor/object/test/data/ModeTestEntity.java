@@ -2,20 +2,30 @@ package org.gyfor.object.test.data;
 
 import org.gyfor.object.Embeddable;
 import org.gyfor.object.EntryMode;
+import org.gyfor.object.IOField;
 import org.gyfor.object.Mode;
 
 
 @Embeddable
 public class ModeTestEntity {
 
+  @IOField
   String field0;
 
+  @IOField
+  @Mode(EntryMode.ENABLED)
   String field1;
 
+  @IOField
+  @Mode(EntryMode.DISABLED)
   String field2;
 
+  @IOField
+  @Mode(EntryMode.VIEW)
   String field3;
 
+  @IOField
+  @Mode(EntryMode.HIDDEN)
   String field4;
 
   public String getField0() {
@@ -30,7 +40,6 @@ public class ModeTestEntity {
     return field1;
   }
 
-  @Mode(EntryMode.ENABLED)
   public void setField1(String field1) {
     this.field1 = field1;
   }
@@ -39,7 +48,6 @@ public class ModeTestEntity {
     return field2;
   }
 
-  @Mode(EntryMode.DISABLED)
   public void setField2(String field2) {
     this.field2 = field2;
   }
@@ -48,7 +56,6 @@ public class ModeTestEntity {
     return field3;
   }
 
-  @Mode(EntryMode.VIEW)
   public void setField3(String field3) {
     this.field3 = field3;
   }
@@ -57,7 +64,6 @@ public class ModeTestEntity {
     return field4;
   }
 
-  @Mode(EntryMode.HIDDEN)
   public void setField4(String field4) {
     this.field4 = field4;
   }

@@ -26,7 +26,7 @@ public class VersionType extends StringBasedType<VersionTime> {
 
   private static final String REQUIRED_MESSAGE = "a date/time is required";
   
-  private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+  private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSSSSS");
 
   
   public VersionType () {
@@ -42,19 +42,13 @@ public class VersionType extends StringBasedType<VersionTime> {
   
   @Override
   public VersionTime createFromString (String source) throws UserEntryException {
-    try {
-      long x = format.parse(source).getTime();
-      Timestamp t = new Timestamp(x);
-      return new VersionTime(t);
-    } catch (ParseException ex) {
-      throw new UserEntryException("invalid date/time");
-    }
+    throw new UnsupportedOperationException();  
   }
   
   
   @Override
   public VersionTime primalValue () {
-    return new VersionTime(new Timestamp(0L));
+    return new VersionTime(0, 0);
   }
   
   
@@ -62,8 +56,7 @@ public class VersionType extends StringBasedType<VersionTime> {
   public VersionTime newInstance (String source) {
     try {
       long x = format.parse(source).getTime();
-      Timestamp t = new Timestamp(x);
-      return new VersionTime(t);
+      return new VersionTime(x, 0);
     } catch (ParseException ex) {
       throw new RuntimeException(ex);
     }
@@ -84,14 +77,14 @@ public class VersionType extends StringBasedType<VersionTime> {
 
   @Override
   public void setStatementFromValue(IPreparedStatement stmt, VersionTime value) {
-    stmt.setTimestamp(new Timestamp(value.fileTimeValue().toMillis()));
+    stmt.setTimestamp(new Timestamp(value.getMillis()));
   }
 
 
   @Override
   public VersionTime getResultValue(IResultSet resultSet) {
     Timestamp t = resultSet.getTimestamp();
-    return new VersionTime(t);
+    return new VersionTime(t.getTime());
   }
 
 }

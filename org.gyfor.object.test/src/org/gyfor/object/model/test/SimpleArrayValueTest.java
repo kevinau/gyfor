@@ -2,6 +2,7 @@ package org.gyfor.object.model.test;
 
 import java.util.List;
 
+import org.gyfor.object.IOField;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.ModelFactory;
@@ -13,6 +14,7 @@ import org.junit.Test;
 public class SimpleArrayValueTest {
 
   public static class Zoo {
+    @IOField
     private String[] names;
     
     public Zoo (String... names) {

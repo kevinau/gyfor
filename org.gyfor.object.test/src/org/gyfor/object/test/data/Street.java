@@ -1,15 +1,16 @@
 package org.gyfor.object.test.data;
 
 import org.gyfor.object.Embeddable;
+import org.gyfor.object.IOField;
 
 
 @Embeddable
 public class Street {
 
-  @SuppressWarnings("unused")
+  @IOField
   private String number;
 
-  @SuppressWarnings("unused")
+  @IOField
   private String streetName;
 
   public Street() {

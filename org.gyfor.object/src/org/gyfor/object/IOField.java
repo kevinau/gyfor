@@ -23,8 +23,8 @@ import java.lang.annotation.Target;
 
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface ItemField {
+@Target({ElementType.METHOD, ElementType.FIELD})
+public @interface IOField {
   
   /**
    * A type that implements IType. This provides the necessary type information

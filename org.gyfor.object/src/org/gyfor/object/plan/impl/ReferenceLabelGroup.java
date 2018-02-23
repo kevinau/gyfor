@@ -1,6 +1,6 @@
 package org.gyfor.object.plan.impl;
 
-import org.gyfor.object.plan.GetSetField;
+import org.gyfor.object.plan.MemberValueGetterSetter;
 import org.gyfor.object.plan.ItemLabelGroup;
 
 /** 
@@ -14,7 +14,7 @@ public class ReferenceLabelGroup extends ItemLabelGroup {
     super(label, hint, description);
   }
 
-  public ReferenceLabelGroup (GetSetField field, String fieldName) {
+  public ReferenceLabelGroup (MemberValueGetterSetter field, String fieldName) {
     super(field, fieldName);
   }
 

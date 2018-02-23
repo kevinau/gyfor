@@ -5,12 +5,12 @@ import java.lang.annotation.Annotation;
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.Mode;
 import org.gyfor.object.Optional;
-import org.gyfor.object.plan.GetSetField;
+import org.gyfor.object.plan.MemberValueGetterSetter;
 import org.gyfor.object.plan.INodePlan;
 
 public abstract class NodePlan implements INodePlan {
 
-  private final GetSetField field;
+  private final MemberValueGetterSetter field;
   
   private final String name;
   
@@ -35,7 +35,7 @@ public abstract class NodePlan implements INodePlan {
   }
   
   
-  private static boolean isNullable (GetSetField field) {
+  private static boolean isNullable (MemberValueGetterSetter field) {
     if (field == null) {
       return false;
     } else {
@@ -49,7 +49,7 @@ public abstract class NodePlan implements INodePlan {
   }
   
   
-  public NodePlan (GetSetField field, String name, EntryMode entryMode) {
+  public NodePlan (MemberValueGetterSetter field, String name, EntryMode entryMode) {
     this.field = field;
     this.name = name;
     

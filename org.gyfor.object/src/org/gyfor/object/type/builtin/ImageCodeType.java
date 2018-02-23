@@ -13,30 +13,21 @@ package org.gyfor.object.type.builtin;
 
 import java.util.List;
 
-import org.gyfor.object.type.builtin.CodeBasedType;
-import org.gyfor.object.value.IImageCodeValue;
+import org.eclipse.jdt.annotation.NonNull;
+import org.gyfor.object.type.builtin.CodeType;
+import org.gyfor.value.IImageCodeValue;
 
 
-public class ImageCodeType extends CodeBasedType<IImageCodeValue> {
+public class ImageCodeType extends CodeType<IImageCodeValue> {
   
   
-  public ImageCodeType () {
-    this (null, null);
+  public ImageCodeType (Class<IImageCodeValue> codeClass) {
+    super (codeClass);
   }
   
   
-  public ImageCodeType (List<IImageCodeValue> valueList) {
-    this (valueList, null, null);
-  }
-  
-  
-  public ImageCodeType (String shortName, String longName) {
-    this (null, shortName, longName);
-  }
-  
-  
-  public ImageCodeType (List<IImageCodeValue> valueList, String shortName, String longName) {
-    super (valueList, shortName, longName);
+  public ImageCodeType (Class<IImageCodeValue> codeClass, @NonNull List<IImageCodeValue> valueList) {
+    super (codeClass, valueList);
   }
 
   

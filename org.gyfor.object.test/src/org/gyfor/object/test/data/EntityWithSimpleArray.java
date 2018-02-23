@@ -1,13 +1,17 @@
 package org.gyfor.object.test.data;
 
+import org.gyfor.object.IOField;
 
 @SuppressWarnings("unused")
 public class EntityWithSimpleArray {
 
+  @IOField
   private int id;
   
+  @IOField
   private String field1;
   
+  @IOField
   private String[] field2;
   
   public EntityWithSimpleArray () {

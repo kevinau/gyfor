@@ -345,9 +345,11 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
     }
     testAndFireSourceEqualityChange(true);
     try {
-      boolean creating = true;
-      Object newValue = type.createFromString(null, itemPlan.isNullable(), creating, source);
-      setRawValue(newValue, null, true);
+      //boolean creating = true;
+      type.validate(value, itemPlan.isNullable());
+      //Object newValue = type.createFromString(null, itemPlan.isNullable(), creating, source);
+      //Object newValue = value;
+      setRawValue(value, null, true);
     } catch (UserEntryException ex) {
       currentValueInError = true;
       testAndFireValueEqualityChange();

@@ -9,7 +9,7 @@ import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.test.data.CodeBased;
 import org.gyfor.object.test.data.CodeBased.Gender;
-import org.gyfor.object.value.Code;
+import org.gyfor.object.test.data.CodeBased.Weekday;
 import org.gyfor.value.EntityLife;
 import org.junit.Assert;
 import org.junit.Before;
@@ -63,7 +63,7 @@ public class CodeBasedModels {
   
   @Test
   public void codeTest () throws ParseException {
-    getSetTest("code", new Code("wed"), "wed", () -> instance.code);
+    getSetTest("weekday", Weekday.WED, "wed", () -> instance.weekday);
   }
   
 }

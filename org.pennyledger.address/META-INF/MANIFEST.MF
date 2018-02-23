@@ -9,5 +9,6 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.pennyledger.address
 Service-Component: OSGI-INF/org.pennyledger.address.AddressFactory.xml
 Import-Package: org.gyfor.object,
+ org.gyfor.object.value,
  org.gyfor.osgi,
  org.osgi.service.component;version="1.2.0"

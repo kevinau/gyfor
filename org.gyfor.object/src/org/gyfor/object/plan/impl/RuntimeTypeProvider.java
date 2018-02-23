@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.plan.IRuntimeTypeProvider;
 
-
+@Deprecated
 public class RuntimeTypeProvider extends RuntimeProvider implements IRuntimeTypeProvider {
 
   private final IType<?> staticType;

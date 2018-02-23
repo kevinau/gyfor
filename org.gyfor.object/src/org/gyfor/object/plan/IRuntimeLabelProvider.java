@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.gyfor.object.plan;
 
-
+@Deprecated
 public interface IRuntimeLabelProvider extends IRuntimeProvider {
 
   /**

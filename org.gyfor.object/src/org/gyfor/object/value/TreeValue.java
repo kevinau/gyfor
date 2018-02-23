@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.gyfor.object.value;
 
-
+import org.gyfor.value.Code;
 
 public class TreeValue extends Code {
 

@@ -3,16 +3,21 @@ package org.gyfor.object.test.data;
 import java.math.BigDecimal;
 
 import org.gyfor.math.Decimal;
+import org.gyfor.object.IOField;
 
 
 public class DecimalBased {
 
+  @IOField
   public float float1;
 
+  @IOField
   public double double1;
 
+  @IOField
   public BigDecimal bigDecimal;
 
+  @IOField
   public Decimal decimal;
 
   public float getFloat1() {

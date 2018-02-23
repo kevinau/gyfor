@@ -13,29 +13,19 @@ package org.gyfor.object.type.builtin;
 
 import java.util.List;
 
-import org.gyfor.object.type.builtin.CodeBasedType;
-import org.gyfor.object.value.ICode;
+import org.gyfor.object.type.builtin.CodeType;
+import org.gyfor.value.ICode;
 
 
-public class TreeType extends CodeBasedType<ICode> {
+public class TreeType extends CodeType<ICode> {
 
-  public TreeType () {
-    this (null, null);
+  public TreeType (Class<ICode> codeClass) {
+    super(codeClass);
   }
   
   
-  public TreeType (List<ICode> valueList) {
-    this (valueList, null, null);
-  }
-  
-  
-  public TreeType (String shortName, String longName) {
-    this (null, shortName, longName);
-  }
-  
-  
-  public TreeType (List<ICode> valueList, String shortName, String longName) {
-    super (valueList, shortName, longName);
+  public TreeType (Class<ICode> codeClass, List<ICode> valueList) {
+    super(codeClass, valueList);
   }
   
 }

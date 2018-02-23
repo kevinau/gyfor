@@ -1,8 +1,8 @@
 package org.pennyledger.address;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Function;
 
 import org.gyfor.object.IEntityFactory;
 import org.gyfor.osgi.ComponentConfiguration;
@@ -40,6 +40,15 @@ public class AddressFactory implements IEntityFactory<IAddress> {
   };
   
   
+  private List<String> getAddressCountries() {
+    List<String> countries = new ArrayList<>();
+    for (ICountryAddress address : countryAddresses) {
+      countries.add(address.getCountry());
+    }
+    return countries;
+  }
+  
+  
   @Override
   public IAddress newEntityInstance() {
     if (countryAddresses == null) {
@@ -51,7 +60,7 @@ public class AddressFactory implements IEntityFactory<IAddress> {
       case 1 :
         return countryAddresses.get(0);
       default :
-        return getAddress(defaultCountry);
+        return new SelectCountryAddress(defaultCountry, () -> getAddressCountries(), country -> getAddress(country));
       }
     }
   }

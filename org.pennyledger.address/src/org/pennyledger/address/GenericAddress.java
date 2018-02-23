@@ -1,9 +1,12 @@
 package org.pennyledger.address;
 
+import org.gyfor.object.IOField;
 import org.gyfor.object.Occurs;
 
 public class GenericAddress implements IAddress {
 
+  @IOField
+  @Occurs(max = 3)
   private String[] address;
   
   
@@ -12,7 +15,6 @@ public class GenericAddress implements IAddress {
   }
 
   
-  @Occurs(max = 3)
   public void setAddress(String[] address) {
     this.address = address;
   }

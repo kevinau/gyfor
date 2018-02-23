@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.gyfor.object.EntryMode;
-import org.gyfor.object.plan.GetSetField;
+import org.gyfor.object.plan.MemberValueGetterSetter;
 import org.gyfor.object.plan.IListPlan;
 import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.plan.PlanStructure;
@@ -13,7 +13,7 @@ import org.gyfor.object.plan.PlanStructure;
 
 public class ListPlan extends RepeatingPlan implements IListPlan {
 
-  public ListPlan (PlanFactory planFactory, GetSetField field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
+  public ListPlan (PlanFactory planFactory, MemberValueGetterSetter field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
     super (planFactory, field, elemClass, name, entryMode, dimension);
   }
   

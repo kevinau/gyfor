@@ -5,7 +5,7 @@ import java.util.Collections;
 
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.Occurs;
-import org.gyfor.object.plan.GetSetField;
+import org.gyfor.object.plan.MemberValueGetterSetter;
 import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.IRepeatingPlan;
 import org.gyfor.object.plan.NodePlanFactory;
@@ -26,7 +26,7 @@ public abstract class RepeatingPlan extends ContainerPlan implements IRepeatingP
   private final int maxOccurs;  
   
   
-  public RepeatingPlan (PlanFactory planFactory, GetSetField field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
+  public RepeatingPlan (PlanFactory planFactory, MemberValueGetterSetter field, Class<?> elemClass, String name, EntryMode entryMode, int dimension) {
     super (field, name, entryMode);
     elemPlan = NodePlanFactory.getNodePlan(planFactory, elemClass, field, name, entryMode, dimension + 1, false);
     this.elemClass = elemClass;

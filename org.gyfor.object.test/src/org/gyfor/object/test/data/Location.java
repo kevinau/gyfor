@@ -1,13 +1,16 @@
 package org.gyfor.object.test.data;
 
 import org.gyfor.object.Embeddable;
+import org.gyfor.object.IOField;
 
 
 @Embeddable
 public class Location {
 
+  @IOField
   private Street street;
 
+  @IOField
   private String suburb;
 
   public Location() {

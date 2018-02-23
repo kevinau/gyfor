@@ -4,17 +4,19 @@ import java.net.URL;
 import java.nio.file.Path;
 
 import org.apache.tools.ant.taskdefs.email.EmailAddress;
-import org.gyfor.object.Version;
+import org.gyfor.object.IOField;
 import org.gyfor.object.value.FileContent;
+import org.gyfor.value.VersionTime;
 
-@SuppressWarnings("unused")
 public class AllBuiltins {
 
   // TODO
   //private Directory directory;
   
+  @IOField
   private EmailAddress emailAddress;
   
+  @IOField
   private FileContent fileContent;
   
   // TODO
@@ -23,6 +25,7 @@ public class AllBuiltins {
   // TODO
   //private Password password;
   
+  @IOField
   private Path path;
   
   // TODO
@@ -34,13 +37,16 @@ public class AllBuiltins {
   // TODO
   //private RegexString regexString;
   
+  @IOField
   private String string;
   
   // TODO
   //private Tree tree;
   
+  @IOField
   private URL url;
   
-  private Version version;
+  @IOField
+  private VersionTime version;
   
 }

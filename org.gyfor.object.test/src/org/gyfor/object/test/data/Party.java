@@ -4,15 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gyfor.object.Embeddable;
+import org.gyfor.object.IOField;
 
 
 @Embeddable
 public class Party {
 
+  @IOField
   private String name;
 
+  @IOField
   private Location home;
 
+  @IOField
   private List<Location> locations;
 
   public Party() {

@@ -1,6 +1,7 @@
 package org.gyfor.object.model.test;
 
 import org.gyfor.object.Entity;
+import org.gyfor.object.IOField;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
@@ -18,6 +19,7 @@ public class ItemEventsTest {
   @Entity
   public static class StandardEntity {
 
+    @IOField
     private int field1;
     
     public StandardEntity() {
@@ -61,12 +63,12 @@ public class ItemEventsTest {
     }
 
     @Override
-    public void valueEqualityChange(INodeModel node) {
+    public void valueEqualityChange(INodeModel node, boolean isEqual) {
       //valueEqualityChangeCount++;
     }
 
     @Override
-    public void sourceEqualityChange(INodeModel node) {
+    public void sourceEqualityChange(INodeModel node, boolean isEqual) {
       //sourceEqualityChangeCount++;
     }
 

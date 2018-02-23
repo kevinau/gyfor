@@ -2,7 +2,7 @@ package org.gyfor.object.plan.impl;
 
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.plan.EmbeddedLabelGroup;
-import org.gyfor.object.plan.GetSetField;
+import org.gyfor.object.plan.MemberValueGetterSetter;
 import org.gyfor.object.plan.IEmbeddedPlan;
 import org.gyfor.object.plan.PlanStructure;
 
@@ -12,7 +12,7 @@ public class EmbeddedPlan<T> extends NameMappedPlan<T> implements IEmbeddedPlan<
   private EmbeddedLabelGroup labels;
   
   
-  public EmbeddedPlan (GetSetField field, Class<T> embeddedClass, String name, EntryMode entryMode) {
+  public EmbeddedPlan (MemberValueGetterSetter field, Class<T> embeddedClass, String name, EntryMode entryMode) {
     super (field, embeddedClass, name, entryMode);
     this.labels = new EmbeddedLabelGroup(field, name);
   }

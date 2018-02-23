@@ -12,13 +12,13 @@ public interface IClassPlan<T> extends IContainerPlan {
 
   public List<IRuntimeImplementationProvider> getRuntimeImplementationProviders();
 
-  public List<IRuntimeLabelProvider> getRuntimeLabelProviders();
+  //public List<IRuntimeLabelProvider> getRuntimeLabelProviders();
 
   public List<IRuntimeModeProvider> getRuntimeModeProviders();
 
   public List<IRuntimeOccursProvider> getRuntimeOccursProviders();
 
-  public List<IRuntimeTypeProvider> getRuntimeTypeProviders();
+  //public List<IRuntimeTypeProvider> getRuntimeTypeProviders();
 
   public Set<IValidationMethod> getValidationMethods();
 
@@ -38,6 +38,6 @@ public interface IClassPlan<T> extends IContainerPlan {
 
   public <X extends INodePlan> X getMember(String name);
 
-  public GetSetField getNodeField(String memberName);
+  public MemberValueGetterSetter getNodeField(String memberName);
 
 }

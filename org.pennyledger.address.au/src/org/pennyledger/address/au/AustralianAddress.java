@@ -1,16 +1,21 @@
 package org.pennyledger.address.au;
 
+import org.gyfor.object.IOField;
 import org.gyfor.object.Occurs;
 import org.pennyledger.address.ICountryAddress;
 
 public class AustralianAddress implements ICountryAddress {
 
+  @IOField
   private String[] addressLines;
   
+  @IOField
   private String townSuburb;
   
+  @IOField
   private AustralianState state;
   
+  @IOField
   private String postcode;
   
   

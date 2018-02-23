@@ -13,10 +13,10 @@ package org.gyfor.object.type.builtin;
 
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.type.IType;
-import org.gyfor.object.value.ICode;
 import org.gyfor.sql.IPreparedStatement;
 import org.gyfor.sql.IResultSet;
 import org.gyfor.util.SimpleBuffer;
+import org.gyfor.value.ICode;
 
 
 public class EnumType<E extends Enum<E>> extends Type<E> implements IType<E> {

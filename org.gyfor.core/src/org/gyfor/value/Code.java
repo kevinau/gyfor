@@ -8,10 +8,11 @@
  * Contributors:
  *     Kevin Holloway - initial API and implementation
  *******************************************************************************/
-package org.gyfor.object.value;
+package org.gyfor.value;
 
+import java.io.Serializable;
 
-public class Code extends TextValue implements ICode {
+public class Code implements ICode, Serializable {
 
   private static final long serialVersionUID = -4174110261045376592L;
 
@@ -21,7 +22,6 @@ public class Code extends TextValue implements ICode {
 
   
 	public Code (String code, String description, boolean obsolete) {
-		super(code);
 		this.description = description;
 		this.obsolete = obsolete;
     this.selfDescribing = code.equals(description);
@@ -56,16 +56,6 @@ public class Code extends TextValue implements ICode {
   }
   
   
-  @Override
-  public String asPriorValue () {
-    if (selfDescribing) {
-      return super.toString();
-    } else {
-      return super.toString() + " " + description;
-    }
-  }
-
-
   @Override
   public boolean isObsolete() {
   	return obsolete;

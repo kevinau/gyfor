@@ -2,14 +2,17 @@ package org.gyfor.object.test.data;
 
 import org.gyfor.math.Decimal;
 import org.gyfor.object.Embeddable;
+import org.gyfor.object.IOField;
 
 @SuppressWarnings("unused")
 public class EntityWithEmbedded {
 
   @Embeddable
   private static class Inner {
+    @IOField
     private String field1;
     
+    @IOField
     private Decimal field2;
     
     public Inner() {
@@ -22,10 +25,13 @@ public class EntityWithEmbedded {
   }
   
   
+  @IOField
   private int id;
   
+  @IOField
   private String field1;
   
+  @IOField
   private Inner inner;
 
   public EntityWithEmbedded () {

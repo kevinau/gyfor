@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.gyfor.object.Entity;
 import org.gyfor.object.EntityLabel;
-import org.gyfor.object.ItemField;
+import org.gyfor.object.IOField;
 import org.gyfor.object.Label;
 import org.gyfor.object.Optional;
 import org.gyfor.object.SelfDescribing;
@@ -75,7 +75,7 @@ public class Party implements SelfDescribing, Serializable {
     return shortName;
   }
 
-  @ItemField(length = 16)
+  @IOField(length = 16)
   public void setShortName(String shortName) {
     this.shortName = shortName;
   }
@@ -102,7 +102,7 @@ public class Party implements SelfDescribing, Serializable {
   }
 
   @Optional
-  @ItemField(type = PhoneNumberType.class)
+  @IOField(type = PhoneNumberType.class)
   @Label("Primary phone number")
   public void setPhoneNumber(String phoneNumber) {
     this.phoneNumber = phoneNumber;

@@ -15,7 +15,6 @@ import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.plan.PlanStructure;
 import org.gyfor.object.type.IType;
 import org.gyfor.object.type.builtin.EntityLifeType;
-import org.gyfor.object.type.builtin.StringType;
 import org.gyfor.object.type.builtin.VersionType;
 import org.gyfor.sql.IResultSet;
 import org.gyfor.value.EntityLife;

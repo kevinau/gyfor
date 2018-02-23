@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gyfor.object.Embeddable;
+import org.gyfor.object.IOField;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.ModelFactory;
@@ -17,8 +18,10 @@ public class ValueSettingTest {
   @Embeddable
   public static class Street {
 
+    @IOField
     private String number;
-    @SuppressWarnings("unused")
+    
+    @IOField
     private String streetName;
 
     public Street(String number, String streetName) {
@@ -47,9 +50,10 @@ public class ValueSettingTest {
   @Embeddable
   public static class Location {
 
+    @IOField
     private Street street;
 
-    @SuppressWarnings("unused")
+    @IOField
     private String suburb;
 
     public Location(String number, String streetName, String suburb) {
@@ -77,9 +81,10 @@ public class ValueSettingTest {
 
   public static class Party {
 
-    @SuppressWarnings("unused")
+    @IOField
     private String name;
 
+    @IOField
     private List<Location> locations;
 
     public Party(String name, String number, String streetName, String suburb) {
