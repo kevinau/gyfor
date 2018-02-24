@@ -2,6 +2,7 @@ package org.gyfor.object.model.test;
 
 import java.util.List;
 
+import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.IEntityModel;
 import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.INodeModel;
@@ -27,13 +28,20 @@ public class QualifiedNameTest {
     IItemModel nameModel = entity.selectItemModel("name");
     Assert.assertNotNull(nameModel);
     String qname = nameModel.getQName();
+    Assert.assertEquals("/name", qname);
+    qname = nameModel.getQName(entity);
     Assert.assertEquals("name", qname);
     
     builder.setLength(0);
-    IItemModel homeModel = entity.selectItemModel("home.suburb");
-    Assert.assertNotNull(homeModel);
-    qname = homeModel.getQName();
+    IItemModel homeSuburbModel = entity.selectItemModel("home.suburb");
+    Assert.assertNotNull(homeSuburbModel);
+    qname = homeSuburbModel.getQName();
+    Assert.assertEquals("/home/suburb", qname);
+    qname = homeSuburbModel.getQName(entity);
     Assert.assertEquals("home/suburb", qname);
+    IContainerModel homeModel = entity.selectNodeModel("home");
+    qname = homeSuburbModel.getQName(homeModel);
+    Assert.assertEquals("suburb", qname);
     
     builder.setLength(0);
     List<INodeModel> locationsModel = entity.selectNodeModels("locations.*");
@@ -44,13 +52,13 @@ public class QualifiedNameTest {
     IItemModel locationsModel2 = entity.selectItemModel("locations.*.suburb");
     Assert.assertNotNull(locationsModel2);
     qname = locationsModel2.getQName();
-    Assert.assertEquals("locations/0/suburb", qname);
+    Assert.assertEquals("/locations/0/suburb", qname);
 
     builder.setLength(0);
     IItemModel suburbModel = entity.selectItemModel("locations.*.*.number");
     Assert.assertNotNull(suburbModel);
     qname = suburbModel.getQName();
-    Assert.assertEquals("locations/0/street/number", qname);
+    Assert.assertEquals("/locations/0/street/number", qname);
   }
 
 }

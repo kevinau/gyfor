@@ -268,6 +268,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   }
   
   
+  @Override
   public void setDefaultValue (Object value) {
     boolean defaultWasShowing = false;
     if (comparisonBasis == ComparisonBasis.DEFAULT) {

@@ -12,10 +12,10 @@ import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.model.ref.IValueReference;
-import org.gyfor.object.path.IPathExpression;
-import org.gyfor.object.path.ParseException;
-import org.gyfor.object.path.PathParser;
-import org.gyfor.object.path.Trail;
+import org.gyfor.object.path2.IPathExpression;
+import org.gyfor.object.path2.ParseException;
+import org.gyfor.object.path2.PathParser;
+import org.gyfor.object.path2.Trail;
 import org.gyfor.object.plan.IContainerPlan;
 
 

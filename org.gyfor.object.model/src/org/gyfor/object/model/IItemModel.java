@@ -9,6 +9,8 @@ public interface IItemModel extends INodeModel, INode {
 
   public void setValue (Object value);
 
+  public void setDefaultValue (Object value);
+  
   public String toEntryString(Object value);
 
   public void setComparisonBasis(ComparisonBasis comparisonBasis);

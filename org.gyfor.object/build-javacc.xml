@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
-<project default="javacc" name="Create objrvy path parser">
+<project default="javacc" name="Create node path parser">
 
-  <property name="package.dir" value="org/gyfor/object/path/parser" />
+  <property name="package.dir" value="org/gyfor/object/path2/parser" />
   
   <target name="javacc">
     <mkdir dir="src/${package.dir}" />
     <javacc
-      target="objectPathParser.jj"
+      target="nodePathParser.jj"
       outputdirectory="src/${package.dir}"
       javacchome="${user.home}/code/3rd-party/build/javacc-5.0"
     />

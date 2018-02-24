@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.INode;
 import org.gyfor.object.UserEntryException;
+import org.gyfor.object.path2.IPathExpression;
 import org.gyfor.object.plan.INodePlan;
 
 public interface INodeModel extends INode {
@@ -73,8 +74,12 @@ public interface INodeModel extends INode {
 
   public String getQName();
 
+  public String getQName(IContainerModel top);
+
   public String getValueRefName();
 
   public String getQualifiedPlanName();
+
+  public boolean matches(INodeModel startingPoint, IPathExpression<INode> expr);
 
 }

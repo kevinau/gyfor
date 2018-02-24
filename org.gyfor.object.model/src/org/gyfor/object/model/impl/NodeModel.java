@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.gyfor.object.EntryMode;
+import org.gyfor.object.INode;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.model.EffectiveEntryMode;
 import org.gyfor.object.model.EffectiveEntryModeListener;
@@ -15,6 +16,7 @@ import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ItemEventListener;
 import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.model.ref.IValueReference;
+import org.gyfor.object.path2.IPathExpression;
 import org.gyfor.object.plan.INodePlan;
 
 public abstract class NodeModel implements INodeModel {
@@ -69,8 +71,6 @@ public abstract class NodeModel implements INodeModel {
   protected INodeModel buildNodeModel (IContainerModel parent, IValueReference valueRef, INodePlan nodePlan) {
     INodeModel node = modelFactory.buildNodeModel(valueRef, nodePlan);
     node.setParent(parent);
-    System.out.println("====================== 3 " + node.getName() + " " + node.getNodeId());
-
     node.setEntryMode(nodePlan.getEntryMode());
     return node;
   }
@@ -287,12 +287,29 @@ public abstract class NodeModel implements INodeModel {
   @Override
   public String getQName () {
     StringBuilder builder = new StringBuilder();
-    buildQName(builder);
+    buildQName(getParentEntity(), builder);
+    return builder.toString();
+  }
+
+  
+  @Override
+  public String getQName (IContainerModel relativeTo) {
+    StringBuilder builder = new StringBuilder();
+    buildQName(relativeTo, builder);
     String qname = builder.toString();
-    if (qname.startsWith("/")) {
-      qname = qname.substring(1);
+    if (!qname.startsWith("/")) {
+      throw new RuntimeException("Relative QName should start with a / at this point");
     }
-    return qname;
+    return qname.substring(1);
+  }
+  
+  
+  protected void buildQName(IContainerModel top, StringBuilder builder) {
+    if (getParent() != top) {
+      ((NodeModel)getParent()).buildQName(top, builder);
+    }
+    builder.append('/');
+    builder.append(getValueRefName());
   }
   
   
@@ -339,6 +356,14 @@ public abstract class NodeModel implements INodeModel {
   
   @Override
   public void walkItems(Consumer<IItemModel> consumer) {
+  }
+
+  
+  @Override
+  public boolean matches(INodeModel startingPoint, IPathExpression<INode> expr) {
+    boolean[] result = new boolean[1];
+    expr.getNext().matches(startingPoint, result);
+    return result[0];
   }
 
 }

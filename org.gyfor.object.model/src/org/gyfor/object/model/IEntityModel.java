@@ -2,10 +2,11 @@ package org.gyfor.object.model;
 
 import java.util.List;
 
+import org.gyfor.object.IEntityNode;
 import org.gyfor.value.EntityLife;
 import org.gyfor.value.VersionTime;
 
-public interface IEntityModel extends INameMappedModel {
+public interface IEntityModel extends INameMappedModel, IEntityNode<INodeModel> {
 
   public <X> X newInstance();
   

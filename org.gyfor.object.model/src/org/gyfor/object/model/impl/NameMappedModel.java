@@ -10,11 +10,13 @@ import java.util.function.Consumer;
 import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.INameMappedModel;
 import org.gyfor.object.model.INodeModel;
+import org.gyfor.object.model.ItemEventAdapter;
 import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.model.ref.ClassValueReference;
 import org.gyfor.object.model.ref.IValueReference;
 import org.gyfor.object.plan.IClassPlan;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.plan.IRuntimeDefaultProvider;
 
 
 public abstract class NameMappedModel extends ContainerModel implements INameMappedModel {
@@ -27,6 +29,35 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
   public NameMappedModel (ModelFactory modelFactory, IValueReference valueRef, IClassPlan<?> classPlan) {
     super (modelFactory, valueRef, classPlan);
     this.classPlan = classPlan;
+    
+    // The model has now been constructed.  Set up the value change event handlers.
+    for (IRuntimeDefaultProvider defaultProvider : classPlan.getRuntimeDefaultProviders()) {
+      if (defaultProvider.isRuntime()) {
+        for (String dependsOn : defaultProvider.getDependsOn()) {
+          for (IItemModel itemModel : selectItemModels(dependsOn)) {
+            itemModel.addItemEventListener(new ItemEventAdapter() {
+              @Override
+              public void valueChange(INodeModel node) {
+                Object value = defaultProvider.getDefaultValue(valueRef.getValue());
+                ((IItemModel)node).setDefaultValue(value);
+              }
+            });
+          }
+        }
+      }
+    }
+
+    // In addition, run all the runtime default providers to set up
+    // the defaults.  Aftre this setup, the runtime event handlers 
+    // will keep them up to date.
+    for (IRuntimeDefaultProvider defaultProvider : classPlan.getRuntimeDefaultProviders()) {
+      Object defaultValue = defaultProvider.getDefaultValue(null);
+      for (String appliesTo : defaultProvider.getAppliesTo()) {
+        for (IItemModel itemModel : selectItemModels(appliesTo)) {
+          itemModel.setDefaultValue(defaultValue);
+        }
+      }
+    }
   }
   
   
@@ -44,7 +75,6 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
     } else {
       INodePlan[] memberPlans = classPlan.getMembers();
       for (INodePlan memberPlan : memberPlans) {
-        System.out.println("ccccccccccc " + classPlan.getName() + " > " + memberPlan.getName());
         String fieldName = memberPlan.getName();
         INodeModel member = members.get(fieldName);
         if (member == null) {
@@ -53,14 +83,10 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
           members.put(fieldName, member);
           fireChildAdded(this, member);
         }
-        System.out.println("bbbbbbbbbbbbbbbbbb 1 " + memberPlan.getName());
         if (memberPlan.isViewOnly() == false) {
-          System.out.println("bbbbbbbbbbbbbbbbbb 2");
           Object memberValue = memberPlan.getFieldValue(nameMappedValue);
-          System.out.println("bbbbbbbbbbbbbbbbbb 2a" + memberValue);
           member.syncValue(memberValue);
         }
-        System.out.println("bbbbbbbbbbbbbbbbbb 3");
       }
     }
   }

@@ -2,8 +2,10 @@ package org.gyfor.object.model;
 
 import java.util.List;
 
+import org.gyfor.object.IContainerNode;
 
-public interface IContainerModel extends INodeModel {
+
+public interface IContainerModel extends INodeModel, IContainerNode<INodeModel> {
 
   public INodeModel[] getMembers();
 

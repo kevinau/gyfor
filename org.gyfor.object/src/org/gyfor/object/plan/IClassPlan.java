@@ -8,6 +8,8 @@ public interface IClassPlan<T> extends IContainerPlan {
 
   public List<IRuntimeDefaultProvider> getRuntimeDefaultProviders();
 
+  public List<IRuntimeValuesProvider> getRuntimeValuesProviders();
+
   public List<IRuntimeFactoryProvider> getRuntimeFactoryProviders();
 
   public List<IRuntimeImplementationProvider> getRuntimeImplementationProviders();

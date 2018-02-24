@@ -5,8 +5,8 @@ import java.lang.annotation.Annotation;
 import org.gyfor.object.EntryMode;
 import org.gyfor.object.Mode;
 import org.gyfor.object.Optional;
-import org.gyfor.object.plan.MemberValueGetterSetter;
 import org.gyfor.object.plan.INodePlan;
+import org.gyfor.object.plan.MemberValueGetterSetter;
 
 public abstract class NodePlan implements INodePlan {
 
