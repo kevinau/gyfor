@@ -362,7 +362,8 @@ public abstract class NodeModel implements INodeModel {
   @Override
   public boolean matches(INodeModel startingPoint, IPathExpression<INode> expr) {
     boolean[] result = new boolean[1];
-    expr.getNext().matches(startingPoint, result);
+    System.out.println("++++++++++++++++++++++ " + expr.getNext());
+    expr.getNext().matches(startingPoint, this, result);
     return result[0];
   }
 

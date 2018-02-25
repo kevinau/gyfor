@@ -46,35 +46,35 @@ public class PathTests {
     model1.setValue(test1);
 
     Object[] tests = {
-        "field1", 1,
-        "field2", 1,
+//        "field1", 1,
+//        "field2", 1,
         "*", 3,
-        "**", 4,
-        "inner/inner1", 1 + 1,
-        "inner/*", 1 + 1,
-        "*/inner1", 1 + 1,
-        "**/inner1", 1 + 1,
+//        "**", 4,
+//        "inner/inner1", 1 + 1,
+//        "inner/*", 1 + 1,
+//        "*/inner1", 1 + 1,
+//        "**/inner1", 1 + 1,
     };
     
     final int[] count = new int[1];
     for (int i = 0; i < tests.length; i += 2) {
       String test = (String)tests[i];
-      int expected = (Integer)tests[i + 1];
-      count[0] = 0;
-      System.out.println();
-      System.out.println("Testing: " + test);
       IPathExpression<INode> pathExpr1 = PathParser.parse(test);
-      pathExpr1.dump();
-      pathExpr1.matches(model1, null, new Consumer<INode>() {
- 
-        @Override
-        public void accept(INode node) {
-          System.out.println("Visiting: " + node.getName());
-          count[0]++;
-        }
-      
-      });
-      //System.out.println("Found " + count[0] + " when expecting " + expected);
+//      int expected = (Integer)tests[i + 1];
+//      count[0] = 0;
+//      System.out.println();
+//      System.out.println("Testing: " + test);
+//      pathExpr1.dump();
+//      pathExpr1.matches(model1, null, new Consumer<INode>() {
+// 
+//        @Override
+//        public void accept(INode node) {
+//          System.out.println("Visiting: " + node.getName());
+//          count[0]++;
+//        }
+//      
+//      });
+//      //System.out.println("Found " + count[0] + " when expecting " + expected);
       
       List<IItemModel> nodes = model1.selectItemModels(test);
       for (IItemModel node : nodes) {
