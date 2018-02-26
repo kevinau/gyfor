@@ -11,9 +11,10 @@
 package org.gyfor.object.plan;
 
 import org.gyfor.object.EntryMode;
+import org.gyfor.object.INode;
 
 
-public interface IRuntimeModeProvider extends IRuntimeProvider {
+public interface IRuntimeModeProvider<T extends INode> extends IRuntimeProvider<T> {
 
   public EntryMode getEntryMode(Object instance);
 

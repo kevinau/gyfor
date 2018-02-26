@@ -11,6 +11,8 @@ public interface IItemModel extends INodeModel, INode {
 
   public void setDefaultValue (Object value);
   
+  public <T> T getDefaultValue();
+  
   public String toEntryString(Object value);
 
   public void setComparisonBasis(ComparisonBasis comparisonBasis);

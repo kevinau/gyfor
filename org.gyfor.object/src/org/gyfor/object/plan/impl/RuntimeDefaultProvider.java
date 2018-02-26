@@ -12,10 +12,11 @@ package org.gyfor.object.plan.impl;
 
 import java.lang.reflect.Method;
 
+import org.gyfor.object.INode;
 import org.gyfor.object.plan.IRuntimeDefaultProvider;
 
 
-public class RuntimeDefaultProvider extends RuntimeProvider implements IRuntimeDefaultProvider {
+public class RuntimeDefaultProvider<T extends INode> extends RuntimeProvider<T> implements IRuntimeDefaultProvider<T> {
 
   private final Object defaultValue;
   
@@ -54,6 +55,12 @@ public class RuntimeDefaultProvider extends RuntimeProvider implements IRuntimeD
     } else {
       return defaultValue;
     }
+  }
+
+
+  @Override
+  public String toString() {
+    return "RuntimeDefaultProvider [defaultValue=" + defaultValue + ", " + super.toString() + "]";
   }
 
 }

@@ -71,19 +71,19 @@ public class EntryModeTest {
     INodeModel fieldx = model.selectNodeModel("inner");
     Assert.assertEquals(EffectiveEntryMode.VIEW, fieldx.getEffectiveEntryMode());
 
-    IItemModel field0 = model.selectItemModel("inner.field0");
+    IItemModel field0 = model.selectItemModel("inner/field0");
     Assert.assertEquals(EffectiveEntryMode.VIEW, field0.getEffectiveEntryMode());
 
-    IItemModel field1 = model.selectItemModel("inner.field1");
+    IItemModel field1 = model.selectItemModel("inner/field1");
     Assert.assertEquals(EffectiveEntryMode.VIEW, field1.getEffectiveEntryMode());
     
-    IItemModel field2 = model.selectItemModel("inner.field2");
+    IItemModel field2 = model.selectItemModel("inner/field2");
     Assert.assertEquals(EffectiveEntryMode.VIEW, field2.getEffectiveEntryMode());
     
-    IItemModel field3 = model.selectItemModel("inner.field3");
+    IItemModel field3 = model.selectItemModel("inner/field3");
     Assert.assertEquals(EffectiveEntryMode.VIEW, field3.getEffectiveEntryMode());
     
-    IItemModel field4 = model.selectItemModel("inner.field4");
+    IItemModel field4 = model.selectItemModel("inner/field4");
     Assert.assertEquals(EffectiveEntryMode.HIDDEN, field4.getEffectiveEntryMode());
     
     fieldx.setEntryMode(EntryMode.DISABLED);

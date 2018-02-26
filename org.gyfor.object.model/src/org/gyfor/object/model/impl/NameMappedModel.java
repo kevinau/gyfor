@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.gyfor.object.INode;
 import org.gyfor.object.model.IItemModel;
 import org.gyfor.object.model.INameMappedModel;
 import org.gyfor.object.model.INodeModel;
@@ -14,6 +15,7 @@ import org.gyfor.object.model.ItemEventAdapter;
 import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.model.ref.ClassValueReference;
 import org.gyfor.object.model.ref.IValueReference;
+import org.gyfor.object.path2.IPathExpression;
 import org.gyfor.object.plan.IClassPlan;
 import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.IRuntimeDefaultProvider;
@@ -30,16 +32,54 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
     super (modelFactory, valueRef, classPlan);
     this.classPlan = classPlan;
     
-    // The model has now been constructed.  Set up the value change event handlers.
-    for (IRuntimeDefaultProvider defaultProvider : classPlan.getRuntimeDefaultProviders()) {
+//    // The model has now been constructed.  Set up the value change event handlers.
+//    for (IRuntimeDefaultProvider defaultProvider : classPlan.getRuntimeDefaultProviders()) {
+//      if (defaultProvider.isRuntime()) {
+//        for (String dependsOn : defaultProvider.getDependsOn()) {
+//          for (IItemModel itemModel : selectItemModels(dependsOn)) {
+//            itemModel.addItemEventListener(new ItemEventAdapter() {
+//              @Override
+//              public void valueChange(INodeModel node) {
+//                Object value = defaultProvider.getDefaultValue(valueRef.getValue());
+//                ((IItemModel)node).setDefaultValue(value);
+//              }
+//            });
+//          }
+//        }
+//      }
+//    }
+//
+//    // In addition, run all the static default providers to set up
+//    // the defaults.
+//    for (IRuntimeDefaultProvider defaultProvider : classPlan.getRuntimeDefaultProviders()) {
+//      if (!defaultProvider.isRuntime()) {
+//        Object defaultValue = defaultProvider.getDefaultValue(null);
+//        for (String appliesTo : defaultProvider.getAppliesTo()) {
+//          for (IItemModel itemModel : selectItemModels(appliesTo)) {
+//            itemModel.setDefaultValue(defaultValue);
+//          }
+//        }
+//      }
+//    }
+  }
+  
+  
+  @SuppressWarnings("unchecked")
+  private void setupRuntimeDefaults(IItemModel itemModel) {
+    for (IRuntimeDefaultProvider<INodeModel> defaultProvider : classPlan.getRuntimeDefaultProviders()) {
       if (defaultProvider.isRuntime()) {
-        for (String dependsOn : defaultProvider.getDependsOn()) {
-          for (IItemModel itemModel : selectItemModels(dependsOn)) {
+        for (IPathExpression<INodeModel> expr : defaultProvider.getDependsOn()) {
+          if (itemModel.matches(this, expr)) {
             itemModel.addItemEventListener(new ItemEventAdapter() {
               @Override
               public void valueChange(INodeModel node) {
                 Object value = defaultProvider.getDefaultValue(valueRef.getValue());
-                ((IItemModel)node).setDefaultValue(value);
+                for (IPathExpression<INodeModel> appliesTo : defaultProvider.getAppliesTo()) {
+                  List<IItemModel> appliesToModels = NameMappedModel.this.selectItemModels(appliesTo);
+                  for (IItemModel appliesToModel : appliesToModels) {
+                    appliesToModel.setDefaultValue(value);                    
+                  }
+                }
               }
             });
           }
@@ -48,13 +88,34 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
     }
 
     // In addition, run all the runtime default providers to set up
-    // the defaults.  Aftre this setup, the runtime event handlers 
+    // the defaults.  After this setup, the runtime event handlers 
     // will keep them up to date.
-    for (IRuntimeDefaultProvider defaultProvider : classPlan.getRuntimeDefaultProviders()) {
-      Object defaultValue = defaultProvider.getDefaultValue(null);
-      for (String appliesTo : defaultProvider.getAppliesTo()) {
-        for (IItemModel itemModel : selectItemModels(appliesTo)) {
-          itemModel.setDefaultValue(defaultValue);
+    for (IRuntimeDefaultProvider<INodeModel> defaultProvider : classPlan.getRuntimeDefaultProviders()) {
+      System.out.println("cccc " + defaultProvider);
+      Object defaultValue = null;
+      boolean defaultCalculated = false;
+      for (IPathExpression<INodeModel> expr : defaultProvider.getAppliesTo()) {
+        if (itemModel.matches(this, (IPathExpression<INodeModel>)expr)) {
+          // Are there valid values for all dependencys
+          boolean inError = false;
+          
+          loop:
+          for (IPathExpression<? extends INode> expr2 : defaultProvider.getDependsOn()) {
+            List<IItemModel> dependents = selectItemModels((IPathExpression<INodeModel>)expr2);
+            for (IItemModel dependent : dependents) {
+              if (dependent.isInError()) {
+                inError = true;
+                break loop;
+              }
+            }
+          }
+          if (!inError) {
+            if (!defaultCalculated) {
+              defaultValue = defaultProvider.getDefaultValue(getValue());
+              defaultCalculated = true;
+            }
+            itemModel.setDefaultValue(defaultValue);
+          }
         }
       }
     }
@@ -80,7 +141,14 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
         if (member == null) {
           IValueReference memberValueRef = new ClassValueReference(valueRef, memberPlan);
           member = buildNodeModel(this, memberValueRef, memberPlan);
+          // Apply runtime default providers
           members.put(fieldName, member);
+          if (member instanceof IItemModel) {
+            // Member value may be overridden by setupRuntimeDefaults
+            Object memberValue = memberValueRef.getValue();
+            setupRuntimeDefaults((IItemModel)member);
+            ((IItemModel)member).setValue(memberValue);
+          }
           fireChildAdded(this, member);
         }
         if (memberPlan.isViewOnly() == false) {

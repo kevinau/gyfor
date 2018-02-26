@@ -80,6 +80,6 @@ public interface INodeModel extends INode {
 
   public String getQualifiedPlanName();
 
-  public boolean matches(INodeModel startingPoint, IPathExpression<INode> expr);
+  public boolean matches(INodeModel startingPoint, IPathExpression<INodeModel> expr);
 
 }

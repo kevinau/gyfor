@@ -13,7 +13,6 @@ import org.gyfor.object.model.INodeModel;
 import org.gyfor.object.model.ModelFactory;
 import org.gyfor.object.model.ref.IValueReference;
 import org.gyfor.object.path2.IPathExpression;
-import org.gyfor.object.path2.ParseException;
 import org.gyfor.object.path2.PathParser;
 import org.gyfor.object.path2.Trail;
 import org.gyfor.object.plan.IContainerPlan;
@@ -83,12 +82,12 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
   
   @Override
   public List<INodeModel> selectNodeModels(String expr) {
-    IPathExpression<INodeModel> pathExpr;
-    try {
-      pathExpr = PathParser.parse(expr);
-    } catch (ParseException ex) {
-      throw new IllegalArgumentException(ex);
-    }
+    return selectNodeModels(PathParser.parse(expr));
+  }
+
+  
+  @Override
+  public List<INodeModel> selectNodeModels(IPathExpression<INodeModel> pathExpr) {
     List<INodeModel> found = new ArrayList<>();
     pathExpr.matches(this, (Trail<INodeModel>)null, new Consumer<INodeModel>() {
       @Override
@@ -99,14 +98,16 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
     return found;
   }
 
+  
   @Override
   public List<IItemModel> selectItemModels(String expr) {
-    IPathExpression<INodeModel> pathExpr;
-    try {
-      pathExpr = PathParser.parse(expr);
-    } catch (ParseException ex) {
-      throw new IllegalArgumentException(ex);
-    }
+    return selectItemModels(PathParser.parse(expr));
+
+  }
+
+  
+  @Override
+  public List<IItemModel> selectItemModels(IPathExpression<INodeModel> pathExpr) {
     List<IItemModel> found = new ArrayList<>();
     pathExpr.matches(this, null, new Consumer<INodeModel>() {
       @Override

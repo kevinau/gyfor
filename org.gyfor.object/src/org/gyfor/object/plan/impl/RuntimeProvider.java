@@ -4,30 +4,34 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.gyfor.object.INode;
+import org.gyfor.object.path2.IPathExpression;
+import org.gyfor.object.path2.PathParser;
 import org.gyfor.object.plan.IRuntimeProvider;
 
 
-public class RuntimeProvider implements IRuntimeProvider {
+public class RuntimeProvider<T extends INode> implements IRuntimeProvider<T> {
 
-  private final String[] appliesTo;
-  private final String[] dependsOn;
+  private final IPathExpression<T>[] appliesTo;
+  private final IPathExpression<T>[] dependsOn;
   private final Method method;
 
   
   public RuntimeProvider (Class<?> klass, FieldDependency fieldDependency, Method method, String[] appliesTo) {
-    this.appliesTo = appliesTo;
+    this.appliesTo = PathParser.parse(appliesTo);
     this.method = method;
    
     // Calculate dependencies
     List<String> dx = fieldDependency.getDependencies(klass.getName(), method.getName());
-    this.dependsOn = dx.toArray(new String[dx.size()]);
+    this.dependsOn = PathParser.parse(dx);
   }
 
   
+  @SuppressWarnings("unchecked")
   public RuntimeProvider (String[] appliesTo) {
-    this.appliesTo = appliesTo;
+    this.appliesTo = PathParser.parse(appliesTo);
     this.method = null;
-    this.dependsOn = new String[0];
+    this.dependsOn = new IPathExpression[0];
   }
 
 
@@ -40,20 +44,20 @@ public class RuntimeProvider implements IRuntimeProvider {
    * @return list of XPath expressions
    */
   @Override
-  public String[] getAppliesTo() {
+  public IPathExpression<T>[] getAppliesTo() {
     return appliesTo;
   }
 
 
-  @Override
-  public boolean appliesTo(String name) {
-    for (String target : appliesTo) {
-      if (target.equals(name)) {
-        return true;
-      }
-    }
-    return false;
-  }
+//  @Override
+//  public boolean appliesTo(String name) {
+//    for (String target : appliesTo) {
+//      if (target.equals(name)) {
+//        return true;
+//      }
+//    }
+//    return false;
+//  }
   
   
   /**
@@ -65,7 +69,7 @@ public class RuntimeProvider implements IRuntimeProvider {
    * @return list of field names
    */
   @Override
-  public String[] getDependsOn() {
+  public IPathExpression<T>[] getDependsOn() {
     return dependsOn;
   }
 
@@ -77,10 +81,10 @@ public class RuntimeProvider implements IRuntimeProvider {
   
   
   @SuppressWarnings("unchecked")
-  protected <T> T invokeRuntime(Object instance) {
+  protected <X> X invokeRuntime(Object instance) {
     try {
       method.setAccessible(true);
-      return (T)method.invoke(instance);
+      return (X)method.invoke(instance);
     } catch (SecurityException ex) {
       throw new RuntimeException(ex);
     } catch (IllegalArgumentException ex) {
@@ -101,7 +105,7 @@ public class RuntimeProvider implements IRuntimeProvider {
       s.append(method.getName());
     }
     s.append(",[");
-    String[] appliesTo = getAppliesTo();
+    IPathExpression<?>[] appliesTo = getAppliesTo();
     for (int i = 0; i < appliesTo.length; i++) {
       if (i > 0) s.append(",");
       s.append(appliesTo[i].toString());

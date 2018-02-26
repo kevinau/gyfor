@@ -3,6 +3,7 @@ package org.gyfor.object.model;
 import java.util.List;
 
 import org.gyfor.object.IContainerNode;
+import org.gyfor.object.path2.IPathExpression;
 
 
 public interface IContainerModel extends INodeModel, IContainerNode<INodeModel> {
@@ -19,7 +20,11 @@ public interface IContainerModel extends INodeModel, IContainerNode<INodeModel> 
 
   public List<INodeModel> selectNodeModels(String expr);
 
+  public List<INodeModel> selectNodeModels(IPathExpression<INodeModel> pathExpr);
+
   public List<IItemModel> selectItemModels(String expr);
+
+  public List<IItemModel> selectItemModels(IPathExpression<INodeModel> pathExpr);
 
   public <X extends INodeModel> X selectNodeModel(String expr);
 

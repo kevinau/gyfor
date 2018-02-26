@@ -33,7 +33,7 @@ public class QualifiedNameTest {
     Assert.assertEquals("name", qname);
     
     builder.setLength(0);
-    IItemModel homeSuburbModel = entity.selectItemModel("home.suburb");
+    IItemModel homeSuburbModel = entity.selectItemModel("home/suburb");
     Assert.assertNotNull(homeSuburbModel);
     qname = homeSuburbModel.getQName();
     Assert.assertEquals("/home/suburb", qname);
@@ -44,18 +44,18 @@ public class QualifiedNameTest {
     Assert.assertEquals("suburb", qname);
     
     builder.setLength(0);
-    List<INodeModel> locationsModel = entity.selectNodeModels("locations.*");
+    List<INodeModel> locationsModel = entity.selectNodeModels("locations/*");
     Assert.assertNotNull(locationsModel);
     Assert.assertEquals(2, locationsModel.size());
 
     builder.setLength(0);
-    IItemModel locationsModel2 = entity.selectItemModel("locations.*.suburb");
+    IItemModel locationsModel2 = entity.selectItemModel("locations/*/suburb");
     Assert.assertNotNull(locationsModel2);
     qname = locationsModel2.getQName();
     Assert.assertEquals("/locations/0/suburb", qname);
 
     builder.setLength(0);
-    IItemModel suburbModel = entity.selectItemModel("locations.*.*.number");
+    IItemModel suburbModel = entity.selectItemModel("locations/*/*/number");
     Assert.assertNotNull(suburbModel);
     qname = suburbModel.getQName();
     Assert.assertEquals("/locations/0/street/number", qname);

@@ -1,6 +1,9 @@
 package org.gyfor.object.plan;
 
-public interface IRuntimeProvider {
+import org.gyfor.object.INode;
+import org.gyfor.object.path2.IPathExpression;
+
+public interface IRuntimeProvider<T extends INode> {
 
   /**
    * Get a list of XPaths expressions that identify the fields that this plan
@@ -11,10 +14,10 @@ public interface IRuntimeProvider {
    * 
    * @return list of XPath expressions
    */
-  public String[] getAppliesTo();
+  public IPathExpression<T>[] getAppliesTo();
 
 
-  public boolean appliesTo (String name);
+  //public boolean appliesTo (String name);
   
 
   /**
@@ -25,7 +28,7 @@ public interface IRuntimeProvider {
    * 
    * @return list of field names
    */
-  public String[] getDependsOn();
+  public IPathExpression<T>[] getDependsOn();
 
   /**
    * Does this provider return an initial mode, or does it only return a 

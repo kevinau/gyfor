@@ -1,5 +1,6 @@
 package org.gyfor.object.plan;
 
+import org.gyfor.object.path2.IPathExpression;
 
 public interface IRuntimeOccursProvider extends IRuntimeProvider {
 
@@ -13,7 +14,7 @@ public interface IRuntimeOccursProvider extends IRuntimeProvider {
    * @return list of XPath expressions
    */
   @Override
-  public String[] getAppliesTo();
+  public IPathExpression<?>[] getAppliesTo();
   
 
   /**
@@ -25,7 +26,7 @@ public interface IRuntimeOccursProvider extends IRuntimeProvider {
    * @return list of field names
    */
   @Override
-  public String[] getDependsOn();
+  public IPathExpression<?>[] getDependsOn();
 
   
   /**

@@ -15,7 +15,6 @@ import org.junit.Test;
 
 
 public class ItemEventsTest {
-  @SuppressWarnings("unused")
   @Entity
   public static class StandardEntity {
 

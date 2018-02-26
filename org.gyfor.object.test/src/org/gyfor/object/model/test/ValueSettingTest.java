@@ -133,12 +133,12 @@ public class ValueSettingTest {
     String nameValue = nameModel.getValue();
     Assert.assertEquals("Kevin Holloway", nameValue);
 
-    IItemModel suburbModel = entity.selectItemModel("locations[0].suburb");
+    IItemModel suburbModel = entity.selectItemModel("locations/0/suburb");
     Assert.assertNotNull(suburbModel);
     String suburbValue = suburbModel.getValue();
     Assert.assertEquals("Nailsworth", suburbValue);
 
-    IItemModel numberModel = entity.selectItemModel("locations[0].street.number");
+    IItemModel numberModel = entity.selectItemModel("locations/0/street/number");
     Assert.assertNotNull(numberModel);
     String numberValue = numberModel.getValue();
     Assert.assertEquals("17", numberValue);

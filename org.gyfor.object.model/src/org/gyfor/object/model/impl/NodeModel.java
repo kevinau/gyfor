@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.gyfor.object.EntryMode;
-import org.gyfor.object.INode;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.model.EffectiveEntryMode;
 import org.gyfor.object.model.EffectiveEntryModeListener;
@@ -360,7 +359,7 @@ public abstract class NodeModel implements INodeModel {
 
   
   @Override
-  public boolean matches(INodeModel startingPoint, IPathExpression<INode> expr) {
+  public boolean matches(INodeModel startingPoint, IPathExpression<INodeModel> expr) {
     boolean[] result = new boolean[1];
     System.out.println("++++++++++++++++++++++ " + expr.getNext());
     expr.getNext().matches(startingPoint, this, result);

@@ -64,7 +64,7 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
     this.type = (IType<Object>)itemPlan.getType();
     // Add event listener so this field can react to effective mode changes
     // addEffectiveModeListener(this);
-    setInitialDefaultValue();
+    setInitialValues();
   }
 
 
@@ -237,8 +237,10 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   }
 
 
-  public Object getDefaultValue() {
-    return defaultValue;
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T> T getDefaultValue() {
+    return (T)defaultValue;
   }
 
 
@@ -262,9 +264,11 @@ public class ItemModel extends NodeModel implements EffectiveEntryModeListener, 
   }
   
   
-  void setInitialDefaultValue () {
-    defaultValue = valueRef.getValue();
-    defaultSource = type.toEntryString(defaultValue, null);
+  void setInitialValues () {
+    Object value = valueRef.getValue();
+    setValue(value);
+    defaultValue = currentValue;
+    defaultSource = currentSource;
   }
   
   
