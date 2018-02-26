@@ -92,7 +92,7 @@ public class PathTests {
   
   
   @Test
-  public void simpleFieldPath () {
+  public void nodePathSelect () {
     IPathExpression<INodeModel> pathExpr = PathParser.parse(expr);
     List<INodeModel> nodes = model.selectNodeModels(pathExpr);
     Assert.assertEquals(count, nodes.size());
@@ -100,13 +100,19 @@ public class PathTests {
     if (count == 1) {
       Assert.assertEquals(found, nodes.get(0).getValue());
     }
+  }
+
+
+  @Test
+  public void nodePathMatches () {
+    IPathExpression<INodeModel> pathExpr = PathParser.parse(expr);
+    List<INodeModel> nodes = model.selectNodeModels(pathExpr);
     
-//    int i = 0;
-//    for (INodeModel node : nodes) {
-//      boolean isMatched = node.matches(model, pathExpr);
-//      Assert.assertTrue(i + ": Found node " + node + " does not match " + pathExpr, isMatched);
-//      i++;
-//    }
+    if (count >= 1) {
+      INodeModel node = nodes.get(0);
+      boolean isMatched = node.matches(model, pathExpr);
+      Assert.assertTrue("Selected node " + node + " does not match " + pathExpr, isMatched);
+    }
   }
 
 }
