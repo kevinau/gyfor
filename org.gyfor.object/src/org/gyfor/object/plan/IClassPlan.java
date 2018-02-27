@@ -3,6 +3,8 @@ package org.gyfor.object.plan;
 import java.util.List;
 import java.util.Set;
 
+import org.gyfor.object.INode;
+
 
 public interface IClassPlan<T> extends IContainerPlan {
 

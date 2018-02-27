@@ -20,7 +20,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 
 @RunWith(Parameterized.class)
-public class PathTests {
+public class PathSelectionTests {
 
   @Parameters(name= "{index}: ''{0}'' count {1}")
   public static Iterable<Object[]> data() {
@@ -63,7 +63,7 @@ public class PathTests {
   
   private IEntityModel model;
   
-  public PathTests (String expr, int count, String found) {
+  public PathSelectionTests (String expr, int count, String found) {
     this.expr = expr;
     this.count = count;
     this.found = found;

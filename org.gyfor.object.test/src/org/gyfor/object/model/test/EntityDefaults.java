@@ -12,9 +12,18 @@ import org.junit.Test;
 
 public class EntityDefaults {
 
+  private static class SimpleEntity0 {
+    @IOField 
+    String name = "Initial and default value";
+  }
+  
+  
   private static class SimpleEntity1 {
     @IOField 
     String name = "Initial and default value";
+    
+    @DefaultFor("name")
+    String nameDefault = "Default value";
   }
   
   
@@ -45,17 +54,72 @@ public class EntityDefaults {
   }
   
   
+  private static class SimpleEntity4 {
+    @IOField 
+    String name;
+    
+    @DefaultFor("name")
+    private static String nameDefault4() {
+      return "Default value";
+    }
+  }
+  
+  
+  private static class SimpleEntity5 {
+    @IOField 
+    String name;
+    
+    @DefaultFor("name")
+    private static String nameDefault4 = "Default value";
+  }
+  
+  
+  private static class SimpleEntity6 {
+    @IOField 
+    String name;
+    
+    @IOField 
+    String field;
+    
+    @IOField
+    int namePart1 = 12;
+    
+    @IOField
+    int namePart2 = 34;
+    
+    @DefaultFor({"name", "field"})
+    String nameDefault3() {
+      return "Name " + namePart1 + "-" + namePart2;
+    }
+  }
+  
+  
   @Test
   public void classAssignedDefault () {
     ModelFactory modelFactory = new ModelFactory(new PlanFactory());
-    IEntityModel model = modelFactory.buildEntityModel(SimpleEntity1.class);
+    IEntityModel model = modelFactory.buildEntityModel(SimpleEntity0.class);
     
-    SimpleEntity1 instance = new SimpleEntity1();
+    SimpleEntity0 instance = new SimpleEntity0();
     model.setValue(instance);
 
     IItemModel nameItem = model.selectItemModel("name");
     Assert.assertEquals("Initial and default value", nameItem.getValue());
     Assert.assertEquals("Initial and default value", nameItem.getDefaultValue());
+  }
+  
+  
+  @Test
+  public void defaultField () {
+    ModelFactory modelFactory = new ModelFactory(new PlanFactory());
+    IEntityModel model = modelFactory.buildEntityModel(SimpleEntity1.class);
+    
+    SimpleEntity1 instance = new SimpleEntity1();
+    instance.name = "Assigned value";
+    model.setValue(instance);
+
+    IItemModel nameItem = model.selectItemModel("name");
+    Assert.assertEquals("Assigned value", nameItem.getValue());
+    Assert.assertEquals("Default value", nameItem.getDefaultValue());
   }
   
   
@@ -120,5 +184,51 @@ public class EntityDefaults {
     Assert.assertEquals("Name 12", nameItem.getValue());
     Assert.assertEquals("Name 12", nameItem.getDefaultValue());    
   }
+  
+  
+  @Test
+  public void staticDefaultField () {
+    ModelFactory modelFactory = new ModelFactory(new PlanFactory());
+    IEntityModel model = modelFactory.buildEntityModel(SimpleEntity4.class);
+    
+    SimpleEntity4 instance = new SimpleEntity4();
+    instance.name = "Assigned value";
+    model.setValue(instance);
+
+    IItemModel nameItem = model.selectItemModel("name");
+    Assert.assertEquals("Assigned value", nameItem.getValue());
+    Assert.assertEquals("Default value", nameItem.getDefaultValue());
+  }
+  
+  
+  @Test
+  public void staticDefaultMethod () {
+    ModelFactory modelFactory = new ModelFactory(new PlanFactory());
+    IEntityModel model = modelFactory.buildEntityModel(SimpleEntity5.class);
+    
+    SimpleEntity5 instance = new SimpleEntity5();
+    instance.name = "Assigned value";
+    model.setValue(instance);
+
+    IItemModel nameItem = model.selectItemModel("name");
+    Assert.assertEquals("Assigned value", nameItem.getValue());
+    Assert.assertEquals("Default value", nameItem.getDefaultValue());
+  }
+  
+  
+  @Test
+  public void multipleDependsAndAppliesTo () {
+    ModelFactory modelFactory = new ModelFactory(new PlanFactory());
+    IEntityModel model = modelFactory.buildEntityModel(SimpleEntity6.class);
+    
+    SimpleEntity6 instance = new SimpleEntity6();
+    instance.name = "Assigned value";
+    model.setValue(instance);
+
+    IItemModel nameItem = model.selectItemModel("name");
+    Assert.assertEquals("Assigned value", nameItem.getValue());
+    Assert.assertEquals("Name 12-34", nameItem.getDefaultValue());
+  }
+  
   
 }

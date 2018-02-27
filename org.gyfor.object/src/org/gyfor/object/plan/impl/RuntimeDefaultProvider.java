@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.gyfor.object.plan.impl;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.gyfor.object.INode;
@@ -28,6 +29,12 @@ public class RuntimeDefaultProvider<T extends INode> extends RuntimeProvider<T> 
   }
 
   
+  public RuntimeDefaultProvider (Class<?> klass, FieldDependency fieldDependency, Field field, String[] appliesTo) {
+    super (klass, fieldDependency, field, appliesTo);
+    this.defaultValue = null;
+  }
+
+  
   public RuntimeDefaultProvider (Object defaultValue, String[] appliesTo) {
     super (appliesTo);
     this.defaultValue = defaultValue;
@@ -36,6 +43,11 @@ public class RuntimeDefaultProvider<T extends INode> extends RuntimeProvider<T> 
   
   public RuntimeDefaultProvider (Class<?> klass, FieldDependency fieldDependency, Method method, String fieldName) {
     this (klass, fieldDependency, method, new String[] {fieldName});
+  }
+  
+  
+  public RuntimeDefaultProvider (Class<?> klass, FieldDependency fieldDependency, Field field, String fieldName) {
+    this (klass, fieldDependency, field, new String[] {fieldName});
   }
   
   

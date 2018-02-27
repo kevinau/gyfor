@@ -27,3 +27,4 @@ Service-Component: OSGI-INF/org.gyfor.object.test.SimpleEntityTest.xml,
  OSGI-INF/org.gyfor.object.test.EntityWithSimpleArrayTest.xml
 Bundle-ActivationPolicy: lazy
 Export-Package: org.gyfor.object.test
+Require-Bundle: org.eclipse.jdt.annotation;bundle-version="2.1.0";resolution:=optional

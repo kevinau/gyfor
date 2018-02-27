@@ -46,7 +46,7 @@ public class QualifiedNameTest {
     builder.setLength(0);
     List<INodeModel> locationsModel = entity.selectNodeModels("locations/*");
     Assert.assertNotNull(locationsModel);
-    Assert.assertEquals(2, locationsModel.size());
+    Assert.assertEquals(1, locationsModel.size());
 
     builder.setLength(0);
     IItemModel locationsModel2 = entity.selectItemModel("locations/*/suburb");

@@ -48,14 +48,14 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
 //        }
 //      }
 //    }
-//
+
 //    // In addition, run all the static default providers to set up
 //    // the defaults.
-//    for (IRuntimeDefaultProvider defaultProvider : classPlan.getRuntimeDefaultProviders()) {
+//    for (IRuntimeDefaultProvider<? extends INode> defaultProvider : classPlan.getRuntimeDefaultProviders()) {
 //      if (!defaultProvider.isRuntime()) {
 //        Object defaultValue = defaultProvider.getDefaultValue(null);
-//        for (String appliesTo : defaultProvider.getAppliesTo()) {
-//          for (IItemModel itemModel : selectItemModels(appliesTo)) {
+//        for (IPathExpression<? extends INode> appliesTo : defaultProvider.getAppliesTo()) {
+//          for (IItemModel itemModel : selectItemModels((IPathExpression<INodeModel>)appliesTo)) {
 //            itemModel.setDefaultValue(defaultValue);
 //          }
 //        }
@@ -64,7 +64,7 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
   }
   
   
-  @SuppressWarnings("unchecked")
+  //@SuppressWarnings("unchecked")
   private void setupRuntimeDefaults(IItemModel itemModel) {
     for (IRuntimeDefaultProvider<INodeModel> defaultProvider : classPlan.getRuntimeDefaultProviders()) {
       if (defaultProvider.isRuntime()) {
@@ -91,7 +91,6 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
     // the defaults.  After this setup, the runtime event handlers 
     // will keep them up to date.
     for (IRuntimeDefaultProvider<INodeModel> defaultProvider : classPlan.getRuntimeDefaultProviders()) {
-      System.out.println("cccc " + defaultProvider);
       Object defaultValue = null;
       boolean defaultCalculated = false;
       for (IPathExpression<INodeModel> expr : defaultProvider.getAppliesTo()) {

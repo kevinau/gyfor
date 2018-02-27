@@ -1,5 +1,6 @@
 package org.gyfor.object.plan.impl;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -15,14 +16,27 @@ public class RuntimeProvider<T extends INode> implements IRuntimeProvider<T> {
   private final IPathExpression<T>[] appliesTo;
   private final IPathExpression<T>[] dependsOn;
   private final Method method;
+  private final Field field;
 
   
   public RuntimeProvider (Class<?> klass, FieldDependency fieldDependency, Method method, String[] appliesTo) {
     this.appliesTo = PathParser.parse(appliesTo);
     this.method = method;
+    this.field = null;
    
     // Calculate dependencies
     List<String> dx = fieldDependency.getDependencies(klass.getName(), method.getName());
+    this.dependsOn = PathParser.parse(dx);
+  }
+
+  
+  public RuntimeProvider (Class<?> klass, FieldDependency fieldDependency, Field field, String[] appliesTo) {
+    this.appliesTo = PathParser.parse(appliesTo);
+    this.method = null;
+    this.field = field;
+   
+    // Calculate dependencies
+    List<String> dx = fieldDependency.getDependencies(klass.getName(), field.getName());
     this.dependsOn = PathParser.parse(dx);
   }
 
@@ -31,6 +45,7 @@ public class RuntimeProvider<T extends INode> implements IRuntimeProvider<T> {
   public RuntimeProvider (String[] appliesTo) {
     this.appliesTo = PathParser.parse(appliesTo);
     this.method = null;
+    this.field = null;
     this.dependsOn = new IPathExpression[0];
   }
 
@@ -76,15 +91,20 @@ public class RuntimeProvider<T extends INode> implements IRuntimeProvider<T> {
   
   @Override
   public boolean isRuntime() {
-    return method != null;
+    return method != null || field != null;
   }
   
   
   @SuppressWarnings("unchecked")
   protected <X> X invokeRuntime(Object instance) {
     try {
-      method.setAccessible(true);
-      return (X)method.invoke(instance);
+      if (method != null) {
+        method.setAccessible(true);
+        return (X)method.invoke(instance);
+      } else {
+        field.setAccessible(true);
+        return (X)field.get(instance);
+      }
     } catch (SecurityException ex) {
       throw new RuntimeException(ex);
     } catch (IllegalArgumentException ex) {
@@ -103,6 +123,9 @@ public class RuntimeProvider<T extends INode> implements IRuntimeProvider<T> {
     s.append("RuntimeProvider(");
     if (method != null) {
       s.append(method.getName());
+    }
+    if (field != null) {
+      s.append(field.getName());
     }
     s.append(",[");
     IPathExpression<?>[] appliesTo = getAppliesTo();
