@@ -14,7 +14,7 @@ public interface IRuntimeOccursProvider extends IRuntimeProvider {
    * @return list of XPath expressions
    */
   @Override
-  public IPathExpression<?>[] getAppliesTo();
+  public IPathExpression[] getAppliesTo();
   
 
   /**
@@ -26,7 +26,7 @@ public interface IRuntimeOccursProvider extends IRuntimeProvider {
    * @return list of field names
    */
   @Override
-  public IPathExpression<?>[] getDependsOn();
+  public IPathExpression[] getDependsOn();
 
   
   /**

@@ -66,15 +66,15 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
   
   //@SuppressWarnings("unchecked")
   private void setupRuntimeDefaults(IItemModel itemModel) {
-    for (IRuntimeDefaultProvider<INodeModel> defaultProvider : classPlan.getRuntimeDefaultProviders()) {
+    for (IRuntimeDefaultProvider defaultProvider : classPlan.getRuntimeDefaultProviders()) {
       if (defaultProvider.isRuntime()) {
-        for (IPathExpression<INodeModel> expr : defaultProvider.getDependsOn()) {
+        for (IPathExpression expr : defaultProvider.getDependsOn()) {
           if (itemModel.matches(this, expr)) {
             itemModel.addItemEventListener(new ItemEventAdapter() {
               @Override
               public void valueChange(INodeModel node) {
                 Object value = defaultProvider.getDefaultValue(valueRef.getValue());
-                for (IPathExpression<INodeModel> appliesTo : defaultProvider.getAppliesTo()) {
+                for (IPathExpression appliesTo : defaultProvider.getAppliesTo()) {
                   List<IItemModel> appliesToModels = NameMappedModel.this.selectItemModels(appliesTo);
                   for (IItemModel appliesToModel : appliesToModels) {
                     appliesToModel.setDefaultValue(value);                    
@@ -90,17 +90,17 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
     // In addition, run all the runtime default providers to set up
     // the defaults.  After this setup, the runtime event handlers 
     // will keep them up to date.
-    for (IRuntimeDefaultProvider<INodeModel> defaultProvider : classPlan.getRuntimeDefaultProviders()) {
+    for (IRuntimeDefaultProvider defaultProvider : classPlan.getRuntimeDefaultProviders()) {
       Object defaultValue = null;
       boolean defaultCalculated = false;
-      for (IPathExpression<INodeModel> expr : defaultProvider.getAppliesTo()) {
-        if (itemModel.matches(this, (IPathExpression<INodeModel>)expr)) {
+      for (IPathExpression expr : defaultProvider.getAppliesTo()) {
+        if (itemModel.matches(this, (IPathExpression)expr)) {
           // Are there valid values for all dependencys
           boolean inError = false;
           
           loop:
-          for (IPathExpression<? extends INode> expr2 : defaultProvider.getDependsOn()) {
-            List<IItemModel> dependents = selectItemModels((IPathExpression<INodeModel>)expr2);
+          for (IPathExpression expr2 : defaultProvider.getDependsOn()) {
+            List<IItemModel> dependents = selectItemModels((IPathExpression)expr2);
             for (IItemModel dependent : dependents) {
               if (dependent.isInError()) {
                 inError = true;
@@ -202,9 +202,10 @@ public abstract class NameMappedModel extends ContainerModel implements INameMap
   }
   
 
+  @SuppressWarnings("unchecked")
   @Override
-  public INodeModel getNameMappedNode(String name) {
-    return members.get(name);
+  public INode getNameMappedNode(String name) {
+    return (INode)members.get(name);
   }
   
 

@@ -14,7 +14,7 @@ import org.gyfor.object.EntryMode;
 import org.gyfor.object.INode;
 
 
-public interface IRuntimeModeProvider<T extends INode> extends IRuntimeProvider<T> {
+public interface IRuntimeModeProvider extends IRuntimeProvider {
 
   public EntryMode getEntryMode(Object instance);
 

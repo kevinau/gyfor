@@ -11,7 +11,7 @@ import org.gyfor.object.plan.INodePlan;
 
 public interface INodeModel extends INode {
 
-  public <X extends INodeModel> Collection<X> getContainerNodes();
+  public Collection<? extends INodeModel> getContainerNodes();
   
   public int getNodeId();
   
@@ -80,6 +80,6 @@ public interface INodeModel extends INode {
 
   public String getQualifiedPlanName();
 
-  public boolean matches(INodeModel startingPoint, IPathExpression<INodeModel> expr);
+  public boolean matches(INodeModel startingPoint, IPathExpression expr);
 
 }

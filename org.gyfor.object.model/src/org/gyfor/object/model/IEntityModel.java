@@ -6,7 +6,7 @@ import org.gyfor.object.IEntityNode;
 import org.gyfor.value.EntityLife;
 import org.gyfor.value.VersionTime;
 
-public interface IEntityModel extends INameMappedModel, IEntityNode<INodeModel> {
+public interface IEntityModel extends INameMappedModel, IEntityNode {
 
   public <X> X newInstance();
   

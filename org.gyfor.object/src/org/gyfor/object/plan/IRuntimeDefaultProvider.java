@@ -12,7 +12,7 @@ package org.gyfor.object.plan;
 
 import org.gyfor.object.INode;
 
-public interface IRuntimeDefaultProvider<T extends INode> extends IRuntimeProvider<T> {
+public interface IRuntimeDefaultProvider extends IRuntimeProvider {
 
   /**
    * Get the default value for the designated fields. The designated fields are

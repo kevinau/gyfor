@@ -5,16 +5,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.gyfor.object.INode;
 import org.gyfor.object.path2.IPathExpression;
 import org.gyfor.object.path2.PathParser;
 import org.gyfor.object.plan.IRuntimeProvider;
 
 
-public class RuntimeProvider<T extends INode> implements IRuntimeProvider<T> {
+public class RuntimeProvider implements IRuntimeProvider {
 
-  private final IPathExpression<T>[] appliesTo;
-  private final IPathExpression<T>[] dependsOn;
+  private final IPathExpression[] appliesTo;
+  private final IPathExpression[] dependsOn;
   private final Method method;
   private final Field field;
 
@@ -41,7 +40,6 @@ public class RuntimeProvider<T extends INode> implements IRuntimeProvider<T> {
   }
 
   
-  @SuppressWarnings("unchecked")
   public RuntimeProvider (String[] appliesTo) {
     this.appliesTo = PathParser.parse(appliesTo);
     this.method = null;
@@ -59,7 +57,7 @@ public class RuntimeProvider<T extends INode> implements IRuntimeProvider<T> {
    * @return list of XPath expressions
    */
   @Override
-  public IPathExpression<T>[] getAppliesTo() {
+  public IPathExpression[] getAppliesTo() {
     return appliesTo;
   }
 
@@ -84,7 +82,7 @@ public class RuntimeProvider<T extends INode> implements IRuntimeProvider<T> {
    * @return list of field names
    */
   @Override
-  public IPathExpression<T>[] getDependsOn() {
+  public IPathExpression[] getDependsOn() {
     return dependsOn;
   }
 
@@ -128,7 +126,7 @@ public class RuntimeProvider<T extends INode> implements IRuntimeProvider<T> {
       s.append(field.getName());
     }
     s.append(",[");
-    IPathExpression<?>[] appliesTo = getAppliesTo();
+    IPathExpression[] appliesTo = getAppliesTo();
     for (int i = 0; i < appliesTo.length; i++) {
       if (i > 0) s.append(",");
       s.append(appliesTo[i].toString());

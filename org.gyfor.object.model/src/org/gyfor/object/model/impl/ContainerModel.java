@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.gyfor.object.INode;
 import org.gyfor.object.model.ContainerChangeListener;
 import org.gyfor.object.model.IContainerModel;
 import org.gyfor.object.model.IItemModel;
@@ -87,12 +88,12 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
 
   
   @Override
-  public List<INodeModel> selectNodeModels(IPathExpression<INodeModel> pathExpr) {
+  public List<INodeModel> selectNodeModels(IPathExpression pathExpr) {
     List<INodeModel> found = new ArrayList<>();
-    pathExpr.matches(this, (Trail<INodeModel>)null, new Consumer<INodeModel>() {
+    pathExpr.matches((INodeModel)this, (Trail)null, new Consumer<INode>() {
       @Override
-      public void accept(INodeModel model) {
-        found.add(model);
+      public void accept(INode model) {
+        found.add((INodeModel)model);
       }
     });
     return found;
@@ -107,11 +108,11 @@ public abstract class ContainerModel extends NodeModel implements IContainerMode
 
   
   @Override
-  public List<IItemModel> selectItemModels(IPathExpression<INodeModel> pathExpr) {
+  public List<IItemModel> selectItemModels(IPathExpression pathExpr) {
     List<IItemModel> found = new ArrayList<>();
-    pathExpr.matches(this, null, new Consumer<INodeModel>() {
+    pathExpr.matches(this, null, new Consumer<INode>() {
       @Override
-      public void accept(INodeModel model) {
+      public void accept(INode model) {
         if (model instanceof IItemModel) {
           found.add((IItemModel)model);
         }

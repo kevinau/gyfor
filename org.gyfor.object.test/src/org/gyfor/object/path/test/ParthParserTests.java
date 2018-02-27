@@ -3,7 +3,6 @@ package org.gyfor.object.path.test;
 import java.util.Arrays;
 import java.util.List;
 
-import org.gyfor.object.INode;
 import org.gyfor.object.path2.IPathExpression;
 import org.gyfor.object.path2.ParseException;
 import org.gyfor.object.path2.PathParser;
@@ -14,7 +13,7 @@ public class ParthParserTests {
 
   @Test
   public void simpleValidPath() {
-    IPathExpression<INode> expr = PathParser.parse("inner/0/-1/field/*/**");
+    IPathExpression expr = PathParser.parse("inner/0/-1/field/*/**");
     Assert.assertNotNull(expr);
   }
   
@@ -34,7 +33,7 @@ public class ParthParserTests {
         "inner",
         "inner/field",
     };
-    IPathExpression<INode>[] expr = PathParser.parse(paths);
+    IPathExpression[] expr = PathParser.parse(paths);
     Assert.assertNotNull(expr);
   }
   
@@ -45,7 +44,7 @@ public class ParthParserTests {
         "inner/field",
     };
     List<String> list = Arrays.asList(paths);
-    IPathExpression<INode>[] expr = PathParser.parse(list);
+    IPathExpression[] expr = PathParser.parse(list);
     Assert.assertNotNull(expr);
   }
   
@@ -53,7 +52,7 @@ public class ParthParserTests {
   @Test
   public void dumpComplexPath() {
     // Used for coverage only
-    IPathExpression<INode> expr = PathParser.parse("inner/0/-1/field/*/**");
+    IPathExpression expr = PathParser.parse("inner/0/-1/field/*/**");
     expr.dump();
   }
 }

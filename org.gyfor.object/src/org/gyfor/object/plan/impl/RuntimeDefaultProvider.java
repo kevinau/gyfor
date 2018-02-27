@@ -13,11 +13,10 @@ package org.gyfor.object.plan.impl;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.gyfor.object.INode;
 import org.gyfor.object.plan.IRuntimeDefaultProvider;
 
 
-public class RuntimeDefaultProvider<T extends INode> extends RuntimeProvider<T> implements IRuntimeDefaultProvider<T> {
+public class RuntimeDefaultProvider extends RuntimeProvider implements IRuntimeDefaultProvider {
 
   private final Object defaultValue;
   
@@ -57,7 +56,7 @@ public class RuntimeDefaultProvider<T extends INode> extends RuntimeProvider<T> 
    * 
    * @return the default value for the designated fields.
    */
-   @Override
+  @Override
   public Object getDefaultValue(Object instance) {
     if (isRuntime()) {
       if (instance == null) {

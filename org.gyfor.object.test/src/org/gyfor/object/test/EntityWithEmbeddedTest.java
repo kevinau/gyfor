@@ -57,13 +57,13 @@ public class EntityWithEmbeddedTest {
     Assert.assertEquals("inner", innerPlan.getName());
     Assert.assertEquals(true, innerPlan instanceof IEmbeddedPlan);
     
-    IItemPlan<?> innerField1Plan = plan.selectItemPlan("inner.field1");
+    IItemPlan<?> innerField1Plan = plan.selectItemPlan("inner/field1");
     Assert.assertEquals("field1", innerField1Plan.getName());
     
-    IItemPlan<?> innerField2Plan = plan.selectItemPlan("inner.field2");
+    IItemPlan<?> innerField2Plan = plan.selectItemPlan("inner/field2");
     Assert.assertEquals("field2", innerField2Plan.getName());
     
-    List<IItemPlan<?>> plans = plan.selectItemPlans("..");
+    List<IItemPlan<?>> plans = plan.selectItemPlans("**");
     Assert.assertEquals(4, plans.size());
   }
 

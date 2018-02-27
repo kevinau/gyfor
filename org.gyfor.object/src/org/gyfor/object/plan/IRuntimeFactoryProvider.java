@@ -10,10 +10,9 @@
  ******************************************************************************/
 package org.gyfor.object.plan;
 
-import org.gyfor.object.INode;
 import org.gyfor.object.path2.IPathExpression;
 
-public interface IRuntimeFactoryProvider<T extends INode> extends IRuntimeProvider<T> {
+public interface IRuntimeFactoryProvider extends IRuntimeProvider {
 
   /**
    * Get a list of XPaths expressions that identify the fields that this plan
@@ -25,7 +24,7 @@ public interface IRuntimeFactoryProvider<T extends INode> extends IRuntimeProvid
    * @return list of XPath expressions
    */
   @Override
-  public IPathExpression<T>[] getAppliesTo();
+  public IPathExpression[] getAppliesTo();
 
   /**
    * Get a list of field names that the createNewValue method depends on. Some
@@ -36,7 +35,7 @@ public interface IRuntimeFactoryProvider<T extends INode> extends IRuntimeProvid
    * @return list of field names
    */
   @Override
-  public IPathExpression<T>[] getDependsOn();
+  public IPathExpression[] getDependsOn();
 
   /**
    * Create a new value for the designated fields. The designated fields are

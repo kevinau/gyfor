@@ -93,7 +93,7 @@ public class PathSelectionTests {
   
   @Test
   public void nodePathSelect () {
-    IPathExpression<INodeModel> pathExpr = PathParser.parse(expr);
+    IPathExpression pathExpr = PathParser.parse(expr);
     List<INodeModel> nodes = model.selectNodeModels(pathExpr);
     Assert.assertEquals(count, nodes.size());
     
@@ -105,7 +105,7 @@ public class PathSelectionTests {
 
   @Test
   public void nodePathMatches () {
-    IPathExpression<INodeModel> pathExpr = PathParser.parse(expr);
+    IPathExpression pathExpr = PathParser.parse(expr);
     List<INodeModel> nodes = model.selectNodeModels(pathExpr);
     
     if (count >= 1) {

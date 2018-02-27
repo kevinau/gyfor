@@ -15,17 +15,16 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
-import org.gyfor.object.INode;
 import org.gyfor.object.path2.IPathExpression;
 import org.gyfor.object.path2.PathParser;
 import org.gyfor.object.plan.IRuntimeFactoryProvider;
 
 
-public class RuntimeFactoryProvider<T extends INode> extends RuntimeProvider<T> implements IRuntimeFactoryProvider<T> {
+public class RuntimeFactoryProvider extends RuntimeProvider implements IRuntimeFactoryProvider {
 
   private final Method method;
   private final Object independentNewValue;
-  private final IPathExpression<T>[] dependsOn;
+  private final IPathExpression[] dependsOn;
   
   
   public RuntimeFactoryProvider (Class<?> klass, FieldDependency fieldDependency, Method method, String[] appliesTo) {
@@ -44,7 +43,6 @@ public class RuntimeFactoryProvider<T extends INode> extends RuntimeProvider<T> 
   }
 
   
-  @SuppressWarnings("unchecked")
   public RuntimeFactoryProvider (Object independentNewValue, String[] appliesTo) {
     super (appliesTo);
     this.method = null;
@@ -67,7 +65,7 @@ public class RuntimeFactoryProvider<T extends INode> extends RuntimeProvider<T> 
    * @return list of field names
    */
   @Override
-  public IPathExpression<T>[] getDependsOn() {
+  public IPathExpression[] getDependsOn() {
     return dependsOn;
   }
 
