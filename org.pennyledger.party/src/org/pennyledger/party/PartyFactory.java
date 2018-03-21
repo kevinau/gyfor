@@ -1,7 +1,7 @@
 package org.pennyledger.party;
 
-import org.gyfor.object.IEntityFactory;
 import org.osgi.service.component.annotations.Component;
+import org.plcore.userio.IEntityFactory;
 
 
 @Component

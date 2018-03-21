@@ -1,12 +1,13 @@
 package org.pennyledger.address;
 
-import org.gyfor.object.IOField;
-import org.gyfor.object.Occurs;
+import org.plcore.userio.IOField;
+import org.plcore.userio.Occurs;
+import org.plcore.value.ICode;
 
 public class GenericAddress implements IAddress {
 
   @IOField
-  @Occurs(max = 3)
+  @Occurs(max = 4)
   private String[] address;
   
   
@@ -21,7 +22,7 @@ public class GenericAddress implements IAddress {
 
   
   @Override
-  public String[] getAddressLines() {
+  public String[] getFormatted(ICode localCountry) {
     int n = 0;
     for (String line : address) {
       if (line != null && line.length() > 0) {

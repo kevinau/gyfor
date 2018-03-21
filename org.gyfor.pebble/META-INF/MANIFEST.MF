@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: gyfor - Pebble template support
 Bundle-SymbolicName: org.gyfor.template
 Bundle-Version: 1.0.0
-Export-Package: org.gyfor.template
+Export-Package: org.plcore.template
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.mitchellbosecke.pebble,
  com.mitchellbosecke.pebble.error,
@@ -14,5 +14,5 @@ Import-Package: com.mitchellbosecke.pebble,
  org.osgi.framework,
  org.slf4j
 Bundle-ActivationPolicy: lazy
-Service-Component: OSGI-INF/org.gyfor.template.impl.TemplateEngineFactory.xml
+Service-Component: OSGI-INF/org.plcore.template.impl.TemplateEngineFactory.xml
 Eclipse-BuddyPolicy: global

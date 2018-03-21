@@ -10,9 +10,9 @@ Import-Package: com.sleepycat.persist.model,
  org.gyfor.dao,
  org.gyfor.object,
  org.gyfor.object.type.builtin,
- org.gyfor.sql,
- org.gyfor.sql.dialect,
  org.gyfor.value,
+ org.plcore.sql,
+ org.plcore.sql.dialect,
  org.slf4j;version="1.7.21"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.gyfor.dao.test.data

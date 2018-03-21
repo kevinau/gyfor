@@ -1,13 +1,13 @@
 package org.gyfor.object.test;
 
-import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.IItemPlan;
-import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.test.data.EntityWithSimpleArray;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.service.component.annotations.Component;
+import org.plcore.userio.plan.IEntityPlan;
+import org.plcore.userio.plan.IItemPlan;
+import org.plcore.userio.plan.PlanFactory;
 
 @Component
 public class EntityWithSimpleArrayTest {

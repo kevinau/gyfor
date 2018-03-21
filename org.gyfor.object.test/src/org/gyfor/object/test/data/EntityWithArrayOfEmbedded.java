@@ -1,8 +1,8 @@
 package org.gyfor.object.test.data;
 
 import org.gyfor.math.Decimal;
-import org.gyfor.object.Embeddable;
-import org.gyfor.object.IOField;
+import org.plcore.userio.Embeddable;
+import org.plcore.userio.IOField;
 
 @SuppressWarnings("unused")
 public class EntityWithArrayOfEmbedded {

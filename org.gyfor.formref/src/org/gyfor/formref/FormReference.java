@@ -1,11 +1,11 @@
 package org.gyfor.formref;
 
-import org.gyfor.osgi.ComponentConfiguration;
-import org.gyfor.osgi.Configurable;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.plcore.osgi.ComponentConfiguration;
+import org.plcore.osgi.Configurable;
 
 
 @Component(service=FormReference.class, configurationPolicy=ConfigurationPolicy.REQUIRE, immediate=true)

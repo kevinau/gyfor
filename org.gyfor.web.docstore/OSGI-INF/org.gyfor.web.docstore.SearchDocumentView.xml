@@ -3,8 +3,8 @@
    <service>
       <provide interface="io.undertow.server.HttpHandler"/>
    </service>
-   <reference cardinality="1..1" field="docStore" interface="org.gyfor.docstore.IDocumentStore" name="docStore"/>
-   <reference cardinality="1..1" field="searchEngine" interface="org.gyfor.docstore.search.ISearchEngine" name="searchEngine"/>
-   <reference cardinality="1..1" field="templateEngineFactory" interface="org.gyfor.template.ITemplateEngineFactory" name="templateEngineFactory"/>
+   <reference cardinality="1..1" field="docStore" interface="org.plcore.docstore.IDocumentStore" name="docStore"/>
+   <reference cardinality="1..1" field="searchEngine" interface="ISearchEngine" name="searchEngine"/>
+   <reference cardinality="1..1" field="templateEngineFactory" interface="org.plcore.template.ITemplateEngineFactory" name="templateEngineFactory"/>
    <implementation class="org.gyfor.web.docstore.SearchDocumentView"/>
 </scr:component>

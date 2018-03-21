@@ -1,8 +1,7 @@
 package org.gyfor.object.test.data;
 
-import org.gyfor.object.IOField;
+import org.plcore.userio.IOField;
 
-@SuppressWarnings("unused")
 public class EntityWithSimpleArray {
 
   @IOField

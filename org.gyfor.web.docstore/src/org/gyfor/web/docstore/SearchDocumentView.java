@@ -8,20 +8,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.gyfor.docstore.IDocumentStore;
-import org.gyfor.docstore.search.DocumentReference;
-import org.gyfor.docstore.search.ISearchEngine;
-import org.gyfor.http.Context;
-import org.gyfor.http.Resource;
-import org.gyfor.template.ITemplate;
-import org.gyfor.template.ITemplateEngine;
-import org.gyfor.template.ITemplateEngineFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.plcore.docstore.IDocumentStore;
+import org.plcore.docstore.search.DocumentReference;
+import org.plcore.docstore.search.ISearchEngine;
+import org.plcore.http.Context;
+import org.plcore.http.Resource;
+import org.plcore.template.ITemplate;
+import org.plcore.template.ITemplateEngine;
+import org.plcore.template.ITemplateEngineFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

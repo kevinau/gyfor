@@ -1,8 +1,8 @@
 package org.gyfor.object.test.data;
 
-import org.gyfor.object.IOField;
 import org.gyfor.value.EntityLife;
 import org.gyfor.value.ICode;
+import org.plcore.userio.IOField;
 
 
 public class CodeBased {

@@ -1,12 +1,12 @@
 package org.gyfor.dao.test;
 
 import org.gyfor.dao.test.data.GLTransaction;
-import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.PlanFactory;
-import org.gyfor.sql.IConnectionFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.plcore.sql.IConnectionFactory;
+import org.plcore.userio.plan.IEntityPlan;
+import org.plcore.userio.plan.PlanFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

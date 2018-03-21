@@ -1,5 +1,6 @@
 package org.gyfor.berkeleydb;
 
+import org.glcore.todo.NotYetImplementedException;
 import org.gyfor.object.EntityPlanFactory;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.plan.IClassPlan;
@@ -8,7 +9,6 @@ import org.gyfor.object.plan.IItemPlan;
 import org.gyfor.object.plan.INodePlan;
 import org.gyfor.object.plan.impl.PlanContext;
 import org.gyfor.object.type.IType;
-import org.gyfor.todo.NotYetImplementedException;
 import org.gyfor.util.SimpleBuffer;
 
 import com.sleepycat.je.DatabaseEntry;

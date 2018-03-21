@@ -1,10 +1,10 @@
 package org.gyfor.web.form;
 
-import org.gyfor.http.ISessionData;
-import org.gyfor.object.model.IEntityModel;
-import org.gyfor.object.model.INodeModel;
-import org.gyfor.object.model.ItemEventAdapter;
 import org.gyfor.web.form.state.StateMachine;
+import org.plcore.http.ISessionData;
+import org.plcore.userio.model.IEntityModel;
+import org.plcore.userio.model.INodeModel;
+import org.plcore.userio.model.ItemEventAdapter;
 
 public class RoundtripSessionData implements ISessionData {
 

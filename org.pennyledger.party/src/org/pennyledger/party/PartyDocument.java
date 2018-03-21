@@ -2,7 +2,7 @@ package org.pennyledger.party;
 
 import java.io.Serializable;
 
-import org.gyfor.object.ManyToOne;
+import org.plcore.userio.ManyToOne;
 
 
 public class PartyDocument implements Serializable {

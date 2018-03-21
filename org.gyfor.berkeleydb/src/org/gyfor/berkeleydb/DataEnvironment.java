@@ -6,14 +6,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.gyfor.home.IApplication;
-import org.gyfor.osgi.ComponentConfiguration;
-import org.gyfor.osgi.Configurable;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.plcore.home.IApplication;
+import org.plcore.osgi.ComponentConfiguration;
+import org.plcore.osgi.Configurable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

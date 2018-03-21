@@ -1,8 +1,8 @@
 package org.gyfor.web.form;
 
-import org.gyfor.http.WebSocketSession;
-import org.gyfor.object.UserEntryException;
-import org.gyfor.object.model.EffectiveEntryMode;
+import org.plcore.http.WebSocketSession;
+import org.plcore.userio.UserEntryException;
+import org.plcore.userio.model.EffectiveEntryMode;
 
 import io.undertow.websockets.core.WebSocketChannel;
 

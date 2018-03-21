@@ -1,18 +1,18 @@
 package org.gyfor.object.model.test;
 
-import org.gyfor.object.EntryMode;
-import org.gyfor.object.model.EffectiveEntryMode;
-import org.gyfor.object.model.IEntityModel;
-import org.gyfor.object.model.IItemModel;
-import org.gyfor.object.model.INodeModel;
-import org.gyfor.object.model.ModelFactory;
-import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.IItemPlan;
-import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.test.data.ModeTestEntity;
 import org.gyfor.object.test.data.OuterModeTestEntity;
 import org.junit.Assert;
 import org.junit.Test;
+import org.plcore.userio.EntryMode;
+import org.plcore.userio.model.EffectiveEntryMode;
+import org.plcore.userio.model.IEntityModel;
+import org.plcore.userio.model.IItemModel;
+import org.plcore.userio.model.INodeModel;
+import org.plcore.userio.model.ModelFactory;
+import org.plcore.userio.plan.IEntityPlan;
+import org.plcore.userio.plan.IItemPlan;
+import org.plcore.userio.plan.PlanFactory;
 
 
 public class EntryModeTest {

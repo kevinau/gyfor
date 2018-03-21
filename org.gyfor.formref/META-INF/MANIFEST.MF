@@ -7,8 +7,8 @@ Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/org.gyfor.formref.FormReference.xml
-Import-Package: org.gyfor.osgi,
- org.osgi.framework;version="1.8.0",
+Import-Package: org.osgi.framework;version="1.8.0",
  org.osgi.service.component,
- org.osgi.service.component.annotations;version="1.3.0";resolution:=optional
+ org.osgi.service.component.annotations;version="1.3.0";resolution:=optional,
+ org.plcore.osgi
 Export-Package: org.gyfor.formref

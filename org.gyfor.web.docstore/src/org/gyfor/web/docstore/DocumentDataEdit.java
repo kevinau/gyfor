@@ -1,14 +1,14 @@
 package org.gyfor.web.docstore;
 
-import org.gyfor.http.AbstractWebSocketConnectionCallback;
-import org.gyfor.http.CallbackAccessor;
-import org.gyfor.http.Context;
-import org.gyfor.http.Resource;
-import org.gyfor.http.WebSocketSession;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.plcore.http.AbstractWebSocketConnectionCallback;
+import org.plcore.http.CallbackAccessor;
+import org.plcore.http.Context;
+import org.plcore.http.Resource;
+import org.plcore.http.WebSocketSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

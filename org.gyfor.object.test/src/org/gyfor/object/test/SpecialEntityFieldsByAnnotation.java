@@ -1,17 +1,17 @@
 package org.gyfor.object.test;
 
-import org.gyfor.object.Entity;
-import org.gyfor.object.Id;
-import org.gyfor.object.Version;
-import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.IItemPlan;
-import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.value.EntityLife;
 import org.gyfor.value.VersionTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.plcore.userio.Entity;
+import org.plcore.userio.Id;
+import org.plcore.userio.Version;
+import org.plcore.userio.plan.IEntityPlan;
+import org.plcore.userio.plan.IItemPlan;
+import org.plcore.userio.plan.INodePlan;
+import org.plcore.userio.plan.PlanFactory;
 
 
 public class SpecialEntityFieldsByAnnotation {

@@ -2,19 +2,22 @@ package org.gyfor.object.test;
 
 import java.util.List;
 
-import org.gyfor.object.Entity;
-import org.gyfor.object.UniqueConstraint;
-import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.IItemPlan;
-import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.value.EntityLife;
 import org.gyfor.value.VersionTime;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.plcore.userio.Entity;
+import org.plcore.userio.IOField;
+import org.plcore.userio.UniqueConstraint;
+import org.plcore.userio.plan.IEntityPlan;
+import org.plcore.userio.plan.IItemPlan;
+import org.plcore.userio.plan.INodePlan;
+import org.plcore.userio.plan.PlanFactory;
 
 
+@Component
 public class EntityKeyDataTest {
 
   @Entity
@@ -22,16 +25,22 @@ public class EntityKeyDataTest {
   @UniqueConstraint("code")
   public static class SimpleEntity {
 
+    @IOField
     private int id;
     
+    @IOField
     private VersionTime version;
     
+    @IOField
     private String code;
     
+    @IOField
     private String name;
 
+    @IOField
     private String location;
 
+    @IOField
     private EntityLife entityLife;
     
     @Override
@@ -42,13 +51,8 @@ public class EntityKeyDataTest {
   }
 
 
+  @Reference
   private PlanFactory planFactory;
-  
-  
-  @Before
-  public void before () {
-    planFactory = new PlanFactory();
-  }
   
   
   @Test

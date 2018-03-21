@@ -4,9 +4,9 @@ Bundle-Name: gyfor - Postgresql SQL dialect
 Bundle-SymbolicName: org.gyfor.sql.dialect.postgresql
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.gyfor.sql,
- org.gyfor.sql.dialect
-Service-Component: OSGI-INF/org.gyfor.sql.dialect.postgresql.PostgresqlDialect.xml
+Import-Package: org.plcore.sql,
+ org.plcore.sql.dialect
+Service-Component: OSGI-INF/org.plcore.sql.dialect.postgresql.PostgresqlDialect.xml
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/org.postgresql-9.1-901.jar,
  lib/commons-dbcp-1.4.jar,

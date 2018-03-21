@@ -5,12 +5,11 @@ Bundle-SymbolicName: org.gyfor.docfinder.file
 Bundle-Version: 1.0.0
 Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.gyfor.docstore,
- org.gyfor.nio,
- org.gyfor.osgi,
- org.gyfor.value,
- org.osgi.framework;version="1.8.0",
+Import-Package: org.osgi.framework;version="1.8.0",
  org.osgi.service.component;version="1.3.0",
+ org.plcore.nio,
+ org.plcore.osgi,
+ org.plcore.value,
  org.slf4j;version="1.7.21"
-Service-Component: OSGI-INF/org.gyfor.docfinder.file.FolderWatchService.xml
+Service-Component: OSGI-INF/org.plcore.docfinder.file.FolderWatchService.xml
 Bundle-ActivationPolicy: lazy

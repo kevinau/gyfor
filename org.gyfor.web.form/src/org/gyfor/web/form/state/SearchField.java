@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.gyfor.dao.EntityData;
 import org.gyfor.dao.IDataAccessObject;
-import org.gyfor.object.Optional;
-import org.gyfor.object.UserEntryException;
+import org.plcore.userio.Optional;
+import org.plcore.userio.UserEntryException;
 
 public class SearchField {
 

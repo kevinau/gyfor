@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" configuration-policy="require" deactivate="deactivate" immediate="true" name="org.plcore.docfinder.file.FolderWatchService">
+   <service>
+      <provide interface="org.plcore.docfinder.file.FolderWatchService"/>
+   </service>
+   <reference cardinality="1..1" field="docStore" interface="IDocumentStore" name="docStore"/>
+   <implementation class="org.plcore.docfinder.file.FolderWatchService"/>
+</scr:component>

@@ -1,13 +1,13 @@
 package org.gyfor.object.test;
 
-import org.gyfor.object.Entity;
-import org.gyfor.object.EntityLabel;
-import org.gyfor.object.plan.EntityLabelGroup;
-import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.PlanFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.plcore.userio.Entity;
+import org.plcore.userio.EntityLabel;
+import org.plcore.userio.plan.EntityLabelGroup;
+import org.plcore.userio.plan.IEntityPlan;
+import org.plcore.userio.plan.PlanFactory;
 
 
 public class EntityLabelTest {

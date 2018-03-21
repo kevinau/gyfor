@@ -9,11 +9,11 @@ Import-Package: ch.qos.logback.classic;version="1.1.7",
  ch.qos.logback.core;version="1.1.7",
  org.eclipse.jdt.annotation;resolution:=optional,
  org.gyfor.doc,
- org.gyfor.docstore.parser,
- org.gyfor.docstore.parser.impl,
- org.gyfor.osgi,
  org.gyfor.util,
  org.osgi.service.component;version="1.2.0",
+ org.plcore.docstore.parser,
+ org.plcore.docstore.parser.impl,
+ org.plcore.osgi,
  org.slf4j
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/org.gyfor.classifier.impl.DocumentClassifier.xml

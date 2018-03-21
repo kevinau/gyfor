@@ -3,20 +3,20 @@ package org.gyfor.object.path.test;
 import java.util.Arrays;
 import java.util.List;
 
-import org.gyfor.object.Entity;
-import org.gyfor.object.IOField;
-import org.gyfor.object.model.IEntityModel;
-import org.gyfor.object.model.INodeModel;
-import org.gyfor.object.model.ModelFactory;
-import org.gyfor.object.path2.IPathExpression;
-import org.gyfor.object.path2.PathParser;
-import org.gyfor.object.plan.PlanFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.plcore.userio.Entity;
+import org.plcore.userio.IOField;
+import org.plcore.userio.model.IEntityModel;
+import org.plcore.userio.model.INodeModel;
+import org.plcore.userio.model.ModelFactory;
+import org.plcore.userio.path.IPathExpression;
+import org.plcore.userio.path.PathParser;
+import org.plcore.userio.plan.PlanFactory;
 
 
 @RunWith(Parameterized.class)

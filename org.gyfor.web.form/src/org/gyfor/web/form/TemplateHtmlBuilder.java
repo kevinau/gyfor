@@ -4,16 +4,16 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.gyfor.object.model.IEntityModel;
-import org.gyfor.object.model.IItemModel;
-import org.gyfor.object.model.INodeModel;
-import org.gyfor.object.plan.EntityLabelGroup;
-import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.IItemPlan;
-import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.type.IType;
-import org.gyfor.template.ITemplate;
-import org.gyfor.template.ITemplateEngine;
+import org.plcore.template.ITemplate;
+import org.plcore.template.ITemplateEngine;
+import org.plcore.userio.model.IEntityModel;
+import org.plcore.userio.model.IItemModel;
+import org.plcore.userio.model.INodeModel;
+import org.plcore.userio.plan.EntityLabelGroup;
+import org.plcore.userio.plan.IEntityPlan;
+import org.plcore.userio.plan.IItemPlan;
+import org.plcore.userio.plan.INodePlan;
+import org.plcore.userio.type.IType;
 
 import com.mitchellbosecke.pebble.template.ScopeChain;
 

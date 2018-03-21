@@ -8,9 +8,9 @@ import java.util.Set;
 
 import org.gyfor.doc.IDocumentContents;
 import org.gyfor.doc.IDocumentStore;
-import org.gyfor.docstore.parser.IImageParser;
-import org.gyfor.docstore.parser.impl.PDFBoxPDFParser;
-import org.gyfor.docstore.parser.impl.TesseractImageOCR;
+import org.plcore.docstore.parser.IImageParser;
+import org.plcore.docstore.parser.impl.PDFBoxPDFParser;
+import org.plcore.docstore.parser.impl.TesseractImageOCR;
 
 public class TestClassifier {
 

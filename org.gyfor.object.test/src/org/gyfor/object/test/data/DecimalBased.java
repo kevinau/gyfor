@@ -3,7 +3,7 @@ package org.gyfor.object.test.data;
 import java.math.BigDecimal;
 
 import org.gyfor.math.Decimal;
-import org.gyfor.object.IOField;
+import org.plcore.userio.IOField;
 
 
 public class DecimalBased {

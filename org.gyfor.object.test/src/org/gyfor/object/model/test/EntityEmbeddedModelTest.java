@@ -1,16 +1,16 @@
 package org.gyfor.object.model.test;
 
-import org.gyfor.object.Embedded;
-import org.gyfor.object.Entity;
-import org.gyfor.object.model.IEntityModel;
-import org.gyfor.object.model.IItemModel;
-import org.gyfor.object.model.ModelFactory;
-import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.value.VersionTime;
 import org.junit.Assert;
 import org.junit.Test;
+import org.plcore.userio.Embedded;
+import org.plcore.userio.Entity;
+import org.plcore.userio.model.IEntityModel;
+import org.plcore.userio.model.IItemModel;
+import org.plcore.userio.model.ModelFactory;
+import org.plcore.userio.plan.IEntityPlan;
+import org.plcore.userio.plan.INodePlan;
+import org.plcore.userio.plan.PlanFactory;
 
 
 public class EntityEmbeddedModelTest {

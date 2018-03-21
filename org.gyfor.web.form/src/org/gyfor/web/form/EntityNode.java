@@ -5,9 +5,9 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.gyfor.object.model.IEntityModel;
-import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.ILabelGroup;
+import org.plcore.userio.model.IEntityModel;
+import org.plcore.userio.plan.IEntityPlan;
+import org.plcore.userio.plan.ILabelGroup;
 
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.extension.NodeVisitor;

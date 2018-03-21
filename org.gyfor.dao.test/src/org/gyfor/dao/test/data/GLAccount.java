@@ -1,8 +1,8 @@
 package org.gyfor.dao.test.data;
 
-import org.gyfor.object.Entity;
-import org.gyfor.object.SelfDescribing;
 import org.gyfor.value.VersionTime;
+import org.plcore.userio.Entity;
+import org.plcore.userio.SelfDescribing;
 
 @Entity
 public class GLAccount implements SelfDescribing {

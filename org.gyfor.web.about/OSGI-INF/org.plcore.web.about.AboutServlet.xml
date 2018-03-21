@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" configuration-policy="optional" deactivate="deactivate" immediate="true" name="org.plcore.web.about.AboutServlet">
+   <service>
+      <provide interface="io.undertow.server.HttpHandler"/>
+   </service>
+   <reference bind="setTemplateEngineFactory" cardinality="1..1" interface="org.plcore.template.ITemplateEngineFactory" name="TemplateEngineFactory" unbind="unsetTemplateEngineFactory"/>
+   <implementation class="org.plcore.web.about.AboutServlet"/>
+</scr:component>

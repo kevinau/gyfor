@@ -1,15 +1,15 @@
 package org.gyfor.object.model.test;
 
-import org.gyfor.object.model.ContainerChangeListener;
-import org.gyfor.object.model.IContainerModel;
-import org.gyfor.object.model.IEntityModel;
-import org.gyfor.object.model.INodeModel;
-import org.gyfor.object.model.ModelFactory;
-import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.test.data.Party;
 import org.junit.Assert;
 import org.junit.Test;
+import org.plcore.userio.model.ContainerChangeListener;
+import org.plcore.userio.model.IContainerModel;
+import org.plcore.userio.model.IEntityModel;
+import org.plcore.userio.model.INodeModel;
+import org.plcore.userio.model.ModelFactory;
+import org.plcore.userio.plan.IEntityPlan;
+import org.plcore.userio.plan.PlanFactory;
 
 
 public class NewObjectEventTest {

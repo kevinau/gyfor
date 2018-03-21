@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" deactivate="deactivate" immediate="true" name="org.gyfor.web.global.GlobalResources">
-   <service>
-      <provide interface="io.undertow.server.HttpHandler"/>
-   </service>
-   <implementation class="org.gyfor.web.global.GlobalResources"/>
-</scr:component>

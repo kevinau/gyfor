@@ -2,7 +2,7 @@ package org.gyfor.dao.test.data;
 
 import java.math.BigDecimal;
 
-import org.gyfor.object.ManyToOne;
+import org.plcore.userio.ManyToOne;
 
 public class GLAllocation {
   

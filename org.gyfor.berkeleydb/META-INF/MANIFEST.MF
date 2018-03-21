@@ -5,13 +5,13 @@ Bundle-SymbolicName: org.gyfor.berkeleydb
 Bundle-Version: 1.0.0
 Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.gyfor.home,
+Import-Package: org.plcore.todo,
  org.gyfor.math,
- org.gyfor.osgi,
- org.gyfor.todo,
  org.gyfor.util,
  org.osgi.framework,
  org.osgi.service.component;version="1.2.0",
+ org.plcore.home,
+ org.plcore.osgi,
  org.slf4j;version="1.7.21"
 Service-Component: OSGI-INF/org.gyfor.berkeleydb.learn.ExampleDatabasePut2.xml
 Bundle-ActivationPolicy: lazy

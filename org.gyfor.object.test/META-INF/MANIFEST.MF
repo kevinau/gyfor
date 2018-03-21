@@ -11,20 +11,18 @@ Bundle-ClassPath: lib/hamcrest-core-1.3.jar,
  lib/ant.jar,
  .
 Import-Package: org.gyfor.math,
- org.gyfor.object,
- org.gyfor.object.model,
- org.gyfor.object.path,
- org.gyfor.object.path2,
- org.gyfor.object.plan,
- org.gyfor.object.type,
- org.gyfor.object.type.builtin,
- org.gyfor.object.value,
+ org.plcore.userio,
+ org.plcore.userio.path,
+ org.plcore.type,
+ org.plcore.type.builtin,
  org.gyfor.value,
- org.osgi.service.component.annotations;version="1.2.0",
+ org.osgi.service.component.annotations;version="1.3.0";resolution:=optional,
+ org.plcore.userio.model,
+ org.plcore.userio.plan,
  org.slf4j;version="1.7.21"
 Service-Component: OSGI-INF/org.gyfor.object.test.SimpleEntityTest.xml,
  OSGI-INF/org.gyfor.object.test.EntityWithEmbeddedTest.xml,
- OSGI-INF/org.gyfor.object.test.EntityWithSimpleArrayTest.xml
+ OSGI-INF/org.gyfor.object.test.EntityWithSimpleArrayTest.xml,
+ OSGI-INF/org.gyfor.object.test.EntityKeyDataTest.xml
 Bundle-ActivationPolicy: lazy
 Export-Package: org.gyfor.object.test
-Require-Bundle: org.eclipse.jdt.annotation;bundle-version="2.1.0";resolution:=optional

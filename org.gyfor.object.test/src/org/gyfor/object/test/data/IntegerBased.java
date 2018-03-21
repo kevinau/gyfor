@@ -2,7 +2,7 @@ package org.gyfor.object.test.data;
 
 import java.math.BigInteger;
 
-import org.gyfor.object.IOField;
+import org.plcore.userio.IOField;
 
 
 public class IntegerBased {

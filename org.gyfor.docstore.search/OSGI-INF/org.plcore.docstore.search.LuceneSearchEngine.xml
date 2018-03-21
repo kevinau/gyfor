@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" deactivate="deactivate" immediate="true" name="org.plcore.docstore.search.LuceneSearchEngine">
+   <service>
+      <provide interface="org.plcore.docstore.search.ISearchEngine"/>
+   </service>
+   <reference cardinality="1..1" field="application" interface="org.plcore.home.IApplication" name="application"/>
+   <reference cardinality="1..1" field="docStore" interface="org.plcore.docstore.IDocumentStore" name="docStore"/>
+   <implementation class="org.plcore.docstore.search.LuceneSearchEngine"/>
+</scr:component>

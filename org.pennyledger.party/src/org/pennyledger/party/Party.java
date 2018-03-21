@@ -2,14 +2,14 @@ package org.pennyledger.party;
 
 import java.io.Serializable;
 
-import org.gyfor.object.Entity;
-import org.gyfor.object.EntityLabel;
-import org.gyfor.object.IOField;
-import org.gyfor.object.Label;
-import org.gyfor.object.Optional;
-import org.gyfor.object.SelfDescribing;
-import org.gyfor.object.UniqueConstraint;
-import org.gyfor.object.type.builtin.PhoneNumberType;
+import org.plcore.userio.Entity;
+import org.plcore.userio.EntityLabel;
+import org.plcore.userio.IOField;
+import org.plcore.userio.Label;
+import org.plcore.userio.Optional;
+import org.plcore.userio.SelfDescribing;
+import org.plcore.userio.UniqueConstraint;
+import org.plcore.userio.type.builtin.PhoneNumberType;
 
 import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.Relationship;

@@ -1,6 +1,6 @@
 package org.gyfor.web.form;
 
-import org.gyfor.http.ISessionData;
+import org.plcore.http.ISessionData;
 
 public class DescriptionSessionData implements ISessionData {
 

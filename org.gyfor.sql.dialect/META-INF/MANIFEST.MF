@@ -9,4 +9,4 @@ Import-Package: org.osgi.framework;version="1.8.0",
  org.osgi.service.component,
  org.slf4j;version="1.7.21"
 Bundle-ActivationPolicy: lazy
-Export-Package: org.gyfor.sql.dialect
+Export-Package: org.plcore.sql.dialect

@@ -4,20 +4,19 @@ Bundle-Name: Document store
 Bundle-SymbolicName: org.gyfor.docstore
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.gyfor.home,
- org.gyfor.math,
- org.gyfor.nio,
- org.gyfor.object.plan,
- org.gyfor.object.value,
- org.gyfor.osgi,
- org.gyfor.srcdoc,
- org.gyfor.util,
- org.osgi.framework;version="1.8.0",
+Import-Package: org.osgi.framework;version="1.8.0",
  org.osgi.service.component;version="1.3.0",
  org.osgi.service.component.annotations;version="1.2.0";resolution:=optional,
+ org.plcore.home,
+ org.plcore.math,
+ org.plcore.nio,
+ org.plcore.osgi,
+ org.plcore.srcdoc,
+ org.plcore.userio.plan,
+ org.plcore.util,
  org.slf4j;version="1.7.21"
-Service-Component: OSGI-INF/org.gyfor.docstore.DocumentStore.xml,
- OSGI-INF/org.gyfor.docstore.parser.impl.TesseractImageOCR.xml
+Service-Component: OSGI-INF/org.plcore.docstore.DocumentStore.xml,
+ OSGI-INF/org.plcore.docstore.parser.impl.TesseractImageOCR.xml
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/imgscalr-lib-4.2.jar,
  lib/com.objectplanet.image.PngEncoder.jar,
@@ -31,6 +30,6 @@ Bundle-ClassPath: lib/imgscalr-lib-4.2.jar,
  lib/bcprov-jdk15on-156.jar,
  lib/xmpbox-2.0.3.jar,
  .
-Export-Package: org.gyfor.docstore,
- org.gyfor.docstore.parser,
- org.gyfor.docstore.parser.impl
+Export-Package: org.plcore.docstore,
+ org.plcore.docstore.parser,
+ org.plcore.docstore.parser.impl

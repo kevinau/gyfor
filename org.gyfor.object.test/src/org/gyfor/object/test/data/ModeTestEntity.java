@@ -1,9 +1,9 @@
 package org.gyfor.object.test.data;
 
-import org.gyfor.object.Embeddable;
-import org.gyfor.object.EntryMode;
-import org.gyfor.object.IOField;
-import org.gyfor.object.Mode;
+import org.plcore.userio.Embeddable;
+import org.plcore.userio.EntryMode;
+import org.plcore.userio.IOField;
+import org.plcore.userio.Mode;
 
 
 @Embeddable

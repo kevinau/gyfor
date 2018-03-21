@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.Enumeration;
 
 import org.gyfor.berkeleydb.DataStore;
-import org.gyfor.docstore.Document;
 import org.gyfor.util.CRC64DigestFactory;
 import org.gyfor.util.Digest;
 import org.gyfor.util.DigestFactory;
@@ -16,6 +15,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.plcore.docstore.Document;
 
 import com.sleepycat.persist.EntityCursor;
 import com.sleepycat.persist.PrimaryIndex;

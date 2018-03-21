@@ -2,10 +2,10 @@ package org.gyfor.web.form.state;
 
 import java.util.Map;
 
-import org.gyfor.object.EntryMode;
-import org.gyfor.object.model.IEntityModel;
-import org.gyfor.object.model.IModelFactory;
 import org.osgi.service.component.annotations.Reference;
+import org.plcore.userio.EntryMode;
+import org.plcore.userio.model.IEntityModel;
+import org.plcore.userio.model.IModelFactory;
 
 
 public class AddOnlyStateMachineFactory implements IStateMachineFactory {

@@ -9,5 +9,5 @@ Import-Package: org.gyfor.value,
  org.osgi.framework;version="1.8.0",
  org.osgi.service.component,
  org.osgi.service.event;version="1.3.0"
-Export-Package: org.gyfor.osgi
+Export-Package: org.plcore.osgi
 Eclipse-BuddyPolicy: global

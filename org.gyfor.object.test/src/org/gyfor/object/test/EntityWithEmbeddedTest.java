@@ -2,17 +2,17 @@ package org.gyfor.object.test;
 
 import java.util.List;
 
-import org.gyfor.object.plan.EntityLabelGroup;
-import org.gyfor.object.plan.IEmbeddedPlan;
-import org.gyfor.object.plan.IEntityPlan;
-import org.gyfor.object.plan.IItemPlan;
-import org.gyfor.object.plan.INodePlan;
-import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.test.data.EntityWithEmbedded;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.service.component.annotations.Component;
+import org.plcore.userio.plan.EntityLabelGroup;
+import org.plcore.userio.plan.IEmbeddedPlan;
+import org.plcore.userio.plan.IEntityPlan;
+import org.plcore.userio.plan.IItemPlan;
+import org.plcore.userio.plan.INodePlan;
+import org.plcore.userio.plan.PlanFactory;
 
 @Component
 public class EntityWithEmbeddedTest {

@@ -4,8 +4,8 @@ Bundle-Name: Test template handling
 Bundle-SymbolicName: org.gyfor.template.test
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.gyfor.template,
- org.osgi.framework;version="1.8.0"
-Service-Component: OSGI-INF/org.gyfor.template.test.MultiLoaderTest.xml
+Import-Package: org.osgi.framework;version="1.8.0",
+ org.plcore.template
+Service-Component: OSGI-INF/org.plcore.template.test.MultiLoaderTest.xml
 Bundle-ActivationPolicy: lazy
-Export-Package: org.gyfor.template.test
+Export-Package: org.plcore.template.test

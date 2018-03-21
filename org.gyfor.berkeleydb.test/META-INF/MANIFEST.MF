@@ -7,9 +7,9 @@ Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.sleepycat.persist,
  org.gyfor.berkeleydb,
- org.gyfor.docstore,
  org.gyfor.math,
  org.gyfor.util,
- org.osgi.framework;version="1.8.0"
+ org.osgi.framework;version="1.8.0",
+ org.plcore.docstore
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/org.gyfor.berkeleydb.test.DirectoryListTest.xml

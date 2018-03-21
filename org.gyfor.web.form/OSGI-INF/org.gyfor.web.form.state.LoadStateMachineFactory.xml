@@ -3,6 +3,6 @@
    <service>
       <provide interface="org.gyfor.web.form.state.IStateMachineFactory"/>
    </service>
-   <reference cardinality="1..1" field="modelFactory" interface="org.gyfor.object.model.IModelFactory" name="modelFactory"/>
+   <reference cardinality="1..1" field="modelFactory" interface="org.plcore.userio.model.IModelFactory" name="modelFactory"/>
    <implementation class="org.gyfor.web.form.state.LoadStateMachineFactory"/>
 </scr:component>

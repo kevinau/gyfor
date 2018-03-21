@@ -2,12 +2,12 @@ package org.gyfor.web.docstore;
 
 import java.nio.file.Path;
 
-import org.gyfor.docstore.IDocumentStore;
-import org.gyfor.http.HttpUtility;
-import org.gyfor.http.IDynamicResourceLocation;
-import org.gyfor.http.Resource;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.plcore.docstore.IDocumentStore;
+import org.plcore.http.HttpUtility;
+import org.plcore.http.IDynamicResourceLocation;
+import org.plcore.http.Resource;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;

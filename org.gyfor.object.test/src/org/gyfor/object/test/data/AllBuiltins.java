@@ -4,9 +4,9 @@ import java.net.URL;
 import java.nio.file.Path;
 
 import org.apache.tools.ant.taskdefs.email.EmailAddress;
-import org.gyfor.object.IOField;
-import org.gyfor.object.value.FileContent;
+import org.gyfor.value.FileContent;
 import org.gyfor.value.VersionTime;
+import org.plcore.userio.IOField;
 
 public class AllBuiltins {
 

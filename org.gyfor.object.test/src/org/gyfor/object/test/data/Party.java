@@ -3,8 +3,8 @@ package org.gyfor.object.test.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gyfor.object.Embeddable;
-import org.gyfor.object.IOField;
+import org.plcore.userio.Embeddable;
+import org.plcore.userio.IOField;
 
 
 @Embeddable

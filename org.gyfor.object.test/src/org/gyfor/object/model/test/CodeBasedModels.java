@@ -3,10 +3,6 @@ package org.gyfor.object.model.test;
 import java.text.ParseException;
 import java.util.function.Supplier;
 
-import org.gyfor.object.model.IEntityModel;
-import org.gyfor.object.model.IItemModel;
-import org.gyfor.object.model.ModelFactory;
-import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.test.data.CodeBased;
 import org.gyfor.object.test.data.CodeBased.Gender;
 import org.gyfor.object.test.data.CodeBased.Weekday;
@@ -14,6 +10,10 @@ import org.gyfor.value.EntityLife;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.plcore.userio.model.IEntityModel;
+import org.plcore.userio.model.IItemModel;
+import org.plcore.userio.model.ModelFactory;
+import org.plcore.userio.plan.PlanFactory;
 
 
 public class CodeBasedModels {

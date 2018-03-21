@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.gyfor.object.model.IEntityModel;
+import org.plcore.userio.model.IEntityModel;
 
 public class StateMachine<S extends Enum<S>, A extends Enum<A>> {
 

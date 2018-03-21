@@ -1,13 +1,13 @@
 package org.gyfor.object.model.test;
 
-import org.gyfor.object.DefaultFor;
-import org.gyfor.object.IOField;
-import org.gyfor.object.model.IEntityModel;
-import org.gyfor.object.model.IItemModel;
-import org.gyfor.object.model.ModelFactory;
-import org.gyfor.object.plan.PlanFactory;
 import org.junit.Assert;
 import org.junit.Test;
+import org.plcore.userio.DefaultFor;
+import org.plcore.userio.IOField;
+import org.plcore.userio.model.IEntityModel;
+import org.plcore.userio.model.IItemModel;
+import org.plcore.userio.model.ModelFactory;
+import org.plcore.userio.plan.PlanFactory;
 
 
 public class EntityDefaults {

@@ -4,14 +4,14 @@ Bundle-Name: Object model that supports IO
 Bundle-SymbolicName: org.gyfor.object.model
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.gyfor.object,
- org.gyfor.object.path2,
- org.gyfor.object.plan,
- org.gyfor.object.type,
- org.gyfor.sql,
- org.gyfor.todo,
+Import-Package: org.gyfor.sql,
  org.gyfor.value,
- org.osgi.service.component.annotations;version="1.3.0";resolution:=optional
-Export-Package: org.gyfor.object.model
-Service-Component: OSGI-INF/org.gyfor.object.model.ModelFactory.xml
+ org.osgi.service.component.annotations;version="1.3.0";resolution:=optional,
+ org.plcore.todo,
+ org.plcore.type,
+ org.plcore.userio,
+ org.plcore.userio.path,
+ org.plcore.userio.plan
+Export-Package: org.plcore.userio.model
+Service-Component: OSGI-INF/org.plcore.userio.model.ModelFactory.xml
 Bundle-ActivationPolicy: lazy

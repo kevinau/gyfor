@@ -1,20 +1,16 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: gyfor - web about page
-Bundle-SymbolicName: org.gyfor.web.about
+Bundle-SymbolicName: org.plcore.web.about
 Bundle-Version: 0.2.0
 Bundle-Vendor: Kevin Holloway
-Export-Package: org.gyfor.web.about;
-  uses:="org.osgi.framework,
-   org.eclipse.equinox.http.servlet,
-   javax.servlet.http,
-   org.pennyledger.web"
+Export-Package: org.plcore.web.about
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Category: pennyledger
 Import-Package: io.undertow.server,
  io.undertow.util,
- org.gyfor.http,
- org.gyfor.template,
- org.osgi.framework;version="1.8.0"
-Service-Component: OSGI-INF/org.gyfor.web.about.AboutServlet.xml
+ org.osgi.framework;version="1.8.0",
+ org.plcore.http,
+ org.plcore.template
+Service-Component: OSGI-INF/org.plcore.web.about.AboutServlet.xml
 Bundle-ActivationPolicy: lazy

@@ -8,18 +8,18 @@ Service-Component: OSGI-INF/org.gyfor.dao.berkeley.DataEnvironment.xml,
  OSGI-INF/org.gyfor.dao.berkeley.DataStore.xml,
  OSGI-INF/org.gyfor.dao.berkeley.DataAccessObject.xml
 Bundle-ActivationPolicy: lazy
-Import-Package: org.gyfor.dao,
- org.gyfor.home,
+Import-Package: org.plcore.todo,
+ org.gyfor.dao,
  org.gyfor.math,
  org.gyfor.object,
- org.gyfor.object.plan,
  org.gyfor.object.type,
  org.gyfor.object.value,
- org.gyfor.osgi,
- org.gyfor.todo,
  org.gyfor.util,
  org.gyfor.value,
  org.osgi.service.component;version="1.3.0",
+ org.plcore.home,
+ org.plcore.osgi,
+ org.plcore.userio.plan,
  org.slf4j
 Bundle-ClassPath: lib/je-7.5.11.jar,
  .

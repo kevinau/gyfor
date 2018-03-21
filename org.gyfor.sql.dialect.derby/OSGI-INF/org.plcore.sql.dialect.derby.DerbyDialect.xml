@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.plcore.sql.dialect.derby.DerbyDialect">
+   <property name="name" value="DerbyEmbedded"/>
+   <service>
+      <provide interface="org.plcore.sql.dialect.IDialect"/>
+   </service>
+   <implementation class="org.plcore.sql.dialect.derby.DerbyDialect"/>
+</scr:component>
