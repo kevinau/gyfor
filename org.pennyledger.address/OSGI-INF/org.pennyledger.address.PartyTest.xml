@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" immediate="true" name="org.pennyledger.address.PartyTest">
+   <reference cardinality="1..1" field="countryType" interface="org.pennyledger.address.CountryType" name="countryType"/>
+   <reference cardinality="1..1" field="party" interface="org.pennyledger.address.Party" name="party"/>
+   <implementation class="org.pennyledger.address.PartyTest"/>
+</scr:component>

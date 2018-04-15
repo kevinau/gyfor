@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" configuration-policy="optional" name="org.pennyledger.address.CountryAddressFactory">
-   <service>
-      <provide interface="org.plcore.userio.IEntityFactory"/>
-      <provide interface="org.pennyledger.address.ILiveAddressProperties"/>
-   </service>
-   <reference cardinality="0..n" field="addressStyles" field-option="update" interface="org.pennyledger.address.ICountryAddress" name="addressStyles" policy="dynamic"/>
-   <implementation class="org.pennyledger.address.CountryAddressFactory"/>
-</scr:component>

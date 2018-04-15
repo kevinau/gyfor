@@ -7,8 +7,10 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Kevin Holloway
 Bundle-ActivationPolicy: lazy
 Export-Package: org.pennyledger.address
-Service-Component: OSGI-INF/org.pennyledger.address.CountryCodeType.xml,
- OSGI-INF/org.pennyledger.address.CountryAddressFactory.xml
+Service-Component: OSGI-INF/org.pennyledger.address.CountryType.xml,
+ OSGI-INF/org.pennyledger.address.Party.xml,
+ OSGI-INF/org.pennyledger.address.Address.xml,
+ OSGI-INF/org.pennyledger.address.PartyTest.xml
 Import-Package: org.osgi.service.component;version="1.2.0",
  org.osgi.service.component.annotations;version="1.3.0";resolution:=optional,
  org.plcore.osgi,

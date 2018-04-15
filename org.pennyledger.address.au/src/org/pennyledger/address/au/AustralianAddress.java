@@ -1,30 +1,25 @@
 package org.pennyledger.address.au;
 
 import org.osgi.service.component.annotations.Component;
-import org.pennyledger.address.ICountryAddress;
-import org.plcore.userio.IOField;
+import org.pennyledger.address.Country;
+import org.pennyledger.address.ILocalizedAddress;
+import org.plcore.userio.Embeddable;
 import org.plcore.userio.Occurs;
-import org.plcore.value.Code;
-import org.plcore.value.ICode;
 
 @Component
-public class AustralianAddress implements ICountryAddress {
+@Embeddable
+public class AustralianAddress implements ILocalizedAddress {
 
-  private static final ICode auCountry = new Code("AU", "Australia");
+  private static final Country country = new Country("AU", "Australia");
   
-  @IOField
-  @Occurs(max = 2)
+  @Occurs(2)
   private String[] addressLines;
   
-  @IOField
   private String townSuburb;
   
-  @IOField
   private AustralianState state;
   
-  @IOField
   private String postcode;
-  
   
   public String getTownSuburb() {
     return townSuburb;
@@ -60,21 +55,14 @@ public class AustralianAddress implements ICountryAddress {
     this.addressLines = addressLines;
   }
 
-  @Override
-  public ICode getCountry() {
-    return auCountry;
-  }
 
   @Override
-  public String[] getFormatted(ICode localCountry) {
+  public String[] getFormatted() {
     int n = 0;
     for (String line : addressLines) {
       if (line != null && line.length() > 0) {
         n++;
       }
-    }
-    if (!auCountry.equals(localCountry)) {
-      n++;
     }
     String[] lines = new String[n + 1];
     int i = 0;
@@ -84,10 +72,13 @@ public class AustralianAddress implements ICountryAddress {
       }
     }
     lines[i++] = townSuburb + " " + state + " " + postcode;
-    if (!auCountry.equals(localCountry)) {
-      lines[i++] = auCountry.getDescription().toUpperCase();
-    }
     return lines;
+  }
+
+
+  @Override
+  public Country getCountry() {
+    return country;
   }
 
 }

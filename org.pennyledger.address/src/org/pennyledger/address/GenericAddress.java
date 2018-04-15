@@ -1,13 +1,10 @@
 package org.pennyledger.address;
 
-import org.plcore.userio.IOField;
 import org.plcore.userio.Occurs;
-import org.plcore.value.ICode;
 
-public class GenericAddress implements IAddress {
+public class GenericAddress implements ILocalizedAddress {
 
-  @IOField
-  @Occurs(max = 4)
+  @Occurs(4)
   private String[] address;
   
   
@@ -22,7 +19,7 @@ public class GenericAddress implements IAddress {
 
   
   @Override
-  public String[] getFormatted(ICode localCountry) {
+  public String[] getFormatted() {
     int n = 0;
     for (String line : address) {
       if (line != null && line.length() > 0) {
@@ -37,6 +34,12 @@ public class GenericAddress implements IAddress {
       }
     }
     return linex;
+  }
+
+
+  @Override
+  public Country getCountry() {
+    return null;
   }
 
 }

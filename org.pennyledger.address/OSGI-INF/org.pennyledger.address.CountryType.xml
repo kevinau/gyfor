@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" configuration-policy="optional" name="org.pennyledger.address.CountryType">
+   <service>
+      <provide interface="org.plcore.type.IType"/>
+      <provide interface="org.pennyledger.address.CountryType"/>
+   </service>
+   <reference cardinality="0..n" field="countryAddresses" field-option="update" interface="org.pennyledger.address.ILocalizedAddress" name="countryAddresses" policy="dynamic"/>
+   <implementation class="org.pennyledger.address.CountryType"/>
+</scr:component>
