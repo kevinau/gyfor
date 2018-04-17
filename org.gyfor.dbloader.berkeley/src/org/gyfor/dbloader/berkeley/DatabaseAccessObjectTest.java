@@ -7,8 +7,6 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.gyfor.dao.EntityDescription;
-import org.gyfor.dao.IDataAccessObject;
 import org.gyfor.object.UserEntryException;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.value.EntityLife;
@@ -22,6 +20,8 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 import org.pennyledger.party.Party;
+import org.plcore.dao.EntityDescription;
+import org.plcore.dao.IDataAccessObject;
 
 import au.com.bytecode.opencsv.CSVReader;
 

@@ -1,8 +1,8 @@
-package org.gyfor.dao;
+package org.plcore.dao;
 
-public interface IDataAccessObject {
+public interface IDataAccessObject<T> {
 
-  public static final String EVENT_BASE = "org/gyfor/doa/IDataAccessObject/";
+  public static final String EVENT_BASE = "org/plcore/dao/IDataAccessObject/";
   
   public static final String ENTITY_ADDED = "ADDED";
   
@@ -15,7 +15,7 @@ public interface IDataAccessObject {
    * Add the instance to the datastore.  The 'value' is updated so  
    * the id, versionTime and entityLife matches the datastore.
    */
-  public Object add (Object value);
+  public T add (T value);
   
 //  public void addEntityChangeListener (EntityChangeListener<T> x);
 //  
@@ -23,10 +23,8 @@ public interface IDataAccessObject {
   
   public void close ();
 
-  public Object fetchById(Class<?> klass, int id);
+  public T getById(int id) throws EntityNotFoundException;
   
-//  public T getById (int id);
-//  
 //  public List<EntityDescription> getDescriptionAll ();
 //  
 //  public String getDescriptionById (int id);
@@ -35,7 +33,7 @@ public interface IDataAccessObject {
 //  
 //  public T newInstance (T fromValue);
 
-  public void remove (Object value) throws ConcurrentModificationException;
+  public void remove (T value) throws ConcurrentModificationException;
   
 //  public void removeAll();
 //
@@ -59,5 +57,5 @@ public interface IDataAccessObject {
    * Change the instance in the datastore.  The newInstance parameter is updated with 
    * the version updated to match the datastore.
    */
-  public Object update(Object newValue) throws ConcurrentModificationException;
+  public T update(T newValue) throws ConcurrentModificationException;
 }

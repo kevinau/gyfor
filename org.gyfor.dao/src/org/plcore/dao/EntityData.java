@@ -1,9 +1,9 @@
-package org.gyfor.dao;
+package org.plcore.dao;
 
 import java.util.Objects;
 
-import org.gyfor.value.EntityLife;
-import org.gyfor.value.VersionTime;
+import org.plcore.value.EntityLife;
+import org.plcore.value.VersionTime;
 
 public class EntityData {
 

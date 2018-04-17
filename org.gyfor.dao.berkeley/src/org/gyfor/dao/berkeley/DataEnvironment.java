@@ -48,7 +48,7 @@ public class DataEnvironment {
   public void activate (ComponentContext componentContext) {
     ComponentConfiguration.load(this, componentContext);
     if (envHome == null) {
-      envHome = application.getBaseDir().resolve("berkeleydb");
+      envHome = application.getBaseDir().resolve("sysdao");
     }
     
     // Create directory if it does not exist

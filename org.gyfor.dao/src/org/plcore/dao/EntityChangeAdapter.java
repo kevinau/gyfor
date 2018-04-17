@@ -1,4 +1,4 @@
-package org.gyfor.dao;
+package org.plcore.dao;
 
 
 @Deprecated

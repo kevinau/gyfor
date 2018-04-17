@@ -2,8 +2,8 @@ package org.gyfor.web.form.state;
 
 import java.util.List;
 
-import org.gyfor.dao.EntityData;
-import org.gyfor.dao.IDataAccessObject;
+import org.plcore.dao.EntityData;
+import org.plcore.dao.IDataAccessObject;
 import org.plcore.userio.Optional;
 import org.plcore.userio.UserEntryException;
 

@@ -3,14 +3,14 @@ package org.gyfor.dao.test;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.gyfor.dao.ConcurrentModificationException;
-import org.gyfor.dao.EntityData;
-import org.gyfor.dao.IDataAccessObject;
 import org.gyfor.dao.test.data.Party;
 import org.gyfor.dao.test.data.SimpleEntity;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.plcore.dao.ConcurrentModificationException;
+import org.plcore.dao.EntityData;
+import org.plcore.dao.IDataAccessObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

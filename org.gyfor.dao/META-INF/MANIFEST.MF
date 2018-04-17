@@ -1,15 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: gyfor - data access objects
-Bundle-SymbolicName: org.gyfor.dao
+Bundle-Name: plcore - data access objects
+Bundle-SymbolicName: org.plcore.dao
 Bundle-Version: 1.0.0
 Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.gyfor.dao
+Export-Package: org.plcore.dao
 Import-Package: org.plcore.todo,
- org.gyfor.object.value,
- org.gyfor.util,
- org.gyfor.value,
- org.osgi.framework;version="1.8.0",
- org.slf4j;version="1.7.21"
+ org.plcore.util,
+ org.plcore.value,
+ org.slf4j
 Bundle-ActivationPolicy: lazy

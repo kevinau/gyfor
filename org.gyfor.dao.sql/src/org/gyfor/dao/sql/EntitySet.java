@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import org.gyfor.dao.DescriptionChangeListener;
-import org.gyfor.dao.IEntitySet;
 import org.gyfor.object.plan.IEntityPlan;
 import org.gyfor.object.plan.PlanFactory;
 import org.gyfor.object.value.EntityDescription;
@@ -19,6 +17,8 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+import org.plcore.dao.DescriptionChangeListener;
+import org.plcore.dao.IEntitySet;
 
 
 @Component(configurationPolicy=ConfigurationPolicy.REQUIRE, immediate=true)

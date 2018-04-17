@@ -3,7 +3,6 @@ package org.gyfor.web.form;
 
 import java.util.Map;
 
-import org.gyfor.dao.IDataAccessObject;
 import org.gyfor.value.EntityLife;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -12,6 +11,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
+import org.plcore.dao.IDataAccessObject;
 import org.plcore.http.AbstractWebSocketConnectionCallback;
 import org.plcore.http.CallbackAccessor;
 import org.plcore.http.Context;

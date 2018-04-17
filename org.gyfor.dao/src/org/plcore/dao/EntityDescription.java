@@ -1,6 +1,6 @@
-package org.gyfor.dao;
+package org.plcore.dao;
 
-import org.gyfor.value.EntityLife;
+import org.plcore.value.EntityLife;
 
 public class EntityDescription implements Comparable<EntityDescription> {
 

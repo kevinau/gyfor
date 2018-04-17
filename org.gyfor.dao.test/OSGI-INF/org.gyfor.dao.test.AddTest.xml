@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" immediate="true" name="org.gyfor.dao.test.AddTest">
-   <reference cardinality="1..1" field="dao" interface="org.gyfor.dao.IDataAccessObject" name="dao"/>
+   <reference cardinality="1..1" field="dao" interface="org.plcore.dao.IDataAccessObject" name="dao"/>
    <implementation class="org.gyfor.dao.test.AddTest"/>
 </scr:component>

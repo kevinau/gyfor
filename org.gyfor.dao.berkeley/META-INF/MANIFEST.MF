@@ -9,13 +9,10 @@ Service-Component: OSGI-INF/org.gyfor.dao.berkeley.DataEnvironment.xml,
  OSGI-INF/org.gyfor.dao.berkeley.DataAccessObject.xml
 Bundle-ActivationPolicy: lazy
 Import-Package: org.plcore.todo,
- org.gyfor.dao,
- org.gyfor.math,
- org.gyfor.object,
- org.gyfor.object.type,
- org.gyfor.object.value,
- org.gyfor.util,
- org.gyfor.value,
+ org.plcore.math,
+ org.plcore.type,
+ org.plcore.util,
+ org.plcore.value,
  org.osgi.service.component;version="1.3.0",
  org.plcore.home,
  org.plcore.osgi,
@@ -23,7 +20,4 @@ Import-Package: org.plcore.todo,
  org.slf4j
 Bundle-ClassPath: lib/je-7.5.11.jar,
  .
-Export-Package: com.sleepycat.je,
- com.sleepycat.persist,
- com.sleepycat.persist.model
 Eclipse-BuddyPolicy: global

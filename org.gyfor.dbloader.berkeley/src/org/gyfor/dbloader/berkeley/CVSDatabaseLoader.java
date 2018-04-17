@@ -4,13 +4,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-import org.gyfor.dao.IDataAccessObject;
-import org.gyfor.dao.IDataTableReferenceRegistry;
 import org.gyfor.object.UserEntryException;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.pennyledger.party.Party;
+import org.plcore.dao.IDataAccessObject;
+import org.plcore.dao.IDataTableReferenceRegistry;
 
 import au.com.bytecode.opencsv.CSVReader;
 

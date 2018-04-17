@@ -1,12 +1,12 @@
 package org.gyfor.dao.test;
 
-import org.gyfor.dao.mapping.RowAdder;
-import org.gyfor.dao.mapping.TableCreator;
-import org.gyfor.dao.mapping.TableDropper;
 import org.gyfor.dao.test.data.SimpleEntity;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.plcore.dao.mapping.RowAdder;
+import org.plcore.dao.mapping.TableCreator;
+import org.plcore.dao.mapping.TableDropper;
 import org.plcore.sql.IConnection;
 import org.plcore.sql.IConnectionFactory;
 import org.plcore.sql.RowNotFoundException;
