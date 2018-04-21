@@ -5,7 +5,9 @@ Bundle-SymbolicName: org.pennyledger.party
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: com.sleepycat.persist.model
+Import-Package: com.sleepycat.persist.model,
+ org.pennyledger.phone,
+ org.plcore.userio
 Export-Package: org.pennyledger.party
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/org.pennyledger.party.PartyDocumentFactory.xml,
