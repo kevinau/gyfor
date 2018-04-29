@@ -34,4 +34,10 @@ public class CountryType extends CodeType<Country> {
     return valueOf(localCode);
   }
   
+  
+  @Override
+  public Class<?> getFieldClass() {
+    return Country.class;
+  }
+    
 }

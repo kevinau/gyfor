@@ -8,7 +8,7 @@ import org.plcore.userio.EntityLabel;
 import org.plcore.userio.IOField;
 import org.plcore.userio.Label;
 import org.plcore.userio.Optional;
-import org.plcore.userio.SelfDescribing;
+import org.plcore.userio.IExplicitlyDescribable;
 import org.plcore.userio.UniqueConstraint;
 
 import com.sleepycat.persist.model.PrimaryKey;
@@ -20,7 +20,7 @@ import com.sleepycat.persist.model.SecondaryKey;
 @com.sleepycat.persist.model.Entity
 @UniqueConstraint({ "shortName" })
 @EntityLabel(description = "A person or business that you deal with")
-public class Party implements SelfDescribing, Serializable {
+public class Party implements IExplicitlyDescribable, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -59,7 +59,7 @@ public class Party implements SelfDescribing, Serializable {
   }
 
   @Override
-  public String invokeDescription() {
+  public String getDescription() {
     String description;
     String suffix = " Limited";
     if (formalName.endsWith(suffix)) {
