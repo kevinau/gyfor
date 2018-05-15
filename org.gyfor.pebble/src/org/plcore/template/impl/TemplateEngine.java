@@ -55,8 +55,6 @@ public class TemplateEngine implements ITemplateEngine {
    */
   @Override
   public ITemplate getTemplate (String templateName) {
-    System.out.println("TemplateEngine getTemplate: " + templateName);
-    
     if (engine == null) {
       // Lazily create basic template engine
       synchronized (this) {

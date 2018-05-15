@@ -3,6 +3,6 @@
    <service>
       <provide interface="io.undertow.server.HttpHandler"/>
    </service>
-   <reference bind="setTemplateEngineFactory" cardinality="1..1" interface="org.gyfor.template.ITemplateEngineFactory" name="TemplateEngineFactory" policy="static" unbind="unsetTemplateEngineFactory"/>
+   <reference bind="setTemplateEngineFactory" cardinality="1..1" interface="ITemplateEngineFactory" name="TemplateEngineFactory" policy="static" unbind="unsetTemplateEngineFactory"/>
    <implementation class="org.gyfor.web.dao.EntityEditPage"/>
 </scr:component>

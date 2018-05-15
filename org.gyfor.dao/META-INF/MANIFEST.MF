@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0
 Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.plcore.dao
-Import-Package: org.plcore.todo,
+Import-Package: org.plcore.entity,
+ org.plcore.todo,
  org.plcore.util,
  org.plcore.value,
  org.slf4j

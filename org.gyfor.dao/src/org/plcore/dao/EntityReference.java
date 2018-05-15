@@ -1,8 +1,8 @@
 package org.plcore.dao;
 
-import org.plcore.value.EntityLife;
+import org.plcore.entity.EntityLife;
 
-public class EntityDescription implements Comparable<EntityDescription> {
+public class EntityReference implements Comparable<EntityReference> {
 
   private final int id;
   
@@ -11,7 +11,7 @@ public class EntityDescription implements Comparable<EntityDescription> {
   private final EntityLife entityLife;
   
   
-  public EntityDescription (int id, String description, EntityLife entityLife) {
+  public EntityReference (int id, String description, EntityLife entityLife) {
     this.id = id;
     if (description == null) {
       throw new IllegalArgumentException("description is null");
@@ -43,8 +43,13 @@ public class EntityDescription implements Comparable<EntityDescription> {
 
 
   @Override
-  public int compareTo(EntityDescription arg) {
-    return description.compareTo(arg.description);
+  public int compareTo(EntityReference arg) {
+    int n = description.compareTo(arg.description);
+    if (n != 0) {
+      return n;
+    } else {
+      return id - arg.id;
+    }
   }
   
 }

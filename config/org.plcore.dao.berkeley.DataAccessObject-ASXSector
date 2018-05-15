@@ -1,0 +1,2 @@
+name = ASXSector
+class = org.pennyledger.data.asx200.ASXSector

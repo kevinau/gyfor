@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" configuration-policy="require" immediate="true" name="org.gyfor.dao.sql.EntitySet">
    <service>
-      <provide interface="org.gyfor.dao.IEntitySet"/>
+      <provide interface="IEntitySet"/>
    </service>
-   <reference cardinality="1..1" field="connFactory" interface="org.gyfor.sql.IConnectionFactory" name="connFactory"/>
-   <reference cardinality="1..1" field="planFactory" interface="org.gyfor.object.plan.PlanFactory" name="planFactory"/>
+   <reference cardinality="1..1" field="connFactory" interface="IConnectionFactory" name="connFactory"/>
+   <reference cardinality="1..1" field="planFactory" interface="PlanFactory" name="planFactory"/>
    <implementation class="org.gyfor.dao.sql.EntitySet"/>
 </scr:component>
