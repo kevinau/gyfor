@@ -14,8 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.gyfor.value.ExistingDirectory;
 import org.osgi.service.component.ComponentContext;
+import org.plcore.value.ExistingDirectory;
 
 
 public class ComponentConfiguration {
@@ -144,9 +144,11 @@ public class ComponentConfiguration {
               field.setAccessible(true);
               field.set(target, array);
             } else {
-              String propertyValue = props.get(propertyName).toString();
+              System.out.println("==============" + field.getType() + "   " + propertyName);
+
+              Object propertyValue = props.get(propertyName);
               if (propertyValue != null) {
-                Object fieldValue = getFieldValue(field.getType(), propertyValue);
+                Object fieldValue = getFieldValue(field.getType(), propertyValue.toString());
                 field.setAccessible(true);
                 field.set(target, fieldValue);
               } else if (configAnn.required()) {

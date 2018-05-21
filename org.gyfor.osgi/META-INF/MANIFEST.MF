@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.gyfor.osgi
 Bundle-Version: 1.0.0
 Bundle-Vendor: Kevin Holloway
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.gyfor.value,
+Import-Package: org.plcore.value,
  org.osgi.framework;version="1.8.0",
  org.osgi.service.component,
  org.osgi.service.event;version="1.3.0"

@@ -3,7 +3,6 @@
    <service>
       <provide interface="org.pennyledger.address.IAddress"/>
    </service>
-   <reference cardinality="1..1" field="configLoader" interface="org.plcore.osgi.ConfigurationLoader" name="configLoader"/>
    <reference cardinality="0..n" field="countryAddresses" field-option="update" interface="org.pennyledger.address.ILocalizedAddress" name="countryAddresses" policy="dynamic"/>
    <reference cardinality="1..1" field="countryType" interface="org.pennyledger.address.CountryType" name="countryType"/>
    <implementation class="org.pennyledger.address.Address"/>

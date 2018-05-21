@@ -9,8 +9,8 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicy;
+import org.plcore.osgi.ComponentConfiguration;
 import org.plcore.osgi.Configurable;
-import org.plcore.osgi.ConfigurationLoader;
 import org.plcore.type.UserEntryException;
 import org.plcore.userio.Embeddable;
 import org.plcore.userio.FactoryFor;
@@ -21,9 +21,6 @@ import org.plcore.userio.Optional;
 @Embeddable
 public class Address implements IAddress {
 
-  @Reference
-  private ConfigurationLoader configLoader;
-  
   @Reference
   private CountryType countryType;
   
@@ -37,7 +34,7 @@ public class Address implements IAddress {
     country = countryType.getLocal();
     
     // Override field defaults with configurable values, if supplied
-    configLoader.load(this, context);
+    ComponentConfiguration.load(this, context);
   }
   
   
