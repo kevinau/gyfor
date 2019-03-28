@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/swt.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.8.5.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.25.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-simple-1.7.25.jar"/>
+	<classpathentry kind="lib" path="lib/boofcv-core-0.32.jar"/>
+	<classpathentry kind="lib" path="lib/boofcv-geo-0.32.jar"/>
+	<classpathentry kind="lib" path="lib/georegression-0.18.jar"/>
+	<classpathentry kind="lib" path="lib/boofcv-swing-0.32.jar"/>
+	<classpathentry kind="lib" path="lib/boofcv-ip-0.32.jar"/>
+	<classpathentry kind="lib" path="lib/ejml-core-0.37.1.jar"/>
+	<classpathentry kind="lib" path="lib/ddogleg-0.15.2.jar"/>
+	<classpathentry kind="lib" path="lib/ejml-simple-0.37.1.jar"/>
+	<classpathentry kind="lib" path="lib/ejml-ddense-0.37.1.jar"/>
+	<classpathentry kind="lib" path="lib/boofcv-io-0.32.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.gyfor.core"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

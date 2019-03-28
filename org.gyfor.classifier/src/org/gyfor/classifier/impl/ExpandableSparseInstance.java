@@ -28,18 +28,6 @@ import weka.core.RevisionUtils;
 import weka.core.Utils;
 
 
-/**
- * Class for storing an instance as a sparse vector. A sparse instance only
- * requires storage for those attribute values that are non-zero. Since the
- * objective is to reduce storage requirements for datasets with large numbers
- * of default values, this also includes nominal attributes -- the first nominal
- * value (i.e. that which has index 0) will not require explicit storage, so
- * rearrange your nominal attribute value orderings if necessary. Missing values
- * will be stored explicitly.
- *
- * @author Eibe Frank
- * @version $Revision: 5987 $
- */
 public class ExpandableSparseInstance extends AbstractInstance {
 
   /** for serialization */
@@ -801,5 +789,19 @@ public class ExpandableSparseInstance extends AbstractInstance {
   @Override
   public String getRevision() {
     return RevisionUtils.extract("$Revision: 5987 $");
+  }
+
+
+  @Override
+  public Instance copy(double[] arg0) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+
+  @Override
+  public String toStringNoWeight(int arg0) {
+    // TODO Auto-generated method stub
+    return null;
   }
 }

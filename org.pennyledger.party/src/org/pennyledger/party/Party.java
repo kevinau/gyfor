@@ -2,7 +2,6 @@ package org.pennyledger.party;
 
 import java.io.Serializable;
 
-import org.pennyledger.phone.PhoneNumberType;
 import org.plcore.userio.Entity;
 import org.plcore.userio.EntityLabel;
 import org.plcore.userio.IOField;

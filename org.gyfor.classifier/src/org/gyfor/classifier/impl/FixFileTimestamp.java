@@ -9,7 +9,7 @@ public class FixFileTimestamp {
   public static void main (String[] args) throws Exception {
     SimpleDateFormat parser=new SimpleDateFormat("yyyy_MM_dd");
 
-    File dir = new File("C:/Users/Kevin/Scanned Stuff 2");
+    File dir = new File("C:/Users/Kevin/inbox");
     String[] names = dir.list();
     for (String name : names) {
       int n = name.indexOf("_20");
