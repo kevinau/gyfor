@@ -14,29 +14,29 @@ public class DesignLine implements ISelectable {
 
   private static final int OVER_TOLERANCE = 2;
 
-  private LineType lineType = LineType.STRAIGHT;
-
   private final DesignModel model;
   
+  private LineType lineType = LineType.STRAIGHT;
+
+  private DesignPoint startPoint;
+  private DesignPoint endPoint;
+
   private boolean border = false;
   
   private transient boolean selected = false;
   
-  /*
-   * Points that lay along the line. The first point of the list is always the
-   * line begin point. The last point of the list is the line end point.
-   */
-  private List<DesignPoint> points = new ArrayList<>();
-
 
   DesignLine(DesignModel model, LineType lineType, DesignPoint startPoint, DesignPoint endPoint) {
+    if (startPoint.equals(endPoint)) {
+      throw new IllegalArgumentException("Cannot create a line whose start and end points are the same");
+    }
     this.model = model;
     this.lineType = lineType;
-    startPoint.addLineUse(this);
-    this.points.add(startPoint);
+    startPoint.attachLine(this);
+    this.startPoint = startPoint;
 
-    endPoint.addLineUse(this);
-    this.points.add(endPoint);
+    endPoint.attachLine(this);
+    this.endPoint = endPoint;
   }
 
   
@@ -56,41 +56,61 @@ public class DesignLine implements ISelectable {
   
 
   public DesignPoint getStartPoint() {
-    return points.get(0);
+    return startPoint;
   }
 
   
   public DesignPoint getEndPoint() {
-    int n = points.size();
-    return points.get(n - 1);
+    return endPoint;
   }
 
 
-  public List<DesignPoint> getPoints() {
-    return points;
-  }
-  
-  
   public boolean contains (DesignPoint p) {
-    return points.contains(p);
+    return startPoint.equals(p) || endPoint.equals(p);
   }
   
   
-  public DesignPoint createPoint(double x, double y) {
-    DesignPoint point = model.createPoint(x, y);
-    points.add(1, point);
-    point.addLineUse(this);
-    return point;
+  public void destroy () {
+    startPoint.detachLine(this);
+    endPoint.detachLine(this);
+    model.removeLine(this);
   }
   
-  
-  public void destroyPoint(DesignPoint point) {
-    if (point.equals(getStartPoint()) || point.equals(getEndPoint())) {
-      throw new IllegalArgumentException("Cannot destroy begin or end point");
-    }
-    points.remove(point);
-    point.removeLineUse(this);
-  }
+//  public void destroyPointOnLine(DesignPoint point) {
+//    List<DesignLine> use = point.getLineUse();
+//    switch (use.size()) {
+//    case 0 :
+//    case 1 :
+//      throw new RuntimeExeption("Point with zero or one connecting lines");
+//    case 2 :
+//      // TODO allow for the 16 possibilities of line types.  But for now, only consider straight lines.
+//      DesignLine line1 = use.get(0);
+//      DesignLine line2 = use.get(1);
+//
+//      DesignPoint p0;
+//      DesignPoint p1;
+//      if (line1.getStartPoint().equals(point)) {
+//        p0 = line1.getEndPoint();
+//      } else {
+//        p0 = line1.getStartPoint();
+//      }
+//      model.destroyLine(line1);
+//      
+//      if (line2.getStartPoint().equals(point)) {
+//        p1 = line2.getEndPoint();
+//      } else {
+//        p1 = line2.getStartPoint();
+//      }
+//      model.destroyLine(line1);
+//      
+//      DesignLine newLine = model.cloneLine(p0, p1);
+//      model.destroyLine(line2);
+//      model.destoryPoint(point);
+//      break;
+//    default :
+//      throw new RuntimeException("Point is connected to three or more lines");
+//    }
+//  }
 
 
   // The following applies only to STRAIGHT lines
@@ -214,8 +234,8 @@ public class DesignLine implements ISelectable {
   }
   
   
-  DesignLine setBorder() {
-    border = true;
+  DesignLine setBorder(boolean border) {
+    this.border = border;
     return this;
   }
   
@@ -228,10 +248,10 @@ public class DesignLine implements ISelectable {
   @Override
   public String toString() {
     String x = "Line[";
-    for (DesignPoint p : points) {
-      x += p;
-      x += ",";
-    }
+    x += startPoint;
+    x += ",";
+    x += endPoint;
+    x += ",";
     x += isBorder() + "]";
     return x;
   }
@@ -240,6 +260,11 @@ public class DesignLine implements ISelectable {
   @Override
   public void setSelected(boolean selected) {
     this.selected = selected;
+    if (selected) {
+      model.addSelectedItems(this);
+    } else {
+      model.removeSelectedItems(this);
+    }
   }
 
 
@@ -250,8 +275,37 @@ public class DesignLine implements ISelectable {
 
 
   @Override
+  public boolean deselect() {
+    if (selected) {
+      setSelected(false);
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  
+  @Override
   public void toggleSelected() {
-    this.selected = !selected;
+    setSelected(!selected);
+  }
+
+
+  public DesignPoint changeStartPoint(DesignPoint point) {
+    DesignPoint priorStartPoint = startPoint;
+    startPoint.detachLine(this);
+    startPoint = point;
+    startPoint.attachLine(this);
+    return priorStartPoint;
+  }
+  
+  
+  public DesignPoint changeEndPoint(DesignPoint point) {
+    DesignPoint priorEndPoint = endPoint;
+    endPoint.detachLine(this);
+    endPoint = point;
+    endPoint.attachLine(this);
+    return priorEndPoint;
   }
   
 }

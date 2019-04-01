@@ -8,4 +8,8 @@ public interface ISelectable {
 
   public void toggleSelected();
 
+  public boolean deselect();
+
+  public void destroy();
+  
 }

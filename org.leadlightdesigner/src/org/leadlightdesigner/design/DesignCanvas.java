@@ -29,7 +29,7 @@ import org.leadlightdesigner.design.model.ISelectable;
 
 public class DesignCanvas extends Canvas implements PaintListener, MouseListener, MouseMoveListener, MouseTrackListener, KeyListener {
 
-  private class DoubleClickTask {
+  private class DoubleClickTask implements Runnable {
     private final DesignLine line;
     private final int x;
     private final int y;
@@ -41,6 +41,32 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
       this.line = line;
       this.x = x;
       this.y = y;
+    }
+    
+    @Override
+    public void run () {
+      // Add a new point
+      DesignPoint newPoint = createPointOnLine(line, x, y);
+      model.selectOnly (newPoint);
+      model.dump();
+      redraw();
+    }
+     
+  }
+  
+  
+  private class DrawDoubleClick implements Runnable {
+    private final DesignPoint point;
+    
+    private DrawDoubleClick (DesignPoint point) {
+      this.point = point;
+    }
+    
+    @Override
+    public void run () {
+      // Deselect point
+      point.setSelected(false);
+      redraw();
     }
      
   }
@@ -62,9 +88,8 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
   
   private boolean modified = false;
   
-  private DoubleClickTask doubleClickTask = null;
+  private Runnable doubleClickTask = null;
   
-//  private boolean doubleClick;
   private enum Mode {
     NORMAL,
     LINE_DRAW;
@@ -136,16 +161,18 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
         new Coord (offset + 400, offset + 300),
         new Coord (offset + 0, offset + 300));
 
+    //model.dump();
     List<DesignLine> border = model.getBorderLines();
-    
+
     DesignLine right = border.get(1);
     DesignLine left = border.get(3);
+    DesignPoint rightEndPoint = right.getEndPoint();
     
-    DesignPoint p5 = right.createPoint(offset + 400, offset + 100);
-    DesignPoint p6 = left.createPoint(offset + 0, offset + 100);
+    DesignPoint p5 = model.createPointOnLine(right, offset + 400, offset + 100);
+    DesignPoint p6 = model.createPointOnLine(left, offset + 0, offset + 100);
 
-    model.createLine(p5, p6);
-    model.createLine(p6, right.getEndPoint());
+    DesignLine l1 = model.createLine(p5, p6, false);
+    DesignLine l2 = model.createLine(p6, rightEndPoint, false);
     //model.dump();
   }
   
@@ -208,20 +235,16 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
   
   @Override
   public void mouseDoubleClick(MouseEvent ev) {
-//    doubleClick = true;
     if (doubleClickTask != null) {
-      // Add a new point
-      DesignPoint newPoint = createPointOnLine(doubleClickTask.line, doubleClickTask.x, doubleClickTask.y);
-      model.selectOnly (newPoint);
+      doubleClickTask.run();
       doubleClickTask = null;
-      redraw();
     }
   }
 
   
   private DesignPoint createPointOnLine (DesignLine line, int x, int y) {
     Coord xy = line.getNearestXY(x, y);
-    DesignPoint newPoint = line.createPoint(xy.x, xy.y);
+    DesignPoint newPoint = model.createPointOnLine(line, xy.x, xy.y);
     setModified(true);
     return newPoint;
   }
@@ -237,15 +260,17 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
           DesignPoint overPoint = model.getOverPoint(ev.x, ev.y, zoom);
           if (overPoint != null) {
             if (!overPoint.equals(p)) {
-              model.createLine(p, overPoint);
+              model.createLine(p, overPoint, false);
               model.selectOnly(overPoint);
             }
+            registerDoubleClickTask(new DrawDoubleClick(overPoint));
           } else {
             DesignLine overLine = model.getOverLine(ev.x, ev.y, zoom);
             if (overLine != null) {
               DesignPoint newPoint = createPointOnLine(overLine, ev.x, ev.y);
-              model.createLine(p, newPoint);
+              model.createLine(p, newPoint, false);
               model.selectOnly (newPoint);
+              registerDoubleClickTask(new DrawDoubleClick(newPoint));
             } else {
               model.selectOnly(null);
             }
@@ -271,13 +296,14 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
             } else {
               model.toggleSelection(overItem);
             }
-            doubleClickTask = new DoubleClickTask(overLine, ev.x, ev.y);
-            Display.getDefault().timerExec(Display.getDefault().getDoubleClickTime(), new Runnable() {
-              @Override
-              public void run() {
-                doubleClickTask = null;
-              }
-            });
+            registerDoubleClickTask (new DoubleClickTask(overLine, ev.x, ev.y));
+//            doubleClickTask = new DoubleClickTask(overLine, ev.x, ev.y);
+//            Display.getDefault().timerExec(Display.getDefault().getDoubleClickTime(), new Runnable() {
+//              @Override
+//              public void run() {
+//                doubleClickTask = null;
+//              }
+//            });
           } else {
             model.toggleSelection(overItem);
           }
@@ -291,6 +317,7 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
       }
     }
 
+    
 //    Display.getDefault().timerExec(Display.getDefault().getDoubleClickTime(), new Runnable() {
 //      @Override
 //      public void run() {
@@ -301,6 +328,17 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
 //    });
   }
 
+  
+  private void registerDoubleClickTask (Runnable task) {
+    doubleClickTask = task;
+    Display.getDefault().timerExec(Display.getDefault().getDoubleClickTime(), new Runnable() {
+      @Override
+      public void run() {
+        doubleClickTask = null;
+      }
+    });
+  }
+  
   
   private void selectNextItem (List<ISelectable> items) {
     // Find currently selected item, if any

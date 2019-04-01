@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.gyfor.nio.SafeWriter;
@@ -17,22 +18,22 @@ public class DesignModel {
   public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
   //private Coord[] borderCoords;
-  private DesignLine[] borderLines;
   
   private List<DesignPoint> points = new ArrayList<>();
   private List<DesignLine> lines = new ArrayList<>();
+  private List<DesignLine> borderLines = new ArrayList<>();
 
+  private List<ISelectable> selectedItems = new LinkedList<>();
+  
   
   public DesignModel (Coord... xy) {
     //this.borderCoords = xy;
     
     // Start with border lines
     for (int j = 0; j < xy.length; j++) {
-      DesignPoint point = new DesignPoint(xy[j].x, xy[j].y);
+      DesignPoint point = new DesignPoint(this, xy[j].x, xy[j].y);
       points.add(point);
     }
-    
-    borderLines = new DesignLine[points.size()];
     
     int i = 0;
     while (i < points.size()) {
@@ -40,9 +41,9 @@ public class DesignModel {
       
       DesignPoint p0 = points.get(i);
       DesignPoint p1 = points.get(i1);
-      DesignLine line = new DesignLine(this, p0, p1).setBorder();
+      DesignLine line = new DesignLine(this, p0, p1).setBorder(true);
       lines.add(line);
-      borderLines[i] = line;
+      borderLines.add(line);
       i++;
     }
   }
@@ -69,20 +70,16 @@ public class DesignModel {
   }
   
   
-  public DesignLine createLine (DesignPoint startPoint, DesignPoint endPoint) {
+  public DesignLine createLine (DesignPoint startPoint, DesignPoint endPoint, boolean isBorder) {
     DesignLine line = new DesignLine(this, LineType.STRAIGHT, startPoint, endPoint);
     lines.add(line);
+    if (isBorder) {
+      line.setBorder(true);
+      borderLines.add(line);
+    }
     return line;
   }
 
-  
-  public void destroyLine (DesignLine line) {
-    for (DesignPoint p : line.getPoints()) {
-      p.removeLineUse(line);
-    }
-    lines.remove(line);
-  }
-  
   
   public boolean isNearSelectable (int x, int y, double zoom) {
     for (DesignPoint point : points) {
@@ -101,13 +98,13 @@ public class DesignModel {
   
   public DesignPoint getSingleSelectedPoint () {
     DesignPoint found = null;
-    for (DesignPoint p : points) {
-      if (p.isSelected()) {
+    for (ISelectable p : selectedItems) {
+      if (p instanceof DesignPoint) {
         if (found != null) {
           // More than one point found
           return null;
         }
-        found = p;
+        found = (DesignPoint)p;
       }
     }
     return found;
@@ -141,34 +138,16 @@ public class DesignModel {
   }
 
   
-  public boolean lineInUse (DesignLine x) {
-    List<DesignPoint> px = x.getPoints();
-    int n = px.size();
-    for (int i = 1; i < n - 1; i++) {
-      if (pointInUse(px.get(i))) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  
   public void refreshPoints () {
     points = new ArrayList<>();
-    for (DesignLine x : lines) {
-      for (DesignPoint p : x.getPoints()) {
-        if (!points.contains(p)) {
-          points.add(p);
-        }
+    for (DesignLine line : lines) {
+      DesignPoint p = line.getStartPoint();
+      if (!points.contains(p)) {
+        points.add(p);
       }
-    }
-  }
-  
-  
-  public void validateModel () {
-    for (DesignLine x : lines) {
-      if (x.getPoints().size() < 2) {
-        throw new RuntimeException("Line " + x + " model error");
+      p = line.getEndPoint();
+      if (!points.contains(p)) {
+        points.add(p);
       }
     }
   }
@@ -193,28 +172,18 @@ public class DesignModel {
 
 
   public void selectOnly (ISelectable item) {
-    for (ISelectable p : points) {
-      if (p == item) {
-        p.setSelected(true);
-      } else {
-        p.setSelected(false);
-      }
+    for (ISelectable p : selectedItems) {
+      p.deselect();
     }
-    for (ISelectable x : lines) {
-      if (x == item) {
-        x.setSelected(true);
-      } else {
-        x.setSelected(false);
-      }
-    }
+    item.setSelected(true);
   }
   
   
   public boolean deselectAllLines () {
     boolean modified = false;
-    for (ISelectable x : lines) {
-      if (x.isSelected()) {
-        x.setSelected(false);
+    for (ISelectable p : selectedItems) {
+      if (p instanceof DesignLine) {
+        p.setSelected(false);
         modified = true;
       }
     }
@@ -257,6 +226,22 @@ public class DesignModel {
     return sx;
   }
   
+  
+  public DesignPoint createPointOnLine(DesignLine line, double x, double y) {
+    DesignPoint point = createPoint(x, y);
+
+    // Split the line at the new point
+    //DesignPoint priorEndPoint = line.getEndPoint();
+    //priorEndPoint.detachLine(line);
+    
+    // Terminate the old line at the new point
+    DesignPoint priorEndPoint = line.changeEndPoint(point);
+    
+    // Now create a new line
+    DesignLine l2 = createLine(point, priorEndPoint, line.isBorder());
+    return point;
+  }
+
 
   public boolean deleteSelectedItems () {
     boolean modified = false;
@@ -304,9 +289,14 @@ public class DesignModel {
     int j = 0;
     for (DesignLine line : lines) {
       System.out.print("L" + j + ": " + line.getLineType());
-      for (DesignPoint p : line.getPoints()) {
-        i = points.indexOf(p);
-        System.out.print(",P" + i);
+      DesignPoint p = line.getStartPoint();
+      i = points.indexOf(p);
+      System.out.print(" P" + i + " " + p);
+      p = line.getEndPoint();
+      i = points.indexOf(p);
+      System.out.print(",P" + i + " " + p);
+      if (line.isBorder()) {
+        System.out.print(" border");
       }
       System.out.println();
       j++;
@@ -315,7 +305,7 @@ public class DesignModel {
 
 
   public DesignPoint createPoint(double x, double y) {
-    DesignPoint p = new DesignPoint(x, y);
+    DesignPoint p = new DesignPoint(this, x, y);
     points.add(p);
     return p;
   }
@@ -343,7 +333,7 @@ public class DesignModel {
    *   Return:  0 = outside, 1 = inside
    * This code is patterned after [Franklin, 2000]
    */
-  public static boolean withinPath (double x, double y, DesignLine[] path) {
+  public static boolean withinPath (double x, double y, List<DesignLine> path) {
     int cn = 0;    // the  crossing number counter
 
 //    // loop through all edges of the polygon path
@@ -372,7 +362,6 @@ public class DesignModel {
           || ((p0.y > y) && (p1.y <= y))) {  // a downward crossing
         // compute  the actual edge-ray intersect x-coordinate
         double vt = (y - p0.y) / (p1.y - p0.y);
-        double xx = p0.x + vt * (p1.x - p0.x);
         if (x <  p0.x + vt * (p1.x - p0.x)) {
           // x < intersect
           cn++;   // a valid crossing of y=point y right of point x
@@ -438,12 +427,12 @@ public class DesignModel {
   }
   
   
-  public Coord pathIntersect2 (DesignPoint p3, Coord p4, DesignLine[] lines) {
+  public Coord pathIntersect2 (DesignPoint p3, Coord p4, List<DesignLine> borderLines) {
     // Loop through all edges of the polygon path
     // x3,y3 is the selected DesignPoint.  x4,y4 is the cursor position
     // Because x3,y3 is within the polygon path, and x4,y4 is outside the polygon path,
     // there is only one intersection point.
-    for (DesignLine line : lines) {
+    for (DesignLine line : borderLines) {
       if (line.contains(p3)) {
         // The line contains the selected point, so there is no intersection
         continue;
@@ -452,16 +441,6 @@ public class DesignModel {
       // The following is our segment
       DesignPoint p0 = line.getStartPoint();
       DesignPoint p1 = line.getEndPoint();
-      
-//      double x1 = p0.x;
-//      double y1 = p0.y;
-//      double x2 = p1.x;
-//      double y2 = p1.y;
-//      if ((x1 == x3 && y1 == y3) || (x2 == x3 && y2 == y3)) {
-//        // The segment has an end point that is the same as the selectedDesignPoint
-//        // There is no intersection 
-//        continue;
-//      }
       
       Coord intersect = LineSegmentIntersection.lineSegmentIntersection1(p0, p1, p3, p4);
       if (intersect != null) {
@@ -474,6 +453,28 @@ public class DesignModel {
   
   public Coord borderIntersect (DesignPoint p3, Coord p4) {
     return pathIntersect2(p3, p4, borderLines);
+  }
+
+
+  void removeLine(DesignLine line) {
+    if (line.isBorder()) {
+      borderLines.remove(line);
+    }
+    lines.remove(line);
+  }
+  
+  void removePoint(DesignPoint point) {
+    points.remove(point);
+  }
+
+
+  public void addSelectedItems(ISelectable p) {
+    selectedItems.add(p);
+  }
+  
+
+  public void removeSelectedItems(ISelectable p) {
+    selectedItems.remove(p);
   }
   
 }
