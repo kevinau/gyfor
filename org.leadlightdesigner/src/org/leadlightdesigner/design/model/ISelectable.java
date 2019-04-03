@@ -12,4 +12,6 @@ public interface ISelectable {
 
   public void destroy();
   
+  public void move(double deltaX, double deltaY);
+  
 }

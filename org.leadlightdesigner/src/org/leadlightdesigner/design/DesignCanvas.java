@@ -29,6 +29,8 @@ import org.leadlightdesigner.design.model.ISelectable;
 
 public class DesignCanvas extends Canvas implements PaintListener, MouseListener, MouseMoveListener, MouseTrackListener, KeyListener {
 
+  private static final int MOVE_DELTA = 12;
+  
   private class DoubleClickTask implements Runnable {
     private final DesignLine line;
     private final int x;
@@ -82,8 +84,6 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
   
   private DesignModel model;
   
-  private Path borderPath;
-  
   private double zoom = 1.0;
   
   private boolean modified = false;
@@ -96,10 +96,6 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
   }
   
   private Mode mode = Mode.NORMAL;
-  
-  private DesignPoint lineDrawOrigin;
-  
-  private Coord rubberBandEnd = null;
   
   
   public DesignCanvas(Composite parent) {
@@ -128,21 +124,6 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
     // TODO remove the test setup
     testSetup();
     
-    // Build the border path from the border lines
-    borderPath = new Path(getDisplay());
-    boolean start = true;
-    
-    for (DesignLine line : model.getBorderLines()) {
-      if (start) {
-        DesignPoint p = line.getEndPoint();
-        borderPath.moveTo((float)p.x, (float)p.y);
-        start = false;
-      }
-      DesignPoint ep = line.getEndPoint();
-      borderPath.lineTo((float)ep.x, (float)ep.y);
-    }
-    borderPath.close();
-
     setFocus();
   }
   
@@ -210,26 +191,8 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
   }
 
   
-//  private Coord findBorderPoint (double t, double adj, double x0, double y0, double x1, double y1) {
-//    double xt = x0 + t * (x1 - x0);
-//    double yt = y0 + t * (y1 - y0);
-//    if (adj < 0.001) {
-//      return new Coord(xt, yt);
-//    }
-//    boolean inside = model.withinBorder(xt * zoom, yt * zoom);
-//    if (inside) {
-//      return findBorderPoint(t + adj, adj / 2, x0, y0, x1, y1);
-//    } else {
-//      return findBorderPoint(t - adj, adj / 2, x0, y0, x1, y1);
-//    }
-//  }
-  
-  
   @Override
   public void mouseUp(MouseEvent ev) {
-//    if (!doubleClick) {
-//      System.out.println("Single Click! (1)");
-//    }
   }
 
   
@@ -283,35 +246,43 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
         break;
       case NORMAL :
         List<ISelectable> overItems = model.getOverItems(ev.x, ev.y, zoom);
-        switch (overItems.size()) {
-        case 0:
-          model.selectOnly(null);
-          break;
-        case 1:
-          ISelectable overItem = overItems.get(0);
-          if (overItem instanceof DesignLine) {
-            DesignLine overLine = (DesignLine) overItem;
-            if (overLine.isBorder()) {
-              model.selectOnly(null);
-            } else {
-              model.toggleSelection(overItem);
+//        switch (overItems.size()) {
+//        case 0:
+//          model.selectOnly(null);
+//          break;
+//        case 1:
+//          ISelectable overItem = overItems.get(0);
+//          if (overItem instanceof DesignLine) {
+//            DesignLine overLine = (DesignLine) overItem;
+//            //if (overLine.isBorder()) {
+//            //  model.selectOnly(null);
+//            //} else {
+//              model.toggleSelection(overItem);
+//            //}
+//            registerDoubleClickTask (new DoubleClickTask(overLine, ev.x, ev.y));
+//          } else {
+//            model.toggleSelection(overItem);
+//          }
+//          break;
+//        default:
+          ISelectable found = null;
+          for (ISelectable item : overItems) {
+            if (item instanceof DesignPoint) {
+              found = item;
+              break;
             }
-            registerDoubleClickTask (new DoubleClickTask(overLine, ev.x, ev.y));
-//            doubleClickTask = new DoubleClickTask(overLine, ev.x, ev.y);
-//            Display.getDefault().timerExec(Display.getDefault().getDoubleClickTime(), new Runnable() {
-//              @Override
-//              public void run() {
-//                doubleClickTask = null;
-//              }
-//            });
-          } else {
-            model.toggleSelection(overItem);
           }
-          break;
-        default:
-          selectNextItem(overItems);
-          break;
-        }
+          if (found == null && overItems.size() > 0) {
+            found = overItems.get(0);
+          }
+          if (((ev.stateMask & SWT.SHIFT)) != 0) {
+            model.selectToggleCumulative(found);
+          } else {
+            model.selectOnly(found);
+          }
+//          selectNextItem(overItems);
+//          break;
+//        }
         redraw();
         break;
       }
@@ -345,36 +316,41 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
     int i = 0;
     while (i < items.size()) {
       if (items.get(i).isSelected()) {
+        i++;
         break;
       }
       i++;
     }
-    if (i < items.size()) {
-      // Deselect the selected item
-      items.get(i).setSelected(false);
-      
-      // Find next (assumed to be unselected) that is not a border line
-      int start = i;
-      i++;
-      if (i == items.size()) i = 0;
-      while (i != start) {
-        ISelectable item = items.get(i);
-        if (!(item instanceof DesignLine && ((DesignLine)item).isBorder())) {
-          model.selectOnly(item);
-          break;
-        }
-        i++;
-        if (i == items.size()) i = 0;
-      }
-    } else {
-      // No currently selected item, so select the first non border line
-      for (ISelectable item : items) {
-        if (!(item instanceof DesignLine && ((DesignLine)item).isBorder())) {
-          model.selectOnly(item);
-          break;
-        }
-      }
-    }
+    if (i == items.size()) i = 0;
+    ISelectable item = items.get(i);
+    model.selectOnly(item);
+    
+//    if (i < items.size()) {
+//      // Deselect the selected item
+//      items.get(i).setSelected(false);
+//      
+//      // Find next (assumed to be unselected) that is not a border line
+//      int start = i;
+//      i++;
+//      if (i == items.size()) i = 0;
+//      while (i != start) {
+//        ISelectable item = items.get(i);
+//        if (!(item instanceof DesignLine && ((DesignLine)item).isBorder())) {
+//          model.selectOnly(item);
+//          break;
+//        }
+//        i++;
+//        if (i == items.size()) i = 0;
+//      }
+//    } else {
+//      // No currently selected item, so select the first non border line
+//      for (ISelectable item : items) {
+//        if (!(item instanceof DesignLine && ((DesignLine)item).isBorder())) {
+//          model.selectOnly(item);
+//          break;
+//        }
+//      }
+//    }
   }
   
   
@@ -408,8 +384,22 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
   
   @Override
   public void keyPressed(KeyEvent ev) {
+    System.out.println("key code " + ev.keyCode);
+    
     switch (ev.keyCode) {
-    case 97 :                // Toggle line draw mode (key A)
+    case SWT.ARROW_LEFT :         // Left arrow
+      moveSelected(-MOVE_DELTA, 0);
+      break;
+    case SWT.ARROW_UP :          // Up arrow
+      moveSelected(0, -MOVE_DELTA);
+      break;
+    case SWT.ARROW_RIGHT :       // Right arrow
+      moveSelected(+MOVE_DELTA, 0);
+      break;
+    case SWT.ARROW_DOWN :        // Down arrow
+      moveSelected(0, +MOVE_DELTA);
+      break;
+    case 97 :                   // Toggle line draw mode (key A)
       switch (mode) {
       case LINE_DRAW :
         mode = Mode.NORMAL;
@@ -424,7 +414,7 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
       // Draw or clear the rubber-band line
       redraw();
       break;
-    case 127 :                // Delete selected items
+    case 127 :                  // Delete selected items
       boolean modified = model.deleteSelectedItems();
       if (modified) {
         setModified(true);
@@ -461,6 +451,20 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
         getShell().setCursor(overNothingCursor);
       }
       break;
+    }
+  }
+
+  
+  private void moveSelected(int deltaX, int deltaY) {
+    double dx = deltaX * zoom;
+    double dy = deltaY * zoom;
+    
+    List<ISelectable> sx = model.getSelectedItems();
+    if (!sx.isEmpty()) {
+      for (ISelectable s : sx) {
+        s.move(dx, dy);
+      }
+      redraw();
     }
   }
 

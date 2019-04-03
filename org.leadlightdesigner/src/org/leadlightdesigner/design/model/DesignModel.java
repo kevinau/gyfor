@@ -25,6 +25,8 @@ public class DesignModel {
 
   private List<ISelectable> selectedItems = new LinkedList<>();
   
+  private transient List<PointChangeListener> pointChangeListenerList;
+  
   
   public DesignModel (Coord... xy) {
     //this.borderCoords = xy;
@@ -111,6 +113,11 @@ public class DesignModel {
   }
 
 
+  public List<ISelectable> getSelectedItems () {
+    return selectedItems;
+  }
+
+
   private boolean pointInUse (DesignPoint p) {
     for (DesignLine x : lines) {
       if (x.isBorder()) {
@@ -154,20 +161,12 @@ public class DesignModel {
   
   
   public void toggleSelection (ISelectable item) {
-    for (ISelectable p : points) {
-      if (p == item) {
-        p.toggleSelected();
-      } else {
-        p.setSelected(false);
-      }
+    for (ISelectable p : selectedItems) {
+      p.deselect();
     }
-    for (ISelectable x : lines) {
-      if (x == item) {
-        x.toggleSelected();
-      } else {
-        x.setSelected(false);
-      }
-    }
+    selectedItems.clear();
+    item.toggleSelected();
+    selectedItems.add(item);
   }
 
 
@@ -175,19 +174,37 @@ public class DesignModel {
     for (ISelectable p : selectedItems) {
       p.deselect();
     }
-    item.setSelected(true);
+    selectedItems.clear();
+    if (item != null) {
+      item.setSelected(true);
+      selectedItems.add(item);
+    }
+  }
+  
+  
+  public void selectToggleCumulative (ISelectable item) {
+    if (item.isSelected()) {
+      selectedItems.remove(item);
+      item.setSelected(false);
+    } else {
+      item.setSelected(true);
+      selectedItems.add(item);
+    }
   }
   
   
   public boolean deselectAllLines () {
-    boolean modified = false;
-    for (ISelectable p : selectedItems) {
-      if (p instanceof DesignLine) {
-        p.setSelected(false);
-        modified = true;
+    boolean deselected = false;
+    ISelectable[] sx = (ISelectable[])selectedItems.toArray();
+    
+    for (ISelectable s : sx) {
+      if (s instanceof DesignLine) {
+        selectedItems.remove(s);
+        s.setSelected(false);
+        deselected = true;
       }
     }
-    return modified;
+    return deselected;
   }
 
   
@@ -244,38 +261,25 @@ public class DesignModel {
 
 
   public boolean deleteSelectedItems () {
-    boolean modified = false;
+    boolean deleted = false;
+    ISelectable[] sx = (ISelectable[])selectedItems.toArray();
     
-    int i = 0;
-    while (i < lines.size()) {
-      DesignLine line = lines.get(i);
-      if (line.isSelected() && lineInUse(line) == false) {
-        lines.remove(i);
-        modified = true;
-      } else {
-        List<DesignPoint> points = line.getPoints();
-        int j = 0;
-        while (j < points.size()) {
-          DesignPoint p = points.get(j);
-          if (p.isSelected() && pointInUse(p) == false) {
-            line.destroyPoint(p);
-            modified = true;
-          } else {
-            j++;
-          }
-        }
-        if (line.getPoints().size() < 2) {
-          lines.remove(i);
-          modified = true;
-        } else {
-          i++;
-        }
+    // First delete selected lines
+    for (ISelectable s : sx) {
+      if (s instanceof DesignLine) {
+        s.destroy();
+        deleted = true;
       }
     }
-    if (modified) {
-      refreshPoints();
+    
+    // Then delete selected points that are no longer in use
+    for (ISelectable s : sx) {
+      if ((s instanceof DesignPoint) && !((DesignPoint)s).isAttached()) {
+        s.destroy();
+        deleted = true;
+      }
     }
-    return modified;
+    return deleted;
   }
   
   
@@ -468,13 +472,47 @@ public class DesignModel {
   }
 
 
-  public void addSelectedItems(ISelectable p) {
-    selectedItems.add(p);
+//  public void addSelectedItem(ISelectable p) {
+//    selectedItems.add(p);
+//  }
+//  
+//
+//  public void removeSelectedItem(ISelectable p) {
+//    selectedItems.remove(p);
+//  }
+
+
+  public void addPointChangeListener (PointChangeListener x) {
+    if (pointChangeListenerList == null) {
+      pointChangeListenerList = new ArrayList<>();
+    }
+    pointChangeListenerList.add(x);
   }
   
-
-  public void removeSelectedItems(ISelectable p) {
-    selectedItems.remove(p);
+  
+  public void removePointChangeListener (PointChangeListener x) {
+    pointChangeListenerList.remove(x);
+    if (pointChangeListenerList.isEmpty()) {
+      pointChangeListenerList = null;
+    }
+  }
+  
+  
+  public void firePointSelectionChange(DesignPoint point, boolean selected) {
+    if (pointChangeListenerList != null) {
+      for (PointChangeListener x : pointChangeListenerList) {
+        x.pointSelectionChange(point, selected);
+      }
+    }
+  }
+  
+  
+  public void firePointMoved(DesignPoint point, double deltaX, double deltaY) {
+    if (pointChangeListenerList != null) {
+      for (PointChangeListener x : pointChangeListenerList) {
+        x.pointMoved(point, deltaX, deltaY);
+      }
+    }
   }
   
 }

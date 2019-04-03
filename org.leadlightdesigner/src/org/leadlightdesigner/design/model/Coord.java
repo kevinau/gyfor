@@ -6,8 +6,8 @@ public class Coord {
   // Small epsilon used for double value comparison.
   private static final double EPS = 1e-5;
 
-  public final double x;
-  public final double y;
+  public double x;
+  public double y;
   
   public Coord (double x, double y) {
     this.x = x;

@@ -40,6 +40,12 @@ public class DesignPoint extends Coord implements ISelectable {
     return attachedLines;
   }
 
+  
+  public boolean isAttached() {
+    return attachedLines.size() > 0;
+  }
+  
+  
 //  public double getX () {
 //    return x;
 //  }
@@ -94,22 +100,27 @@ public class DesignPoint extends Coord implements ISelectable {
     }
   }
 
+  
   @Override
   public String toString() {
     return "[" + x + "," + y + (isSelected() ? ", selected" : "") + "]";
   }
 
+  
   @Override
   public void setSelected(boolean selected) {
     this.selected = selected;
-    if (selected) {
-      model.addSelectedItems(this);
-    } else {
-      model.removeSelectedItems(this);
-    }
+    model.firePointSelectionChange(this, selected);
   }
 
+  
+  @Override
+  public void move (double deltaX, double deltaY) {
+    x += deltaX;
+    y += deltaY;
+  }
 
+  
   @Override
   public boolean isSelected() {
     return selected;

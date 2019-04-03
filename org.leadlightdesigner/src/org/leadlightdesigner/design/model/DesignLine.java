@@ -260,11 +260,6 @@ public class DesignLine implements ISelectable {
   @Override
   public void setSelected(boolean selected) {
     this.selected = selected;
-    if (selected) {
-      model.addSelectedItems(this);
-    } else {
-      model.removeSelectedItems(this);
-    }
   }
 
 
@@ -306,6 +301,15 @@ public class DesignLine implements ISelectable {
     endPoint = point;
     endPoint.attachLine(this);
     return priorEndPoint;
+  }
+
+
+  @Override
+  public void move(double deltaX, double deltaY) {
+    startPoint.x += deltaX;
+    startPoint.y += deltaY;
+    endPoint.x += deltaX;
+    endPoint.y += deltaY;
   }
   
 }
