@@ -14,7 +14,6 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Path;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
@@ -25,6 +24,7 @@ import org.leadlightdesigner.design.model.DesignLine;
 import org.leadlightdesigner.design.model.DesignModel;
 import org.leadlightdesigner.design.model.DesignPoint;
 import org.leadlightdesigner.design.model.ISelectable;
+import org.leadlightdesigner.design.model.ModelChangeListener;
 
 
 public class DesignCanvas extends Canvas implements PaintListener, MouseListener, MouseMoveListener, MouseTrackListener, KeyListener {
@@ -86,8 +86,6 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
   
   private double zoom = 1.0;
   
-  private boolean modified = false;
-  
   private Runnable doubleClickTask = null;
   
   private enum Mode {
@@ -134,6 +132,16 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
   }
   
   
+  public void addModifyChangeListener (ModelChangeListener x) {
+    model.addModelChangeListener(x);
+  }
+  
+  
+  public void removeModifyChangeListener (ModelChangeListener x) {
+    model.removeModelChangeListener(x);
+  }
+  
+  
   public void testSetup () {
     int offset = 50;
     model = new DesignModel(
@@ -155,11 +163,6 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
     DesignLine l1 = model.createLine(p5, p6, false);
     DesignLine l2 = model.createLine(p6, rightEndPoint, false);
     //model.dump();
-  }
-  
-  
-  private void setModified (boolean modified) {
-    this.modified = modified;
   }
   
   
@@ -208,7 +211,6 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
   private DesignPoint createPointOnLine (DesignLine line, int x, int y) {
     Coord xy = line.getNearestXY(x, y);
     DesignPoint newPoint = model.createPointOnLine(line, xy.x, xy.y);
-    setModified(true);
     return newPoint;
   }
     
@@ -279,6 +281,9 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
             model.selectToggleCumulative(found);
           } else {
             model.selectOnly(found);
+            if (found != null && (found instanceof DesignLine)) {
+              registerDoubleClickTask (new DoubleClickTask((DesignLine)found, ev.x, ev.y));
+            }
           }
 //          selectNextItem(overItems);
 //          break;
@@ -415,9 +420,8 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
       redraw();
       break;
     case 127 :                  // Delete selected items
-      boolean modified = model.deleteSelectedItems();
-      if (modified) {
-        setModified(true);
+      boolean itemsDeleted = model.deleteSelectedItems();
+      if (itemsDeleted) {
         redraw();
       }
       break;
@@ -470,8 +474,8 @@ public class DesignCanvas extends Canvas implements PaintListener, MouseListener
 
   
   private void deselectAllLines () {
-    boolean modified = model.deselectAllLines();
-    if (modified) {
+    boolean itemsDeselected = model.deselectAllLines();
+    if (itemsDeselected) {
       redraw();
     }
   }

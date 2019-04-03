@@ -26,6 +26,8 @@ public class DesignModel {
   private List<ISelectable> selectedItems = new LinkedList<>();
   
   private transient List<PointChangeListener> pointChangeListenerList;
+  private transient List<ModelChangeListener> modelChangeListenerList;
+  private transient boolean modified = false;
   
   
   public DesignModel (Coord... xy) {
@@ -48,6 +50,21 @@ public class DesignModel {
       borderLines.add(line);
       i++;
     }
+  }
+  
+  
+  public void setModified(boolean modified) {
+    System.out.println("+++++++++ " + this.modified + " " + modified + " " + modelChangeListenerList);
+    if (this.modified != modified) {
+      this.modified = modified;
+      // Fire modified change
+      fireModifyChange(modified);
+    }
+  }
+  
+  
+  public boolean isModified () {
+    return modified;
   }
   
   
@@ -79,6 +96,7 @@ public class DesignModel {
       line.setBorder(true);
       borderLines.add(line);
     }
+    setModified(true);
     return line;
   }
 
@@ -157,6 +175,7 @@ public class DesignModel {
         points.add(p);
       }
     }
+    setModified(true);
   }
   
   
@@ -195,7 +214,7 @@ public class DesignModel {
   
   public boolean deselectAllLines () {
     boolean deselected = false;
-    ISelectable[] sx = (ISelectable[])selectedItems.toArray();
+    ISelectable[] sx = selectedItems.toArray(new ISelectable[0]);
     
     for (ISelectable s : sx) {
       if (s instanceof DesignLine) {
@@ -256,6 +275,7 @@ public class DesignModel {
     
     // Now create a new line
     DesignLine l2 = createLine(point, priorEndPoint, line.isBorder());
+    setModified(true);
     return point;
   }
 
@@ -269,6 +289,7 @@ public class DesignModel {
       if (s instanceof DesignLine) {
         s.destroy();
         deleted = true;
+        setModified(true);
       }
     }
     
@@ -277,6 +298,7 @@ public class DesignModel {
       if ((s instanceof DesignPoint) && !((DesignPoint)s).isAttached()) {
         s.destroy();
         deleted = true;
+        setModified(true);
       }
     }
     return deleted;
@@ -311,6 +333,7 @@ public class DesignModel {
   public DesignPoint createPoint(double x, double y) {
     DesignPoint p = new DesignPoint(this, x, y);
     points.add(p);
+    setModified(true);
     return p;
   }
   
@@ -319,6 +342,7 @@ public class DesignModel {
     try (SafeWriter writer = new SafeWriter(file.toPath())) {
       gson.toJson(model, writer);
       writer.commit();
+      model.setModified(false);
     }
   }
 
@@ -465,10 +489,12 @@ public class DesignModel {
       borderLines.remove(line);
     }
     lines.remove(line);
+    setModified(true);
   }
   
   void removePoint(DesignPoint point) {
     points.remove(point);
+    setModified(true);
   }
 
 
@@ -514,5 +540,32 @@ public class DesignModel {
       }
     }
   }
+  
+  
+  public void addModelChangeListener (ModelChangeListener x) {
+    if (modelChangeListenerList == null) {
+      modelChangeListenerList = new ArrayList<>();
+    }
+    modelChangeListenerList.add(x);
+    x.modifyChange(modified);
+  }
+  
+  
+  public void removeModelChangeListener (ModelChangeListener x) {
+    modelChangeListenerList.remove(x);
+    if (modelChangeListenerList.isEmpty()) {
+      modelChangeListenerList = null;
+    }
+  }
+  
+  
+  public void fireModifyChange(boolean modified) {
+    if (modelChangeListenerList != null) {
+      for (ModelChangeListener x : modelChangeListenerList) {
+        x.modifyChange(modified);
+      }
+    }
+  }
+
   
 }

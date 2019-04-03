@@ -35,6 +35,11 @@ public class DesignTabItem extends FileTabItem {
     
     ScrolledComposite scomposite = new ScrolledComposite(designFrame, SWT.H_SCROLL | SWT.V_SCROLL);
     DesignCanvas canvas = new DesignCanvas(scomposite);
+    canvas.addModifyChangeListener (m -> {
+      System.out.println("***************** modify change " + m);
+      super.setModified(m);
+    });
+    
     scomposite.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
     scomposite.setContent(canvas);
     
